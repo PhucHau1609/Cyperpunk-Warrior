@@ -78,10 +78,6 @@ public class PlayerMovement : MonoBehaviour
         else if (moveInput < 0)
             spriteRenderer.flipX = true;
 
-        if (!Input.GetMouseButtonDown(2)) return;
-        animator.SetTrigger("Death");
-        Destroy(gameObject,1f);
-
     }
 
     void HandleAnimation()
