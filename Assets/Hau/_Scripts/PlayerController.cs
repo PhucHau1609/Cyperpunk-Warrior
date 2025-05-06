@@ -105,18 +105,19 @@ public class PlayerController : MonoBehaviour
         animationController.SetFloat("VerticalVelocity", rb.velocity.y);
         animationController.SetBool("isGrounded", isGrounded);
 
-        // Death (Ví dụ)
-        if (isDead)
-        {
-            animationController.Trigger("Death");
-            return;
-        }
-
-        // Hurt (Ví dụ)
-        if (isHurt)
-        {
-            animationController.Trigger("Hurt");
-            return;
-        }
     }
 }
+
+
+/*  if (isDead)
+  {
+      animationController.Trigger("Death");
+      return;
+  }
+
+  if (isHurt)
+  {
+      animationController.Trigger("Hurt");
+      return;
+  }*/
+
