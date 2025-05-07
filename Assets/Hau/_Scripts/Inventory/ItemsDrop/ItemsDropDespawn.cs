@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class ItemsDropDespawn : Despawn<ItemsDropCtrl>
 {
+    protected override void ResetValue()
+    {
+        base.ResetValue();
+        this.isDespawnByTime = false;
+    }
     public override void DoDespawn() 
     {
         ItemsDropCtrl itemsDropCtrl = (ItemsDropCtrl)this.parent;

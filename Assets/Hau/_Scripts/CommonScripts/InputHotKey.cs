@@ -20,25 +20,8 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     private void Update()
     {
         this.OpenInventory();
-        this.OpenMusic();
-        this.OpenSetting();
-        this.ToggleHotKey();
-    }
-
-    protected virtual void ToggleHotKey()
-    {
-        this.isPlaceTower = Input.GetKeyUp(KeyCode.X);
-
-
-        for (int i = 0; i <= 5; i++)
-        {
-            KeyCode key = (KeyCode)System.Enum.Parse(typeof(KeyCode), "Alpha" +  i);
-            if(Input.GetKeyDown(key))
-            {
-                this.keyCode = this.keyCode == key ? KeyCode.None : key;
-                break;
-            }
-        }
+        //this.OpenMusic();
+        //this.OpenSetting();
     }
 
     protected virtual void OpenInventory()
