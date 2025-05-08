@@ -13,10 +13,14 @@ public class PlayerMovement : MonoBehaviour {
 	bool jump = false;
 	bool dash = false;
 
-	//bool dashAxis = false;
-	
-	// Update is called once per frame
-	void Update () {
+    //bool dashAxis = false;
+
+    // Update is called once per frame
+    void Start()
+    {
+        GetComponent<Animator>().SetTrigger("PlayAppear");
+    }
+    void Update () {
 
 		horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
 
@@ -65,4 +69,5 @@ public class PlayerMovement : MonoBehaviour {
 		jump = false;
 		dash = false;
 	}
+
 }
