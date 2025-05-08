@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Playables;
 
 namespace DialogueSystem
 {
     public class DialogueHolder : MonoBehaviour
     {
+         [Header("Timeline tiếp theo")]
+        [SerializeField] private PlayableDirector nextTimeline; // THÊM vào
         private void Awake()
         {
             StartCoroutine(dialogueSequence());
@@ -19,6 +22,12 @@ namespace DialogueSystem
                 yield return new WaitUntil(() => transform.GetChild(i).GetComponent<DialogueLine>().finished);
             }
             gameObject.SetActive(false);
+
+            // CHẠY TIMELINE SAU KHI HỘI THOẠI KẾT THÚC
+            if (nextTimeline != null)
+            {
+                nextTimeline.Play();
+            }
         }
 
         private void Deactivate()

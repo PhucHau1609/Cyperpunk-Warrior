@@ -7,12 +7,12 @@ namespace DialogueSystem
 {
     public class DialogueLine : DialogueBaseClass
     {
-        private TextMeshProUGUI textHolder;
+        private Text textHolder;
 
         [Header("Text Options")]
         [SerializeField] private string input;
         [SerializeField] private Color textColor;
-        [SerializeField] private TMP_FontAsset textFont;
+        [SerializeField] private Font textFont;
 
         [Header("Character Info")]
         [SerializeField] private string characterName;
@@ -27,9 +27,12 @@ namespace DialogueSystem
         [Header("Sound")]
         [SerializeField] private AudioClip sound;
 
+         [Header("Continue Hint")]
+        [SerializeField] private GameObject clickToContinueText;
+
         private void Awake()
         {
-            textHolder = GetComponent<TextMeshProUGUI>();
+            textHolder = GetComponent<Text>();
             textHolder.text = "";
 
             // Set ảnh nhân vật nếu có
@@ -44,11 +47,16 @@ namespace DialogueSystem
             {
                 nameHolder.text = characterName.ToUpper(); // Hiển thị IN HOA
             }
+
+            if (clickToContinueText != null)
+            {
+                clickToContinueText.SetActive(false); // Ẩn ban đầu
+            }
         }
 
         private void Start()
         {
-            StartCoroutine(WriteText(input, textHolder, textColor, textFont, delay, sound, delayBetweenLines));
+            StartCoroutine(WriteText(input, textHolder, textColor, textFont, delay, sound, delayBetweenLines, clickToContinueText));
         }
     }
 }
