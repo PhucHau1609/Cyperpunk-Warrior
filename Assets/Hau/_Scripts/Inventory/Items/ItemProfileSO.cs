@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "ItemProfile", menuName = "ScriptableObjects/ItemProfile", order = 1)]
 public class ItemProfileSO : ScriptableObject
@@ -8,6 +9,7 @@ public class ItemProfileSO : ScriptableObject
     public InventoryCodeName invCodeName;
     public ItemCode itemCode;
     public string itemName;
+    public Sprite itemSprite;
     public bool isStackable = false;
 
     protected virtual void Reset()
