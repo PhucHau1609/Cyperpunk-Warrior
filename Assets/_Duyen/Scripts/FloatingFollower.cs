@@ -8,6 +8,9 @@ public class NPCFollow : MonoBehaviour
     public float xFollowSpeed = 2f;
     public float yFollowSpeed = 5f;
 
+    public bool isDashing = false; // gắn từ PlayerController
+    public float dashFollowMultiplier = 2f; // tăng tốc khi dash
+
     private Vector3 targetPos;
     private Rigidbody2D rb;
 
@@ -25,6 +28,17 @@ public class NPCFollow : MonoBehaviour
         // Tính vị trí đích dựa trên vị trí player
         targetPos = player.position + new Vector3(sideOffset * direction, followHeight, 0);
 
+        // Bay xuống nhanh hơn nếu player đang thấp
+        float heightDiff = player.position.y - rb.position.y;
+
+        // Nếu player đang ở thấp hơn nhiều → bay xuống nhanh hơn
+        float ySpeed = yFollowSpeed;
+        if (heightDiff < -1f) ySpeed *= 4f; // bay xuống nhanh
+        else if (heightDiff > 1f) ySpeed *= 1.5f; // bay lên nhanh nhẹ
+
+        // Dash theo
+        float speedMultiplier = isDashing ? dashFollowMultiplier : 1f;
+
         // Di chuyển mượt theo trục X và Y với tốc độ khác nhau
         float newX = Mathf.Lerp(rb.position.x, targetPos.x, xFollowSpeed * Time.fixedDeltaTime);
         float newY = Mathf.Lerp(rb.position.y, targetPos.y, yFollowSpeed * Time.fixedDeltaTime);
@@ -32,10 +46,13 @@ public class NPCFollow : MonoBehaviour
         rb.MovePosition(new Vector2(newX, newY));
 
         // Xoay mặt NPC
-        if (direction > 0)
-            transform.localScale = new Vector3(-2, 2, 2); // nhìn phải
-        else
-            transform.localScale = new Vector3(2, 2, 2); // nhìn trái
+        transform.localScale = direction > 0 ? new Vector3(-2, 2, 2) : new Vector3(2, 2, 2);
+        
+        //// Xoay mặt NPC
+        //if (direction > 0)
+        //    transform.localScale = new Vector3(-2, 2, 2); // nhìn phải
+        //else
+        //    transform.localScale = new Vector3(2, 2, 2); // nhìn trái
     }
 }
 
