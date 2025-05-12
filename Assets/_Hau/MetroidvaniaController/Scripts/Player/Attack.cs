@@ -13,8 +13,10 @@ public class Attack : MonoBehaviour
 	public bool isTimeToCheck = false;
 
 	public GameObject cam;
+    public WeaponSpriteHandler weaponSpriteHandler; // gán trong Inspector
 
-	private void Awake()
+
+    private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 	}
@@ -28,7 +30,20 @@ public class Attack : MonoBehaviour
 			StartCoroutine(AttackCooldown());
 		}
 
-		if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.X) && canAttack)
+        {
+            canAttack = false;
+            animator.SetBool("IsMeleeAttack", true);
+
+            if (weaponSpriteHandler != null)
+            {
+                weaponSpriteHandler.PlayWeaponAnimation(); // gọi hiển thị dao
+            }
+
+            StartCoroutine(AttackCooldown());
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
 		{
 			GameObject throwableWeapon = Instantiate(throwableObject, transform.position + new Vector3(transform.localScale.x * 0.5f,-0.2f), Quaternion.identity) as GameObject; 
 			Vector2 direction = new Vector2(transform.localScale.x, 0);
