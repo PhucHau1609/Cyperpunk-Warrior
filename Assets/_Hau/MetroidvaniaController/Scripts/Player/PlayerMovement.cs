@@ -16,6 +16,11 @@ public class PlayerMovement : MonoBehaviour {
     //bool dashAxis = false;
 
     // Update is called once per frame
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     void Start()
     {
         GetComponent<Animator>().SetTrigger("PlayAppear");
