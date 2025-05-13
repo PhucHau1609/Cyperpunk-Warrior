@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,3 +33,12 @@ public class GetLevel
     public int levelId;
     public string levelName;
 }
+
+[System.Serializable]
+public class SaveData
+{
+    public int userId;           // Phải trùng kiểu với backend
+    public string position;      // VD: "10.5,2.0,7.8"
+    public int health;
+}
+

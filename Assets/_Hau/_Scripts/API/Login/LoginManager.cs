@@ -79,11 +79,14 @@ public class LoginManager : MonoBehaviour
                 Debug.Log("Đăng nhập thành công!");
                 Debug.Log($"Tên người dùng: {loginResponse.data.name}");
 
-                // Có thể lưu vào singleton UserSession hoặc PlayerPrefs tùy logic game của bạn
-                // UserSession.Instance.SetUser(loginResponse.data);
+
+                if (UserSession.Instance != null)
+                {
+                    UserSession.Instance.UserId = loginResponse.data.regionID; // regionID = userID bạn đang dùng
+                }
 
                 // Chuyển scene hoặc mở UI
-                SceneManager.LoadScene(2);
+                SceneManager.LoadScene(7);
             }
             else
             {
