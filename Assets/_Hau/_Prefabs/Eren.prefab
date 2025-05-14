@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 46699784515532924}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.161, y: -0.876, z: 0}
+  m_LocalPosition: {x: 0.161, y: -0.708, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5029,6 +5029,7 @@ GameObject:
   - component: {fileID: 1886917120297889175}
   - component: {fileID: 1656452898270362967}
   - component: {fileID: 1959664588888965035}
+  - component: {fileID: 9181579126995914996}
   m_Layer: 1
   m_Name: Eren
   m_TagString: Player
@@ -5132,6 +5133,7 @@ MonoBehaviour:
   canAttack: 1
   isTimeToCheck: 0
   cam: {fileID: 0}
+  weaponSpriteHandler: {fileID: 0}
 --- !u!114 &6522751023682975850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5378,6 +5380,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &9181579126995914996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6680001067583368946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d4e05a72d2a2994ab2801146ee9c2da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  userId: 1
 --- !u!1 &6893562519748869713
 GameObject:
   m_ObjectHideFlags: 0
