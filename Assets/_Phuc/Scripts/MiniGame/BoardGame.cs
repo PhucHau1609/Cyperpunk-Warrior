@@ -7,7 +7,8 @@ public class BoardGame : MonoBehaviour
     [SerializeField] private Transform emptySpace = null;
     [SerializeField] private TilesScript[] tiles;
     [SerializeField] private GameObject miniGameUI;
-    [SerializeField] private TeleportPortal teleportPortal; // 👈 Tham chiếu đến TeleportPortal
+    [SerializeField] private TeleportPortal teleportPortal;
+    [SerializeField] private GameObject player; // 👈 Player GameObject
 
     private Camera _camera;
     private const float CellSize = 6f;
@@ -17,9 +18,7 @@ public class BoardGame : MonoBehaviour
     {
         _camera = Camera.main;
         Shuffle();
-
-        // Reset lại cổng dịch chuyển khi bắt đầu game (khóa cổng dịch chuyển)
-        teleportPortal.ResetPortal(); // Sử dụng phương thức ResetPortal để khóa cổng
+        teleportPortal.ResetPortal();
     }
 
     void Update()
@@ -81,7 +80,17 @@ public class BoardGame : MonoBehaviour
         miniGameUI.SetActive(false);
         if (teleportPortal != null)
         {
-            teleportPortal.UnlockPortal(); // 👈 Mở cổng khi giải xong mini game
+            teleportPortal.UnlockPortal();
+        }
+
+        // ✅ Bật lại điều khiển của Player sau khi hoàn thành mini game
+        if (player != null)
+        {
+            PlayerMovement movementScript = player.GetComponent<PlayerMovement>();
+            if (movementScript != null)
+            {
+                movementScript.enabled = true;
+            }
         }
     }
 

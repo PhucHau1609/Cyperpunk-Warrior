@@ -1,16 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TeleportPortal_01 : MonoBehaviour
 {
-    public string targetSceneName = "MapLevel4";
     public AudioClip teleportSound;
     private AudioSource audioSource;
 
     private bool isTeleporting = false;
     private GameObject player;
+
+    [SerializeField] private int nextSceneIndex = 1; // 👈 Thứ tự Scene trong Build Settings
+    [SerializeField] private string loadingSceneName = "LoadingScene"; // 👈 Scene loading bạn đã tạo
 
     private void Start()
     {
@@ -52,6 +53,11 @@ public class TeleportPortal_01 : MonoBehaviour
 
         yield return new WaitForSeconds(animationLength);
 
-        SceneManager.LoadScene(targetSceneName);
+        // Lưu chỉ số scene kế tiếp để màn hình loading sử dụng
+        PlayerPrefs.SetInt("NextSceneIndex", nextSceneIndex);
+        PlayerPrefs.Save();
+
+        // Load màn hình loading
+        SceneManager.LoadScene(loadingSceneName);
     }
 }
