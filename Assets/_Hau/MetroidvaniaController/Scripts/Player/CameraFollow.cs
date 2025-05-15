@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraFollow : MonoBehaviour
 {
@@ -29,9 +30,38 @@ public class CameraFollow : MonoBehaviour
 		}
 
 		DontDestroyOnLoad(this);
-	}
+        SceneManager.sceneLoaded += OnSceneLoaded;
 
-	void OnEnable()
+    }
+    void Start()
+    {
+        // Nếu vào Map 2 mà Start gọi trước khi Player có thể tìm thấy, ta cũng thử tìm ở đây.
+        TryFindPlayer();
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        TryFindPlayer();
+    }
+
+    void TryFindPlayer()
+    {
+        if (Target == null)
+        {
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                Target = player.transform;
+            }
+        }
+    }
+
+    void OnEnable()
 	{
 		originalPos = camTransform.localPosition;
 	}
