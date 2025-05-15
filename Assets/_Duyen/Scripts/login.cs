@@ -78,6 +78,6 @@ public class login : MonoBehaviour
     private IEnumerator LoadSceneAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(nextSceneName);
+        SceneManager.LoadScene(1);
     }
 }

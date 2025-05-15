@@ -142,7 +142,7 @@ public class CodeLock : MonoBehaviour
         canvas.SetActive(false);  // Tắt canvas
     }
 
-    void ReopenCanvas()
+    public void ReopenCanvas()
     {
         canvas.SetActive(true);  // Mở lại canvas
     }

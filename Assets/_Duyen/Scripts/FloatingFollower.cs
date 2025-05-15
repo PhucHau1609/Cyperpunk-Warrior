@@ -14,6 +14,11 @@ public class NPCFollow : MonoBehaviour
     private Vector3 targetPos;
     private Rigidbody2D rb;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
