@@ -27,6 +27,8 @@ public class CameraFollow : MonoBehaviour
 		{
 			camTransform = GetComponent(typeof(Transform)) as Transform;
 		}
+
+		DontDestroyOnLoad(this);
 	}
 
 	void OnEnable()
