@@ -19,7 +19,7 @@ public class DroidController : MonoBehaviour
     private Transform targetPoint;
     private bool facingRight = true;
     private float fireTimer = 0f;
-    private bool isShooting = false;
+    //private bool isShooting = false;
 
     void Start()
     {
