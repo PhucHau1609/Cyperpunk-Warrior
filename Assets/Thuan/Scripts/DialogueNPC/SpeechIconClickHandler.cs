@@ -9,8 +9,8 @@ public class SpeechIconClickHandler : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        DialogueManager.Instance.StartDialogue(dialogueData, npcTransform);
         gameObject.SetActive(false);
+        DialogueManager.Instance.StartDialogue(dialogueData, npcTransform);
         onClick?.Invoke();
     }
 }

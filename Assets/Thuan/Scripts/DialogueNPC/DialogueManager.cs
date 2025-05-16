@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -18,9 +18,10 @@ public class DialogueManager : MonoBehaviour
 
     public DialogueFollowNPC followScript;
 
-    void Awake()
+    private void Awake()
     {
-        Instance = this;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     void Update()
@@ -58,6 +59,11 @@ public class DialogueManager : MonoBehaviour
         }
 
         isTyping = false;
+        if (currentLine >= lines.Length - 1)
+        {
+            yield return new WaitForSeconds(.5f); // tuỳ chỉnh thời gian đợi
+            CloseDialogue();
+        }
     }
 
     void ShowFullLine()
