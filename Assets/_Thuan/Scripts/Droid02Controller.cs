@@ -115,30 +115,52 @@ public class Droid02Controller : MonoBehaviour
 
     void HandleMovement(float distanceToPlayer)
     {
-        if (distanceToPlayer < chaseRange)
+        if (distanceToPlayer <= chaseRange)
             isChasing = true;
-        else if (distanceToPlayer > stopChaseRange)
+        else if (distanceToPlayer >= stopChaseRange)
             isChasing = false;
 
-        Vector2 targetPosition = isChasing ? player.position : originalPosition;
-        Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
-
-        if (!isChasing && Vector2.Distance(transform.position, targetPosition) < 0.05f)
+        if (isChasing)
         {
-            rb.velocity = Vector2.zero;
-            animator.SetBool("IsRunning", false);
-            return;
+            // Nếu còn xa hơn khoảng bắn thì dí theo
+            if (distanceToPlayer > fireRange)
+            {
+                Vector2 direction = (player.position - transform.position).normalized;
+                rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+                animator.SetBool("IsRunning", true);
+
+                // Lật mặt
+                if (direction.x > 0 && !facingRight)
+                    Flip();
+                else if (direction.x < 0 && facingRight)
+                    Flip();
+            }
+            else
+            {
+                // Gần quá thì đứng yên bắn
+                rb.velocity = Vector2.zero;
+                animator.SetBool("IsRunning", false);
+            }
         }
-
-        rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-        animator.SetBool("IsRunning", Mathf.Abs(rb.velocity.x) > 0.1f);
-
-        if (Mathf.Abs(direction.x) > 0.01f)
+        else
         {
-            if (direction.x > 0 && !facingRight)
-                Flip();
-            else if (direction.x < 0 && facingRight)
-                Flip();
+            // Không đuổi nữa → quay lại vị trí gốc
+            if (Vector2.Distance(transform.position, originalPosition) > 0.1f)
+            {
+                Vector2 direction = (originalPosition - transform.position).normalized;
+                rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+                animator.SetBool("IsRunning", true);
+
+                if (direction.x > 0 && !facingRight)
+                    Flip();
+                else if (direction.x < 0 && facingRight)
+                    Flip();
+            }
+            else
+            {
+                rb.velocity = Vector2.zero;
+                animator.SetBool("IsRunning", false);
+            }
         }
     }
 
@@ -168,7 +190,7 @@ public class Droid02Controller : MonoBehaviour
     }
 
     // --- THÊM: Gọi khi bị Player tấn công
-   public void ApplyDamage(float amount)
+    public void ApplyDamage(float amount)
     {
         if (isDead) return;
 
@@ -187,9 +209,18 @@ public class Droid02Controller : MonoBehaviour
     {
         isDead = true;
         rb.velocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.simulated = false;
+
         animator.SetTrigger("Death");
 
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
     }
+    
+    public void DestroyAfterDeath()
+    {
+        Destroy(gameObject);
+    }
+
 }
