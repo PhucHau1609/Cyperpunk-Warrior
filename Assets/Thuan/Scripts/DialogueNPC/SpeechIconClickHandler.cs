@@ -1,11 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class SpeechIconClickHandler : MonoBehaviour
+public class SpeechIconClickHandler : MonoBehaviour, IPointerClickHandler
 {
-    public NPCDialogueUnlockManager npc;
+    public DialogueData dialogueData;
+    public Transform npcTransform;
+    public System.Action onClick;
 
-    void OnMouseDown()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        npc.OnSpeechIconClicked();
+        DialogueManager.Instance.StartDialogue(dialogueData, npcTransform);
+        gameObject.SetActive(false);
+        onClick?.Invoke();
     }
 }

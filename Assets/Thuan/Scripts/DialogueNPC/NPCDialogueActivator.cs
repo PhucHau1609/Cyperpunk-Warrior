@@ -32,7 +32,7 @@ public class NPCDialogueActivator : MonoBehaviour
     {
         if (canTalk)
         {
-            DialogueManager.Instance.StartDialogue(dialogueData, transform);
+            //DialogueManager.Instance.StartDialogue(dialogueData, transform);
         }
     }
 }
