@@ -37,8 +37,29 @@ public class GetLevel
 [System.Serializable]
 public class SaveData
 {
-    public int userId;           // Phải trùng kiểu với backend
-    public string position;      // VD: "10.5,2.0,7.8"
-    public int health;
+    public int userId;
+    public float posX;
+    public float posY;
+    public float posZ;
+    public float health;
+}
+
+
+[Serializable]
+public class RegisterDTO
+{
+    public string username;
+    public string email;
+    public string password;
+}
+
+[System.Serializable]
+public class SaveDataResponse
+{
+    public bool isSuccess;
+    public float posX;
+    public float posY;
+    public float posZ;
+    public float health;
 }
 

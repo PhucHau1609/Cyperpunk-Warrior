@@ -14,8 +14,8 @@ public class LoginManager : MonoBehaviour
     [Serializable]
     public class LoginRequest
     {
-        public string Email;
-        public string Password;
+        public string email;
+        public string password;
     }
 
     [Serializable]
@@ -43,8 +43,8 @@ public class LoginManager : MonoBehaviour
 
         var loginRequest = new LoginRequest
         {
-            Email = email,
-            Password = password
+            email = email,
+            password = password
         };
 
         var json = JsonConvert.SerializeObject(loginRequest);
@@ -53,7 +53,7 @@ public class LoginManager : MonoBehaviour
 
     IEnumerator PostLogin(string json)
     {
-        string url = "http://localhost:5245/Login";
+        string url = "https://apiv3-sunny.up.railway.app/api/Login/login";
 
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
@@ -79,14 +79,12 @@ public class LoginManager : MonoBehaviour
                 Debug.Log("Đăng nhập thành công!");
                 Debug.Log($"Tên người dùng: {loginResponse.data.name}");
 
-
                 if (UserSession.Instance != null)
                 {
-                    UserSession.Instance.UserId = loginResponse.data.regionID; // regionID = userID bạn đang dùng
+                    UserSession.Instance.UserId = loginResponse.data.regionID;
                 }
 
-                // Chuyển scene hoặc mở UI
-                SceneManager.LoadScene(7);
+                SceneManager.LoadScene(7); // đổi scene
             }
             else
             {

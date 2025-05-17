@@ -6,7 +6,7 @@ using com.cyborgAssets.inspectorButtonPro;
 
 public class GameSaveManager : MonoBehaviour
 {
-    private string baseUrl = "http://localhost:5245/api/SaveResult"; // đổi thành IP thật khi build
+    private string baseUrl = "https://apiv3-sunny.up.railway.app/api/Save"; // cập nhật đúng endpoint
 
     public int userId = 1;
 
@@ -15,20 +15,21 @@ public class GameSaveManager : MonoBehaviour
         if (UserSession.Instance != null)
         {
             userId = UserSession.Instance.UserId;
-            LoadGameData(); // Tự động tải dữ liệu khi scene bắt đầu
+            LoadGameData();
         }
     }
-
 
     [ProButton]
     public void SaveGameData()
     {
-        Vector3 pos = transform.position; // ví dụ dùng vị trí của chính gameObject
+        Vector3 pos = transform.position;
         SaveData data = new SaveData
         {
             userId = userId,
-            position = $"{pos.x},{pos.y},{pos.z}",
-            health = 100
+            posX = pos.x,
+            posY = pos.y,
+            posZ = pos.z,
+            health = 100f
         };
         StartCoroutine(PostRequest($"{baseUrl}/SaveGame", data));
     }
@@ -68,10 +69,7 @@ public class GameSaveManager : MonoBehaviour
             else
             {
                 Debug.Log("Load success: " + request.downloadHandler.text);
-                var json = request.downloadHandler.text;
-
-                // Parse thủ công (hoặc dùng JSON parser mạnh hơn nếu muốn)
-                SaveDataResponse data = JsonUtility.FromJson<SaveDataResponse>(json);
+                SaveDataResponse data = JsonUtility.FromJson<SaveDataResponse>(request.downloadHandler.text);
                 ApplyGameState(data);
             }
         }
@@ -80,21 +78,8 @@ public class GameSaveManager : MonoBehaviour
     void ApplyGameState(SaveDataResponse data)
     {
         if (data == null) return;
-        string[] coords = data.position.Split(',');
-        float x = float.Parse(coords[0]);
-        float y = float.Parse(coords[1]);
-        float z = float.Parse(coords[2]);
 
-        transform.position = new Vector3(x, y, z);
-        Debug.Log($"Loaded position: {x},{y},{z} - Health: {data.health}");
-    }
-
-    [System.Serializable]
-    public class SaveDataResponse
-    {
-        public bool isSuccess;
-        public string position;
-        public int health;
-        public string name;
+        transform.position = new Vector3(data.posX, data.posY, data.posZ);
+        Debug.Log($"Loaded position: {data.posX},{data.posY},{data.posZ} - Health: {data.health}");
     }
 }
