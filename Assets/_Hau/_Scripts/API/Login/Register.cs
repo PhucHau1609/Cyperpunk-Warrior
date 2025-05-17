@@ -25,10 +25,19 @@ public class Register : MonoBehaviour
         var password = passwordInput.text;
         var name = nameInput.text;
 
-        var account = new Account
+        var dto = new RegisterDTO
+        {
+            username = name,
+            email = email,
+            password = password
+        };
+        var json = JsonUtility.ToJson(dto);
+
+
+        /*var account = new Account
         { Email = email, Password = password, Name = name };
 
-        var json = JsonUtility.ToJson(account);
+        var json = JsonUtility.ToJson(account);*/
 
         StartCoroutine(Post(json));
     }
@@ -37,7 +46,7 @@ public class Register : MonoBehaviour
     IEnumerator Post(string json)
     {
         //var url = "http://localhost:5245/api/Register";
-        var url = "https://apiv2-sunny.up.railway.app/api/Register";
+        var url = "https://apiv3-sunny.up.railway.app/api/Register/register";
 
         var request = new UnityWebRequest(url, "POST");
 

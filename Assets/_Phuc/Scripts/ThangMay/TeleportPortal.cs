@@ -58,7 +58,7 @@ public class TeleportPortal : MonoBehaviour
 
         // 👉 THÊM DÒNG NÀY: Thiết lập SpawnPoint cho scene kế tiếp
         if (SpawnManager.Instance != null)
-            SpawnManager.Instance.SetNextSpawnPoint("FromScene1");
+            SpawnManager.Instance.SetNextSpawnPoint(SpawnSceneName.MapLevel2);
 
         // 👉 Lưu index scene cần load vào PlayerPrefs
         PlayerPrefs.SetInt("NextSceneIndex", targetSceneIndex);
