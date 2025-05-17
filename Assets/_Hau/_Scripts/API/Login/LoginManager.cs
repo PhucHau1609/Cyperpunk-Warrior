@@ -53,7 +53,8 @@ public class LoginManager : MonoBehaviour
 
     IEnumerator PostLogin(string json)
     {
-        string url = "http://localhost:5245/Login";
+        //string url = "http://localhost:5245/Login";
+        string url = "https://apiv2-sunny.up.railway.app/Login";
 
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);

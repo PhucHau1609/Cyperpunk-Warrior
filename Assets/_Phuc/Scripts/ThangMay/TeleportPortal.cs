@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System;
+
 
 public class TeleportPortal : MonoBehaviour
 {
@@ -53,6 +55,10 @@ public class TeleportPortal : MonoBehaviour
             : 1f;
 
         yield return new WaitForSeconds(animLength);
+
+        // 👉 THÊM DÒNG NÀY: Thiết lập SpawnPoint cho scene kế tiếp
+        if (SpawnManager.Instance != null)
+            SpawnManager.Instance.SetNextSpawnPoint("FromScene1");
 
         // 👉 Lưu index scene cần load vào PlayerPrefs
         PlayerPrefs.SetInt("NextSceneIndex", targetSceneIndex);

@@ -53,6 +53,9 @@ public class TeleportPortal_01 : MonoBehaviour
 
         yield return new WaitForSeconds(animationLength);
 
+        if (SpawnManager.Instance != null)
+            SpawnManager.Instance.SetNextSpawnPoint("FromScene2");
+
         // Lưu chỉ số scene kế tiếp để màn hình loading sử dụng
         PlayerPrefs.SetInt("NextSceneIndex", nextSceneIndex);
         PlayerPrefs.Save();

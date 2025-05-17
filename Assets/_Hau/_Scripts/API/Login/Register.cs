@@ -36,7 +36,8 @@ public class Register : MonoBehaviour
     // Gửi đối tượng JSON lên server
     IEnumerator Post(string json)
     {
-        var url = "http://localhost:5245/api/Register";
+        //var url = "http://localhost:5245/api/Register";
+        var url = "https://apiv2-sunny.up.railway.app/api/Register";
 
         var request = new UnityWebRequest(url, "POST");
 
