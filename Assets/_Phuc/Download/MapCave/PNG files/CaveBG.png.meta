@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -93,9 +93,169 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: CaveBG_15
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 384
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7dfb3b4856256c34d896c1aa85c02d01
+      internalID: 551367975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CaveBG_16
+      rect:
+        serializedVersion: 2
+        x: 608
+        y: 384
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4a6dde656f6333448cd7d197cf9f489
+      internalID: -388243713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CaveBG_17
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 384
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37fe4a1e800bdfe4f8956e7bf8e80ecf
+      internalID: 770134179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CaveBG_34
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 224
+        width: 64
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e8cf29a4061d3449a7bf1370a333af7
+      internalID: -1497852753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CaveBG_43
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 175
+        width: 32
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1afdce451c5a424fb39bf03851b85b2
+      internalID: -832087361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CaveBG_44
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 160
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0caccaa26eae6a34aaa7571986cabfc2
+      internalID: 525577756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CaveBG_47
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 98
+        width: 32
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4aa7a83826b495748b52bdf762dc4beb
+      internalID: -744711832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +266,56 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CaveBG_0: 713646790
+      CaveBG_1: -1594795582
+      CaveBG_10: -1794095511
+      CaveBG_11: 766063582
+      CaveBG_12: 949298583
+      CaveBG_13: 304732190
+      CaveBG_14: -1313469365
+      CaveBG_15: 551367975
+      CaveBG_16: -388243713
+      CaveBG_17: 770134179
+      CaveBG_18: 1916933974
+      CaveBG_19: 1944744173
+      CaveBG_2: 695656250
+      CaveBG_20: -741141716
+      CaveBG_21: -1528899186
+      CaveBG_22: 1499403260
+      CaveBG_23: 467852261
+      CaveBG_24: -140449942
+      CaveBG_25: 1053839915
+      CaveBG_26: 1289853921
+      CaveBG_27: -1467675542
+      CaveBG_28: 1352626503
+      CaveBG_29: -1953380077
+      CaveBG_3: 1648054448
+      CaveBG_30: -1197469142
+      CaveBG_31: -773978323
+      CaveBG_32: 328726446
+      CaveBG_33: -1084711806
+      CaveBG_34: -1497852753
+      CaveBG_35: 1929509977
+      CaveBG_36: -1802927800
+      CaveBG_37: 558668862
+      CaveBG_38: 18178690
+      CaveBG_39: -337502489
+      CaveBG_4: 2018071092
+      CaveBG_40: 399980094
+      CaveBG_41: 1166565588
+      CaveBG_42: 1440828541
+      CaveBG_43: -832087361
+      CaveBG_44: 525577756
+      CaveBG_45: -1925253422
+      CaveBG_46: -1282064302
+      CaveBG_47: -744711832
+      CaveBG_48: 1249376149
+      CaveBG_5: -1636325819
+      CaveBG_6: 333484182
+      CaveBG_7: -530976655
+      CaveBG_8: 647753588
+      CaveBG_9: 262975768
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
