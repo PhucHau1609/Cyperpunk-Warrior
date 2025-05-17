@@ -18,6 +18,10 @@ public class DialogueManager : MonoBehaviour
 
     public DialogueFollowNPC followScript;
 
+    public System.Action onDialogueEnd;
+
+    public bool IsDialogueActive => dialogueBox.activeSelf;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -89,6 +93,8 @@ public class DialogueManager : MonoBehaviour
     public void CloseDialogue()
     {
         dialogueBox.SetActive(false);
+        onDialogueEnd?.Invoke(); // Gọi callback sau khi thoại kết thúc
+        onDialogueEnd = null;    // Xóa callback để tránh bị gọi lại lần sau
     }
 
     public void StartDialogue(DialogueData data, Transform npcTransform)

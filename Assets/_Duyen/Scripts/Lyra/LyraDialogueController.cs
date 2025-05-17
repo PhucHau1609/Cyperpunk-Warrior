@@ -22,12 +22,16 @@ public class LyraDialogueController : MonoBehaviour
                 var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
                 clickHandler.dialogueData = dialogue;
                 clickHandler.npcTransform = this.transform;
-            }
-            else
-            {
-                // Nếu đã có icon, cập nhật đoạn thoại mới (nếu khác)
-                var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
-                clickHandler.dialogueData = dialogue;
+                Collider2D triggerZone = other;
+                DialogueData usedDialogue = dialogue;
+
+                clickHandler.onClick = () =>
+                {
+                    DialogueManager.Instance.onDialogueEnd = () =>
+                    {
+                        Destroy(triggerZone.gameObject); // hoặc: triggerZone.gameObject.SetActive(false);
+                    };
+                };
             }
         }
     }
