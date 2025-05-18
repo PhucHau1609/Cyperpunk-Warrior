@@ -11,6 +11,6 @@ public class NPCInteract : MonoBehaviour
 
     void OnMouseDown() // hoặc dùng raycast nếu thích
     {
-        npcUnlock.TryInteract();
+        //npcUnlock.TryInteract();
     }
 }

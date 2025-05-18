@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -18,9 +18,14 @@ public class DialogueManager : MonoBehaviour
 
     public DialogueFollowNPC followScript;
 
-    void Awake()
+    public System.Action onDialogueEnd;
+
+    public bool IsDialogueActive => dialogueBox.activeSelf;
+
+    private void Awake()
     {
-        Instance = this;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     void Update()
@@ -58,6 +63,11 @@ public class DialogueManager : MonoBehaviour
         }
 
         isTyping = false;
+        if (currentLine >= lines.Length - 1)
+        {
+            yield return new WaitForSeconds(.5f); // tuỳ chỉnh thời gian đợi
+            CloseDialogue();
+        }
     }
 
     void ShowFullLine()
@@ -83,6 +93,8 @@ public class DialogueManager : MonoBehaviour
     public void CloseDialogue()
     {
         dialogueBox.SetActive(false);
+        onDialogueEnd?.Invoke(); // Gọi callback sau khi thoại kết thúc
+        onDialogueEnd = null;    // Xóa callback để tránh bị gọi lại lần sau
     }
 
     public void StartDialogue(DialogueData data, Transform npcTransform)
