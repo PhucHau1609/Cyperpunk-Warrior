@@ -23,7 +23,8 @@ public class login : MonoBehaviour
     public string fixedUsername = "DuAnTotNghiep";
     public string fixedPassword = "123456";
 
-    public string nextSceneName = "HauDemo";
+    [Header("Scene Settings")]
+    public int nextSceneIndex = 1;
 
     public void Login()
     {

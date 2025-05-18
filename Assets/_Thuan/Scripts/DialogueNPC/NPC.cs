@@ -27,7 +27,7 @@ public class NPC : MonoBehaviour
 
     public void OnSpeechIconClicked()
     {
-        DialogueManager.Instance.StartDialogue(dialogueData, this.transform);
+        //DialogueManager.Instance.StartDialogue(dialogueData, this.transform);
         speechIcon.SetActive(false);
     }
 }
