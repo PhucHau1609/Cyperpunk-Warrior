@@ -10,6 +10,9 @@ public class login : MonoBehaviour
     private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
     private TMP_InputField currentInputField;
 
+    private float lastTypeTime = 0f;
+    public float typeSoundCooldown = 0.08f;
+
     [Header("Sign_in")]
     public TMP_InputField loginUsername;
     public TMP_InputField loginPassword;
@@ -39,26 +42,27 @@ public class login : MonoBehaviour
 
         foreach (var input in inputs)
         {
-            TMP_InputField localInput = input;
             input.onSelect.AddListener(delegate { OnInputSelected(input); });
+            input.onValueChanged.AddListener(delegate { OnInputTyping(); });
             inputHistory[input] = input.text;
         }
+
     }
-
-    void Update()
+    void OnInputTyping()
     {
-        if (currentInputField != null)
+        if (currentInputField == null) return;
+
+        string currentText = currentInputField.text;
+        string previousText = inputHistory[currentInputField];
+
+        // So sánh độ dài: nếu người dùng thêm ký tự (chứ không phải xoá), thì phát âm thanh
+        if (currentText.Length > previousText.Length)
         {
-            string currentText = currentInputField.text;
-            string lastText = inputHistory[currentInputField];
-
-            if (currentText.Length > lastText.Length)
-            {
-                AudioManager.Instance?.PlayTypingSFX();
-            }
-
-            inputHistory[currentInputField] = currentText;
+            AudioManager.Instance?.PlayTypingSFX();
         }
+
+        // Cập nhật lại text để theo dõi tiếp
+        inputHistory[currentInputField] = currentText;
     }
 
     void OnInputSelected(TMP_InputField input)
@@ -80,7 +84,10 @@ public class login : MonoBehaviour
         string inputUsername = loginUsername.text;
         string inputPassword = loginPassword.text;
 
-        if (loginUsername.text == savedUsername && loginPassword.text == savedPassword || inputUsername == fixedUsername && inputPassword == fixedPassword)
+        bool isSaved = inputUsername == savedUsername && inputPassword == savedPassword;
+        bool isFixed = inputUsername == fixedUsername && inputPassword == fixedPassword;
+
+        if (isSaved || isFixed)
         {
             messageText.text = "Login successful!";
             StartCoroutine(LoadSceneAfterDelay(3f));
@@ -126,7 +133,7 @@ public class login : MonoBehaviour
     private IEnumerator LoadSceneAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(nextSceneIndex);
         AudioManager.Instance.StopBGM();
     }
 

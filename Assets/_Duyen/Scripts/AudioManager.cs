@@ -49,6 +49,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBGM(AudioClip clip)
     {
+        if (bgmSource == null || clip == null) return;
+
         if (bgmSource.clip == clip) return;
 
         bgmSource.Stop();
@@ -59,6 +61,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip)
     {
+        if (bgmSource == null || clip == null) return;
+
         if (clip != null)
             sfxSource.PlayOneShot(clip);
     }
