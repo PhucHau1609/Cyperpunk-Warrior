@@ -28,12 +28,10 @@ public class PlayerMovement : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
-            return;
-
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
     void Update()
     {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+            return;
         // Di chuyển
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
