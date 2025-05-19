@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class login : MonoBehaviour
 {
+    private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
+    private TMP_InputField currentInputField;
+
     [Header("Sign_in")]
     public TMP_InputField loginUsername;
     public TMP_InputField loginPassword;
@@ -26,8 +29,51 @@ public class login : MonoBehaviour
     [Header("Scene Settings")]
     public int nextSceneIndex = 1;
 
+
+    void Start()
+    {
+        TMP_InputField[] inputs = {
+            loginUsername, loginPassword,
+            registerEmail, registerUsername, registerPassword
+        };
+
+        foreach (var input in inputs)
+        {
+            TMP_InputField localInput = input;
+            input.onSelect.AddListener(delegate { OnInputSelected(input); });
+            inputHistory[input] = input.text;
+        }
+    }
+
+    void Update()
+    {
+        if (currentInputField != null)
+        {
+            string currentText = currentInputField.text;
+            string lastText = inputHistory[currentInputField];
+
+            if (currentText.Length > lastText.Length)
+            {
+                AudioManager.Instance?.PlayTypingSFX();
+            }
+
+            inputHistory[currentInputField] = currentText;
+        }
+    }
+
+    void OnInputSelected(TMP_InputField input)
+    {
+        currentInputField = input;
+    }
+
+    void OnDisable()
+    {
+        currentInputField = null;
+    }
+
     public void Login()
     {
+        AudioManager.Instance.PlayClickSFX(); // Âm click
         string savedUsername = PlayerPrefs.GetString("username", "");
         string savedPassword = PlayerPrefs.GetString("password", "");
 
@@ -47,6 +93,7 @@ public class login : MonoBehaviour
 
     public void Register()
     {
+        AudioManager.Instance.PlayClickSFX(); //  Âm click
         string email = registerEmail.text;
         string username = registerUsername.text;
         string password = registerPassword.text;
@@ -80,5 +127,7 @@ public class login : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(1);
+        AudioManager.Instance.StopBGM();
     }
+
 }
