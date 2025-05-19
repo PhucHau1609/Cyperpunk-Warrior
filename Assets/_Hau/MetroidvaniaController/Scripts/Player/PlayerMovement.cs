@@ -1,78 +1,95 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Rendering.Universal; // THÊM NÀY nếu bạn dùng Light 2D URP
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerMovement : MonoBehaviour
+{
+    public CharacterController2D controller;
+    public Animator animator;
+    public float runSpeed = 40f;
 
-	public CharacterController2D controller;
-	public Animator animator;
+    private float horizontalMove = 0f;
+    private bool jump = false;
+    private bool dash = false;
 
-	public float runSpeed = 40f;
+    private SpriteRenderer spriteRenderer;
+    private bool isInvisible = false;
 
-	float horizontalMove = 0f;
-	bool jump = false;
-	bool dash = false;
-
-    //bool dashAxis = false;
-
-    // Update is called once per frame
+    [Header("Invisibility Light")]
+    public Light2D invisibilityLight; // GÁN OBJECT NÀY TRONG INSPECTOR
 
     private void Awake()
     {
         DontDestroyOnLoad(this);
     }
+
     void Start()
     {
         GetComponent<Animator>().SetTrigger("PlayAppear");
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
-    void Update () {
 
-		horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+    void Update()
+    {
+        // Di chuyển
+        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
-		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+        if (Input.GetKeyDown(KeyCode.Space))
+            jump = true;
 
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			jump = true;
-		}
+        if (Input.GetKeyDown(KeyCode.E))
+            dash = true;
 
-		if (Input.GetKeyDown(KeyCode.E))
-		{
-			dash = true;
-		}
+        // Bật/tắt tàng hình bằng phím J
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            isInvisible = !isInvisible;
 
-		/*if (Input.GetAxisRaw("Dash") == 1 || Input.GetAxisRaw("Dash") == -1) //RT in Unity 2017 = -1, RT in Unity 2019 = 1
-		{
-			if (dashAxis == false)
-			{
-				dashAxis = true;
-				dash = true;
-			}
-		}
-		else
-		{
-			dashAxis = false;
-		}
-		*/
+            // Bật/tắt Spot Light
+            if (invisibilityLight != null)
+            {
+                invisibilityLight.enabled = !isInvisible;
+            }
 
-	}
+            Debug.Log("Tàng hình: " + isInvisible);
+        }
+    }
 
-	public void OnFall()
-	{
-		animator.SetBool("IsJumping", true);
-	}
+    void FixedUpdate()
+    {
+        controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dash);
+        jump = false;
+        dash = false;
+    }
 
-	public void OnLanding()
-	{
-		animator.SetBool("IsJumping", false);
-	}
+    public void OnFall()
+    {
+        animator.SetBool("IsJumping", true);
+    }
 
-	void FixedUpdate ()
-	{
-		// Move our character
-		controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dash);
-		jump = false;
-		dash = false;
-	}
+    public void OnLanding()
+    {
+        animator.SetBool("IsJumping", false);
+    }
 
+    public bool IsInvisible()
+    {
+        return isInvisible;
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("MovingTrap"))
+        {
+            transform.parent = collision.transform;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("MovingTrap"))
+        {
+            transform.parent = null;
+        }
+    }
 }
