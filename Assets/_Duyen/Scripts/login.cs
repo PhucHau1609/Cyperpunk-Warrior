@@ -10,7 +10,6 @@ public class login : MonoBehaviour
     private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
     private TMP_InputField currentInputField;
 
-    private float lastTypeTime = 0f;
     public float typeSoundCooldown = 0.08f;
 
     [Header("Sign_in")]
@@ -31,6 +30,10 @@ public class login : MonoBehaviour
 
     [Header("Scene Settings")]
     public int nextSceneIndex = 1;
+
+    [Header("UI Panels")]
+    public GameObject loadingSpinner;
+
 
 
     void Start()
@@ -55,8 +58,7 @@ public class login : MonoBehaviour
         string currentText = currentInputField.text;
         string previousText = inputHistory[currentInputField];
 
-        // So sánh độ dài: nếu người dùng thêm ký tự (chứ không phải xoá), thì phát âm thanh
-        if (currentText.Length > previousText.Length)
+        if (currentText != previousText)
         {
             AudioManager.Instance?.PlayTypingSFX();
         }
@@ -90,7 +92,8 @@ public class login : MonoBehaviour
         if (isSaved || isFixed)
         {
             messageText.text = "Login successful!";
-            StartCoroutine(LoadSceneAfterDelay(3f));
+            
+            StartCoroutine(LoadSceneAfterDelay());
         }
         else
         {
@@ -130,11 +133,13 @@ public class login : MonoBehaviour
 
         messageText.text = "Registration successful! You can now log in.";
     }
-    private IEnumerator LoadSceneAfterDelay(float delay)
+    private IEnumerator LoadSceneAfterDelay()
     {
-        yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(nextSceneIndex);
+        yield return new WaitForSeconds(2f);
+        loadingSpinner.SetActive(true);
+        yield return new WaitForSeconds(3f);
         AudioManager.Instance.StopBGM();
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
 }

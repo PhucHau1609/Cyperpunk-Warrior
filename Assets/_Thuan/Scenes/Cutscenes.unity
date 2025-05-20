@@ -304,6 +304,8 @@ GameObject:
   - component: {fileID: 195861094}
   - component: {fileID: 195861097}
   - component: {fileID: 195861100}
+  - component: {fileID: 195861102}
+  - component: {fileID: 195861101}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -450,6 +452,37 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &195861101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195861093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a3a070408aa941ab83ae10be1708848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _intensity: 0
+  _shader: {fileID: 4800000, guid: ba40dc630e1d9417cb9ea22586ece1e1, type: 3}
+--- !u!114 &195861102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195861093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 870b9a8f0f82f4f56800cc427bcd1025, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scanLineJitter: 0
+  _verticalJump: 0
+  _horizontalShake: 0
+  _colorDrift: 0
+  _shader: {fileID: 4800000, guid: da33272284ea24f208f36998880990be, type: 3}
 --- !u!1 &224496146
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,11 +925,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &429478281 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3068299183508669601, guid: af6ee8993a8cb9844adc31bc970d43ac, type: 3}
-  m_PrefabInstance: {fileID: 3730021597704561249}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &503850898
 GameObject:
   m_ObjectHideFlags: 0
@@ -1530,7 +1558,7 @@ PlayableDirector:
   - key: {fileID: 3183637646787373739, guid: f86866f0ff3befd45892b1c30af05559, type: 2}
     value: {fileID: 225337932}
   - key: {fileID: 3445849895073893189, guid: f86866f0ff3befd45892b1c30af05559, type: 2}
-    value: {fileID: 2138122482}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &705040226
@@ -4847,7 +4875,7 @@ PlayableDirector:
   - key: {fileID: 1382550340019063944, guid: 07abd2f24bc82f540bd84e188257160f, type: 2}
     value: {fileID: 195861097}
   - key: {fileID: 6035110566145442663, guid: 07abd2f24bc82f540bd84e188257160f, type: 2}
-    value: {fileID: 1743814261}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &1570620940
@@ -5092,17 +5120,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1743814261 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8103216625908336673, guid: 457f2cffff44246468b5aaa0def38e3d, type: 3}
-  m_PrefabInstance: {fileID: 7181061640372271703}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1771565751
 GameObject:
   m_ObjectHideFlags: 0
@@ -5492,17 +5509,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2138122482 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 41471594818879798, guid: 58ee45ff36545d147b0ab79b4953eaad, type: 3}
-  m_PrefabInstance: {fileID: 1965998068044495386}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1965998068044495386
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5554,7 +5560,7 @@ PrefabInstance:
     - target: {fileID: 6703421615988732148, guid: 58ee45ff36545d147b0ab79b4953eaad, type: 3}
       propertyPath: dialogueHolder
       value: 
-      objectReference: {fileID: 429478281}
+      objectReference: {fileID: 0}
     - target: {fileID: 7824447784638439780, guid: 58ee45ff36545d147b0ab79b4953eaad, type: 3}
       propertyPath: m_Name
       value: SignalProxy
