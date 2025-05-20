@@ -1,29 +1,34 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryUI : HauSingleton<InventoryUI>
+public class NewInventoryUI : HauSingleton<InventoryUI>
 {
     [SerializeField] protected Transform showHide;
 
     [SerializeField] protected BtnItemInventory defaultItemInventoryUI;
+
     protected List<BtnItemInventory> btnItems = new();
-    
+
+    protected Dictionary<int, BtnItemInventory> itemBtnDict = new();
+
     protected bool isShowUI = true;
     public bool IsShowUI => isShowUI;
 
-    private void FixedUpdate()
+  /*  private void FixedUpdate()
     {
         this.ItemsUpdating(); //E71 create
-    }
+    }*/
 
     protected override void OnEnable()
     {
+        ObserverManager.Instance.AddListener(EventID.InventoryChanged, OnInventoryChanged);
         ObserverManager.Instance.AddListener(EventID.OpenInventory, OnOpenInventory);
     }
 
     protected override void OnDisable()
     {
+        ObserverManager.Instance.RemoveListener(EventID.InventoryChanged, OnInventoryChanged);
         ObserverManager.Instance.RemoveListener(EventID.OpenInventory, OnOpenInventory);
     }
 
@@ -72,11 +77,19 @@ public class InventoryUI : HauSingleton<InventoryUI>
     {
         this.isShowUI = true;
         this.showHide.gameObject.SetActive(true);
+        this.ItemsUpdating(); // 🔥 Thêm dòng này
+
     }
 
     protected virtual void OnOpenInventory(object param)
     {
         this.Toogle();
+    }
+
+    protected virtual void OnInventoryChanged(object param)
+    {
+        Debug.Log("Inventory changed, updating UI...");
+        this.ItemsUpdating();
     }
 
 
@@ -86,7 +99,44 @@ public class InventoryUI : HauSingleton<InventoryUI>
         else this.ShowInventoryUI();
     }
 
-    protected virtual void ItemsUpdating() //E71 create
+    protected virtual void ItemsUpdating()
+    {
+        InventoryCtrl itemInvCtrl = InventoryManager.Instance.ItemInventory();
+        foreach (ItemInventory itemInventory in itemInvCtrl.ItemInventories)
+        {
+            int itemId = itemInventory.ItemId;
+            if (!itemBtnDict.ContainsKey(itemId))
+            {
+                BtnItemInventory newBtnItem = this.CreateItemButton(itemInventory);
+                itemBtnDict.Add(itemId, newBtnItem);
+                btnItems.Add(newBtnItem);
+            }
+        }
+    }
+
+    protected virtual BtnItemInventory CreateItemButton(ItemInventory itemInventory)
+    {
+        BtnItemInventory newBtnItem = Instantiate(this.defaultItemInventoryUI);
+        newBtnItem.transform.SetParent(this.defaultItemInventoryUI.transform.parent);
+        newBtnItem.SetItem(itemInventory);
+        newBtnItem.transform.localScale = Vector3.one;
+        newBtnItem.gameObject.SetActive(true);
+        newBtnItem.name = itemInventory.GetItemName() + "_" + itemInventory.ItemId;
+        return newBtnItem;
+    }
+
+
+    protected virtual BtnItemInventory GetExistItem(ItemInventory itemInventory) //E71 create
+    {
+        foreach (BtnItemInventory itemInvUI in this.btnItems)
+        {
+            if(itemInvUI.ItemInventory.ItemId == itemInventory.ItemId) return itemInvUI;
+        }
+        return null;
+    }
+}
+
+/* protected virtual void ItemsUpdating() //E71 create
     {
         if(!this.isShowUI) return;
 
@@ -105,18 +155,7 @@ public class InventoryUI : HauSingleton<InventoryUI>
                 this.btnItems.Add(newBtnItem);
             }
         }
-    }
-
-    protected virtual BtnItemInventory GetExistItem(ItemInventory itemInventory) //E71 create
-    {
-        foreach (BtnItemInventory itemInvUI in this.btnItems)
-        {
-            if(itemInvUI.ItemInventory.ItemId == itemInventory.ItemId) return itemInvUI;
-        }
-        return null;
-    }
-}
-
+    }*/
 
 /*
 
