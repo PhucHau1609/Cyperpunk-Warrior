@@ -8,9 +8,18 @@ public class FireBall : MonoBehaviour
 
     [SerializeField] private float destroyGroundDelay = 0.5f;
 
+    //[SerializeField] private AudioClip fireSound;
+    [SerializeField] private AudioClip explosionSound;
+    private AudioSource audioSource;
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Start()
+    {
+        //PlayFireSound();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -23,15 +32,26 @@ public class FireBall : MonoBehaviour
             targetGround = other.gameObject;
 
             animator.SetTrigger("Explode");
+            PlayExplosionSound();
 
             GetComponent<Collider2D>().enabled = false;
             GetComponent<Rigidbody2D>().simulated = false;
 
-            // Khi thiên thạch chạm đất
             CameraShake.Instance.Shake(0.3f, 0.2f);
         }
     }
 
+    // private void PlayFireSound()
+    // {
+    //     if (fireSound != null)
+    //         audioSource.PlayOneShot(fireSound);
+    // }
+
+    private void PlayExplosionSound()
+    {
+        if (explosionSound != null)
+            audioSource.PlayOneShot(explosionSound);
+    }
     public void DestroySelf()
     {
         Destroy(gameObject);
