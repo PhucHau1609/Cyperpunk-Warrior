@@ -32,6 +32,8 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialogueBox.activeSelf && Input.GetMouseButtonDown(0))
         {
+            AudioManager.Instance?.PlayClickSFX();
+
             if (isTyping)
             {
                 ShowFullLine();
@@ -59,6 +61,7 @@ public class DialogueManager : MonoBehaviour
         foreach (char letter in line.ToCharArray())
         {
             dialogueText.text += letter;
+            AudioManager.Instance?.PlayTypingSFX();
             yield return new WaitForSeconds(typeSpeed);
         }
 

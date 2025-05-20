@@ -10,6 +10,7 @@ public class panel : MonoBehaviour
     // Gọi khi nhấn nút "ungdung"
     public void ShowSignIn()
     {
+        AudioManager.Instance.PlayClickSFX();
         panelSignIn.SetActive(true);
         panelSignUp.SetActive(false);
     }
@@ -17,14 +18,8 @@ public class panel : MonoBehaviour
     // Gọi khi nhấn nút "Sign_up"
     public void ShowSignUp()
     {
+        AudioManager.Instance.PlayClickSFX();
         panelSignIn.SetActive(false);
         panelSignUp.SetActive(true);
-    }
-
-    // Gọi khi nhấn nút "X"
-    public void CloseAllPanels()
-    {
-        panelSignIn.SetActive(false);
-        panelSignUp.SetActive(false);
     }
 }
