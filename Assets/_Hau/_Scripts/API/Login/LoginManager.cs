@@ -84,7 +84,7 @@ public class LoginManager : MonoBehaviour
                     UserSession.Instance.UserId = loginResponse.data.regionID;
                 }
 
-                SceneManager.LoadScene(7); // đổi scene
+                SceneManager.LoadScene(1); // đổi scene
             }
             else
             {

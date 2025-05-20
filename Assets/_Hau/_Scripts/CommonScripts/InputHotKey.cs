@@ -14,9 +14,6 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     [SerializeField] protected KeyCode keyCode;
     public KeyCode KeyCode => keyCode;
 
-    [SerializeField] protected bool isPlaceTower;
-    public bool IsPlaceTower => isPlaceTower;
-
     private void Update()
     {
         this.OpenInventory();
@@ -26,7 +23,14 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
 
     protected virtual void OpenInventory()
     {
-        this.isToogleInventoryUI = Input.GetKeyUp(KeyCode.I);
+        //this.isToogleInventoryUI = Input.GetKeyUp(KeyCode.I);
+
+        if (Input.GetKeyUp(KeyCode.I))
+        {
+            isToogleInventoryUI = true;
+            ObserverManager.Instance.PostEvent(EventID.OpenInventory);
+        }
+
     }
 
     protected virtual void OpenMusic()
