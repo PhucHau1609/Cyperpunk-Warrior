@@ -1,226 +1,267 @@
-using System.Collections;
 using UnityEngine;
 
 public class Droid02Controller : MonoBehaviour
 {
-    [Header("Thông tin phát hiện Player")]
+    public Transform pointA;
+    public Transform pointB;
     public Transform player;
-    public float chaseRange = 5f;
-    public float stopChaseRange = 7f;
-
-    [Header("Di chuyển")]
-    public float moveSpeed = 2f;
-    private Vector3 originalPosition;
-
-    private Rigidbody2D rb;
-    private Animator animator;
-    private bool isChasing = false;
-    private bool facingRight = true;
-    private bool isReloading = false;
-    private bool isDead = false;
-
-    [Header("Bắn")]
-    public GameObject bulletPrefab;
     public Transform gunPoint;
-    public float fireRange = 4f;
-    public float fireCooldown = 2f;
-    private float fireTimer = 0f;
+    public GameObject bulletPrefab;
 
-    public int maxAmmo = 3;
-    private int currentAmmo;
+    public float patrolSpeed = 2f;
+    public float chaseSpeed = 3f;
+    public float stopDistance = 0.1f;
+    public float detectionRange = 6f;
+    public float shootingRange = 5f;
+    public float bulletInterval = 1f;
+    public float shootCooldown = 3f;
+    public int maxBulletsBeforeReload = 5;
+    public int maxHealth = 100;
+    public float maxVerticalOffsetToTarget = 1.0f;
 
-    [Header("Nạp đạn")]
-    public float reloadTime = 3f;
+    private int currentHealth;
+    private int bulletsFired = 0;
+    private bool isReloading = false;
+    private bool canShoot = true;
 
+    private Vector2 originalPosition;
+    private Vector2 currentTarget;
+    private Rigidbody2D rb;
+    private Animator anim;
+    private SpriteRenderer sprite;
 
-    [Header("Máu")]
-    public float Hitpoints;
-    public float MaxHitpoints = 5f;
-    public HealthBarEnemy HealthBar;
+    private enum State { Patrolling, Chasing, Returning, Reloading, Dead }
+    private State currentState = State.Patrolling;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        anim = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+
         originalPosition = transform.position;
-
-        Hitpoints = MaxHitpoints;
-        HealthBar.SetHealth(Hitpoints, MaxHitpoints);
-
-        currentAmmo = maxAmmo;
+        currentTarget = pointB.position;
+        currentHealth = maxHealth;
     }
 
     void FixedUpdate()
     {
-        if (isDead || isReloading) return;
+        if (currentState == State.Dead) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        fireTimer -= Time.deltaTime;
-
-        if (distanceToPlayer <= fireRange && fireTimer <= 0f)
+        if (currentState == State.Reloading)
         {
-            StartShooting();
-        }
-
-        HandleMovement(distanceToPlayer);
-    }
-
-
-    void StartShooting()
-    {
-        if (currentAmmo > 0)
-        {
-            fireTimer = fireCooldown;
             rb.velocity = Vector2.zero;
-            animator.SetBool("IsRunning", false);
-            animator.SetTrigger("Shoot");
+            anim.SetBool("Run", false);
+            return;
+        }
 
-            currentAmmo--;
+        float distToPlayer = Vector2.Distance(transform.position, player.position);
+
+        switch (currentState)
+        {
+            case State.Patrolling:
+                Patrol();
+                if (distToPlayer <= detectionRange)
+                {
+                    float verticalOffset = player.position.y - transform.position.y;
+
+                    if (verticalOffset < maxVerticalOffsetToTarget)
+                    {
+                        currentState = State.Chasing;
+                    }
+                }
+                break;
+
+            case State.Chasing:
+                HandleChase(distToPlayer);
+                if (distToPlayer > detectionRange)
+                    currentState = State.Returning;
+                break;
+
+            case State.Returning:
+                ReturnToOrigin();
+                if (Vector2.Distance(transform.position, originalPosition) < stopDistance)
+                {
+                    currentState = State.Patrolling;
+                    currentTarget = ClosestPatrolPoint();
+                }
+                break;
+        }
+
+        // 🔁 Flip sprite
+        Vector2 dir = Vector2.zero;
+        if (currentState == State.Patrolling)
+            dir = currentTarget - (Vector2)transform.position;
+        else if (currentState == State.Chasing)
+            dir = player.position - transform.position;
+        else if (currentState == State.Returning)
+            dir = originalPosition - (Vector2)transform.position;
+
+        if (dir.x != 0)
+            sprite.flipX = dir.x < 0;
+
+        anim.SetBool("Run", Mathf.Abs(rb.velocity.x) > 0.05f);
+
+        // ✅ Đảm bảo GunPoint luôn ở phía trước mặt Enemy
+        if (gunPoint != null)
+        {
+            Vector3 localPos = gunPoint.localPosition;
+            localPos.x = Mathf.Abs(localPos.x) * (sprite.flipX ? 1 : -1);
+            gunPoint.localPosition = localPos;
+        }
+
+    }
+
+    void Patrol()
+    {
+        MoveTo(currentTarget, patrolSpeed);
+        if (Vector2.Distance(transform.position, currentTarget) < stopDistance)
+        {
+            currentTarget = Vector2.Distance(currentTarget, pointA.position) < 0.1f ? pointB.position : pointA.position;
+        }
+    }
+
+    void HandleChase(float distToPlayer)
+    {
+        if (isReloading) return;
+
+        if (distToPlayer > shootingRange)
+        {
+            Vector2 target = new Vector2(player.position.x, rb.position.y);
+            MoveTo(target, chaseSpeed);
         }
         else
         {
-            StartReloading();
+            rb.velocity = Vector2.zero;
+            TryShoot();
         }
     }
 
-    void StartReloading()
+    void TryShoot()
     {
-        isReloading = true;
-        animator.SetTrigger("CountDown");
-        rb.velocity = Vector2.zero; // đứng yên khi bắt đầu nạp đạn
-        StartCoroutine(ReloadCoroutine());
-    }
+        if (!canShoot) return;
 
-    IEnumerator ReloadCoroutine()
-    {
-        // Dừng di chuyển trong thời gian nạp đạn
-        float timer = 0f;
-        while (timer < reloadTime)
+        anim.SetTrigger("Shoot"); // 🔫 Gọi animation bắn
+        canShoot = false;
+        Invoke(nameof(ResetShoot), bulletInterval);
+
+        bulletsFired++;
+        if (bulletsFired >= maxBulletsBeforeReload)
         {
-            rb.velocity = Vector2.zero; // giữ đứng yên
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        FinishReloading(); // Gọi hàm nạp xong
-    }
-
-
-    // Gọi ở cuối animation CountDown
-    public void FinishReloading()
-    {
-        currentAmmo = maxAmmo;
-        isReloading = false;
-    }
-
-    void HandleMovement(float distanceToPlayer)
-    {
-        if (distanceToPlayer <= chaseRange)
-            isChasing = true;
-        else if (distanceToPlayer >= stopChaseRange)
-            isChasing = false;
-
-        if (isChasing)
-        {
-            // Nếu còn xa hơn khoảng bắn thì dí theo
-            if (distanceToPlayer > fireRange)
-            {
-                Vector2 direction = (player.position - transform.position).normalized;
-                rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-                animator.SetBool("IsRunning", true);
-
-                // Lật mặt
-                if (direction.x > 0 && !facingRight)
-                    Flip();
-                else if (direction.x < 0 && facingRight)
-                    Flip();
-            }
-            else
-            {
-                // Gần quá thì đứng yên bắn
-                rb.velocity = Vector2.zero;
-                animator.SetBool("IsRunning", false);
-            }
-        }
-        else
-        {
-            // Không đuổi nữa → quay lại vị trí gốc
-            if (Vector2.Distance(transform.position, originalPosition) > 0.1f)
-            {
-                Vector2 direction = (originalPosition - transform.position).normalized;
-                rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
-                animator.SetBool("IsRunning", true);
-
-                if (direction.x > 0 && !facingRight)
-                    Flip();
-                else if (direction.x < 0 && facingRight)
-                    Flip();
-            }
-            else
-            {
-                rb.velocity = Vector2.zero;
-                animator.SetBool("IsRunning", false);
-            }
+            StartCoroutine(Reload());
         }
     }
 
-    void Flip()
-    {
-        facingRight = !facingRight;
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
-    }
-
+    // 🔥 Gọi từ Animation Event
     public void FireBullet()
     {
-        Vector3 spawnPosition = gunPoint.position;
+        if (bulletPrefab == null || gunPoint == null) return;
 
-        GameObject bullet = Instantiate(bulletPrefab, spawnPosition, Quaternion.identity);
-        Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
-
-        float directionX = facingRight ? 1f : -1f;
-        bulletRb.velocity = new Vector2(directionX * 5f, 0f);
-        bullet.transform.rotation = Quaternion.Euler(0, 0, facingRight ? 0 : 180);
+        GameObject bullet = Instantiate(bulletPrefab, gunPoint.position, Quaternion.identity);
+        Vector2 dir = sprite.flipX ? Vector2.left : Vector2.right;
+        bullet.GetComponent<Droid02Bullet>()?.SetDirection(dir);
     }
 
-    public void EndShoot()
+    void ResetShoot()
     {
-        // Được gọi ở cuối animation Shoot
+        canShoot = true;
     }
 
-    // --- THÊM: Gọi khi bị Player tấn công
-    public void ApplyDamage(float amount)
+    System.Collections.IEnumerator Reload()
     {
-        if (isDead) return;
+        isReloading = true;
+        currentState = State.Reloading;
+        rb.velocity = Vector2.zero;
+        anim.SetTrigger("CountDown");
+        
+        yield return new WaitForSeconds(shootCooldown);
 
-        Hitpoints -= Mathf.Abs(amount);
-        HealthBar.SetHealth(Hitpoints, MaxHitpoints);
-        animator.SetTrigger("Hurt");
+        bulletsFired = 0;
+        isReloading = false;
 
-        if (Hitpoints <= 0)
+        anim.ResetTrigger("CountDown");
+
+        // Quay lại trạng thái phù hợp
+        float distToPlayer = Vector2.Distance(transform.position, player.position);
+        if (distToPlayer <= detectionRange)
+            currentState = State.Chasing;
+        else if (Vector2.Distance(transform.position, originalPosition) > stopDistance)
+            currentState = State.Returning;
+        else
+            currentState = State.Patrolling;
+    }
+    void ReturnToOrigin()
+    {
+        Vector2 target = new Vector2(originalPosition.x, rb.position.y);
+        MoveTo(target, patrolSpeed);
+    }
+
+    void MoveTo(Vector2 destination, float speed)
+    {
+        Vector2 flatDestination = new Vector2(destination.x, rb.position.y);
+        Vector2 newPos = Vector2.MoveTowards(rb.position, flatDestination, speed * Time.fixedDeltaTime);
+        rb.MovePosition(newPos);
+    }
+
+    Vector2 ClosestPatrolPoint()
+    {
+        float distA = Vector2.Distance(transform.position, pointA.position);
+        float distB = Vector2.Distance(transform.position, pointB.position);
+        return (distA < distB) ? pointA.position : pointB.position;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (currentState == State.Dead) return;
+
+        currentHealth -= damage;
+        anim.SetTrigger("Hurt");
+
+        HealthBarEnemy.Instance?.ShowHealthBar(transform, currentHealth / (float)maxHealth);
+
+        if (currentHealth <= 0)
         {
-            Die();
+            anim.SetTrigger("Death");
+            currentState = State.Dead;
+            rb.velocity = Vector2.zero;
+            GetComponent<Collider2D>().enabled = false;
+            this.enabled = false;
+            HealthBarEnemy.Instance?.HideHealthBar();
         }
     }
 
-
-    void Die()
+   void OnDrawGizmosSelected()
     {
-        isDead = true;
-        rb.velocity = Vector2.zero;
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.simulated = false;
+        // Detection Range (red)
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        animator.SetTrigger("Death");
+        // Shooting Range (yellow)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, shootingRange);
 
-        GetComponent<Collider2D>().enabled = false;
-        this.enabled = false;
+        // Forward Shooting Zone (blue rectangle)
+        Gizmos.color = Color.cyan;
+
+        // Vertical Target Height (green)
+        Gizmos.color = Color.green;
+        Vector3 heightBoxCenter = transform.position + Vector3.up * (maxVerticalOffsetToTarget / 2f);
+        Vector3 heightBoxSize = new Vector3(1f, maxVerticalOffsetToTarget, 1f);
+        Gizmos.DrawWireCube(heightBoxCenter, heightBoxSize);
+
+    #if UNITY_EDITOR
+        // Nếu đang chạy trong Editor thì lấy flipX từ SpriteRenderer
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        bool isFacingLeft = sr != null && sr.flipX;
+    #else
+        bool isFacingLeft = false;
+    #endif
+
+        Vector3 forwardOffset = isFacingLeft ? Vector3.left : Vector3.right;
+        Vector3 boxCenter = transform.position + forwardOffset * (shootingRange / 2f);
+        Vector3 boxSize = new Vector3(shootingRange, 1f, 1f);
+
+        Gizmos.DrawWireCube(boxCenter, boxSize);
     }
-    
-    public void DestroyAfterDeath()
-    {
-        Destroy(gameObject);
-    }
-
 }
