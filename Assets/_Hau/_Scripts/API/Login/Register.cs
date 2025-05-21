@@ -6,13 +6,54 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 using Newtonsoft;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 public class Register : MonoBehaviour
 {
+    private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
+    private TMP_InputField currentInputField;
+
+
     public TMP_InputField emailInput;
     public TMP_InputField passwordInput;
     public TMP_InputField nameInput;
-    
+
+    void Start()
+    {
+        TMP_InputField[] inputs = { emailInput, passwordInput, nameInput };
+        foreach (var input in inputs)
+        {
+            input.onSelect.AddListener(delegate { OnInputSelected(input); });
+            input.onValueChanged.AddListener(delegate { OnInputTyping(); });
+            inputHistory[input] = input.text;
+        }
+    }
+    void OnInputTyping()
+    {
+        if (currentInputField == null) return;
+
+        string currentText = currentInputField.text;
+        string previousText = inputHistory[currentInputField];
+
+        if (currentText != previousText)
+        {
+            AudioManager.Instance?.PlayTypingSFX();
+        }
+
+        inputHistory[currentInputField] = currentText;
+    }
+
+    void OnInputSelected(TMP_InputField input)
+    {
+        currentInputField = input;
+    }
+
+    void OnDisable()
+    {
+        currentInputField = null;
+    }
+
+
     public void GoToLogin()
     {
         // chuyển scene
@@ -21,6 +62,8 @@ public class Register : MonoBehaviour
     
     public void OnRegisterClick()
     {
+        AudioManager.Instance?.PlayClickSFX();
+
         var email = emailInput.text;
         var password = passwordInput.text;
         var name = nameInput.text;

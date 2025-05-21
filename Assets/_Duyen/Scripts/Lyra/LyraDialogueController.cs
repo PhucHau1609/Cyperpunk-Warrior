@@ -25,13 +25,12 @@ public class LyraDialogueController : MonoBehaviour
                 Collider2D triggerZone = other;
                 DialogueData usedDialogue = dialogue;
 
-                clickHandler.onClick = () =>
-                {
-                    DialogueManager.Instance.onDialogueEnd = () =>
-                    {
-                        Destroy(triggerZone.gameObject); // hoặc: triggerZone.gameObject.SetActive(false);
-                    };
-                };
+                //clickHandler.onClick = () =>
+                //{
+                //    DialogueManager.Instance.onDialogueEnd = () =>
+                //    {
+                //    };
+                //};
             }
         }
     }

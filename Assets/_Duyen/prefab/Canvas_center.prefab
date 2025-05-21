@@ -1,57 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1342972911475013
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8879233070725523115}
-  - component: {fileID: 2663707811433684750}
-  m_Layer: 5
-  m_Name: pannelscirp
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &8879233070725523115
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1342972911475013}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6964199858409125246}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2663707811433684750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1342972911475013}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a980192877587149868785387bdb565, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pannelpause: {fileID: 3795385638089757617}
-  pauseButton: {fileID: 6648951115063846739}
-  imagePause: {fileID: 21300000, guid: 99aeea1f4574c3e49a52edfc854af043, type: 3}
-  imagePlay: {fileID: 21300000, guid: d5fb3b019f8e18a44bc9ac2f5ba067f3, type: 3}
 --- !u!1 &60345228980354655
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,7 +195,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2663707811433684750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnRetryClicked
         m_Mode: 3
@@ -1722,7 +1670,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2663707811433684750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnResumeClicked
         m_Mode: 1
@@ -3294,8 +3242,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8078417956216412066}
-  - {fileID: 791728901475108040}
   - {fileID: 6054055298254908429}
+  - {fileID: 791728901475108040}
   - {fileID: 1280229771960979534}
   m_Father: {fileID: 6964199858409125246}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5942,7 +5890,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2663707811433684750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnQuitClicked
         m_Mode: 1
@@ -6368,6 +6316,7 @@ GameObject:
   - component: {fileID: 3952845702398780367}
   - component: {fileID: 8634567834968727904}
   - component: {fileID: 6648951115063846739}
+  - component: {fileID: 1279731415104016203}
   m_Layer: 5
   m_Name: BTN_PAUSE
   m_TagString: Untagged
@@ -6476,7 +6425,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2663707811433684750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnPauseClicked
         m_Mode: 1
@@ -6488,6 +6437,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1279731415104016203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300860903920874478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a980192877587149868785387bdb565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pannelpause: {fileID: 3795385638089757617}
+  pauseButton: {fileID: 6648951115063846739}
+  imagePause: {fileID: 21300000, guid: 99aeea1f4574c3e49a52edfc854af043, type: 3}
+  imagePlay: {fileID: 21300000, guid: d5fb3b019f8e18a44bc9ac2f5ba067f3, type: 3}
 --- !u!1 &7304699477889862166
 GameObject:
   m_ObjectHideFlags: 0
@@ -7452,7 +7417,6 @@ RectTransform:
   - {fileID: 7724236967958023454}
   - {fileID: 872465768155142754}
   - {fileID: 3690174978867109981}
-  - {fileID: 8879233070725523115}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7777,7 +7741,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2663707811433684750}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnResumeClicked
         m_Mode: 1
@@ -8292,8 +8256,9 @@ GameObject:
   - component: {fileID: 791728901475108040}
   - component: {fileID: 9215772413693504069}
   - component: {fileID: 3878203429184013518}
+  - component: {fileID: 4728712194225684262}
   m_Layer: 5
-  m_Name: Text (TMP)_1
+  m_Name: textlevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8315,8 +8280,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 45.390167}
-  m_SizeDelta: {x: 633.7784, y: 108.7691}
+  m_AnchoredPosition: {x: -0.0013885046, y: 45.390167}
+  m_SizeDelta: {x: 633.77, y: 108.7691}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9215772413693504069
 CanvasRenderer:
@@ -8415,6 +8380,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4728712194225684262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8991214941774491114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b858940bdc5a6b7438076f09da0d2665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelText: {fileID: 3878203429184013518}
 --- !u!1 &9209550901699255855
 GameObject:
   m_ObjectHideFlags: 0
