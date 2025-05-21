@@ -8,7 +8,7 @@ public class BoardGame : MonoBehaviour
     [SerializeField] private TilesScript[] tiles;
     [SerializeField] private GameObject miniGameUI;
     [SerializeField] private TeleportPortal teleportPortal;
-    [SerializeField] private GameObject player; // 👈 Player GameObject
+    [SerializeField] private GameObject player;
 
     private Camera _camera;
     private const float CellSize = 6f;
@@ -50,6 +50,11 @@ public class BoardGame : MonoBehaviour
                 }
             }
         }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("Đã hoàn thành mini game bằng phím P (debug)");
+            StartCoroutine(WaitAndCloseMiniGame()); // hoặc gọi CloseMiniGame() trực tiếp nếu không cần delay
+        }
 
         if (IsBoardSolved())
         {
@@ -83,7 +88,6 @@ public class BoardGame : MonoBehaviour
             teleportPortal.UnlockPortal();
         }
 
-        // ✅ Bật lại điều khiển của Player sau khi hoàn thành mini game
         if (player != null)
         {
             PlayerMovement movementScript = player.GetComponent<PlayerMovement>();

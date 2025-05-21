@@ -4,63 +4,78 @@ using UnityEngine.SceneManagement;
 
 public class TeleportPortal_01 : MonoBehaviour
 {
+    public int targetSceneIndex = 2; // 👉 Index scene trong Build Settings
+    public string loadingSceneName = "LoadingScene"; // Tên scene loading
     public AudioClip teleportSound;
+
     private AudioSource audioSource;
-
+    private Animator portalAnimator;
     private bool isTeleporting = false;
-    private GameObject player;
+    public bool isUnlocked = true; // 👉 Đặt mặc định là true để cổng hoạt động ngay
 
-    [SerializeField] private int nextSceneIndex = 1; // 👈 Thứ tự Scene trong Build Settings
-    [SerializeField] private string loadingSceneName = "LoadingScene"; // 👈 Scene loading bạn đã tạo
-
-    private void Start()
+    private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
-        {
             audioSource = gameObject.AddComponent<AudioSource>();
-        }
+
+        portalAnimator = GetComponent<Animator>();
+        if (portalAnimator == null)
+            portalAnimator = GetComponentInChildren<Animator>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!isTeleporting && other.CompareTag("Player"))
-        {
-            isTeleporting = true;
-            player = other.gameObject;
+        if (!isUnlocked || isTeleporting || !other.CompareTag("Player"))
+            return;
 
-            Animator playerAnim = player.GetComponent<Animator>();
-            if (playerAnim != null)
-            {
-                playerAnim.SetTrigger("PlayDisappear");
-            }
+        isTeleporting = true;
 
-            if (teleportSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(teleportSound);
-            }
+        Animator playerAnim = other.GetComponent<Animator>();
+        if (playerAnim != null)
+            playerAnim.SetTrigger("PlayDisappear");
 
-            StartCoroutine(WaitForAnimationToFinish(playerAnim));
-        }
+        if (teleportSound != null)
+            audioSource.PlayOneShot(teleportSound);
+
+        StartCoroutine(WaitForDisappearAnimation(playerAnim));
     }
 
-    private IEnumerator WaitForAnimationToFinish(Animator playerAnim)
+    private IEnumerator WaitForDisappearAnimation(Animator playerAnim)
     {
-        float animationLength = playerAnim != null ? playerAnim.GetCurrentAnimatorStateInfo(0).length : 1f;
+        float animLength = (playerAnim != null)
+            ? playerAnim.GetCurrentAnimatorStateInfo(0).length
+            : 1f;
 
-        if (animationLength <= 0f)
-            animationLength = 1f;
+        yield return new WaitForSeconds(animLength);
 
-        yield return new WaitForSeconds(animationLength);
-
+        // 👉 Nếu bạn dùng hệ thống spawn, hãy set lại điểm spawn tại đây
         if (SpawnManager.Instance != null)
-            SpawnManager.Instance.SetNextSpawnPoint(SpawnSceneName.MapLevel3);
+            SpawnManager.Instance.SetNextSpawnPoint(SpawnSceneName.MapLevel2); // Tùy chỉnh nếu cần
 
-        // Lưu chỉ số scene kế tiếp để màn hình loading sử dụng
-        PlayerPrefs.SetInt("NextSceneIndex", nextSceneIndex);
-        PlayerPrefs.Save();
+        PlayerPrefs.SetInt("NextSceneIndex", targetSceneIndex);
 
-        // Load màn hình loading
         SceneManager.LoadScene(loadingSceneName);
+    }
+
+
+    public void UnlockPortal()
+    {
+        isUnlocked = true;
+        SetGateAnimation(true);
+    }
+
+    public void LockPortal()
+    {
+        isUnlocked = false;
+        SetGateAnimation(false);
+    }
+
+    private void SetGateAnimation(bool isWorking)
+    {
+        if (portalAnimator != null)
+        {
+            portalAnimator.SetBool("IsGateWorking", isWorking);
+        }
     }
 }
