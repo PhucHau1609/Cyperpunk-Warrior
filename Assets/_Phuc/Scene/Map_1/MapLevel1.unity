@@ -1188,8 +1188,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 691619331}
-        m_TargetAssemblyTypeName: MiniGameController, Assembly-CSharp
+      - m_Target: {fileID: 1762545488}
+        m_TargetAssemblyTypeName: MiniGameOpener, Assembly-CSharp
         m_MethodName: CloseMiniGame
         m_Mode: 1
         m_Arguments:
@@ -1771,7 +1771,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 691619330}
-  - component: {fileID: 691619331}
   m_Layer: 3
   m_Name: BoardGame
   m_TagString: Untagged
@@ -1805,20 +1804,6 @@ Transform:
   - {fileID: 2026707941}
   m_Father: {fileID: 1762545487}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &691619331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 691619329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f95328ae3167d1b45a2144076b5bfdea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  miniGameUI: {fileID: 691619329}
-  closeButton: {fileID: 523755080}
 --- !u!1 &741992666
 GameObject:
   m_ObjectHideFlags: 0
@@ -8338,6 +8323,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5945631173788358909, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6680001067583368946, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
       propertyPath: m_Name
       value: Eren

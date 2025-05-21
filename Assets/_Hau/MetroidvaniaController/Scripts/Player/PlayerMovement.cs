@@ -17,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Invisibility Light")]
     public Light2D invisibilityLight; // GÁN OBJECT NÀY TRONG INSPECTOR
 
+    [Header("Movement Control")]
+    public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
+
     private void Awake()
     {
         DontDestroyOnLoad(this);
@@ -30,8 +33,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!canMove) return; // ⚠️ MỚI: Nếu bị khóa thì không làm gì
+
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
             return;
+
         // Di chuyển
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
@@ -53,15 +59,34 @@ public class PlayerMovement : MonoBehaviour
                 invisibilityLight.enabled = !isInvisible;
             }
 
+            // Thay đổi độ alpha của nhân vật
+            if (spriteRenderer != null)
+            {
+                Color color = spriteRenderer.color;
+                color.a = isInvisible ? 0.1490196f : 1f;
+                spriteRenderer.color = color;
+            }
+
             Debug.Log("Tàng hình: " + isInvisible);
         }
     }
 
     void FixedUpdate()
     {
+        if (!canMove)
+        {
+            controller.Move(0f, false, false); // Ngừng di chuyển
+            return;
+        }
+
         controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dash);
         jump = false;
         dash = false;
+    }
+
+    public void SetCanMove(bool state) // ⚠️ MỚI: Hàm khóa/mở di chuyển
+    {
+        canMove = state;
     }
 
     public void OnFall()
