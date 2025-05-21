@@ -11,6 +11,18 @@ public class LevelLabelUpdater : MonoBehaviour
 
     void Awake()
     {
+        var canvas = GetComponentInChildren<Canvas>();
+        if (canvas != null)
+        {
+            var raycaster = canvas.GetComponent<GraphicRaycaster>();
+            if (raycaster != null) raycaster.enabled = false;
+        }
+
+        var graphics = GetComponentsInChildren<MaskableGraphic>();
+        foreach (var graphic in graphics)
+        {
+            graphic.raycastTarget = false;
+        }
         if (instance == null)
         {
             instance = this;
@@ -38,6 +50,7 @@ public class LevelLabelUpdater : MonoBehaviour
         if (levelText != null)
         {
             levelText.text = "LEVEL " + levelDisplay;
+            levelText.raycastTarget = false;
         }
     }
 
