@@ -195,7 +195,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1279731415104016203}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnRetryClicked
         m_Mode: 3
@@ -1670,7 +1670,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1279731415104016203}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnResumeClicked
         m_Mode: 1
@@ -5890,7 +5890,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1279731415104016203}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnQuitClicked
         m_Mode: 1
@@ -6425,7 +6425,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1279731415104016203}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnPauseClicked
         m_Mode: 1
@@ -7393,6 +7393,7 @@ GameObject:
   - component: {fileID: 5824914557669016260}
   - component: {fileID: 9097536461625806149}
   - component: {fileID: 7236497676152258848}
+  - component: {fileID: 1560223264916704643}
   m_Layer: 5
   m_Name: Canvas_center
   m_TagString: Untagged
@@ -7487,6 +7488,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1560223264916704643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8175728252425806736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b858940bdc5a6b7438076f09da0d2665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelText: {fileID: 3878203429184013518}
 --- !u!1 &8273223744882211040
 GameObject:
   m_ObjectHideFlags: 0
@@ -7741,7 +7755,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1279731415104016203}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnResumeClicked
         m_Mode: 1
@@ -8256,7 +8270,6 @@ GameObject:
   - component: {fileID: 791728901475108040}
   - component: {fileID: 9215772413693504069}
   - component: {fileID: 3878203429184013518}
-  - component: {fileID: 4728712194225684262}
   m_Layer: 5
   m_Name: textlevel
   m_TagString: Untagged
@@ -8311,7 +8324,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LEVEL 1-1
+  m_text: LEVEL 0-0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9e7a67dece6800145926079c2f8f2b33, type: 2}
   m_sharedMaterial: {fileID: -7265599160443081829, guid: 9e7a67dece6800145926079c2f8f2b33, type: 2}
@@ -8380,19 +8393,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &4728712194225684262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8991214941774491114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b858940bdc5a6b7438076f09da0d2665, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelText: {fileID: 3878203429184013518}
 --- !u!1 &9209550901699255855
 GameObject:
   m_ObjectHideFlags: 0
