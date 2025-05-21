@@ -5,9 +5,14 @@ using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class LoginManager : MonoBehaviour
 {
+    private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
+    private TMP_InputField currentInputField;
+    public GameObject loadingSpinner;
+
     public TMP_InputField emailInput;
     public TMP_InputField passwordInput;
 
@@ -36,8 +41,46 @@ public class LoginManager : MonoBehaviour
         public UserData data;
     }
 
+    void Start()
+    {
+        TMP_InputField[] inputs = { emailInput, passwordInput };
+        foreach (var input in inputs)
+        {
+            input.onSelect.AddListener(delegate { OnInputSelected(input); });
+            input.onValueChanged.AddListener(delegate { OnInputTyping(); });
+            inputHistory[input] = input.text;
+        }
+    }
+
+    void OnInputTyping()
+    {
+        if (currentInputField == null) return;
+
+        string currentText = currentInputField.text;
+        string previousText = inputHistory[currentInputField];
+
+        if (currentText != previousText)
+        {
+            AudioManager.Instance?.PlayTypingSFX();
+        }
+
+        inputHistory[currentInputField] = currentText;
+    }
+
+    void OnInputSelected(TMP_InputField input)
+    {
+        currentInputField = input;
+    }
+
+    void OnDisable()
+    {
+        currentInputField = null;
+    }
+
     public void OnLoginClick()
     {
+        AudioManager.Instance?.PlayClickSFX();
+
         var email = emailInput.text;
         var password = passwordInput.text;
 
@@ -48,6 +91,7 @@ public class LoginManager : MonoBehaviour
         };
 
         var json = JsonConvert.SerializeObject(loginRequest);
+        loadingSpinner.SetActive(true);
         StartCoroutine(PostLogin(json));
     }
 
@@ -64,6 +108,8 @@ public class LoginManager : MonoBehaviour
 
         yield return request.SendWebRequest();
 
+        loadingSpinner.SetActive(false);
+
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError($"Login failed: {request.error}");
@@ -77,14 +123,15 @@ public class LoginManager : MonoBehaviour
             if (loginResponse.isSuccess)
             {
                 Debug.Log("Đăng nhập thành công!");
+                AudioManager.Instance?.StopBGM();
                 Debug.Log($"Tên người dùng: {loginResponse.data.name}");
 
                 if (UserSession.Instance != null)
                 {
                     UserSession.Instance.UserId = loginResponse.data.regionID;
                 }
-
-                SceneManager.LoadScene(1); // đổi scene
+                StartCoroutine(LoadSceneAfterDelay(3f));
+                //SceneManager.LoadScene(1); // đổi scene
             }
             else
             {
@@ -92,4 +139,11 @@ public class LoginManager : MonoBehaviour
             }
         }
     }
+    IEnumerator LoadSceneAfterDelay(float delaySeconds)
+    {
+        loadingSpinner.SetActive(true); // Bật spinner nếu đã tắt
+        yield return new WaitForSeconds(delaySeconds);
+        SceneManager.LoadScene(1);
+    }
+
 }

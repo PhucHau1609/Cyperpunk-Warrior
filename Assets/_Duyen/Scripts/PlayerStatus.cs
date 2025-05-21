@@ -17,6 +17,18 @@ public class PlayerStatus : MonoBehaviour
     public Image eImage;
     public Image rImage;
 
+    void Awake()
+    {
+        // Nếu đã tồn tại 1 phiên bản PlayerStatus, thì huỷ phiên bản mới
+        if (FindObjectsOfType<PlayerStatus>().Length > 1)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
+
     void Start()
     {
         StartCoroutine(RegenerateEnergy());
