@@ -2,14 +2,21 @@
 
 public class MiniGameOpener : MonoBehaviour
 {
-    [SerializeField] private GameObject miniGameUI;      // UI của mini game (GameObject, không phải Canvas)
-    [SerializeField] private GameObject closeButtonUI;   // Nút tắt mini game
-    [SerializeField] private GameObject player;          // Player GameObject
+    [SerializeField] private GameObject miniGameUI;
+    [SerializeField] private GameObject closeButtonUI;
+    [SerializeField] private GameObject player;
+
+    private PlayerMovement movementScript;
 
     void Start()
     {
         if (miniGameUI != null) miniGameUI.SetActive(false);
         if (closeButtonUI != null) closeButtonUI.SetActive(false);
+
+        if (player != null)
+        {
+            movementScript = player.GetComponent<PlayerMovement>();
+        }
     }
 
     public void OpenMiniGame()
@@ -17,14 +24,10 @@ public class MiniGameOpener : MonoBehaviour
         if (miniGameUI != null) miniGameUI.SetActive(true);
         if (closeButtonUI != null) closeButtonUI.SetActive(true);
 
-        // 🔒 Tắt điều khiển của Player
-        if (player != null)
+        // Tắt điều khiển Player
+        if (movementScript != null)
         {
-            PlayerMovement movementScript = player.GetComponent<PlayerMovement>();
-            if (movementScript != null)
-            {
-                movementScript.enabled = false;
-            }
+            movementScript.enabled = false;
         }
     }
 
@@ -33,14 +36,10 @@ public class MiniGameOpener : MonoBehaviour
         if (miniGameUI != null) miniGameUI.SetActive(false);
         if (closeButtonUI != null) closeButtonUI.SetActive(false);
 
-        // ✅ Bật lại điều khiển của Player
-        if (player != null)
+        // Bật lại điều khiển Player
+        if (movementScript != null)
         {
-            PlayerMovement movementScript = player.GetComponent<PlayerMovement>();
-            if (movementScript != null)
-            {
-                movementScript.enabled = true;
-            }
+            movementScript.enabled = true;
         }
     }
 }
