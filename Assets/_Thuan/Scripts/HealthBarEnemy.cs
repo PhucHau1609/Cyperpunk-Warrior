@@ -3,42 +3,44 @@ using UnityEngine.UI;
 
 public class HealthBarEnemy : MonoBehaviour
 {
-    public static HealthBarEnemy Instance;
+    public Slider Slider;
+    public Color Low;
+    public Color High;
+    public Vector3 Offset;
 
-    public Slider slider;
-    public Gradient gradient;
-    public Image fillImage;
+    private bool hasTakenDamage = false; // Flag: đã bị đánh chưa
 
-    private Transform target;
-    private Vector3 offset = new Vector3(0, 1.5f, 0);
-    private Canvas canvas;
-
-    void Awake()
+    public void SetHealth(float health, float maxHealth)
     {
-        Instance = this;
-        canvas = GetComponentInChildren<Canvas>();
-        canvas.enabled = false;
-    }
-
-    void LateUpdate()
-    {
-        if (target != null)
+        // Nếu máu < max → bị đánh → set flag
+        if (health < maxHealth)
         {
-            transform.position = Camera.main.WorldToScreenPoint(target.position + offset);
+            hasTakenDamage = true;
+        }
+
+        // Nếu chưa bị đánh, ẩn
+        if (!hasTakenDamage)
+        {
+            Slider.gameObject.SetActive(false);
+            return;
+        }
+
+        // Nếu bị đánh: hiện lên, cập nhật màu và giá trị
+        if (health > 0)
+        {
+            Slider.gameObject.SetActive(true);
+            Slider.maxValue = maxHealth;
+            Slider.value = health;
+            Slider.fillRect.GetComponentInChildren<Image>().color = Color.Lerp(Low, High, Slider.normalizedValue);
+        }
+        else
+        {
+            Slider.gameObject.SetActive(false); // máu hết → ẩn luôn
         }
     }
 
-    public void ShowHealthBar(Transform enemyTransform, float healthPercent)
+    void Update()
     {
-        target = enemyTransform;
-        slider.value = healthPercent;
-        fillImage.color = gradient.Evaluate(healthPercent);
-        canvas.enabled = true;
-    }
-
-    public void HideHealthBar()
-    {
-        canvas.enabled = false;
-        target = null;
+        Slider.transform.position = Camera.main.WorldToScreenPoint(transform.parent.position + Offset);
     }
 }
