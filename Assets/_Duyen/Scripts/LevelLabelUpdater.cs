@@ -11,18 +11,6 @@ public class LevelLabelUpdater : MonoBehaviour
 
     void Awake()
     {
-        var canvas = GetComponentInChildren<Canvas>();
-        if (canvas != null)
-        {
-            var raycaster = canvas.GetComponent<GraphicRaycaster>();
-            if (raycaster != null) raycaster.enabled = false;
-        }
-
-        var graphics = GetComponentsInChildren<MaskableGraphic>();
-        foreach (var graphic in graphics)
-        {
-            graphic.raycastTarget = false;
-        }
         if (instance == null)
         {
             instance = this;
@@ -31,9 +19,17 @@ public class LevelLabelUpdater : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject); // tránh trùng lặp khi quay lại scene trước
+            Destroy(gameObject);
+            return;
+        }
+
+        // Chỉ tắt raycast cho levelText
+        if (levelText != null)
+        {
+            levelText.raycastTarget = false;
         }
     }
+
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         UpdateLevelText(scene.name);

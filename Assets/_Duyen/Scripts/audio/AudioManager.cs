@@ -38,10 +38,10 @@ public class AudioManager : MonoBehaviour
             case "Home":
                 PlayBGM(loginMusic);
                 break;
-            case "MENU":
+            case "map1level2":
                 PlayBGM(menuMusic);
                 break;
-            case "MAP1":
+            case "map1level1":
                 PlayBGM(mapMusic);
                 break;
         }
