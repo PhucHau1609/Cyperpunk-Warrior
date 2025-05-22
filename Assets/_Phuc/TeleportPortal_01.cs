@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class TeleportPortal_01 : MonoBehaviour
 {
-    public int targetSceneIndex = 2; // 👉 Index scene trong Build Settings
     public string loadingSceneName = "LoadingScene"; // Tên scene loading
     public AudioClip teleportSound;
 
@@ -49,15 +48,26 @@ public class TeleportPortal_01 : MonoBehaviour
 
         yield return new WaitForSeconds(animLength);
 
-        // 👉 Nếu bạn dùng hệ thống spawn, hãy set lại điểm spawn tại đây
+        // 👉 Thiết lập điểm spawn nếu cần
         if (SpawnManager.Instance != null)
-            SpawnManager.Instance.SetNextSpawnPoint(SpawnSceneName.MapLevel2); // Tùy chỉnh nếu cần
+            SpawnManager.Instance.SetNextSpawnPoint(SpawnSceneName.MapLevel2); // Tùy chỉnh nếu có
 
-        PlayerPrefs.SetInt("NextSceneIndex", targetSceneIndex);
+        // 👉 Tự động lấy scene hiện tại + 1
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
 
-        SceneManager.LoadScene(loadingSceneName);
+        // 👉 Kiểm tra xem scene tiếp theo có tồn tại không
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            PlayerPrefs.SetInt("NextSceneIndex", nextSceneIndex);
+            SceneManager.LoadScene(loadingSceneName);
+        }
+        else
+        {
+            Debug.LogWarning("Không còn scene tiếp theo trong Build Settings.");
+            // 👉 Bạn có thể chuyển về menu hoặc restart nếu muốn
+        }
     }
-
 
     public void UnlockPortal()
     {
