@@ -195,7 +195,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.66, y: -4.38, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: -5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6941079436069121415}
@@ -266,21 +266,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f1f4c65955703b4d9af4d8d3ca64c76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointA: {fileID: 0}
-  pointB: {fileID: 0}
   player: {fileID: 0}
-  gunPoint: {fileID: 6941079436069121415}
+  chaseRange: 5
+  stopChaseRange: 7
+  moveSpeed: 2
   bulletPrefab: {fileID: 3880578523389902671, guid: dcdd4893b95641c4ab648e68c8cb1cd8, type: 3}
-  patrolSpeed: 2
-  chaseSpeed: 3
-  stopDistance: 0.5
-  detectionRange: 5
-  shootingRange: 3
-  bulletInterval: 1
-  shootCooldown: 3
-  maxBulletsBeforeReload: 5
-  maxHealth: 100
-  maxVerticalOffsetToTarget: 1
+  gunPoint: {fileID: 6941079436069121415}
+  fireRange: 4
+  fireCooldown: 2
+  maxAmmo: 3
+  reloadTime: 6
+  Hitpoints: 0
+  MaxHitpoints: 5
+  HealthBar: {fileID: 0}
 --- !u!61 &2580580218940346958
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -313,18 +311,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.475}
+  m_Offset: {x: 0, y: 0.095}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.5, y: 0.95}
+    oldSize: {x: 0.3, y: 0.19}
     newSize: {x: 0.3, y: 0.19}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 0.95}
+  m_Size: {x: 0.3, y: 0.19}
   m_EdgeRadius: 0
 --- !u!50 &5576656735795884976
 Rigidbody2D:
@@ -435,7 +433,7 @@ Transform:
   m_GameObject: {fileID: 6414449455614526511}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.08, y: 0.66, z: 0}
+  m_LocalPosition: {x: -0.236, y: 0.109, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -528,7 +526,7 @@ GameObject:
   - component: {fileID: 651981276929221023}
   - component: {fileID: 3822001182769764688}
   - component: {fileID: 366578803641704158}
-  - component: {fileID: 1691754789985665844}
+  - component: {fileID: 4069842330710617299}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -619,7 +617,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &1691754789985665844
+--- !u!114 &4069842330710617299
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -631,35 +629,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 873c037ef5a5ab64c8997a61f0090ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 787308368952259219}
-  gradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  fillImage: {fileID: 1832854154856114462}
+  Slider: {fileID: 787308368952259219}
+  Low: {r: 1, g: 0, b: 0, a: 1}
+  High: {r: 0, g: 1, b: 0.101288795, a: 1}
+  Offset: {x: 0, y: 0, z: 0}
