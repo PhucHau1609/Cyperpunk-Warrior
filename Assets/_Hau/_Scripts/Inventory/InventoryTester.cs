@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class InventoryTester : HauMonoBehaviour //E75 create
 {
-    protected override void Start()
+   /* protected override void Start()
     {
         base.Start();
         this.AddTestItems(ItemCode.Gold, 1000);
-    }
+    }*/
 
     [ProButton]
     public virtual void AddTestItems(ItemCode itemCode, int count)

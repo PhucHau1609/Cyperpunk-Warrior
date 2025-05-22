@@ -6,6 +6,8 @@ public class TeleportPortal_01 : MonoBehaviour
 {
     public string loadingSceneName = "LoadingScene"; // Tên scene loading
     public AudioClip teleportSound;
+    public SpawnSceneName nextSpawnPoint; // 👈 THÊM DÒNG NÀY
+
 
     private AudioSource audioSource;
     private Animator portalAnimator;
@@ -50,7 +52,7 @@ public class TeleportPortal_01 : MonoBehaviour
 
         // 👉 Thiết lập điểm spawn nếu cần
         if (SpawnManager.Instance != null)
-            SpawnManager.Instance.SetNextSpawnPoint(SpawnSceneName.MapLevel2); // Tùy chỉnh nếu có
+            SpawnManager.Instance.SetNextSpawnPoint(nextSpawnPoint); // Tùy chỉnh nếu có
 
         // 👉 Tự động lấy scene hiện tại + 1
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
