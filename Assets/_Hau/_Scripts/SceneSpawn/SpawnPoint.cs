@@ -10,8 +10,13 @@ public class SpawnPoint : HauMonoBehaviour
 public enum SpawnSceneName
 {
     MapLevel1,
-    MapLevel2,
-    MapLevel3,
-    MapLevel4,
+    map1level2,
+    map1level3,
+    map1level4,
+
+    map2level1,
+    map2level2,
+    map2level3,
+    map2level4,
 
 }

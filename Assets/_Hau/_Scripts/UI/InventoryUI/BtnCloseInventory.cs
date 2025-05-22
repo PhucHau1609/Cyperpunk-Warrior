@@ -6,7 +6,7 @@ public class BtnCloseInventory : ButtonAbstract
 {
     protected virtual void CloseInventory()
     {
-        InventoryUI.Instance.HideInventoryUI();
+        NewInventoryUI.Instance.HideInventoryUI();
     }
 
     protected override void OnClick()

@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using com.cyborgAssets.inspectorButtonPro;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class NewInventoryUI : HauSingleton<InventoryUI>
+public class NewInventoryUI : HauSingleton<NewInventoryUI>
 {
     [SerializeField] protected Transform showHide;
 
@@ -15,22 +17,28 @@ public class NewInventoryUI : HauSingleton<InventoryUI>
     protected bool isShowUI = true;
     public bool IsShowUI => isShowUI;
 
-  /*  private void FixedUpdate()
-    {
-        this.ItemsUpdating(); //E71 create
-    }*/
-
     protected override void OnEnable()
     {
+        StartCoroutine(WaitForObserverManager());
+    }
+
+    private IEnumerator WaitForObserverManager()
+    {
+        while (ObserverManager.Instance == null)
+            yield return null;
+
         ObserverManager.Instance.AddListener(EventID.InventoryChanged, OnInventoryChanged);
         ObserverManager.Instance.AddListener(EventID.OpenInventory, OnOpenInventory);
     }
 
+
     protected override void OnDisable()
     {
+        if (ObserverManager.Instance == null) return;
         ObserverManager.Instance.RemoveListener(EventID.InventoryChanged, OnInventoryChanged);
         ObserverManager.Instance.RemoveListener(EventID.OpenInventory, OnOpenInventory);
     }
+
 
 
 
@@ -77,7 +85,7 @@ public class NewInventoryUI : HauSingleton<InventoryUI>
     {
         this.isShowUI = true;
         this.showHide.gameObject.SetActive(true);
-        this.ItemsUpdating(); // 🔥 Thêm dòng này
+        this.ItemsUpdating(); 
 
     }
 
@@ -134,37 +142,17 @@ public class NewInventoryUI : HauSingleton<InventoryUI>
         }
         return null;
     }
-}
-
-/* protected virtual void ItemsUpdating() //E71 create
+    public virtual void SortInventoryUI()
     {
-        if(!this.isShowUI) return;
+        // Sắp xếp danh sách btnItems theo số lượng giảm dần
+        btnItems = btnItems
+            .OrderByDescending(btn => btn.ItemInventory.itemCount)
+            .ToList();
 
-        InventoryCtrl itemInvCtrl = InventoryManager.Instance.ItemInventory();
-        foreach (ItemInventory itemInventory in itemInvCtrl.ItemInventories)
+        // Cập nhật lại vị trí hiển thị trong hierarchy UI
+        for (int i = 0; i < btnItems.Count; i++)
         {
-            BtnItemInventory newBtnItem = this.GetExistItem(itemInventory);
-            if (newBtnItem == null)
-            {
-                newBtnItem = Instantiate(this.defaultItemInventoryUI);
-                newBtnItem.transform.SetParent(this.defaultItemInventoryUI.transform.parent);
-                newBtnItem.SetItem(itemInventory);
-                newBtnItem.transform.localScale = new Vector3(1, 1, 1);
-                newBtnItem.gameObject.SetActive(true);
-                newBtnItem.name = itemInventory.GetItemName() + "_" + itemInventory.ItemId;
-                this.btnItems.Add(newBtnItem);
-            }
+            btnItems[i].transform.SetSiblingIndex(i);
         }
-    }*/
-
-/*
-
-private void LateUpdate() //E76 Create
-  {
-      this.HotkeyToogleInventory();
-  }
-  protected virtual void HotkeyToogleInventory() //E76 Create
-  {
-      if (InputHotKey.Instance.IsToogleInventoryUI) this.Toogle();
-  }
- */
+    }
+}

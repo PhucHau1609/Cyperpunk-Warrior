@@ -17,26 +17,9 @@ public enum EventID
 
 }
 
-public class ObserverManager : MonoBehaviour
+public class ObserverManager : HauSingleton<ObserverManager>
 {
-    private static ObserverManager _instance;
-    public static ObserverManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                // Tự tạo GameObject chứa ObserverManager nếu chưa có
-                GameObject go = new GameObject("ObserverManager");
-                _instance = go.AddComponent<ObserverManager>();
-                DontDestroyOnLoad(go);
-            }
-            return _instance;
-        }
-    }
-
-    // Dictionary chứa các observer dạng Action<object>
-    private Dictionary<EventID, Action<object>> _eventDictionary = new Dictionary<EventID, Action<object>>();
+    private Dictionary<EventID, Action<object>> _eventDictionary = new();
 
     /// <summary>
     /// Đăng ký lắng nghe sự kiện

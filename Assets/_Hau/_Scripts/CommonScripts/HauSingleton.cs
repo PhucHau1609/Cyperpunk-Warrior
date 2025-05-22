@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class HauSingleton<T> : HauMonoBehaviour where T : HauMonoBehaviour
 {
@@ -8,7 +8,17 @@ public abstract class HauSingleton<T> : HauMonoBehaviour where T : HauMonoBehavi
     {
         get
         {
-            if (_instance == null) Debug.LogError("Singleton instance has not been created yet!");
+            if (_instance == null)
+            {
+                // Tìm thử trong scene trước khi ném lỗi
+                _instance = FindObjectOfType<T>();
+
+                if (_instance == null)
+                {
+                    Debug.LogError($"Singleton instance of type {typeof(T)} has not been created yet!");
+                }
+            }
+
             return _instance;
         }
     }
