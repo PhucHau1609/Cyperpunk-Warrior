@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using System;
-
 
 public class TeleportPortal : MonoBehaviour
 {
-    public int targetSceneIndex = 2; // 👉 Index scene trong Build Settings
     public string loadingSceneName = "LoadingScene"; // Tên scene loading
     public AudioClip teleportSound;
 
@@ -56,15 +53,25 @@ public class TeleportPortal : MonoBehaviour
 
         yield return new WaitForSeconds(animLength);
 
-        // 👉 THÊM DÒNG NÀY: Thiết lập SpawnPoint cho scene kế tiếp
+        // 👉 Thiết lập điểm spawn nếu có
         if (SpawnManager.Instance != null)
             SpawnManager.Instance.SetNextSpawnPoint(SpawnSceneName.MapLevel2);
 
-        // 👉 Lưu index scene cần load vào PlayerPrefs
-        PlayerPrefs.SetInt("NextSceneIndex", targetSceneIndex);
+        // 👉 Tự động tăng index scene
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
 
-        // 👉 Load scene loading
-        SceneManager.LoadScene(loadingSceneName);
+        // 👉 Kiểm tra nếu còn scene trong Build Settings
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            PlayerPrefs.SetInt("NextSceneIndex", nextSceneIndex);
+            SceneManager.LoadScene(loadingSceneName);
+        }
+        else
+        {
+            Debug.Log("⚠ Không còn scene tiếp theo trong Build Settings!");
+            // Có thể chuyển về menu chính hoặc restart game tại đây nếu bạn muốn
+        }
     }
 
     public void UnlockPortal()
