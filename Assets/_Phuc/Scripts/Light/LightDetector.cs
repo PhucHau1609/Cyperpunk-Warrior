@@ -1,22 +1,28 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class LightDetector : MonoBehaviour
 {
     private AlarmManager alarmManager;
+    private HashSet<GameObject> detectedObjects = new HashSet<GameObject>();
 
     private void Start()
     {
         alarmManager = FindObjectOfType<AlarmManager>();
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            PlayerMovement player = other.GetComponent<PlayerMovement>();
-            if (player != null && !player.IsInvisible())
+            if (!detectedObjects.Contains(other.gameObject))
             {
-                alarmManager.StartAlarm();
+                PlayerMovement player = other.GetComponent<PlayerMovement>();
+                if (player != null && !player.IsInvisible())
+                {
+                    detectedObjects.Add(other.gameObject);
+                    alarmManager.StartAlarm();
+                }
             }
         }
     }
@@ -25,7 +31,11 @@ public class LightDetector : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            alarmManager.StopAlarm();
+            if (detectedObjects.Contains(other.gameObject))
+            {
+                detectedObjects.Remove(other.gameObject);
+                alarmManager.StopAlarm();
+            }
         }
     }
 }
