@@ -35,14 +35,38 @@ public class LyraDialogueController : MonoBehaviour
         }
     }
 
+    private bool TagExists(string tag)
+    {
+        try
+        {
+            GameObject temp = new GameObject();
+            temp.tag = tag;
+            Destroy(temp);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Dialog"))
+        if (TagExists("Dialog") && other.CompareTag("Dialog"))
         {
-            if (currentIconInstance != null)
+            DialogueData dialogue = GetDialogueDataForZone(other);
+            if (dialogue == null)
+                return;
+
+            if (currentIconInstance == null)
             {
-                Destroy(currentIconInstance);
-                currentIconInstance = null;
+                currentIconInstance = Instantiate(speechIconPrefab, FindObjectOfType<Canvas>().transform);
+                var follower = currentIconInstance.GetComponent<SpeechIconFollower>();
+                follower.targetNPC = this.transform;
+
+                var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
+                clickHandler.dialogueData = dialogue;
+                clickHandler.npcTransform = this.transform;
             }
         }
     }
