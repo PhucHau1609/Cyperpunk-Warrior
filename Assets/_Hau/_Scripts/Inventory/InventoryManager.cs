@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,6 +42,9 @@ public class InventoryManager : HauSingleton<InventoryManager>
         InventoryCodeName invCodeName = itemInventory.ItemProfileSO.invCodeName;
         InventoryCtrl inventoryCtrl = InventoryManager.Instance.GetInventoryByName(invCodeName);
         inventoryCtrl.RemoveItem(itemInventory);
+
+        ObserverManager.Instance?.PostEvent(EventID.InventoryChanged, null); // <- thêm dòng này
+
     }
 
     protected virtual void LoadInventoryCtrl()
