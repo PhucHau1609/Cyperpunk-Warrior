@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class MinigameManager : MonoBehaviour
 {
@@ -9,25 +8,21 @@ public class MinigameManager : MonoBehaviour
     public Button openMinigameButton;
     public Button closeMinigameButton;
 
-    [Header("Prefabs")]
-    public GameObject blockFixedPrefab;
-    public GameObject blockMoveOnlyPrefab;
-    public GameObject blockRotateOnlyPrefab;
-    public GameObject blockMoveRotatePrefab;
+    [Header("Grid Setup")]
+    public GridSlot[] allSlots; // Kéo toàn bộ slot của màn chơi hiện tại vào đây trong Unity
+    public int gridWidth = 5;
+    public int gridHeight = 5;
 
+    private GridSlot[,] grid;
     private int currentLevel = 0;
     private bool isCompleted = false;
 
-    // Danh sách block cho mỗi level
-    private Dictionary<int, List<BlockSpawnData>> levelBlockMap;
-
     void Start()
     {
+        SetupGrid();
         CloseAll();
         openMinigameButton.onClick.AddListener(OpenMinigame);
         closeMinigameButton.onClick.AddListener(CloseMinigame);
-
-        SetupLevelData();
     }
 
     void Update()
@@ -39,13 +34,30 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    void SetupGrid()
+    {
+        grid = new GridSlot[gridHeight, gridWidth];
+
+        foreach (GridSlot slot in allSlots)
+        {
+            Vector2Int pos = slot.gridPosition;
+            if (pos.x >= 0 && pos.x < gridWidth && pos.y >= 0 && pos.y < gridHeight)
+            {
+                grid[pos.y, pos.x] = slot;
+            }
+            else
+            {
+                Debug.LogWarning($"⚠️ GridSlot vị trí {pos} vượt ngoài kích thước lưới {gridWidth}x{gridHeight}");
+            }
+        }
+    }
+
     public void OpenMinigame()
     {
         if (isCompleted) return;
 
         CloseAll();
         levelPanels[currentLevel].SetActive(true);
-        SetupBlocksForCurrentLevel();
     }
 
     public void CloseMinigame() => CloseAll();
@@ -64,7 +76,6 @@ public class MinigameManager : MonoBehaviour
         else
         {
             levelPanels[currentLevel].SetActive(true);
-            SetupBlocksForCurrentLevel();
         }
     }
 
@@ -81,89 +92,66 @@ public class MinigameManager : MonoBehaviour
         foreach (var panel in levelPanels)
         {
             panel.SetActive(false);
-            foreach (Transform child in panel.transform)
-            {
-                GridSlot slot = child.GetComponent<GridSlot>();
-                if (slot != null && slot.currentBlock != null)
-                {
-                    Destroy(slot.currentBlock.gameObject);
-                    slot.currentBlock = null;
-                }
-            }
         }
     }
 
     public int GetCurrentLevel() => currentLevel;
 
-    // Tạo dữ liệu cho từng level
-    void SetupLevelData()
+    private bool CheckVictory()
     {
-        levelBlockMap = new Dictionary<int, List<BlockSpawnData>>();
+        int usedLegs = 0;
+        int rows = grid.GetLength(0);
+        int cols = grid.GetLength(1);
 
-        levelBlockMap[0] = new List<BlockSpawnData> {
-            new BlockSpawnData { prefab = blockFixedPrefab, gridPos = new Vector2Int(0, 0) },
-            new BlockSpawnData { prefab = blockMoveOnlyPrefab, gridPos = new Vector2Int(1, 0) },
-        };
-
-        levelBlockMap[1] = new List<BlockSpawnData> {
-            new BlockSpawnData { prefab = blockFixedPrefab, gridPos = new Vector2Int(0, 0) },
-            new BlockSpawnData { prefab = blockRotateOnlyPrefab, gridPos = new Vector2Int(1, 0) },
-        };
-
-        levelBlockMap[2] = new List<BlockSpawnData> {
-            new BlockSpawnData { prefab = blockFixedPrefab, gridPos = new Vector2Int(0, 0) },
-            new BlockSpawnData { prefab = blockMoveRotatePrefab, gridPos = new Vector2Int(1, 0) },
-        };
-
-        levelBlockMap[3] = new List<BlockSpawnData> {
-            new BlockSpawnData { prefab = blockMoveRotatePrefab, gridPos = new Vector2Int(0, 0) },
-            new BlockSpawnData { prefab = blockMoveRotatePrefab, gridPos = new Vector2Int(1, 0) },
-            new BlockSpawnData { prefab = blockMoveRotatePrefab, gridPos = new Vector2Int(2, 0) },
-
-            new BlockSpawnData { prefab = blockMoveOnlyPrefab, gridPos = new Vector2Int(0, 1) },
-            new BlockSpawnData { prefab = blockMoveOnlyPrefab, gridPos = new Vector2Int(1, 1) },
-            new BlockSpawnData { prefab = blockMoveOnlyPrefab, gridPos = new Vector2Int(2, 1) },
-            new BlockSpawnData { prefab = blockMoveOnlyPrefab, gridPos = new Vector2Int(3, 1) },
-
-            new BlockSpawnData { prefab = blockRotateOnlyPrefab, gridPos = new Vector2Int(1, 2) },
-        };
-    }
-
-    void SetupBlocksForCurrentLevel()
-    {
-        if (!levelBlockMap.ContainsKey(currentLevel)) return;
-
-        GridSlot[] slots = levelPanels[currentLevel].GetComponentsInChildren<GridSlot>();
-
-        foreach (BlockSpawnData data in levelBlockMap[currentLevel])
+        for (int y = 0; y < rows; y++)
         {
-            GridSlot targetSlot = System.Array.Find(slots, s => s.gridPosition == data.gridPos);
-            if (targetSlot == null)
+            for (int x = 0; x < cols; x++)
             {
-                Debug.LogWarning($"⚠ Không tìm thấy GridSlot tại {data.gridPos} trong level {currentLevel}");
-                continue;
-            }
+                var slot = grid[y, x];
+                if (slot == null || slot.currentBlock == null) continue;
 
-            GameObject obj = Instantiate(data.prefab);
-            Block blockComp = obj.GetComponent<Block>();
-            if (blockComp == null)
-            {
-                Debug.LogWarning("⚠ Prefab không có component Block!");
-                continue;
-            }
+                Block block = slot.currentBlock;
 
-            targetSlot.SetBlock(blockComp); // Gắn vào GridSlot (set parent + position)
+                foreach (Direction dir in System.Enum.GetValues(typeof(Direction)))
+                {
+                    int leg = block.GetLeg(dir);
+                    if (leg == 0) continue;
 
-            // Cài đặt loại block nếu cần (có thể mở rộng)
-            BlockController ctrl = obj.GetComponent<BlockController>();
-            if (ctrl != null)
-            {
-                if (data.prefab == blockFixedPrefab) ctrl.blockType = BlockController.BlockType.Fixed;
-                else if (data.prefab == blockMoveOnlyPrefab) ctrl.blockType = BlockController.BlockType.MoveOnly;
-                else if (data.prefab == blockRotateOnlyPrefab) ctrl.blockType = BlockController.BlockType.RotateOnly;
-                else if (data.prefab == blockMoveRotatePrefab) ctrl.blockType = BlockController.BlockType.MoveRotate;
+                    Vector2Int offset = dir switch
+                    {
+                        Direction.Up => new Vector2Int(0, 1),
+                        Direction.Down => new Vector2Int(0, -1),
+                        Direction.Left => new Vector2Int(-1, 0),
+                        Direction.Right => new Vector2Int(1, 0),
+                        _ => Vector2Int.zero
+                    };
+
+                    Vector2Int targetPos = slot.gridPosition + offset;
+                    if (targetPos.x < 0 || targetPos.x >= cols || targetPos.y < 0 || targetPos.y >= rows)
+                        return false;
+
+                    var neighborSlot = grid[targetPos.y, targetPos.x];
+                    if (neighborSlot == null || neighborSlot.currentBlock == null)
+                        return false;
+
+                    int neighborLeg = neighborSlot.currentBlock.GetLeg(Opposite(dir));
+                    if (neighborLeg != leg)
+                        return false;
+
+                    usedLegs++;
+                }
             }
         }
 
+        return usedLegs % 2 == 0;
     }
+
+    private Direction Opposite(Direction dir) => dir switch
+    {
+        Direction.Up => Direction.Down,
+        Direction.Down => Direction.Up,
+        Direction.Left => Direction.Right,
+        Direction.Right => Direction.Left,
+        _ => dir
+    };
 }
