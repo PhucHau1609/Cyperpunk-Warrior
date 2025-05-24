@@ -1,120 +1,83 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BlockController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     public enum BlockType { Fixed, RotateOnly, MoveOnly, MoveRotate }
-
     public BlockType blockType;
+    public Block block;
 
-    private Vector3 dragOffset;
-    private Camera mainCamera;
-    private bool isDragging = false;
-    private Vector2 pointerDownPos;
+    private RectTransform rectTransform;
+    private CanvasGroup canvasGroup;
+    private Canvas mainCanvas;
 
-    private GridSlot originalSlot; // lưu slot gốc khi bắt đầu kéo
+    private Vector3 originalPosition;
+    private Transform originalParent;
+    private float pointerDownTime;
+    private const float clickThreshold = 0.15f;
 
-
-
-    private void Start()
+    private void Awake()
     {
-        mainCamera = Camera.main;
-    }
-
-    public void Rotate90()
-    {
-        GetComponent<Block>()?.Rotate();
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        mainCanvas = GetComponentInParent<Canvas>();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        pointerDownPos = eventData.position;
-        isDragging = false;
-
-        if (blockType == BlockType.Fixed) return;
-
-        if (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate)
-            Rotate90();
-
-        if (blockType == BlockType.MoveOnly || blockType == BlockType.MoveRotate)
-        {
-            // Lưu slot gốc nếu có
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.zero);
-            if (hit.collider != null)
-            {
-                var slot = hit.collider.GetComponent<GridSlot>();
-                if (slot != null)
-                {
-                    originalSlot = slot;
-                }
-            }
-
-            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(eventData.position);
-            dragOffset = transform.position - new Vector3(worldPoint.x, worldPoint.y, transform.position.z);
-        }
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (!isDragging && Vector2.Distance(eventData.position, pointerDownPos) > 5f)
-            isDragging = true;
-
-        if (isDragging && (blockType == BlockType.MoveOnly || blockType == BlockType.MoveRotate))
-        {
-            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(eventData.position);
-            transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z) + dragOffset;
-        }
+        pointerDownTime = Time.time;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!isDragging)
+        if (Time.time - pointerDownTime < clickThreshold &&
+            (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate))
         {
-            if (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate)
-                Rotate90();
-            return;
+            Rotate();
         }
-
-        // Raycast tìm GridSlot ở vị trí thả chuột
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.zero);
-        if (hit.collider != null)
-        {
-            GridSlot slot = hit.collider.GetComponent<GridSlot>();
-            if (slot != null)
-            {
-                // Gán block vào slot mới
-                slot.SetBlock(GetComponent<Block>());
-
-                // Đặt vị trí block tại (0,0,0) localPosition của slot
-                transform.localPosition = Vector3.zero;
-
-                // Nếu cần, update slot gốc để xóa tham chiếu
-                if (originalSlot != null && originalSlot != slot)
-                {
-                    originalSlot.currentBlock = null;
-                }
-            }
-            else
-            {
-                // Không thả đúng slot -> trả block về vị trí cũ
-                ReturnToOriginalSlot();
-            }
-        }
-        else
-        {
-            // Không thả đúng slot -> trả block về vị trí cũ
-            ReturnToOriginalSlot();
-        }
-
-        isDragging = false;
     }
 
-    private void ReturnToOriginalSlot()
+    public void OnBeginDrag(PointerEventData eventData)
     {
-        if (originalSlot != null)
+        if (blockType == BlockType.Fixed || blockType == BlockType.RotateOnly) return;
+
+        originalParent = transform.parent;
+        originalPosition = rectTransform.anchoredPosition;
+        canvasGroup.blocksRaycasts = false;
+
+        GridSlot parentSlot = originalParent.GetComponent<GridSlot>();
+        if (parentSlot != null) parentSlot.currentBlock = null;
+
+        transform.SetParent(mainCanvas.transform);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mainCanvas.transform as RectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector2 localPoint))
         {
-            originalSlot.SetBlock(GetComponent<Block>());
-            transform.localPosition = Vector3.zero;
+            rectTransform.anchoredPosition = localPoint;
         }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        canvasGroup.blocksRaycasts = true;
+
+        if (transform.parent == mainCanvas.transform)
+        {
+            transform.SetParent(originalParent);
+            rectTransform.anchoredPosition = originalPosition;
+        }
+
+        MinigameManager.Instance?.CheckLevelClear();
+    }
+
+    private void Rotate()
+    {
+        block?.Rotate();
     }
 }
