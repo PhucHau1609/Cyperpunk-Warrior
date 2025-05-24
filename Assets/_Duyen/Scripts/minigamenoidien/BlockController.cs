@@ -34,6 +34,9 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate))
         {
             Rotate();
+
+            // Gọi check level sau khi xoay
+            MinigameManager.Instance?.CheckLevel();
         }
     }
 
@@ -72,12 +75,13 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             transform.SetParent(originalParent);
             rectTransform.anchoredPosition = originalPosition;
         }
-
-        MinigameManager.Instance?.CheckLevelClear();
+        AudioManager.Instance?.PlayBlockInteractSFX();
+        MinigameManager.Instance?.CheckLevel();
     }
 
     private void Rotate()
     {
         block?.Rotate();
+        AudioManager.Instance?.PlayBlockInteractSFX();
     }
 }

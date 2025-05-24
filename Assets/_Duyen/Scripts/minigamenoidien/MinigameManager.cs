@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MinigameManager : MonoBehaviour
@@ -6,16 +7,18 @@ public class MinigameManager : MonoBehaviour
     public static MinigameManager Instance;
 
     [Header("UI")]
-    public GameObject levelPanel;               // Panel chứa các ô Grid và blocks
+    public GameObject levelPanel;
     public GameObject canvasUI;
+    public GameObject winImage;
     public Button openMinigameButton;
     public Button closeMinigameButton;
-    public Button checkLevelButton;
+    public Sprite openedButtonSprite;
 
     [Header("Gameplay")]
-    public GridSlot[] gridSlots;                // Các ô cần kiểm tra đúng block
+    public GridSlot[] gridSlots;
 
     private bool isCompleted = false;
+    private AudioClip previousBGM;
 
     private void Awake()
     {
@@ -28,9 +31,15 @@ public class MinigameManager : MonoBehaviour
         levelPanel.SetActive(false);
         canvasUI.SetActive(false);
 
-        openMinigameButton.onClick.AddListener(OpenMinigame);
-        closeMinigameButton.onClick.AddListener(CloseMinigame);
-        checkLevelButton.onClick.AddListener(CheckLevel);
+        openMinigameButton.onClick.AddListener(() => {
+            AudioManager.Instance.PlayClickSFX();
+            OpenMinigame();
+        });
+
+        closeMinigameButton.onClick.AddListener(() => {
+            AudioManager.Instance.PlayClickSFX();
+            CloseMinigame();
+        });
     }
 
     private void Update()
@@ -48,6 +57,14 @@ public class MinigameManager : MonoBehaviour
 
         canvasUI.SetActive(true);
         levelPanel.SetActive(true);
+
+        // Lưu nhạc cũ nếu nó KHÁC minigameBGM
+        if (AudioManager.Instance.bgmSource.clip != AudioManager.Instance.minigameBGM)
+        {
+            previousBGM = AudioManager.Instance.bgmSource.clip;
+        }
+        AudioManager.Instance.PlayBGM(AudioManager.Instance.minigameBGM);
+
         AssignExistingBlocks();
     }
 
@@ -55,6 +72,16 @@ public class MinigameManager : MonoBehaviour
     {
         canvasUI.SetActive(false);
         levelPanel.SetActive(false);
+
+        if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
+        {
+            AudioManager.Instance.StopBGM();
+        }
+        // Phát lại nhạc cũ nếu hợp lệ
+        if (previousBGM != null && previousBGM != AudioManager.Instance.minigameBGM)
+        {
+            AudioManager.Instance.PlayBGM(previousBGM);
+        }
     }
 
     private void AssignExistingBlocks()
@@ -74,17 +101,26 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
-    public void CheckLevel()
+
+    private IEnumerator HandleMinigameCompleted()
     {
-        if (IsLevelCompleted())
+        yield return new WaitForSeconds(.5f);
+        // Thắng -> phát win SFX
+        if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
         {
-            Debug.Log("Đã hoàn thành minigame!");
-            isCompleted = true;
-            openMinigameButton.interactable = false;
+            AudioManager.Instance.StopBGM();
         }
-        else
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.winSFX);
+
+        winImage.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        winImage.SetActive(false);
+
+        CloseMinigame();
+
+        if (openedButtonSprite != null)
         {
-            Debug.Log("Sai rồi, thử lại nhé!");
+            openMinigameButton.GetComponent<Image>().sprite = openedButtonSprite;
         }
     }
 
@@ -92,41 +128,28 @@ public class MinigameManager : MonoBehaviour
     {
         foreach (var slot in gridSlots)
         {
-            // Bỏ qua slot không yêu cầu block
             if (string.IsNullOrWhiteSpace(slot.requiredBlockName))
                 continue;
 
             if (slot.currentBlock == null)
-            {
-                Debug.Log("Thiếu block ở slot yêu cầu.");
                 return false;
-            }
 
             string currentName = slot.currentBlock.block.blockName.Trim();
             string requiredName = slot.requiredBlockName.Trim();
 
             if (currentName != requiredName)
-            {
-                Debug.Log($"Tên sai: {currentName} ≠ {requiredName}");
                 return false;
-            }
 
             float currentZ = slot.currentBlock.transform.localEulerAngles.z;
             float requiredZ = slot.requiredEulerAngles.z;
             float diff = Mathf.Abs(Mathf.DeltaAngle(currentZ, requiredZ));
 
             if (diff > 5f)
-            {
-                Debug.Log($"Góc sai: {currentZ}° ≠ {requiredZ}° (lệch {diff}°)");
                 return false;
-            }
         }
 
         return true;
     }
-
-
-
 
     private void ResetMinigame()
     {
@@ -143,15 +166,20 @@ public class MinigameManager : MonoBehaviour
         AssignExistingBlocks();
     }
 
-    // Gọi thủ công sau mỗi lần kéo block nếu cần
-    public void CheckLevelClear()
+    public void CheckLevel()
     {
         if (isCompleted) return;
         if (IsLevelCompleted())
         {
-            Debug.Log("Bạn đã hoàn thành level!");
             isCompleted = true;
             openMinigameButton.interactable = false;
+            StartCoroutine(HandleMinigameCompleted());
         }
+    }
+
+    // Gọi từ BlockController hoặc nơi bạn xử lý kéo/thả block
+    public void PlayMoveBlockSFX()
+    {
+        AudioManager.Instance?.PlayClickSFX();
     }
 }
