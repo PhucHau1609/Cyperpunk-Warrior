@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
@@ -6,6 +7,11 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public enum BlockType { Fixed, RotateOnly, MoveOnly, MoveRotate }
     public BlockType blockType;
     public Block block;
+
+    private Vector3 originalScale;
+    private bool isRotating = false;
+    private Tween rotateTween; // để lưu tween xoay
+
 
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
@@ -21,21 +27,25 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         mainCanvas = GetComponentInParent<Canvas>();
+        originalScale = transform.localScale;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         pointerDownTime = Time.time;
+
+        // Tween scale riêng, không DOKill toàn bộ transform nữa
+        transform.DOScale(originalScale * 0.7f, 0.1f).SetEase(Ease.OutSine);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        transform.DOScale(originalScale, 0.15f).SetEase(Ease.OutBack);
+
         if (Time.time - pointerDownTime < clickThreshold &&
             (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate))
         {
-            Rotate();
-
-            // Gọi check level sau khi xoay
+            Rotate(); // rotate đã chặn mọi thứ
             MinigameManager.Instance?.CheckLevel();
         }
     }
@@ -73,7 +83,7 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (transform.parent == mainCanvas.transform)
         {
             transform.SetParent(originalParent);
-            rectTransform.anchoredPosition = originalPosition;
+            rectTransform.DOAnchorPos(originalPosition, 0.25f).SetEase(Ease.OutBack);
         }
         AudioManager.Instance?.PlayBlockInteractSFX();
         MinigameManager.Instance?.CheckLevel();
@@ -81,7 +91,25 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     private void Rotate()
     {
-        block?.Rotate();
-        AudioManager.Instance?.PlayBlockInteractSFX();
+        if (isRotating || rotateTween != null && rotateTween.IsActive() && rotateTween.IsPlaying())
+            return;
+
+        isRotating = true;
+
+        float duration = 0.25f;
+        float angle = 90f;
+
+        // KHÔNG DOKill() – để tween scale không bị ảnh hưởng
+
+        rotateTween = transform
+            .DORotate(transform.eulerAngles + new Vector3(0, 0, -angle), duration)
+            .SetEase(Ease.OutCubic)
+            .OnComplete(() =>
+            {
+                isRotating = false;
+                rotateTween = null;
+                AudioManager.Instance?.PlayBlockInteractSFX();
+            });
     }
+
 }
