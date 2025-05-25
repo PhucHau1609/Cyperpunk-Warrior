@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MinigameManager : MonoBehaviour
@@ -19,6 +20,9 @@ public class MinigameManager : MonoBehaviour
 
     private bool isCompleted = false;
     private AudioClip previousBGM;
+
+    [Header("Scene Settings")]
+    public int nextSceneIndex;
 
     private void Awake()
     {
@@ -122,6 +126,8 @@ public class MinigameManager : MonoBehaviour
         {
             openMinigameButton.GetComponent<Image>().sprite = openedButtonSprite;
         }
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
     private bool IsLevelCompleted()
