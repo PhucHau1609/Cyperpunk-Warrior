@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class MinigameManager : MonoBehaviour
 {
@@ -62,6 +63,9 @@ public class MinigameManager : MonoBehaviour
         canvasUI.SetActive(true);
         levelPanel.SetActive(true);
 
+        canvasUI.transform.localScale = Vector3.zero;
+        canvasUI.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+
         // Lưu nhạc cũ nếu nó KHÁC minigameBGM
         if (AudioManager.Instance.bgmSource.clip != AudioManager.Instance.minigameBGM)
         {
@@ -74,8 +78,10 @@ public class MinigameManager : MonoBehaviour
 
     public void CloseMinigame()
     {
-        canvasUI.SetActive(false);
-        levelPanel.SetActive(false);
+        canvasUI.transform.DOScale(Vector3.zero, 0.25f).SetEase(Ease.InBack).OnComplete(() => {
+            canvasUI.SetActive(false);
+            levelPanel.SetActive(false);
+        });
 
         if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
         {
