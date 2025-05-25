@@ -1,16 +1,55 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BtnItemInventory : ButtonAbstract
+public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] protected TextMeshProUGUI txtItemName;
     [SerializeField] protected Text txtItemCount;
     [SerializeField] protected Image itemImage;
     [SerializeField] protected ItemInventory itemInventory;
+
+    private CanvasGroup canvasGroup;
+    private RectTransform rectTransform;
+    private Vector3 originalPosition;
+
+    protected override void Start()
+    {
+        base.Start();
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        originalPosition = rectTransform.position;
+        canvasGroup.blocksRaycasts = false; // Để nhận Drop
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        rectTransform.position = Input.mousePosition;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        canvasGroup.blocksRaycasts = true;
+
+        // Kiểm tra nếu thả vào Delete Zone
+        if (DeleteItemZone.IsPointerOverDeleteZone(eventData))
+        {
+            Debug.Log("Delete item: " + itemInventory.ItemProfileSO.itemCode);
+            InventoryManager.Instance.RemoveItem(itemInventory);
+        }
+
+        // Trả về vị trí ban đầu
+        rectTransform.position = originalPosition;
+    }
 
     public ItemInventory ItemInventory => itemInventory; //E71 create
 

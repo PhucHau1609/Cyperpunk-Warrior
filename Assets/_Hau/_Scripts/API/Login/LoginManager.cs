@@ -6,15 +6,20 @@ using Newtonsoft.Json;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using static LoginManager;
 
 public class LoginManager : MonoBehaviour
 {
     private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
     private TMP_InputField currentInputField;
     public GameObject loadingSpinner;
-
+    [Header("InputField")]
     public TMP_InputField emailInput;
     public TMP_InputField passwordInput;
+
+    [Header("Message")]
+    public UIMessageManager messageManager;
+
 
     [Serializable]
     public class LoginRequest
@@ -112,8 +117,79 @@ public class LoginManager : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
+            try
+            {
+                var errorResponse = JsonConvert.DeserializeObject<LoginResponse>(request.downloadHandler.text);
+                messageManager.ShowError(errorResponse.notification);
+            }
+            catch
+            {
+                messageManager.ShowError("Đã xảy ra lỗi kết nối đến máy chủ!");
+            }
+        }
+        else
+        {
+            var responseText = request.downloadHandler.text;
+            var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(responseText);
+
+            if (loginResponse.isSuccess)
+            {
+                messageManager.ShowSuccess("Đăng nhập thành công!");
+
+                AudioManager.Instance?.StopBGM();
+
+                if (UserSession.Instance != null)
+                {
+                    UserSession.Instance.UserId = loginResponse.data.regionID;
+                }
+
+                StartCoroutine(LoadSceneAfterDelay(3f));
+            }
+            else
+            {
+                messageManager.ShowError(loginResponse.notification);
+            }
+        }
+    }
+
+    IEnumerator LoadSceneAfterDelay(float delaySeconds)
+    {
+        loadingSpinner.SetActive(true); // Bật spinner nếu đã tắt
+        yield return new WaitForSeconds(delaySeconds);
+        SceneManager.LoadScene(1);
+    }
+
+}
+
+/*
+  IEnumerator PostLogin(string json)
+    {
+        string url = "https://apiv3-sunny.up.railway.app/api/Login/login";
+
+        var request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        loadingSpinner.SetActive(false);
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
             Debug.LogError($"Login failed: {request.error}");
             Debug.LogError($"Response: {request.downloadHandler.text}");
+            try
+            {
+                var errorResponse = JsonConvert.DeserializeObject<LoginResponse>(request.downloadHandler.text);
+                messageManager.ShowError(errorResponse.notification);
+            }
+            catch
+            {
+                messageManager.ShowError("Đã xảy ra lỗi kết nối!");
+            }
         }
         else
         {
@@ -123,6 +199,7 @@ public class LoginManager : MonoBehaviour
             if (loginResponse.isSuccess)
             {
                 Debug.Log("Đăng nhập thành công!");
+                messageManager.ShowSuccess("Đăng nhập thành công");
                 AudioManager.Instance?.StopBGM();
                 Debug.Log($"Tên người dùng: {loginResponse.data.name}");
 
@@ -135,15 +212,9 @@ public class LoginManager : MonoBehaviour
             }
             else
             {
+                messageManager.ShowError(loginResponse.notification);
                 Debug.LogWarning("Đăng nhập thất bại: " + loginResponse.notification);
             }
         }
     }
-    IEnumerator LoadSceneAfterDelay(float delaySeconds)
-    {
-        loadingSpinner.SetActive(true); // Bật spinner nếu đã tắt
-        yield return new WaitForSeconds(delaySeconds);
-        SceneManager.LoadScene(1);
-    }
-
-}
+ */
