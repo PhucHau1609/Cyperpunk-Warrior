@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class NPCFollow : MonoBehaviour
+public class FloatingFollower : MonoBehaviour
 {
     public Transform player;
     public float followHeight = 1.5f;
@@ -8,11 +8,15 @@ public class NPCFollow : MonoBehaviour
     public float xFollowSpeed = 2f;
     public float yFollowSpeed = 5f;
 
-    public bool isDashing = false; // gắn từ PlayerController
-    public float dashFollowMultiplier = 2f; // tăng tốc khi dash
+    public bool isDashing = false;
+    public float dashFollowMultiplier = 2f;
 
     private Vector3 targetPos;
     private Rigidbody2D rb;
+    private Animator anim;
+
+    private enum PetState { Sleepwell, Awaken, Following }
+    private PetState state = PetState.Sleepwell;
 
     private void Awake()
     {
@@ -22,44 +26,54 @@ public class NPCFollow : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     void FixedUpdate()
     {
         if (player == null) return;
 
-        float direction = player.localScale.x > 0 ? -1 : 1;
+        if (state == PetState.Sleepwell)
+        {
+            if (CodeLock.PetUnlocked)
+            {
+                state = PetState.Awaken;
+                anim.SetTrigger("Awaken");
+                StartCoroutine(StartFollowAfterDelay(1.5f)); // thời gian animation awaken
+            }
+            return;
+        }
 
-        // Tính vị trí đích dựa trên vị trí player
+        if (state != PetState.Following) return;
+
+        // Pet follow logic
+        float direction = player.localScale.x > 0 ? -1 : 1;
         targetPos = player.position + new Vector3(sideOffset * direction, followHeight, 0);
 
-        // Bay xuống nhanh hơn nếu player đang thấp
         float heightDiff = player.position.y - rb.position.y;
-
-        // Nếu player đang ở thấp hơn nhiều → bay xuống nhanh hơn
         float ySpeed = yFollowSpeed;
-        if (heightDiff < -1f) ySpeed *= 4f; // bay xuống nhanh
-        else if (heightDiff > 1f) ySpeed *= 1.5f; // bay lên nhanh nhẹ
 
-        // Dash theo
+        if (heightDiff < -1f) ySpeed *= 4f;
+        else if (heightDiff > 1f) ySpeed *= 1.5f;
+
         float speedMultiplier = isDashing ? dashFollowMultiplier : 1f;
 
-        // Di chuyển mượt theo trục X và Y với tốc độ khác nhau
-        float newX = Mathf.Lerp(rb.position.x, targetPos.x, xFollowSpeed * Time.fixedDeltaTime);
-        float newY = Mathf.Lerp(rb.position.y, targetPos.y, yFollowSpeed * Time.fixedDeltaTime);
+        float newX = Mathf.Lerp(rb.position.x, targetPos.x, xFollowSpeed * speedMultiplier * Time.fixedDeltaTime);
+        float newY = Mathf.Lerp(rb.position.y, targetPos.y, ySpeed * speedMultiplier * Time.fixedDeltaTime);
 
         rb.MovePosition(new Vector2(newX, newY));
 
-        // Xoay mặt NPC
         transform.localScale = direction > 0 ? new Vector3(-2, 2, 2) : new Vector3(2, 2, 2);
-        
-        //// Xoay mặt NPC
-        //if (direction > 0)
-        //    transform.localScale = new Vector3(-2, 2, 2); // nhìn phải
-        //else
-        //    transform.localScale = new Vector3(2, 2, 2); // nhìn trái
+    }
+
+    System.Collections.IEnumerator StartFollowAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        state = PetState.Following;
+        // Lúc này animation sẽ tự động sang Idle do đã setup trong Animator
     }
 }
+
 
 
 
