@@ -5149,6 +5149,8 @@ MonoBehaviour:
   controller: {fileID: 7905095496261015490}
   animator: {fileID: 7992599514024733814}
   runSpeed: 40
+  invisibilityLight: {fileID: 0}
+  canMove: 1
 --- !u!212 &5945631173788358909
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5247,7 +5249,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &1656452898270362967
 CapsuleCollider2D:

@@ -13,10 +13,14 @@ public class Register : MonoBehaviour
     private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
     private TMP_InputField currentInputField;
 
-
+    [Header("InputField")]
     public TMP_InputField emailInput;
     public TMP_InputField passwordInput;
     public TMP_InputField nameInput;
+
+    [Header("Message")]
+    public UIMessageManager messageManager;
+
 
     void Start()
     {
@@ -85,39 +89,119 @@ public class Register : MonoBehaviour
         StartCoroutine(Post(json));
     }
 
-    // Gửi đối tượng JSON lên server
     IEnumerator Post(string json)
     {
-        //var url = "http://localhost:5245/api/Register";
         var url = "https://apiv3-sunny.up.railway.app/api/Register/register";
 
         var request = new UnityWebRequest(url, "POST");
-
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-        request.uploadHandler =(UploadHandler) new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler =(DownloadHandler) new DownloadHandlerBuffer();
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
+
         yield return request.SendWebRequest();
+
+        string responseText = request.downloadHandler.text;
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            try
+            {
+                var errorResponse = JsonConvert.DeserializeObject<RegisterModelResponse>(responseText);
+                messageManager.ShowError(errorResponse.notification ?? "Lỗi kết nối đến máy chủ!");
+            }
+            catch
+            {
+                messageManager.ShowError("Lỗi mạng hoặc máy chủ không phản hồi!");
+            }
+        }
+        else
+        {
+            try
+            {
+                var response = JsonConvert.DeserializeObject<RegisterModelResponse>(responseText);
+
+                if (response != null)
+                {
+                    if (response.isSuccess)
+                    {
+                        messageManager.ShowSuccess("Đăng ký thành công!");
+                    }
+                    else
+                    {
+                        messageManager.ShowError(response.notification ?? "Đăng ký thất bại, vui lòng thử lại!");
+                    }
+                }
+                else
+                {
+                    messageManager.ShowError("Phản hồi không hợp lệ từ server.");
+                }
+            }
+            catch (JsonReaderException)
+            {
+                messageManager.ShowError("Lỗi khi phân tích phản hồi từ server.");
+            }
+        }
+    }
+
+}
+
+
+/*
+  IEnumerator Post(string json)
+    {
+        var url = "https://apiv3-sunny.up.railway.app/api/Register/register";
+
+        var request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        string responseText = request.downloadHandler.text;
+        Debug.Log("Response Text: " + responseText);
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError($"Protocol Error: {request.error}");
             Debug.LogError($"Response Code: {request.responseCode}");
-            Debug.LogError($"Response: {request.downloadHandler.text}");
+            Debug.LogError($"Response: {responseText}");
         }
         else
         {
-            // Deserialize JSON phản hồi thành object C# sử dụng JsonUtility
-            // var response = JsonUtility.FromJson<RegisterModelResponse>(request.downloadHandler.text);
-
-            // Deserialize JSON phản hồi thành object C# sử dụng Newtonsoft.Json (Json.NET)
-            var response = JsonConvert.DeserializeObject<RegisterModelResponse>(request.downloadHandler.text);
-
-            if (response.isSuccess)
+            try
             {
-                Debug.Log(response.data.Email);
-                Debug.Log(response.data.Name);
+                var response = JsonConvert.DeserializeObject<RegisterModelResponse>(responseText);
+
+                if (response != null)
+                {
+                    if (response.isSuccess)
+                    {
+                        messageManager.ShowSuccess("Đăng ký thành công!");
+                        Debug.Log("Đăng ký thành công:");
+                        Debug.Log("Email: " + response.data.Email);
+                        Debug.Log("Tên: " + response.data.Name);
+                    }
+                    else
+                    {
+                        messageManager.ShowError(response.notification);
+                        Debug.LogWarning("Đăng ký thất bại: " + response.notification);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Không thể phân tích phản hồi từ server.");
+                }
+            }
+            catch (JsonReaderException ex)
+            {
+                Debug.LogError("Lỗi khi phân tích JSON: " + ex.Message);
+                Debug.LogError("Server có thể không trả về JSON hợp lệ.");
             }
         }
     }
-}
+ */
+
+
