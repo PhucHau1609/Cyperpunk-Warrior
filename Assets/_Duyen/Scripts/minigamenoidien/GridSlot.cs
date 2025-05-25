@@ -1,14 +1,34 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class GridSlot : MonoBehaviour
+public class GridSlot : MonoBehaviour, IDropHandler
 {
-    public Vector2Int gridPosition;
-    public Block currentBlock;
+    [Header("Requirement")]
+    public string requiredBlockName;
+    public Vector3 requiredEulerAngles;
 
-    public void SetBlock(Block block)
+    public BlockController currentBlock;
+
+    public void OnDrop(PointerEventData eventData)
     {
+        BlockController dropped = eventData.pointerDrag?.GetComponent<BlockController>();
+
+        if (dropped == null) return;
+
+        // Gán vào slot
+        SetBlock(dropped);
+    }
+
+    public void SetBlock(BlockController block)
+    {
+        if (block == null)
+        {
+            currentBlock = null;
+            return;
+        }
+
         currentBlock = block;
-        block.transform.position = transform.position;
         block.transform.SetParent(transform);
+        block.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 }

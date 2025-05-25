@@ -15,6 +15,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip typingSFX;
     public AudioClip clickSFX;
 
+    [Header("Minigame")]
+    public AudioClip minigameBGM;
+    public AudioClip winSFX;
+    public AudioClip blockInteractSFX;
+
     private void Awake()
     {
         if (Instance == null)
@@ -83,5 +88,9 @@ public class AudioManager : MonoBehaviour
             bgmSource.Stop();
             bgmSource.clip = null;
         }
+    }
+    public void PlayBlockInteractSFX()
+    {
+        PlaySFX(blockInteractSFX);
     }
 }

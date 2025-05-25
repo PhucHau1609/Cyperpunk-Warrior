@@ -1,59 +1,87 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BlockController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     public enum BlockType { Fixed, RotateOnly, MoveOnly, MoveRotate }
-
     public BlockType blockType;
+    public Block block;
 
-    private Vector3 dragOffset;
-    private Camera mainCamera;
-    private bool isDragging = false;
-    private Vector2 pointerDownPos;
+    private RectTransform rectTransform;
+    private CanvasGroup canvasGroup;
+    private Canvas mainCanvas;
 
-    private void Start()
+    private Vector3 originalPosition;
+    private Transform originalParent;
+    private float pointerDownTime;
+    private const float clickThreshold = 0.15f;
+
+    private void Awake()
     {
-        mainCamera = Camera.main;
-    }
-
-    public void Rotate90()
-    {
-        GetComponent<Block>()?.Rotate();
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        mainCanvas = GetComponentInParent<Canvas>();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        pointerDownPos = eventData.position;
-        isDragging = false;
-
-        if (blockType == BlockType.Fixed) return;
-
-        if (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate)
-            Rotate90();
-
-        if (blockType == BlockType.MoveOnly || blockType == BlockType.MoveRotate)
-        {
-            Vector3 worldPoint = mainCamera.ScreenToWorldPoint(eventData.position);
-            dragOffset = transform.position - new Vector3(worldPoint.x, worldPoint.y, transform.position.z);
-        }
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (!isDragging && Vector2.Distance(eventData.position, pointerDownPos) > 5f)
-            isDragging = true;
-
-        if (isDragging && (blockType == BlockType.MoveOnly || blockType == BlockType.MoveRotate))
-        {
-            Vector3 worldPoint = mainCamera.ScreenToWorldPoint(eventData.position);
-            transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z) + dragOffset;
-        }
+        pointerDownTime = Time.time;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!isDragging && (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate))
-            Rotate90();
+        if (Time.time - pointerDownTime < clickThreshold &&
+            (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate))
+        {
+            Rotate();
+
+            // Gọi check level sau khi xoay
+            MinigameManager.Instance?.CheckLevel();
+        }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (blockType == BlockType.Fixed || blockType == BlockType.RotateOnly) return;
+
+        originalParent = transform.parent;
+        originalPosition = rectTransform.anchoredPosition;
+        canvasGroup.blocksRaycasts = false;
+
+        GridSlot parentSlot = originalParent.GetComponent<GridSlot>();
+        if (parentSlot != null) parentSlot.currentBlock = null;
+
+        transform.SetParent(mainCanvas.transform);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mainCanvas.transform as RectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector2 localPoint))
+        {
+            rectTransform.anchoredPosition = localPoint;
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        canvasGroup.blocksRaycasts = true;
+
+        if (transform.parent == mainCanvas.transform)
+        {
+            transform.SetParent(originalParent);
+            rectTransform.anchoredPosition = originalPosition;
+        }
+        AudioManager.Instance?.PlayBlockInteractSFX();
+        MinigameManager.Instance?.CheckLevel();
+    }
+
+    private void Rotate()
+    {
+        block?.Rotate();
+        AudioManager.Instance?.PlayBlockInteractSFX();
     }
 }
