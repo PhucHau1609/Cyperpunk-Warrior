@@ -5115,6 +5115,7 @@ GameObject:
   - component: {fileID: 818233103}
   - component: {fileID: 818233102}
   - component: {fileID: 818233101}
+  - component: {fileID: 818233104}
   m_Layer: 0
   m_Name: Canvas_1
   m_TagString: Untagged
@@ -5210,6 +5211,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &818233104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818233099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b858940bdc5a6b7438076f09da0d2665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelText: {fileID: 1371669658}
 --- !u!1 &847276359
 GameObject:
   m_ObjectHideFlags: 0
@@ -16681,7 +16695,6 @@ GameObject:
   - component: {fileID: 1532731574}
   - component: {fileID: 1532731573}
   - component: {fileID: 1532731572}
-  - component: {fileID: 1532731571}
   m_Layer: 5
   m_Name: BTN_PAUSE
   m_TagString: Untagged
@@ -16708,19 +16721,6 @@ RectTransform:
   m_AnchoredPosition: {x: -48, y: -48}
   m_SizeDelta: {x: 85, y: 85}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1532731571
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1532731569}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b858940bdc5a6b7438076f09da0d2665, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelText: {fileID: 1371669658}
 --- !u!114 &1532731572
 MonoBehaviour:
   m_ObjectHideFlags: 0
