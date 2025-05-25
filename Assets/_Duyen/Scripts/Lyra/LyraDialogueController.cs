@@ -7,7 +7,7 @@ public class LyraDialogueController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Dialog"))
+        if (other.gameObject.tag == "Dialog")
         {
             DialogueData dialogue = GetDialogueDataForZone(other);
             if (dialogue == null)
