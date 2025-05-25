@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using DG.Tweening;
 
 [System.Serializable]
 public class Block : MonoBehaviour
@@ -7,6 +8,6 @@ public class Block : MonoBehaviour
 
     public void Rotate()
     {
-        transform.Rotate(0, 0, 90);
+        transform.DORotate(transform.eulerAngles + new Vector3(0, 0, -90), 0.25f, RotateMode.Fast);
     }
 }
