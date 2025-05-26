@@ -35,7 +35,9 @@ public class SpawnManager : MonoBehaviour
 
     private IEnumerator DelayedSpawn()
     {
-        yield return new WaitForSeconds(2f); // Hoặc WaitForSeconds(0.1f)
+        yield return new WaitUntil(() => GameObject.FindGameObjectWithTag("Player") != null);
+        yield return new WaitForEndOfFrame();
+
         MovePlayerToSpawnPoint();
     }
 
@@ -45,24 +47,39 @@ public class SpawnManager : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
-        // Nếu không đặt gì trước -> không làm gì cả
         if (string.IsNullOrEmpty(nextSpawnPointID) || nextSpawnPointID == "Default")
             return;
 
-        // Tìm tất cả spawn point trong scene
-        SpawnPoint[] spawnPoints = FindObjectsOfType<SpawnPoint>();
+        SpawnPoint[] spawnPoints = Object.FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
         foreach (var point in spawnPoints)
         {
             if (point.sceneName.ToString() == nextSpawnPointID)
             {
+                var rb = player.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector2.zero;
+                    rb.simulated = false;
+                }
+
                 player.transform.position = point.transform.position;
                 player.transform.rotation = point.transform.rotation;
+
+                if (rb != null)
+                    StartCoroutine(ReenablePhysics(rb));
+
                 return;
             }
         }
 
-        Debug.LogWarning("SpawnManager: Không tìm thấy spawn point với ID: " + nextSpawnPointID);
     }
+
+    private IEnumerator ReenablePhysics(Rigidbody2D rb)
+    {
+        yield return null;
+        rb.simulated = true;
+    }
+
 
     public void SetNextSpawnPoint(SpawnSceneName spawnID)
     {

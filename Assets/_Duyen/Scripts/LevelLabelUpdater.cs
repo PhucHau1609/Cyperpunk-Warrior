@@ -66,5 +66,7 @@ public class LevelLabelUpdater : MonoBehaviour
     {
         // Hủy đăng ký sự kiện để tránh lỗi memory leak
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        Debug.Log("OnDestroy was called", this);
+
     }
 }
