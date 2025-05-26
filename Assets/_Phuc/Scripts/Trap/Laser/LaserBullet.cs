@@ -11,7 +11,7 @@ public class LaserBullet : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         // Cho đạn bay xuống dưới
-        rb.velocity = Vector2.down * speed;
+        rb.linearVelocity = Vector2.down * speed;
 
         // Quay đầu đạn xuống nếu sprite đang nằm ngang
         transform.rotation = Quaternion.Euler(0, 0, -90);

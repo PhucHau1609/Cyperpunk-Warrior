@@ -40,7 +40,7 @@ public class DroidController : MonoBehaviour
         {
             if (distanceToPlayer <= shootingRange)
             {
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
                 anim.SetBool("Run", false);
                 anim.SetTrigger("Shoot");
 

@@ -51,7 +51,7 @@ public class Droid02Controller : MonoBehaviour
 
         if (currentState == State.Reloading)
         {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             anim.SetBool("Run", false);
             return;
         }
@@ -101,7 +101,7 @@ public class Droid02Controller : MonoBehaviour
         if (dir.x != 0)
             sprite.flipX = dir.x < 0;
 
-        anim.SetBool("Run", Mathf.Abs(rb.velocity.x) > 0.05f);
+        anim.SetBool("Run", Mathf.Abs(rb.linearVelocity.x) > 0.05f);
 
         // ✅ Đảm bảo GunPoint luôn ở phía trước mặt Enemy
         if (gunPoint != null)
@@ -133,7 +133,7 @@ public class Droid02Controller : MonoBehaviour
         }
         else
         {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             TryShoot();
         }
     }
@@ -172,7 +172,7 @@ public class Droid02Controller : MonoBehaviour
     {
         isReloading = true;
         currentState = State.Reloading;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         anim.SetTrigger("CountDown");
         
         yield return new WaitForSeconds(shootCooldown);
@@ -224,7 +224,7 @@ public class Droid02Controller : MonoBehaviour
         {
             anim.SetTrigger("Death");
             currentState = State.Dead;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             GetComponent<Collider2D>().enabled = false;
             this.enabled = false;
             HealthBarEnemy.Instance?.HideHealthBar();
