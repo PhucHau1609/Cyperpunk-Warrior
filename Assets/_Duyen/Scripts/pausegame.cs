@@ -6,6 +6,7 @@ public class pausegame : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject pannelpause;
+    public GameObject panelOptions;
     public Button pauseButton;
     public Sprite imagePause; // Hình icon khi đang pause
     public Sprite imagePlay;  // Hình icon ban đầu
@@ -44,6 +45,7 @@ public class pausegame : MonoBehaviour
 
         Time.timeScale = 1f; // Tiếp tục game
         pannelpause.SetActive(false);
+        panelOptions.SetActive(false);
 
         // Đổi lại hình và bật lại nút
         if (pauseButtonImage != null && imagePlay != null)
@@ -62,12 +64,24 @@ public class pausegame : MonoBehaviour
     }
 
     // Khi nhấn "Chơi lại"
+    public void OnOpenOptionsClicked()
+    {
+        AudioManager.Instance.PlayClickSFX();
+
+        if (panelOptions != null)
+            panelOptions.SetActive(true);
+
+        if (pannelpause != null)
+            pannelpause.SetActive(false);
+    }
+
     public void OnRetryClicked(int sceneIndex)
     {
         AudioManager.Instance.PlayClickSFX();
         Time.timeScale = 1f;
-        SceneManager.LoadScene(sceneIndex); // Load lại màn chơi được chỉ định
+        SceneManager.LoadScene(sceneIndex);
     }
+
 
     private void OnDisable()
     {

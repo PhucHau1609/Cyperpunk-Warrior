@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using static UnityEngine.Rendering.VolumeComponent;
 
 public class AudioSettingsUI : MonoBehaviour
 {
     public static AudioSettingsUI Instance;
 
     [Header("Music Volume Settings")]
-    public List<Button> musicVolumeButtons;  // Gán nút từ 1–7 cho BGM trong Inspector
+    public List<Button> musicVolumeButtons;
 
     [Header("SFX Volume Settings")]
-    public List<Button> sfxVolumeButtons;    // Gán nút từ 1–10 cho SFX trong Inspector
+    public List<Button> sfxVolumeButtons;
 
     [Header("Sprite")]
     public Sprite onSprite;
@@ -20,10 +20,11 @@ public class AudioSettingsUI : MonoBehaviour
     [Header("Settings Panel")]
     public GameObject settingsPanel;
 
-    [Header("Apply/Deny/Close Buttons")]
+    [Header("Apply/Deny/Close/Open Buttons")]
     public Button applyButton;
     public Button denyButton;
     public Button closeButton;
+    public Button openButton;
 
     private int tempMusicLevel;
     private int tempSFXLevel;
@@ -33,90 +34,130 @@ public class AudioSettingsUI : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // giữ lại khi đổi scene
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // xoá bản trùng
+            Destroy(gameObject);
         }
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
-        applyButton = settingsPanel.transform.Find("ApplyButton").GetComponent<Button>();
-        denyButton = settingsPanel.transform.Find("DenyButton").GetComponent<Button>();
-        closeButton = settingsPanel.transform.Find("CloseButton").GetComponent<Button>(); // ← thêm dòng này
+        InitUI();
+    }
 
-        // Gán sự kiện
-        applyButton.onClick.RemoveAllListeners();
-        applyButton.onClick.AddListener(OnApply);
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Invoke(nameof(RebindUI), 0.1f);
+    }
 
-        denyButton.onClick.RemoveAllListeners();
-        denyButton.onClick.AddListener(OnDeny);
-
-        closeButton.onClick.RemoveAllListeners();
-        closeButton.onClick.AddListener(OnDeny);
-
-        settingsPanel.SetActive(false);
-
-        // Khởi tạo volume BGM
-        float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        int musicLevel = Mathf.RoundToInt(savedMusicVolume * (musicVolumeButtons.Count - 1));
-        UpdateMusicVolume(musicLevel);
+    void InitUI()
+    {
+        InitVolume();
 
         for (int i = 0; i < musicVolumeButtons.Count; i++)
         {
             int index = i;
-            musicVolumeButtons[i].onClick.AddListener(() => {
-                AudioManager.Instance.PlayClickSFX(); 
+            musicVolumeButtons[i].onClick.AddListener(() =>
+            {
+                AudioManager.Instance.PlayClickSFX();
                 UpdateMusicVolume(index);
             });
         }
-
-        // Khởi tạo volume SFX
-        float savedSFXVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-        int sfxLevel = Mathf.RoundToInt(savedSFXVolume * (sfxVolumeButtons.Count - 1));
-        UpdateSFXVolume(sfxLevel);
 
         for (int i = 0; i < sfxVolumeButtons.Count; i++)
         {
             int index = i;
             sfxVolumeButtons[i].onClick.AddListener(() =>
             {
-                AudioManager.Instance.PlayClickSFX();  
+                AudioManager.Instance.PlayClickSFX();
                 UpdateSFXVolume(index);
             });
         }
 
+        settingsPanel?.SetActive(false);
+    }
+
+    void InitVolume()
+    {
+        float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        float savedSFXVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+
+        int musicLevel = Mathf.RoundToInt(savedMusicVolume * (musicVolumeButtons.Count - 1));
+        int sfxLevel = Mathf.RoundToInt(savedSFXVolume * (sfxVolumeButtons.Count - 1));
+
         tempMusicLevel = musicLevel;
         tempSFXLevel = sfxLevel;
+
+        UpdateMusicVolume(musicLevel);
+        UpdateSFXVolume(sfxLevel);
     }
+
+    void RebindUI()
+    {
+        openButton = GameObject.Find("OpenButton")?.GetComponent<Button>();
+
+        if (settingsPanel != null)
+        {
+            applyButton = settingsPanel.transform.Find("ApplyButton")?.GetComponent<Button>();
+            denyButton = settingsPanel.transform.Find("DenyButton")?.GetComponent<Button>();
+            closeButton = settingsPanel.transform.Find("CloseButton")?.GetComponent<Button>();
+        }
+
+        if (applyButton != null)
+        {
+            applyButton.onClick.RemoveAllListeners();
+            applyButton.onClick.AddListener(OnApply);
+        }
+
+        if (denyButton != null)
+        {
+            denyButton.onClick.RemoveAllListeners();
+            denyButton.onClick.AddListener(OnDeny);
+        }
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(OnDeny);
+        }
+
+        if (openButton != null)
+        {
+            openButton.onClick.RemoveAllListeners();
+            openButton.onClick.AddListener(OpenSettingsPanel);
+        }
+
+        settingsPanel?.SetActive(false);
+    }
+
     void OnApply()
     {
         AudioManager.Instance.PlayClickSFX();
-        // Lưu vào PlayerPrefs đã thực hiện ở UpdateMusicVolume/SFX rồi
+        tempMusicLevel = GetCurrentMusicLevel();
+        tempSFXLevel = GetCurrentSFXLevel();
         settingsPanel.SetActive(false);
+        if (openButton != null) openButton.interactable = true;
     }
 
     void OnDeny()
     {
         AudioManager.Instance.PlayClickSFX();
-        // Trả lại volume cũ
         UpdateMusicVolume(tempMusicLevel);
         UpdateSFXVolume(tempSFXLevel);
         settingsPanel.SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            if (settingsPanel != null)
-            {
-                bool isActive = settingsPanel.activeSelf;
-                settingsPanel.SetActive(!isActive);
-            }
-        }
+        if (openButton != null) openButton.interactable = true;
     }
 
     void UpdateMusicVolume(int level)
@@ -128,8 +169,7 @@ public class AudioSettingsUI : MonoBehaviour
 
         for (int i = 0; i < musicVolumeButtons.Count; i++)
         {
-            Image img = musicVolumeButtons[i].GetComponent<Image>();
-            img.sprite = (i <= level) ? onSprite : offSprite;
+            musicVolumeButtons[i].GetComponent<Image>().sprite = (i <= level) ? onSprite : offSprite;
         }
     }
 
@@ -142,8 +182,30 @@ public class AudioSettingsUI : MonoBehaviour
 
         for (int i = 0; i < sfxVolumeButtons.Count; i++)
         {
-            Image img = sfxVolumeButtons[i].GetComponent<Image>();
-            img.sprite = (i <= level) ? onSprite : offSprite;
+            sfxVolumeButtons[i].GetComponent<Image>().sprite = (i <= level) ? onSprite : offSprite;
+        }
+    }
+
+    int GetCurrentMusicLevel()
+    {
+        return Mathf.RoundToInt(AudioManager.Instance.bgmSource.volume * (musicVolumeButtons.Count - 1));
+    }
+
+    int GetCurrentSFXLevel()
+    {
+        return Mathf.RoundToInt(AudioManager.Instance.sfxSource.volume * (sfxVolumeButtons.Count - 1));
+    }
+
+    public void OpenSettingsPanel()
+    {
+        AudioManager.Instance.PlayClickSFX();
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(true);
+        }
+        if (openButton != null)
+        {
+            openButton.interactable = false;
         }
     }
 }
