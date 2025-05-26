@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-	public float dmgValue = 4;
+	public int dmgValue = 4;
 	public GameObject throwableObject;
 	public Transform attackCheck;
 	private Rigidbody2D m_Rigidbody2D;
@@ -13,13 +13,31 @@ public class Attack : MonoBehaviour
 	public bool isTimeToCheck = false;
 
 	public GameObject cam;
-    public WeaponSpriteHandler weaponSpriteHandler; // gán trong Inspector
 
 
     private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 	}
+
+    private void Start()
+    {
+        // Tuỳ chọn: Gán tự động khi map load nếu muốn
+        TryFindCamera();
+    }
+
+    private void TryFindCamera()
+    {
+        if (cam == null)
+        {
+            CameraFollow foundCam = Object.FindFirstObjectByType<CameraFollow>();
+            if (foundCam != null)
+            {
+                cam = foundCam.gameObject;
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -34,11 +52,6 @@ public class Attack : MonoBehaviour
         {
             canAttack = false;
             animator.SetBool("IsMeleeAttack", true);
-
-            if (weaponSpriteHandler != null)
-            {
-                weaponSpriteHandler.PlayWeaponAnimation(); // gọi hiển thị dao
-            }
 
             StartCoroutine(AttackCooldown());
         }
@@ -58,21 +71,52 @@ public class Attack : MonoBehaviour
 		canAttack = true;
 	}
 
-	public void DoDashDamage()
-	{
-		dmgValue = Mathf.Abs(dmgValue);
-		Collider2D[] collidersEnemies = Physics2D.OverlapCircleAll(attackCheck.position, 0.9f);
-		for (int i = 0; i < collidersEnemies.Length; i++)
-		{
-			if (collidersEnemies[i].gameObject.tag == "Enemy")
-			{
-				if (collidersEnemies[i].transform.position.x - transform.position.x < 0)
-				{
-					dmgValue = -dmgValue;
-				}
-				collidersEnemies[i].gameObject.SendMessage("ApplyDamage", dmgValue);
-				cam.GetComponent<CameraFollow>().ShakeCamera();
-			}
-		}
-	}
+    public void DoDashDamage()
+    {
+        int damageToDeal = Mathf.Abs(dmgValue);
+
+        Collider2D[] collidersEnemies = Physics2D.OverlapCircleAll(attackCheck.position, 0.9f);
+        for (int i = 0; i < collidersEnemies.Length; i++)
+        {
+            if (collidersEnemies[i].CompareTag("Enemy"))
+            {
+                if (collidersEnemies[i].transform.position.x - transform.position.x < 0)
+                {
+                    damageToDeal = -Mathf.Abs(dmgValue);
+                }
+
+                var enemyHealth = collidersEnemies[i].GetComponent<Droid02Controller>(); 
+
+                if (enemyHealth != null)
+                {
+                    enemyHealth.TakeDamage(Mathf.Abs(damageToDeal)); 
+                    //cam.GetComponent<CameraFollow>()?.ShakeCamera();
+                }
+                else
+                {
+                    Debug.LogWarning("Enemy không có component chứa TakeDamage");
+                }
+            }
+        }
+    }
 }
+
+
+/*public void DoDashDamage()
+{
+    dmgValue = Mathf.Abs(dmgValue);
+    Collider2D[] collidersEnemies = Physics2D.OverlapCircleAll(attackCheck.position, 0.9f);
+    for (int i = 0; i < collidersEnemies.Length; i++)
+    {
+        if (collidersEnemies[i].gameObject.tag == "Enemy")
+        {
+            if (collidersEnemies[i].transform.position.x - transform.position.x < 0)
+            {
+                dmgValue = -dmgValue;
+            }
+            collidersEnemies[i].gameObject.SendMessage("ApplyDamage", dmgValue);
+            cam.GetComponent<CameraFollow>().ShakeCamera();
+        }
+    }
+}*/
+

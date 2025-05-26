@@ -229,6 +229,8 @@ public class Droid02Controller : MonoBehaviour
             this.enabled = false;
             HealthBarEnemy.Instance?.HideHealthBar();
         }
+
+        CameraFollow.Instance?.ShakeCamera();
     }
 
    void OnDrawGizmosSelected()

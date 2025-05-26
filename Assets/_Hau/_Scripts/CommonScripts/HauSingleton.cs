@@ -11,7 +11,7 @@ public abstract class HauSingleton<T> : HauMonoBehaviour where T : HauMonoBehavi
             if (_instance == null)
             {
                 // Tìm thử trong scene trước khi ném lỗi
-                _instance = FindObjectOfType<T>();
+                _instance = FindAnyObjectByType<T>();
 
                 if (_instance == null)
                 {

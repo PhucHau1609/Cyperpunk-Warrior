@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CameraFollow : MonoBehaviour
+public class CameraFollow : HauSingleton<CameraFollow>
 {
 	public float FollowSpeed = 2f;
 	public Transform Target;
@@ -21,7 +21,7 @@ public class CameraFollow : MonoBehaviour
 
 	Vector3 originalPos;
 
-	void Awake()
+	protected override void Awake()
 	{
 		//Cursor.visible = false;
 		if (camTransform == null)
@@ -33,7 +33,7 @@ public class CameraFollow : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
 
     }
-    void Start()
+    protected override void Start()
     {
         // Nếu vào Map 2 mà Start gọi trước khi Player có thể tìm thấy, ta cũng thử tìm ở đây.
         TryFindPlayer();
@@ -61,7 +61,7 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    void OnEnable()
+    protected override void OnEnable()
 	{
 		originalPos = camTransform.localPosition;
 	}
