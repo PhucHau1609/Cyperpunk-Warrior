@@ -10,6 +10,8 @@ public class BoardGame : MonoBehaviour
     [SerializeField] private TeleportPortal teleportPortal;
     [SerializeField] private GameObject player;
 
+    [SerializeField] private LayerMask tileLayer; // <<== Thêm dòng này
+
     private Camera _camera;
     private const float CellSize = 6f;
     private const float Tolerance = 0.1f;
@@ -26,7 +28,7 @@ public class BoardGame : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, tileLayer); // <<== Sửa dòng này
 
             if (hit.collider != null)
             {
@@ -50,10 +52,11 @@ public class BoardGame : MonoBehaviour
                 }
             }
         }
+
         if (Input.GetKeyDown(KeyCode.P))
         {
             Debug.Log("Đã hoàn thành mini game bằng phím P (debug)");
-            StartCoroutine(WaitAndCloseMiniGame()); // hoặc gọi CloseMiniGame() trực tiếp nếu không cần delay
+            StartCoroutine(WaitAndCloseMiniGame());
         }
 
         if (IsBoardSolved())
