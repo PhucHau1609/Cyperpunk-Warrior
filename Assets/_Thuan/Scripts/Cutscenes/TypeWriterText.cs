@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,12 +13,15 @@ public class TypeWriterText : MonoBehaviour
 
     private Text textMesh;
     private AudioSource audioSource;
+    private Coroutine typeCoroutine;
+
+    [HideInInspector]
+    public bool IsTyping { get; private set; }
 
     private void Awake()
     {
         textMesh = GetComponent<Text>();
 
-        // Tạo AudioSource nếu chưa có
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -27,11 +29,12 @@ public class TypeWriterText : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(TypeText());
+        typeCoroutine = StartCoroutine(TypeText());
     }
 
     private IEnumerator TypeText()
     {
+        IsTyping = true;
         textMesh.text = "";
 
         for (int i = 0; i < fullText.Length; i++)
@@ -43,5 +46,19 @@ public class TypeWriterText : MonoBehaviour
 
             yield return new WaitForSeconds(characterDelay);
         }
+
+        IsTyping = false;
+    }
+
+    public void SkipText()
+    {
+        if (typeCoroutine != null)
+            StopCoroutine(typeCoroutine);
+
+        textMesh.text = fullText;
+        IsTyping = false;
+
+        if (audioSource != null && audioSource.isPlaying)
+            audioSource.Stop();
     }
 }

@@ -6,23 +6,36 @@ using UnityEngine.Timeline;
 
 public class SkipTimeline : MonoBehaviour
 {
- [Header("Thành phần Timeline")]
-    public PlayableDirector playableDirector;
+  public TypeWriterText[] typeWriterTexts;     // Gán 5 Text vào đây
+    public PlayableDirector timelineDirector;    // Gán Timeline Director vào
+    public double skipTime = 23.0;               // Thời gian cần skip đến (giây)
 
-    [Header("Cài đặt Skip")]
-    public double skipToTime = 10.0;
     private bool hasSkipped = false;
 
     void Update()
     {
         if (!hasSkipped && Input.GetKeyDown(KeyCode.LeftShift))
         {
-            if (playableDirector != null && playableDirector.time < skipToTime)
+            SkipCutscene();
+            hasSkipped = true;
+        }
+    }
+
+    void SkipCutscene()
+    {
+        foreach (var writer in typeWriterTexts)
+        {
+            if (writer != null)
             {
-                playableDirector.time = skipToTime;
-                playableDirector.Evaluate();
-                hasSkipped = true;
+                writer.SkipText();
+                writer.gameObject.SetActive(false); // Tắt toàn bộ Text + Script + AudioSource
             }
+        }
+
+        if (timelineDirector != null)
+        {
+            timelineDirector.time = skipTime;
+            timelineDirector.Evaluate();
         }
     }
 }
