@@ -53,11 +53,11 @@ public class HauPlayerMovement : MonoBehaviour
 
     void Move()
     {
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
         if (isJumping)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isJumping = false;
         }
     }
@@ -84,6 +84,6 @@ public class HauPlayerMovement : MonoBehaviour
     {
         animator.SetFloat("Speed", Mathf.Abs(moveInput));
         animator.SetBool("isGrounded", isGrounded);
-        animator.SetFloat("VerticalVelocity", rb.velocity.y);
+        animator.SetFloat("VerticalVelocity", rb.linearVelocity.y);
     }
 }
