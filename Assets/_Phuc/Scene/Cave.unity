@@ -41602,6 +41602,7 @@ GameObject:
   - component: {fileID: 460539941}
   - component: {fileID: 460539940}
   - component: {fileID: 460539939}
+  - component: {fileID: 460539943}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -41653,7 +41654,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1582757749}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MinigameManager, Assembly-CSharp
         m_MethodName: OpenMinigame
         m_Mode: 1
@@ -41685,7 +41686,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c340351069c40b24ea4e47f6604daeb6, type: 3}
+  m_Sprite: {fileID: -448698473, guid: e35b2ef50add50445be63b4e08d55229, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -41719,9 +41720,45 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 25.4443, y: -9.4774}
+  m_SizeDelta: {x: 3.1885, y: 3.2348}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &460539943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460539938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83e2649d187feb945a94d4bb244155b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelPanel: {fileID: 1582757748}
+  canvasUI: {fileID: 835245524}
+  winImage: {fileID: 1083634594}
+  openMinigameButton: {fileID: 460539939}
+  closeMinigameButton: {fileID: 1205592887}
+  openedButtonSprite: {fileID: 1724677438, guid: e35b2ef50add50445be63b4e08d55229, type: 3}
+  gridSlots:
+  - {fileID: 810387242}
+  - {fileID: 159961872}
+  - {fileID: 305556093}
+  - {fileID: 1867828107}
+  - {fileID: 387775771}
+  - {fileID: 1782770605}
+  - {fileID: 1708375161}
+  - {fileID: 1572521899}
+  - {fileID: 829934901}
+  - {fileID: 146212806}
+  - {fileID: 908856012}
+  - {fileID: 1269073152}
+  - {fileID: 439949855}
+  - {fileID: 723412390}
+  - {fileID: 2077115948}
+  - {fileID: 294209257}
+  nextSceneIndex: 3
 --- !u!1 &475845688
 GameObject:
   m_ObjectHideFlags: 0
@@ -43406,7 +43443,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2362587247788241492, guid: 84d1000c8cccbbc40b26b489da393a9a, type: 3}
       propertyPath: requiredEulerAngles.z
-      value: 180
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 4522101650556425501, guid: 84d1000c8cccbbc40b26b489da393a9a, type: 3}
       propertyPath: m_Color.a
@@ -45360,7 +45397,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1582757749}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MinigameManager, Assembly-CSharp
         m_MethodName: CloseMinigame
         m_Mode: 1
@@ -47161,7 +47198,6 @@ GameObject:
   - component: {fileID: 1582757752}
   - component: {fileID: 1582757751}
   - component: {fileID: 1582757750}
-  - component: {fileID: 1582757749}
   m_Layer: 5
   m_Name: canvas_game2
   m_TagString: Untagged
@@ -47169,42 +47205,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1582757749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582757748}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83e2649d187feb945a94d4bb244155b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelPanel: {fileID: 1582757748}
-  canvasUI: {fileID: 835245524}
-  winImage: {fileID: 1083634594}
-  openMinigameButton: {fileID: 460539939}
-  closeMinigameButton: {fileID: 1205592887}
-  openedButtonSprite: {fileID: 21300000, guid: 51931d09e33711146bb3866dba3786a1, type: 3}
-  gridSlots:
-  - {fileID: 810387242}
-  - {fileID: 159961872}
-  - {fileID: 305556093}
-  - {fileID: 1867828107}
-  - {fileID: 387775771}
-  - {fileID: 1782770605}
-  - {fileID: 1708375161}
-  - {fileID: 1572521899}
-  - {fileID: 829934901}
-  - {fileID: 146212806}
-  - {fileID: 908856012}
-  - {fileID: 1269073152}
-  - {fileID: 439949855}
-  - {fileID: 723412390}
-  - {fileID: 2077115948}
-  - {fileID: 294209257}
-  nextSceneIndex: 0
 --- !u!114 &1582757750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47244,7 +47244,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1582757752
 Canvas:
   m_ObjectHideFlags: 0
@@ -57051,7 +57051,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1980102603168256088, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1980102603168256088, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
       propertyPath: m_LocalRotation.x
@@ -57063,7 +57063,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1980102603168256088, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1980102603168256088, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -57083,7 +57083,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1980102603168256088, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 180
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 7400869755960364526, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
       propertyPath: m_Name
