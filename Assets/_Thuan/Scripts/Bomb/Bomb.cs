@@ -29,7 +29,7 @@ public class Bomb : MonoBehaviour
             hasExploded = true;
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
-            rb.isKinematic = true;
+            //rb.isKinematic = true;
 
             anim.SetTrigger("Explode");
         }
