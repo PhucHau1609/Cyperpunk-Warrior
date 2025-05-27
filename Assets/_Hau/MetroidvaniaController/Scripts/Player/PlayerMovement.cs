@@ -11,11 +11,11 @@ public class PlayerMovement : MonoBehaviour
     private bool jump = false;
     private bool dash = false;
 
-    //private SpriteRenderer spriteRenderer;
-    //private bool isInvisible = false;
+   private SpriteRenderer spriteRenderer;
+   private bool isInvisible = false;
 
-    // [Header("Invisibility Light")]
-    // public Light2D invisibilityLight; // GÁN OBJECT NÀY TRONG INSPECTOR
+     [Header("Invisibility Light")]
+     public Light2D invisibilityLight; // GÁN OBJECT NÀY TRONG INSPECTOR
 
     [Header("Movement Control")]
     public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
@@ -49,26 +49,26 @@ public class PlayerMovement : MonoBehaviour
             dash = true;
 
         // Bật/tắt tàng hình bằng phím J
-        // if (Input.GetKeyDown(KeyCode.J))
-        // {
-        //     isInvisible = !isInvisible;
+         if (Input.GetKeyDown(KeyCode.J))
+        {
+            isInvisible = !isInvisible;
 
-        //     // Bật/tắt Spot Light
-        //     if (invisibilityLight != null)
-        //     {
-        //         invisibilityLight.enabled = !isInvisible;
-        //     }
+           // Bật/tắt Spot Light
+           if (invisibilityLight != null)
+           {
+                invisibilityLight.enabled = !isInvisible;
+            }
 
         //     // Thay đổi độ alpha của nhân vật
-        //     if (spriteRenderer != null)
-        //     {
-        //         Color color = spriteRenderer.color;
-        //         color.a = isInvisible ? 0.1490196f : 1f;
-        //         spriteRenderer.color = color;
-        //     }
+            if (spriteRenderer != null)
+            {
+               Color color = spriteRenderer.color;
+               color.a = isInvisible ? 0.1490196f : 1f;
+               spriteRenderer.color = color;
+          }
 
-        //     Debug.Log("Tàng hình: " + isInvisible);
-        // }
+            Debug.Log("Tàng hình: " + isInvisible);
+        }
     }
 
     void FixedUpdate()
@@ -99,10 +99,10 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("IsJumping", false);
     }
 
-    // public bool IsInvisible()
-    // {
-    //     return isInvisible;
-    // }
+     public bool IsInvisible()
+    {
+        return isInvisible;
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {

@@ -6,13 +6,13 @@ public class TeleportPortal_01 : MonoBehaviour
 {
     public string loadingSceneName = "LoadingScene"; // Tên scene loading
     public AudioClip teleportSound;
-    public SpawnSceneName nextSpawnPoint; // 👈 THÊM DÒNG NÀY
-
+    public SpawnSceneName nextSpawnPoint;
 
     private AudioSource audioSource;
     private Animator portalAnimator;
     private bool isTeleporting = false;
-    public bool isUnlocked = true; // 👉 Đặt mặc định là true để cổng hoạt động ngay
+    public bool isUnlocked = true;
+    private bool hasTriggeredDisappear = false; // ✅ Đảm bảo animation chỉ gọi 1 lần
 
     private void Awake()
     {
@@ -32,9 +32,21 @@ public class TeleportPortal_01 : MonoBehaviour
 
         isTeleporting = true;
 
+        // ✅ Gọi animation biến mất của player nếu chưa gọi
         Animator playerAnim = other.GetComponent<Animator>();
-        if (playerAnim != null)
+        if (playerAnim != null && !hasTriggeredDisappear)
+        {
+            playerAnim.ResetTrigger("PlayDisappear");
             playerAnim.SetTrigger("PlayDisappear");
+            hasTriggeredDisappear = true;
+        }
+
+        // ✅ Gọi animation biến mất của pet
+        FloatingFollower pet = FindObjectOfType<FloatingFollower>();
+        if (pet != null)
+        {
+            pet.Disappear();
+        }
 
         if (teleportSound != null)
             audioSource.PlayOneShot(teleportSound);
@@ -50,15 +62,13 @@ public class TeleportPortal_01 : MonoBehaviour
 
         yield return new WaitForSeconds(animLength);
 
-        // 👉 Thiết lập điểm spawn nếu cần
+        // 👉 Đặt điểm spawn cho scene tiếp theo
         if (SpawnManager.Instance != null)
-            SpawnManager.Instance.SetNextSpawnPoint(nextSpawnPoint); // Tùy chỉnh nếu có
+            SpawnManager.Instance.SetNextSpawnPoint(nextSpawnPoint);
 
-        // 👉 Tự động lấy scene hiện tại + 1
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
 
-        // 👉 Kiểm tra xem scene tiếp theo có tồn tại không
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             PlayerPrefs.SetInt("NextSceneIndex", nextSceneIndex);
@@ -67,7 +77,6 @@ public class TeleportPortal_01 : MonoBehaviour
         else
         {
             Debug.LogWarning("Không còn scene tiếp theo trong Build Settings.");
-            // 👉 Bạn có thể chuyển về menu hoặc restart nếu muốn
         }
     }
 

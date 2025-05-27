@@ -11,21 +11,21 @@ public class LightDetector : MonoBehaviour
         alarmManager = FindObjectOfType<AlarmManager>();
     }
 
-    // private void OnTriggerEnter2D(Collider2D other)
-    // {
-    //     if (other.CompareTag("Player"))
-    //     {
-    //         if (!detectedObjects.Contains(other.gameObject))
-    //         {
-    //             PlayerMovement player = other.GetComponent<PlayerMovement>();
-    //             if (player != null && !player.IsInvisible())
-    //             {
-    //                 detectedObjects.Add(other.gameObject);
-    //                 alarmManager.StartAlarm();
-    //             }
-    //         }
-    //     }
-    // }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (!detectedObjects.Contains(other.gameObject))
+            {
+                PlayerMovement player = other.GetComponent<PlayerMovement>();
+                if (player != null && !player.IsInvisible())
+                {
+                    detectedObjects.Add(other.gameObject);
+                    alarmManager.StartAlarm();
+                }
+            }
+        }
+    }
 
     private void OnTriggerExit2D(Collider2D other)
     {
