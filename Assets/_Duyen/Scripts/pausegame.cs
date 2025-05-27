@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class pausegame : MonoBehaviour
 {
@@ -20,6 +21,20 @@ public class pausegame : MonoBehaviour
         {
             pauseButtonImage.sprite = imagePlay;
         }
+
+        if (pannelpause != null)
+        {
+            pannelpause.transform.localScale = Vector3.zero;
+            GetCanvasGroup(pannelpause).alpha = 0f;
+            pannelpause.SetActive(false);
+        }
+
+        if (panelOptions != null)
+        {
+            panelOptions.transform.localScale = Vector3.zero;
+            GetCanvasGroup(panelOptions).alpha = 0f;
+            panelOptions.SetActive(false);
+        }
     }
 
     // Khi nhấn nút "Dừng"
@@ -27,8 +42,14 @@ public class pausegame : MonoBehaviour
     {
         AudioManager.Instance.PlayClickSFX();
 
-        Time.timeScale = 0f; // Dừng thời gian
-        pannelpause.SetActive(true);
+        if (pannelpause != null)
+        {
+            pannelpause.SetActive(true);
+            pannelpause.transform.localScale = Vector3.zero;
+            pannelpause.transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack).SetUpdate(true);
+            GetCanvasGroup(pannelpause).DOFade(1f, 0.25f).SetUpdate(true);            
+        }
+        Time.timeScale = 0f;
 
         // Đổi hình và vô hiệu hóa nút
         if (pauseButtonImage != null && imagePause != null)
@@ -44,8 +65,24 @@ public class pausegame : MonoBehaviour
         AudioManager.Instance.PlayClickSFX();
 
         Time.timeScale = 1f; // Tiếp tục game
-        pannelpause.SetActive(false);
-        panelOptions.SetActive(false);
+
+        if (pannelpause != null)
+        {
+            var cg = GetCanvasGroup(pannelpause);
+            pannelpause.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack).OnComplete(() => {
+                pannelpause.SetActive(false);
+            });
+            cg.DOFade(0f, 0.2f);
+        }
+
+        if (panelOptions != null)
+        {
+            var cg = GetCanvasGroup(panelOptions);
+            panelOptions.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack).OnComplete(() => {
+                panelOptions.SetActive(false);
+            });
+            cg.DOFade(0f, 0.2f);
+        }
 
         // Đổi lại hình và bật lại nút
         if (pauseButtonImage != null && imagePlay != null)
@@ -69,10 +106,26 @@ public class pausegame : MonoBehaviour
         AudioManager.Instance.PlayClickSFX();
 
         if (panelOptions != null)
+        {
+            var cg = GetCanvasGroup(panelOptions); // ✅ Lấy đúng CanvasGroup
             panelOptions.SetActive(true);
+            panelOptions.transform.localScale = Vector3.zero;
+            panelOptions.transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack).SetUpdate(true);
+            cg.DOFade(1f, 0.25f).SetUpdate(true);
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+        }
 
         if (pannelpause != null)
-            pannelpause.SetActive(false);
+        {
+            var cg = GetCanvasGroup(pannelpause);
+            pannelpause.transform.DOScale(0f, 0.2f).SetEase(Ease.InBack).OnComplete(() => {
+                pannelpause.SetActive(false);
+            });
+            cg.DOFade(0f, 0.2f).SetUpdate(true);
+            cg.interactable = false;
+            cg.blocksRaycasts = false;
+        }
     }
 
     public void OnRetryClicked(int sceneIndex)
@@ -87,5 +140,11 @@ public class pausegame : MonoBehaviour
     {
         // Reset timeScale để tránh game bị kẹt khi chuyển scene
         Time.timeScale = 1f;
+    }
+    private CanvasGroup GetCanvasGroup(GameObject go)
+    {
+        var cg = go.GetComponent<CanvasGroup>();
+        if (cg == null) cg = go.AddComponent<CanvasGroup>();
+        return cg;
     }
 }
