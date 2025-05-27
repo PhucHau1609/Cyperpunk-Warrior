@@ -12,6 +12,12 @@ namespace DialogueSystem
         private Coroutine dialogueCoroutine;
         private bool isSkipped = false;
 
+        private void OnEnable()
+    {
+        isSkipped = false;
+        dialogueCoroutine = StartCoroutine(dialogueSequence());
+    }
+
         private void Awake()
         {
             dialogueCoroutine = StartCoroutine(dialogueSequence());
@@ -19,7 +25,6 @@ namespace DialogueSystem
 
         private void Update()
         {
-            // Nhấn Shift để skip hội thoại
             if (Input.GetKeyDown(KeyCode.LeftShift) && !isSkipped)
             {
                 isSkipped = true;

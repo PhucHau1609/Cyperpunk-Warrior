@@ -27,9 +27,9 @@ public class Bomb : MonoBehaviour
         if (!hasExploded)
         {
             hasExploded = true;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
-            rb.isKinematic = true;
+            //rb.isKinematic = true;
 
             anim.SetTrigger("Explode");
         }

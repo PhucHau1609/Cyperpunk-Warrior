@@ -14,7 +14,7 @@ public class Droid01Bullet : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        rb.velocity = direction * speed;
+        rb.linearVelocity = direction * speed;
 
         Destroy(gameObject, 3f);
     }
@@ -24,7 +24,7 @@ public class Droid01Bullet : MonoBehaviour
     {
         direction = dir.normalized;
         if (rb != null)
-            rb.velocity = direction * speed;
+            rb.linearVelocity = direction * speed;
 
         // Xoay viên đạn để đầu nó hướng về direction
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -45,7 +45,7 @@ public class Droid01Bullet : MonoBehaviour
     void Explode()
     {
         isDestroyed = true;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         animator.SetTrigger("Destroy");
     }
 

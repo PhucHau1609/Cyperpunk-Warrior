@@ -14,7 +14,7 @@ public class Droid02Bullet : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        rb.velocity = direction * speed;
+        rb.linearVelocity = direction * speed;
 
         Destroy(gameObject, 3f);
     }
@@ -23,7 +23,7 @@ public class Droid02Bullet : MonoBehaviour
     public void SetDirection(Vector2 dir)
     {
         direction = dir.normalized;
-        if (rb != null) rb.velocity = direction * speed;
+        if (rb != null) rb.linearVelocity = direction * speed;
 
         // Lật sprite nếu cần
         if (dir.x < 0)
@@ -44,7 +44,7 @@ public class Droid02Bullet : MonoBehaviour
     void Explode()
     {
         isDestroyed = true;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         animator.SetTrigger("Destroy");
     }
 
