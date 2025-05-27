@@ -11,6 +11,7 @@ public class TeleportPortal : MonoBehaviour
     private Animator portalAnimator;
     private bool isTeleporting = false;
     private bool isUnlocked = false;
+    private bool hasTriggeredDisappear = false; // ✅ Dùng để đảm bảo animation chỉ gọi 1 lần
 
     private void Awake()
     {
@@ -36,8 +37,19 @@ public class TeleportPortal : MonoBehaviour
         isTeleporting = true;
 
         Animator playerAnim = other.GetComponent<Animator>();
-        if (playerAnim != null)
+        if (playerAnim != null && !hasTriggeredDisappear)
+        {
+            playerAnim.ResetTrigger("PlayDisappear"); // tránh trùng trigger
             playerAnim.SetTrigger("PlayDisappear");
+            hasTriggeredDisappear = true;
+        }
+
+        // ✅ Gọi pet Disappear nếu có
+        FloatingFollower pet = FindObjectOfType<FloatingFollower>();
+        if (pet != null)
+        {
+            pet.Disappear();
+        }
 
         if (teleportSound != null)
             audioSource.PlayOneShot(teleportSound);
@@ -70,7 +82,6 @@ public class TeleportPortal : MonoBehaviour
         else
         {
             Debug.Log("⚠ Không còn scene tiếp theo trong Build Settings!");
-            // Có thể chuyển về menu chính hoặc restart game tại đây nếu bạn muốn
         }
     }
 
@@ -83,14 +94,14 @@ public class TeleportPortal : MonoBehaviour
     public void ResetPortal()
     {
         isUnlocked = false;
+        isTeleporting = false;
+        hasTriggeredDisappear = false; // ✅ reset trạng thái khi khởi động lại
         SetGateAnimation(false);
     }
 
     private void SetGateAnimation(bool isWorking)
     {
         if (portalAnimator != null)
-        {
             portalAnimator.SetBool("IsGateWorking", isWorking);
-        }
     }
 }
