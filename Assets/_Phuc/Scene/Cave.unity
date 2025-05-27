@@ -768,9 +768,9 @@ GameObject:
   - component: {fileID: 85231893}
   - component: {fileID: 85231892}
   - component: {fileID: 85231891}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39343,7 +39343,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!320 &88862723
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -70191,22 +70191,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6522751024116852570
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6680001068022493634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8644d33345e77614ba3ace9c18398d0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 7905095497701984498}
-  animator: {fileID: 7992599513654883142}
-  runSpeed: 40
-  canMove: 1
 --- !u!114 &6671569326365787477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70235,13 +70219,12 @@ GameObject:
   - component: {fileID: 8858529090543369811}
   - component: {fileID: 7905095497701984498}
   - component: {fileID: 1030227259645450008}
-  - component: {fileID: 6522751024116852570}
   - component: {fileID: 5945631175230375885}
   - component: {fileID: 7992599513654883142}
   - component: {fileID: 1886917120932573863}
   - component: {fileID: 1656452896560947815}
   - component: {fileID: 1959664590600003739}
-  - component: {fileID: 9181579125549633476}
+  - component: {fileID: 9181579125549633477}
   m_Layer: 1
   m_Name: Eren
   m_TagString: Player
@@ -70426,7 +70409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7297019028799898297
 Transform:
   m_ObjectHideFlags: 0
@@ -70666,8 +70649,8 @@ MonoBehaviour:
   OnFallEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6522751024116852570}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 9181579125549633477}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
         m_MethodName: OnFall
         m_Mode: 1
         m_Arguments:
@@ -70681,8 +70664,8 @@ MonoBehaviour:
   OnLandEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6522751024116852570}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 9181579125549633477}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
         m_MethodName: OnLanding
         m_Mode: 1
         m_Arguments:
@@ -70956,7 +70939,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &9181579125549633476
+--- !u!114 &9181579125549633477
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70965,10 +70948,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 6680001068022493634}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d4e05a72d2a2994ab2801146ee9c2da, type: 3}
+  m_Script: {fileID: 11500000, guid: b1dfaf94e724d3d4dabcaabaa1967d90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userId: 1
+  controller: {fileID: 7905095497701984498}
+  animator: {fileID: 7992599513654883142}
+  runSpeed: 40
+  invisibilityLight: {fileID: 0}
+  canMove: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
