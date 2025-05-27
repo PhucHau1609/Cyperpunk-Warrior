@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class FloatingFollower : MonoBehaviour
 {
-    public Transform player;
     public float followHeight = 1.5f;
     public float sideOffset = 1f;
     public float xFollowSpeed = 2f;
@@ -11,22 +12,25 @@ public class FloatingFollower : MonoBehaviour
     public bool isDashing = false;
     public float dashFollowMultiplier = 2f;
 
+    private Transform player;
     private Vector3 targetPos;
     private Rigidbody2D rb;
     private Animator anim;
 
-    private enum PetState { Sleepwell, Awaken, Following }
+    private enum PetState { Sleepwell, Awaken, Following, Disappear }
     private PetState state = PetState.Sleepwell;
 
     private void Awake()
     {
         DontDestroyOnLoad(this);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        FindPlayer();
     }
 
     void FixedUpdate()
@@ -66,47 +70,62 @@ public class FloatingFollower : MonoBehaviour
         transform.localScale = direction > 0 ? new Vector3(-2, 2, 2) : new Vector3(2, 2, 2);
     }
 
-    System.Collections.IEnumerator StartFollowAfterDelay(float delay)
+    IEnumerator StartFollowAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         state = PetState.Following;
-        // Lúc này animation sẽ tự động sang Idle do đã setup trong Animator
+        anim.SetTrigger("Idle");
+    }
+
+    public void Disappear()
+    {
+        if (state != PetState.Following) return;
+
+        state = PetState.Disappear;
+
+        if (anim != null)
+        {
+            Debug.Log("Pet disappearing...");
+            anim.SetTrigger("Disappear");
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindPlayer();
+
+        // Reset lại pet về trạng thái Following và Idle nếu vừa Disappear
+        if (state == PetState.Disappear || state == PetState.Awaken)
+        {
+            StartCoroutine(ForceIdleAfterSceneLoad());
+        }
+    }
+
+    private IEnumerator ForceIdleAfterSceneLoad()
+    {
+        yield return null; // Đợi 1 frame
+        yield return null; // Đợi thêm để animator kịp reset
+
+        state = PetState.Following;
+
+        if (anim != null)
+        {
+            anim.SetTrigger("Idle");
+            Debug.Log("Pet forced to Idle after scene load.");
+        }
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
-
-
-
-
-//using UnityEngine;
-
-//public class FloatingFollower : MonoBehaviour
-//{
-//    public Transform player;       // Gán Player vào đây
-//    public Vector3 baseOffset = new Vector3(1.5f, 2f, 0);
-//    public float followSpeed = 5f; // Tốc độ bay theo
-//    private Vector3 currentOffset;
-//    private Vector3 lastPlayerPos;
-
-//    void Start()
-//    {
-//        currentOffset = baseOffset;
-//        lastPlayerPos = player.position;
-//    }
-
-//    void Update()
-//    {
-//        // Xác định hướng di chuyển của player (trái hay phải)
-//        float movement = player.position.x - lastPlayerPos.x;
-
-//        if (Mathf.Abs(movement) > 0.01f)
-//        {
-//            currentOffset.x = movement > 0 ? -Mathf.Abs(baseOffset.x) : Mathf.Abs(baseOffset.x);
-//        }
-
-//        lastPlayerPos = player.position;
-
-//        // Theo dõi vị trí bay theo
-//        Vector3 targetPosition = player.position + currentOffset;
-//        transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
-//    }
-//}
