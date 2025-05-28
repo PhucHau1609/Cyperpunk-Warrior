@@ -75,6 +75,7 @@ public class LoginManager : MonoBehaviour
     void OnInputSelected(TMP_InputField input)
     {
         currentInputField = input;
+        AudioManager.Instance?.PlayClickSFX();
     }
 
     void OnDisable()
