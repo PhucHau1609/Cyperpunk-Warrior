@@ -61,14 +61,12 @@ public class SwapTargetManager : MonoBehaviour
 
         isSwapping = true;
 
-
-
         Vector3 playerStartPos = player.position;
         Vector3 targetStartPos = currentTarget.transform.position;
 
         Vector3 playerStartScale = player.localScale;
         Vector3 targetStartScale = currentTarget.transform.localScale;
-        Debug.Log($"Before swap: playerScale.x = {playerStartScale.x}, targetScale.x = {targetStartScale.x}");
+        //Debug.Log($"Before swap: playerScale.x = {playerStartScale.x}, targetScale.x = {targetStartScale.x}");
 
 
         float baseDuration = swapDuration / Mathf.Max(swapSpeedMultiplier, 0.01f);
@@ -116,10 +114,19 @@ public class SwapTargetManager : MonoBehaviour
             Time.timeScale = 1f;
             Time.fixedDeltaTime = 0.02f;
 
-            Debug.Log($"After swap: playerScale.x = {player.localScale.x}, targetScale.x = {currentTarget.transform.localScale.x}");
-            if (playerAnimator != null) playerAnimator.speed = 1f;
+            // SWAP hướng nhìn giữa player và target
+            Vector3 tempScale = player.localScale;
+            player.localScale = currentTarget.transform.localScale;
+            currentTarget.transform.localScale = tempScale;
 
+            // Nếu player có controller giữ biến m_FacingRight thì sync lại
+            var controller = player.GetComponent<CharacterController2D>(); // tên class controller của bạn
+            if (controller != null)
+                controller.SyncFacingDirection(); // bạn sẽ tạo hàm này bên dưới
+
+            if (playerAnimator != null) playerAnimator.speed = 1f;
             isSwapping = false;
         });
+
     }
 }

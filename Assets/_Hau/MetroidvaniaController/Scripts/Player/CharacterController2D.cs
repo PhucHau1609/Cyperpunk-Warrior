@@ -53,7 +53,7 @@ public class CharacterController2D : MonoBehaviour
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
-		animator = GetComponent<Animator>();
+		animator = GetComponentInChildren<Animator>();
 
 		if (OnFallEvent == null)
 			OnFallEvent = new UnityEvent();
@@ -340,4 +340,10 @@ public class CharacterController2D : MonoBehaviour
 		yield return new WaitForSeconds(1.1f);
 		SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
 	}
+
+    public void SyncFacingDirection()
+    {
+        m_FacingRight = transform.localScale.x > 0;
+    }
+
 }

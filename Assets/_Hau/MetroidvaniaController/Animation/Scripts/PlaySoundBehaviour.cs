@@ -11,7 +11,7 @@ public class PlaySoundBehaviour : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        audioSource = animator.transform.GetComponent<AudioSource>();
+        audioSource = animator.transform.GetComponentInParent<AudioSource>();
         audioSource.clip = audioSound;
         audioSource.loop = loop;
         audioSource.Play();
