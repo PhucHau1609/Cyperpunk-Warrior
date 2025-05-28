@@ -10,27 +10,24 @@ public class LyraDialogueController : MonoBehaviour
         if (other.gameObject.tag == "Dialog")
         {
             DialogueData dialogue = GetDialogueDataForZone(other);
-            if (dialogue == null)
-                return; // Vùng này không có thoại, không hiện icon
+            if (dialogue == null) return;
 
-            if (currentIconInstance == null)
+            if (currentIconInstance != null)
             {
-                currentIconInstance = Instantiate(speechIconPrefab, FindObjectOfType<Canvas>().transform);
+                Destroy(currentIconInstance);
+            }
+
+            Canvas canvas = Object.FindFirstObjectByType<Canvas>();
+            if (canvas != null)
+            {
+                currentIconInstance = Instantiate(speechIconPrefab, canvas.transform);
                 var follower = currentIconInstance.GetComponent<SpeechIconFollower>();
                 follower.targetNPC = this.transform;
 
                 var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
                 clickHandler.dialogueData = dialogue;
                 clickHandler.npcTransform = this.transform;
-                Collider2D triggerZone = other;
-                DialogueData usedDialogue = dialogue;
-
-                //clickHandler.onClick = () =>
-                //{
-                //    DialogueManager.Instance.onDialogueEnd = () =>
-                //    {
-                //    };
-                //};
+            
             }
         }
     }
@@ -52,23 +49,36 @@ public class LyraDialogueController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (TagExists("Dialog") && other.CompareTag("Dialog"))
+        if (other.CompareTag("Dialog"))
         {
-            DialogueData dialogue = GetDialogueDataForZone(other);
-            if (dialogue == null)
-                return;
-
-            if (currentIconInstance == null)
+            // Khi thoát khỏi vùng thoại -> xóa icon nếu đang hiện
+            if (currentIconInstance != null)
             {
-                currentIconInstance = Instantiate(speechIconPrefab, FindObjectOfType<Canvas>().transform);
-                var follower = currentIconInstance.GetComponent<SpeechIconFollower>();
-                follower.targetNPC = this.transform;
-
-                var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
-                clickHandler.dialogueData = dialogue;
-                clickHandler.npcTransform = this.transform;
+                Destroy(currentIconInstance);
+                currentIconInstance = null;
             }
         }
+        //if (TagExists("Dialog") && other.CompareTag("Dialog"))
+        //{
+        //    DialogueData dialogue = GetDialogueDataForZone(other);
+        //    if (dialogue == null)
+        //        return;
+
+        //    if (currentIconInstance == null)
+        //    {
+        //        Canvas canvas = Object.FindFirstObjectByType<Canvas>(); // hoặc FindAnyObjectByType
+        //        if (canvas != null)
+        //        {
+        //            currentIconInstance = Instantiate(speechIconPrefab, canvas.transform);
+        //        }
+        //        var follower = currentIconInstance.GetComponent<SpeechIconFollower>();
+        //        follower.targetNPC = this.transform;
+
+        //        var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
+        //        clickHandler.dialogueData = dialogue;
+        //        clickHandler.npcTransform = this.transform;
+        //    }
+        //}
     }
 
     DialogueData GetDialogueDataForZone(Collider2D zone)
