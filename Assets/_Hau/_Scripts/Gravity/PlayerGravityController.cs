@@ -23,4 +23,10 @@ public class PlayerGravityController : MonoBehaviour
         localScale.y *= -1;
         transform.localScale = localScale;
     }
+
+    public bool IsGravityInverted()
+    {
+        return isGravityInverted;
+    }
+
 }
