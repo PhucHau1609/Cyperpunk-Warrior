@@ -1,10 +1,13 @@
-﻿using TMPro;
+﻿using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class CodeLock : MonoBehaviour
 {
-    public static bool PetUnlocked = false; // ✅ Biến dùng để bật Pet hoạt động
+    public static bool PetUnlocked = false;
 
     public Button[] buttons;
     public TMP_Text[] numberTexts;
@@ -15,49 +18,84 @@ public class CodeLock : MonoBehaviour
     public Button reopenButton;
     public Image imageToChange;
     public Sprite image2;
-    public Text hintText;
     public Sprite reopenDisabledSprite;
 
+    public Sprite[] hintImages;
+    public Image[] hintImageSlots;
+    private int[] hintIndexes = new int[4];
     private int[] currentValues = new int[4];
     private int[] correctCode = new int[4];
 
-    private string[] hints = {
-        "Kết quả của 3 nhân 3 là bao nhiêu?", // 9
-        "Số hoàn hảo nhỏ nhất lớn hơn 1 là số nào?", // 8
-        "Một năm thường có bao nhiêu mùa?", // 4
-        "Màu \"xanh\" còn được gọi là màu gì?" // 6
-    };
-
-    private int[] numbers = { 9, 8, 4, 6 };
+    private CanvasGroup canvasGroup;
 
     void Start()
     {
+        canvasGroup = canvas.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = canvas.AddComponent<CanvasGroup>();
+        }
+
         ShuffleHintsAndNumbers();
-        hintText.text = CreateHintParagraph();
 
         for (int i = 0; i < buttons.Length; i++)
         {
             int index = i;
-            buttons[i].onClick.AddListener(() => IncreaseNumber(index));
+            buttons[i].onClick.AddListener(() =>
+            {
+                AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm số
+                IncreaseNumber(index);
+            });
             UpdateDisplay(index);
         }
 
-        submitButton.onClick.AddListener(CheckCode);
-        closeButton.onClick.AddListener(CloseCanvas);
-        reopenButton.onClick.AddListener(ReopenCanvas);
+        submitButton.onClick.AddListener(() =>
+        {
+            AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm Submit
+            CheckCode();
+        });
+
+        closeButton.onClick.AddListener(() =>
+        {
+            AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm Close
+            CloseCanvas();
+        });
+
+        reopenButton.onClick.AddListener(() =>
+        {
+            AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm Reopen
+            ReopenCanvas();
+        });
+
+        // Mở đầu canvas với hiệu ứng DOTween
+        canvasGroup.alpha = 0;
+        canvas.transform.localScale = Vector3.zero;
+        canvas.SetActive(false);
+        canvasGroup.DOFade(1, 0.4f);
+        canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
+        {
+            AudioManager.Instance.PlayClickSFX(); // ✅ Enter cũng tính như Submit
             CheckCode();
+        }
     }
 
     void IncreaseNumber(int index)
     {
         currentValues[index] = (currentValues[index] + 1) % 10;
         UpdateDisplay(index);
+
+        // Reset scale về 1 trước khi tạo hiệu ứng mới
+        buttons[index].transform.DOKill(); // Hủy tween cũ nếu đang chạy
+        buttons[index].transform.localScale = Vector3.one;
+
+        buttons[index].transform.DOPunchScale(Vector3.one * 0.2f, 0.3f, 5, 0.5f);
     }
+
 
     void UpdateDisplay(int index)
     {
@@ -67,28 +105,19 @@ public class CodeLock : MonoBehaviour
     void ShuffleHintsAndNumbers()
     {
         System.Random rand = new System.Random();
-        for (int i = 0; i < numbers.Length; i++)
+        List<int> allIndexes = new List<int>();
+
+        for (int i = 0; i < 10; i++) allIndexes.Add(i);
+
+        for (int i = 0; i < 4; i++)
         {
-            int j = rand.Next(i, numbers.Length);
+            int randomIndex = rand.Next(allIndexes.Count);
+            hintIndexes[i] = allIndexes[randomIndex];
+            allIndexes.RemoveAt(randomIndex);
 
-            (numbers[i], numbers[j]) = (numbers[j], numbers[i]);
-            (hints[i], hints[j]) = (hints[j], hints[i]);
+            hintImageSlots[i].sprite = hintImages[hintIndexes[i]];
+            correctCode[i] = hintIndexes[i];
         }
-
-        for (int i = 0; i < numbers.Length; i++)
-            correctCode[i] = numbers[i];
-    }
-
-    string CreateHintParagraph()
-    {
-        return "File: LOG_9821-B [Giải mã: Một phần dữ liệu khôi phục được từ hệ thống phụ của H]\n\n" +
-               "Nếu bạn đang đọc dòng này, nghĩa là chúng chưa xóa hết dấu vết của tôi. Đoạn mã không nằm ở nơi bạn nghĩ, mà trong ký ức của hệ thống. Hãy giải nó trước khi chúng quay lại.\n\n" +
-               "– " + hints[0] + "\n" +
-               "– " + hints[1] + "\n" +
-               "– " + hints[2] + "\n" +
-               "– " + hints[3] + "\n\n" +
-               "Mật mã nằm ở đây, giữa những con số – và giữa những sai lầm của chúng.\n\n" +
-               "– G.H | Shadow Protocol | Năm 2124";
     }
 
     void CheckCode()
@@ -97,14 +126,22 @@ public class CodeLock : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            if (currentValues[i] != correctCode[i])
+            int index = i; // ✅ Cách 3: tạo biến cục bộ để tránh capture sai trong lambda
+
+            if (currentValues[index] != correctCode[index])
             {
-                buttons[i].image.color = Color.red;
                 isCorrect = false;
+                buttons[index].image.DOColor(Color.red, 0.2f).OnComplete(() =>
+                {
+                    buttons[index].image.DOColor(Color.white, 0.3f);
+                });
             }
             else
             {
-                buttons[i].image.color = Color.green;
+                buttons[index].image.DOColor(Color.green, 0.2f).OnComplete(() =>
+                {
+                    buttons[index].image.DOColor(Color.white, 0.3f);
+                });
             }
         }
 
@@ -114,28 +151,71 @@ public class CodeLock : MonoBehaviour
             messageText.text = correctCodeString;
             imageToChange.sprite = image2;
 
-            PetUnlocked = true; // ✅ Bật Pet
-
-            StartCoroutine(CloseCanvasAfterDelay(0f));
+            PetUnlocked = true;
+            StartCoroutine(CloseCanvasAfterDelay(0.5f));
         }
     }
 
+
+    //void CheckCode()
+    //{
+    //    bool isCorrect = true;
+
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        if (currentValues[i] != correctCode[i])
+    //        {
+    //            isCorrect = false;
+    //            buttons[i].image.DOColor(Color.red, 0.2f).OnComplete(() =>
+    //            {
+    //                buttons[i].image.DOColor(Color.white, 0.3f);
+    //            });
+    //        }
+    //        else
+    //        {
+    //            buttons[i].image.DOColor(Color.green, 0.2f).OnComplete(() =>
+    //            {
+    //                buttons[i].image.DOColor(Color.white, 0.3f);
+    //            });
+    //        }
+    //    }
+
+    //    if (isCorrect)
+    //    {
+    //        string correctCodeString = string.Join("", correctCode);
+    //        messageText.text = correctCodeString;
+    //        imageToChange.sprite = image2;
+
+    //        PetUnlocked = true;
+    //        StartCoroutine(CloseCanvasAfterDelay(0.5f));
+    //    }
+    //}
+
     void CloseCanvas()
     {
-        canvas.SetActive(false);
+        canvasGroup.DOFade(0, 0.4f);
+        canvas.transform.DOScale(0, 0.4f).SetEase(Ease.InBack).OnComplete(() =>
+        {
+            canvas.SetActive(false);
+        });
     }
 
     void ReopenCanvas()
     {
         canvas.SetActive(true);
+        canvasGroup.alpha = 0;
+        canvas.transform.localScale = Vector3.zero;
+        canvasGroup.DOFade(1, 0.4f);
+        canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
     }
 
-    System.Collections.IEnumerator CloseCanvasAfterDelay(float delay)
+    IEnumerator CloseCanvasAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        canvas.SetActive(false);
-        reopenButton.interactable = false;
 
+        CloseCanvas();
+
+        reopenButton.interactable = false;
         Image btnImage = reopenButton.GetComponent<Image>();
         if (btnImage != null && reopenDisabledSprite != null)
             btnImage.sprite = reopenDisabledSprite;

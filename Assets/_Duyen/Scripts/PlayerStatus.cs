@@ -20,7 +20,7 @@ public class PlayerStatus : MonoBehaviour
     void Awake()
     {
         // Nếu đã tồn tại 1 phiên bản PlayerStatus, thì huỷ phiên bản mới
-        if (FindObjectsOfType<PlayerStatus>().Length > 1)
+        if (Object.FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None).Length > 1)
         {
             Destroy(gameObject);
             return;
