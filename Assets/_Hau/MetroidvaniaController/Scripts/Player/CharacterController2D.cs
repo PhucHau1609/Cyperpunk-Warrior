@@ -65,91 +65,91 @@ public class CharacterController2D : MonoBehaviour
 			OnLandEvent = new UnityEvent();
 	}
 
-    private void FixedUpdate()
-    {
-        bool wasGrounded = m_Grounded;
-        m_Grounded = false;
+	/*   private void FixedUpdate()
+	   {
+		   bool wasGrounded = m_Grounded;
+		   m_Grounded = false;
 
-        // Tính vị trí kiểm tra grounded tùy theo trọng lực
-        Vector3 groundCheckPosition;
+		   // Tính vị trí kiểm tra grounded tùy theo trọng lực
+		   Vector3 groundCheckPosition;
 
-        if (gravityController != null && gravityController.IsGravityInverted())
-        {
-            groundCheckPosition = transform.position + (transform.up * Mathf.Abs(m_GroundCheck.localPosition.y));
-        }
-        else
-        {
-            groundCheckPosition = transform.position - (transform.up * Mathf.Abs(m_GroundCheck.localPosition.y));
-        }
+		   if (gravityController != null && gravityController.IsGravityInverted())
+		   {
+			   groundCheckPosition = transform.position + (transform.up * Mathf.Abs(m_GroundCheck.localPosition.y));
+		   }
+		   else
+		   {
+			   groundCheckPosition = transform.position - (transform.up * Mathf.Abs(m_GroundCheck.localPosition.y));
+		   }
 
-        // Kiểm tra va chạm với mặt đất
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckPosition, k_GroundedRadius, m_WhatIsGround);
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            if (colliders[i].gameObject != gameObject)
-            {
-                m_Grounded = true;
-                if (!wasGrounded)
-                {
-                    OnLandEvent.Invoke();
-                    if (!m_IsWall && !isDashing)
-                        particleJumpDown.Play();
-                    canDoubleJump = true;
-                    if (m_Rigidbody2D.linearVelocity.y < 0f)
-                        limitVelOnWallJump = false;
-                }
-            }
-        }
+		   // Kiểm tra va chạm với mặt đất
+		   Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckPosition, k_GroundedRadius, m_WhatIsGround);
+		   for (int i = 0; i < colliders.Length; i++)
+		   {
+			   if (colliders[i].gameObject != gameObject)
+			   {
+				   m_Grounded = true;
+				   if (!wasGrounded)
+				   {
+					   OnLandEvent.Invoke();
+					   if (!m_IsWall && !isDashing)
+						   particleJumpDown.Play();
+					   canDoubleJump = true;
+					   if (m_Rigidbody2D.linearVelocity.y < 0f)
+						   limitVelOnWallJump = false;
+				   }
+			   }
+		   }
 
-        m_IsWall = false;
+		   m_IsWall = false;
 
-        if (!m_Grounded)
-        {
-            OnFallEvent.Invoke();
-            Collider2D[] collidersWall = Physics2D.OverlapCircleAll(m_WallCheck.position, k_GroundedRadius, m_WhatIsGround);
-            for (int i = 0; i < collidersWall.Length; i++)
-            {
-                if (collidersWall[i].gameObject != null)
-                {
-                    isDashing = false;
-                    m_IsWall = true;
-                }
-            }
-            prevVelocityX = m_Rigidbody2D.linearVelocity.x;
-        }
+		   if (!m_Grounded)
+		   {
+			   OnFallEvent.Invoke();
+			   Collider2D[] collidersWall = Physics2D.OverlapCircleAll(m_WallCheck.position, k_GroundedRadius, m_WhatIsGround);
+			   for (int i = 0; i < collidersWall.Length; i++)
+			   {
+				   if (collidersWall[i].gameObject != null)
+				   {
+					   isDashing = false;
+					   m_IsWall = true;
+				   }
+			   }
+			   prevVelocityX = m_Rigidbody2D.linearVelocity.x;
+		   }
 
-        if (limitVelOnWallJump)
-        {
-            if (m_Rigidbody2D.linearVelocity.y < -0.5f)
-                limitVelOnWallJump = false;
+		   if (limitVelOnWallJump)
+		   {
+			   if (m_Rigidbody2D.linearVelocity.y < -0.5f)
+				   limitVelOnWallJump = false;
 
-            jumpWallDistX = (jumpWallStartX - transform.position.x) * transform.localScale.x;
+			   jumpWallDistX = (jumpWallStartX - transform.position.x) * transform.localScale.x;
 
-            if (jumpWallDistX < -0.5f && jumpWallDistX > -1f)
-            {
-                canMove = true;
-            }
-            else if (jumpWallDistX < -1f && jumpWallDistX >= -2f)
-            {
-                canMove = true;
-                m_Rigidbody2D.linearVelocity = new Vector2(10f * transform.localScale.x, m_Rigidbody2D.linearVelocity.y);
-            }
-            else if (jumpWallDistX < -2f)
-            {
-                limitVelOnWallJump = false;
-                m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
-            }
-            else if (jumpWallDistX > 0)
-            {
-                limitVelOnWallJump = false;
-                m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
-            }
-        }
-    }
+			   if (jumpWallDistX < -0.5f && jumpWallDistX > -1f)
+			   {
+				   canMove = true;
+			   }
+			   else if (jumpWallDistX < -1f && jumpWallDistX >= -2f)
+			   {
+				   canMove = true;
+				   m_Rigidbody2D.linearVelocity = new Vector2(10f * transform.localScale.x, m_Rigidbody2D.linearVelocity.y);
+			   }
+			   else if (jumpWallDistX < -2f)
+			   {
+				   limitVelOnWallJump = false;
+				   m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
+			   }
+			   else if (jumpWallDistX > 0)
+			   {
+				   limitVelOnWallJump = false;
+				   m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
+			   }
+		   }
+	   }
+   */
 
 
-
-    /*private void FixedUpdate()
+	private void FixedUpdate()
 	{
 		bool wasGrounded = m_Grounded;
 		m_Grounded = false;
@@ -161,15 +161,15 @@ public class CharacterController2D : MonoBehaviour
 		{
 			if (colliders[i].gameObject != gameObject)
 				m_Grounded = true;
-				if (!wasGrounded )
-				{
-					OnLandEvent.Invoke();
-					if (!m_IsWall && !isDashing) 
-						particleJumpDown.Play();
-					canDoubleJump = true;
-					if (m_Rigidbody2D.linearVelocity.y < 0f)
-						limitVelOnWallJump = false;
-				}
+			if (!wasGrounded)
+			{
+				OnLandEvent.Invoke();
+				if (!m_IsWall && !isDashing)
+					particleJumpDown.Play();
+				canDoubleJump = true;
+				if (m_Rigidbody2D.linearVelocity.y < 0f)
+					limitVelOnWallJump = false;
+			}
 		}
 
 		//
@@ -196,30 +196,30 @@ public class CharacterController2D : MonoBehaviour
 			if (m_Rigidbody2D.linearVelocity.y < -0.5f)
 				limitVelOnWallJump = false;
 			jumpWallDistX = (jumpWallStartX - transform.position.x) * transform.localScale.x;
-			if (jumpWallDistX < -0.5f && jumpWallDistX > -1f) 
+			if (jumpWallDistX < -0.5f && jumpWallDistX > -1f)
 			{
 				canMove = true;
 			}
-			else if (jumpWallDistX < -1f && jumpWallDistX >= -2f) 
+			else if (jumpWallDistX < -1f && jumpWallDistX >= -2f)
 			{
 				canMove = true;
 				m_Rigidbody2D.linearVelocity = new Vector2(10f * transform.localScale.x, m_Rigidbody2D.linearVelocity.y);
 			}
-			else if (jumpWallDistX < -2f) 
+			else if (jumpWallDistX < -2f)
 			{
 				limitVelOnWallJump = false;
 				m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
 			}
-			else if (jumpWallDistX > 0) 
+			else if (jumpWallDistX > 0)
 			{
 				limitVelOnWallJump = false;
 				m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
 			}
 		}
-	}*/
+	}
 
 
-    public void Move(float move, bool jump, bool dash)
+	public void Move(float move, bool jump, bool dash)
 	{
         float jumpDirection = gravityController != null && gravityController.IsGravityInverted() ? -1f : 1f;
         if (canMove) {

@@ -24,7 +24,7 @@ public class SwapTargetManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        if (player != null) playerAnimator = player.GetComponent<Animator>();
+        if (player != null) playerAnimator = player.GetComponentInChildren<Animator>();
     }
 
     public void SetTarget(SwapableObject target, bool selected)
