@@ -27,8 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        GetComponent<Animator>().SetTrigger("PlayAppear");
-        //spriteRenderer = GetComponent<SpriteRenderer>();
+        GetComponentInChildren<Animator>().SetTrigger("PlayAppear");
     }
 
     void Update()
