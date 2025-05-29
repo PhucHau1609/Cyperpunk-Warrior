@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using DG.Tweening;
+
 
 public class AudioSettingsUI : MonoBehaviour
 {
@@ -147,8 +149,7 @@ public class AudioSettingsUI : MonoBehaviour
         AudioManager.Instance.PlayClickSFX();
         tempMusicLevel = GetCurrentMusicLevel();
         tempSFXLevel = GetCurrentSFXLevel();
-        settingsPanel.SetActive(false);
-        if (openButton != null) openButton.interactable = true;
+        CloseSettingsPanel();
     }
 
     void OnDeny()
@@ -156,9 +157,29 @@ public class AudioSettingsUI : MonoBehaviour
         AudioManager.Instance.PlayClickSFX();
         UpdateMusicVolume(tempMusicLevel);
         UpdateSFXVolume(tempSFXLevel);
-        settingsPanel.SetActive(false);
-        if (openButton != null) openButton.interactable = true;
+        CloseSettingsPanel();
     }
+
+    void CloseSettingsPanel()
+    {
+        if (settingsPanel != null)
+        {
+            CanvasGroup canvasGroup = settingsPanel.GetComponent<CanvasGroup>();
+            if (canvasGroup == null) canvasGroup = settingsPanel.AddComponent<CanvasGroup>();
+
+            settingsPanel.transform.DOScale(0f, 0.25f).SetEase(Ease.InBack);
+            canvasGroup.DOFade(0f, 0.25f).OnComplete(() =>
+            {
+                settingsPanel.SetActive(false);
+            });
+        }
+
+        if (openButton != null)
+        {
+            openButton.interactable = true;
+        }
+    }
+
 
     void UpdateMusicVolume(int level)
     {
@@ -202,6 +223,13 @@ public class AudioSettingsUI : MonoBehaviour
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(true);
+            settingsPanel.transform.localScale = Vector3.zero;
+            CanvasGroup canvasGroup = settingsPanel.GetComponent<CanvasGroup>();
+            if (canvasGroup == null) canvasGroup = settingsPanel.AddComponent<CanvasGroup>();
+            canvasGroup.alpha = 0f;
+
+            settingsPanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
+            canvasGroup.DOFade(1f, 0.3f);
         }
         if (openButton != null)
         {
