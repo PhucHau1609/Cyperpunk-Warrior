@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using DG.Tweening;
 
-
 public class AudioSettingsUI : MonoBehaviour
 {
     public static AudioSettingsUI Instance;
@@ -44,22 +43,15 @@ public class AudioSettingsUI : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
+    void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
+    void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void Start()
+    void Start()
     {
         InitUI();
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Invoke(nameof(RebindUI), 0.1f);
     }
@@ -93,17 +85,14 @@ public class AudioSettingsUI : MonoBehaviour
 
     void InitVolume()
     {
-        float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        float savedSFXVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        float musicVol = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 1f);
 
-        int musicLevel = Mathf.RoundToInt(savedMusicVolume * (musicVolumeButtons.Count - 1));
-        int sfxLevel = Mathf.RoundToInt(savedSFXVolume * (sfxVolumeButtons.Count - 1));
+        tempMusicLevel = Mathf.RoundToInt(musicVol * (musicVolumeButtons.Count - 1));
+        tempSFXLevel = Mathf.RoundToInt(sfxVol * (sfxVolumeButtons.Count - 1));
 
-        tempMusicLevel = musicLevel;
-        tempSFXLevel = sfxLevel;
-
-        UpdateMusicVolume(musicLevel);
-        UpdateSFXVolume(sfxLevel);
+        UpdateMusicVolume(tempMusicLevel);
+        UpdateSFXVolume(tempSFXLevel);
     }
 
     void RebindUI()
@@ -147,8 +136,17 @@ public class AudioSettingsUI : MonoBehaviour
     void OnApply()
     {
         AudioManager.Instance.PlayClickSFX();
-        tempMusicLevel = GetCurrentMusicLevel();
-        tempSFXLevel = GetCurrentSFXLevel();
+
+        float musicVol = (float)tempMusicLevel / (musicVolumeButtons.Count - 1);
+        float sfxVol = (float)tempSFXLevel / (sfxVolumeButtons.Count - 1);
+
+        PlayerPrefs.SetFloat("MusicVolume", musicVol);
+        PlayerPrefs.SetFloat("SFXVolume", sfxVol);
+        PlayerPrefs.Save();
+
+        AudioManager.Instance.bgmSource.volume = musicVol;
+        AudioManager.Instance.sfxSource.volume = sfxVol;
+
         CloseSettingsPanel();
     }
 
@@ -159,27 +157,6 @@ public class AudioSettingsUI : MonoBehaviour
         UpdateSFXVolume(tempSFXLevel);
         CloseSettingsPanel();
     }
-
-    void CloseSettingsPanel()
-    {
-        if (settingsPanel != null)
-        {
-            CanvasGroup canvasGroup = settingsPanel.GetComponent<CanvasGroup>();
-            if (canvasGroup == null) canvasGroup = settingsPanel.AddComponent<CanvasGroup>();
-
-            settingsPanel.transform.DOScale(0f, 0.25f).SetEase(Ease.InBack);
-            canvasGroup.DOFade(0f, 0.25f).OnComplete(() =>
-            {
-                settingsPanel.SetActive(false);
-            });
-        }
-
-        if (openButton != null)
-        {
-            openButton.interactable = true;
-        }
-    }
-
 
     void UpdateMusicVolume(int level)
     {
@@ -207,33 +184,110 @@ public class AudioSettingsUI : MonoBehaviour
         }
     }
 
-    int GetCurrentMusicLevel()
-    {
-        return Mathf.RoundToInt(AudioManager.Instance.bgmSource.volume * (musicVolumeButtons.Count - 1));
-    }
-
-    int GetCurrentSFXLevel()
-    {
-        return Mathf.RoundToInt(AudioManager.Instance.sfxSource.volume * (sfxVolumeButtons.Count - 1));
-    }
-
     public void OpenSettingsPanel()
     {
         AudioManager.Instance.PlayClickSFX();
-        if (settingsPanel != null)
-        {
-            settingsPanel.SetActive(true);
-            settingsPanel.transform.localScale = Vector3.zero;
-            CanvasGroup canvasGroup = settingsPanel.GetComponent<CanvasGroup>();
-            if (canvasGroup == null) canvasGroup = settingsPanel.AddComponent<CanvasGroup>();
-            canvasGroup.alpha = 0f;
 
-            settingsPanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
-            canvasGroup.DOFade(1f, 0.3f);
+        if (pausegame.Instance?.panelOptions?.activeSelf == true)
+        {
+            var optionsPanel = pausegame.Instance.panelOptions;
+            var cg = optionsPanel.GetComponent<CanvasGroup>() ?? optionsPanel.AddComponent<CanvasGroup>();
+
+            cg.DOKill();
+            optionsPanel.transform.DOKill();
+
+            Sequence closeSeq = DOTween.Sequence().SetUpdate(true);
+            closeSeq.Append(cg.DOFade(0f, 0.2f));
+            closeSeq.Join(optionsPanel.transform.DOScale(0.8f, 0.2f));
+            closeSeq.AppendCallback(() =>
+            {
+                optionsPanel.SetActive(false);
+                ShowSettingsPanel();
+            });
+
+            closeSeq.Play();
         }
+        else
+        {
+            ShowSettingsPanel();
+        }
+
         if (openButton != null)
         {
             openButton.interactable = false;
+        }
+    }
+
+    private void ShowSettingsPanel()
+    {
+        if (settingsPanel == null) return;
+
+        var cg = settingsPanel.GetComponent<CanvasGroup>() ?? settingsPanel.AddComponent<CanvasGroup>();
+
+        settingsPanel.transform.DOKill();
+        cg.DOKill();
+
+        settingsPanel.SetActive(true);
+        settingsPanel.transform.localScale = Vector3.one * 0.8f;
+        cg.alpha = 0f;
+        cg.interactable = true;
+        cg.blocksRaycasts = true;
+
+        DOTween.Sequence()
+            .Append(settingsPanel.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack))
+            .Join(cg.DOFade(1f, 0.3f))
+            .SetUpdate(true)
+            .Play();
+    }
+
+    void CloseSettingsPanel()
+    {
+        if (settingsPanel == null) return;
+
+        CanvasGroup canvasGroup = settingsPanel.GetComponent<CanvasGroup>();
+        if (canvasGroup == null) canvasGroup = settingsPanel.AddComponent<CanvasGroup>();
+
+        settingsPanel.transform.DOKill();
+        canvasGroup.DOKill();
+
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+
+        Sequence closeSeq = DOTween.Sequence().SetUpdate(true);
+
+        closeSeq.Append(settingsPanel.transform.DOScale(0.8f, 0.2f).SetEase(Ease.InBack).SetUpdate(true));
+        closeSeq.Join(canvasGroup.DOFade(0f, 0.2f).SetUpdate(true));
+
+        closeSeq.AppendCallback(() =>
+        {
+            settingsPanel.SetActive(false);
+
+            if (pausegame.Instance != null && pausegame.Instance.panelOptions != null &&
+                !pausegame.Instance.pannelpause.activeSelf)
+            {
+                var panelOptions = pausegame.Instance.panelOptions;
+                CanvasGroup optionsCanvasGroup = panelOptions.GetComponent<CanvasGroup>();
+                if (optionsCanvasGroup == null)
+                    optionsCanvasGroup = panelOptions.AddComponent<CanvasGroup>();
+
+                panelOptions.transform.DOKill();
+                optionsCanvasGroup.DOKill();
+
+                panelOptions.SetActive(true);
+                optionsCanvasGroup.alpha = 0f;
+                panelOptions.transform.localScale = Vector3.one * 0.8f;
+
+                Sequence openSeq = DOTween.Sequence().SetUpdate(true);
+                openSeq.Append(panelOptions.transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack).SetUpdate(true));
+                openSeq.Join(optionsCanvasGroup.DOFade(1f, 0.3f).SetUpdate(true));
+            }
+        });
+
+        closeSeq.Play();
+
+        if (openButton != null)
+        {
+            openButton.interactable = true;
         }
     }
 }

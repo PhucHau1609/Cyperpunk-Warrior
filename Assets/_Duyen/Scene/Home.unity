@@ -1233,6 +1233,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -25
       objectReference: {fileID: 0}
+    - target: {fileID: 1375784372554315034, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1463000399949126388, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1512,18 +1516,18 @@ PrefabInstance:
     - target: {fileID: 4301498866247972765, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1738889765}
+      objectReference: {fileID: 0}
     - target: {fileID: 4301498866247972765, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OpenSettingsPanel
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4301498866247972765, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: AudioSettingsUI, Assembly-CSharp
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4301498866247972765, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4363290339161175575, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1605,6 +1609,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -50
       objectReference: {fileID: 0}
+    - target: {fileID: 5110848699145284369, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5426796893462457723, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1636,6 +1644,10 @@ PrefabInstance:
     - target: {fileID: 5463438243951088640, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5658015641070135806, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6319205189598012342, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1732,6 +1744,14 @@ PrefabInstance:
     - target: {fileID: 7418396746495640658, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679302140111399501, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7702404840965422466, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7956177220396625801, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4407,7 +4427,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 670585525}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -9649,7 +9669,7 @@ MonoBehaviour:
   applyButton: {fileID: 27642042}
   denyButton: {fileID: 1849231815}
   closeButton: {fileID: 1834980306}
-  openButton: {fileID: 2020537286}
+  openButton: {fileID: 0}
 --- !u!1 &1752051080
 GameObject:
   m_ObjectHideFlags: 0
@@ -11158,6 +11178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsButton: {fileID: 2020537286}
+  panelOptions: {fileID: 0}
 --- !u!114 &2044305876 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2674258145180614605, guid: 9d9ccc3ac871055448b7b79b646057ff, type: 3}
