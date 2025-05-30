@@ -45,7 +45,7 @@ public class TeleportPortal : MonoBehaviour
         }
 
         // ✅ Gọi pet Disappear nếu có
-        FloatingFollower pet = FindObjectOfType<FloatingFollower>();
+        FloatingFollower pet = FindFirstObjectByType<FloatingFollower>();
         if (pet != null)
         {
             pet.Disappear();

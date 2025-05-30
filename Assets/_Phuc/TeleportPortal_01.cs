@@ -42,7 +42,7 @@ public class TeleportPortal_01 : MonoBehaviour
         }
 
         // ✅ Gọi animation biến mất của pet
-        FloatingFollower pet = FindObjectOfType<FloatingFollower>();
+        FloatingFollower pet = FindFirstObjectByType<FloatingFollower>();
         if (pet != null)
         {
             pet.Disappear();

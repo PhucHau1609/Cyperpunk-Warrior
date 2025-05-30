@@ -8,7 +8,7 @@ public class LightDetector : MonoBehaviour
 
     private void Start()
     {
-        alarmManager = FindObjectOfType<AlarmManager>();
+        alarmManager = FindFirstObjectByType<AlarmManager>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
