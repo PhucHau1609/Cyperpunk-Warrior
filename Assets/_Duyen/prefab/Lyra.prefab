@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 4920232325175992364}
   - component: {fileID: 1054490105168877564}
   - component: {fileID: 6546490840274783319}
+  - component: {fileID: -6544321589321632266}
   m_Layer: 10
   m_Name: Lyra
   m_TagString: Untagged
@@ -196,7 +197,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 52524bbf3194a77469836d92bcb35dd8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -400,6 +401,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speechIconPrefab: {fileID: 8388951830100672721, guid: cb0f2c5a257d95c42812a9d3e0c1fd38, type: 3}
+--- !u!114 &-6544321589321632266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3016476173620225143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee158225ee1e59f4791627785501d950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shaderTypes: 0
+  normalStrength: 5
+  normalSmoothing: 1
+  computingNormal: 0
 --- !u!1 &7273073247489863213
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,7 +472,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
