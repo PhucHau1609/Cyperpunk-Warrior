@@ -8,6 +8,8 @@ public enum ItemCode
     NoName = 0,
     Gold = 1,
     EMP = 2,
+    Artefacts_1 = 3,
+    Artefacts_2 = 4,
     //Melee Weapons
     Knife_1 = 50,
 
@@ -17,4 +19,11 @@ public enum ItemCode
 
     //Health
     PotionMana = 200,
+
+    //Clothes
+    Clothes_1 = 300,
+    Clothes_2 = 301,
+    Clothes_3 = 302,
+    Clothes_4 = 303,
+
 }
