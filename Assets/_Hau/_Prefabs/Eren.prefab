@@ -5223,7 +5223,7 @@ GameObject:
   - component: {fileID: 9181579126995914996}
   - component: {fileID: 9093473221193643738}
   - component: {fileID: 7261934776679248696}
-  - component: {fileID: -6950103531097037074}
+  - component: {fileID: 962040126155233556}
   m_Layer: 1
   m_Name: Eren
   m_TagString: Player
@@ -5549,7 +5549,7 @@ MonoBehaviour:
   swapEase: 4
   swapSpeedMultiplier: 2
   slowMotionScale: 0.1
---- !u!114 &-6950103531097037074
+--- !u!114 &962040126155233556
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5558,11 +5558,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6680001067583368946}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6122839e36e15834f9395cddad7e5570, type: 3}
+  m_Script: {fileID: 11500000, guid: 7a23c8f67763fde468048cf44051c576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keywordToEnable: HOLOGRAM_ON
-  effectDuration: 5
+  health: 5
+  maxHealth: 5
+  healthBar: {fileID: 0}
 --- !u!1 &6893562519748869713
 GameObject:
   m_ObjectHideFlags: 0
@@ -5636,7 +5637,6 @@ GameObject:
   - component: {fileID: 3932674293897905142}
   - component: {fileID: 4162858124099009648}
   - component: {fileID: 5921707828305383333}
-  - component: {fileID: 3087808403610023163}
   m_Layer: 1
   m_Name: PlayerVisual
   m_TagString: Untagged
@@ -5682,7 +5682,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aa0dcef7c1e7ee545a4dc04aaa0c69e0, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5736,22 +5736,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3087808403610023163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7268672698624367274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee158225ee1e59f4791627785501d950, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shaderTypes: 0
-  normalStrength: 5
-  normalSmoothing: 1
-  computingNormal: 0
 --- !u!1 &7706007769601881925
 GameObject:
   m_ObjectHideFlags: 0
