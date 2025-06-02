@@ -43313,7 +43313,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You Win!
+  m_text: Done!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9e7a67dece6800145926079c2f8f2b33, type: 2}
   m_sharedMaterial: {fileID: -7265599160443081829, guid: 9e7a67dece6800145926079c2f8f2b33, type: 2}
@@ -44069,7 +44069,7 @@ PrefabInstance:
     - target: {fileID: 2362587247788241492, guid: 84d1000c8cccbbc40b26b489da393a9a, type: 3}
       propertyPath: currentBlock
       value: 
-      objectReference: {fileID: 2039218965}
+      objectReference: {fileID: 0}
     - target: {fileID: 2362587247788241492, guid: 84d1000c8cccbbc40b26b489da393a9a, type: 3}
       propertyPath: requiredBlockName
       value: CapacitorRotate1
@@ -58722,17 +58722,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1980102603168256088, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
   m_PrefabInstance: {fileID: 2039218963}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2039218965 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6199883295772073470, guid: ef6c8937bcdd8724b890dadc5a557081, type: 3}
-  m_PrefabInstance: {fileID: 2039218963}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb228b8ffa938d944ab937c9c7d03e06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2077115946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60406,6 +60395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speechIcon: {fileID: 7241578801407387689}
   dialogueCanvas: {fileID: 1823515155}
+  iconOffset: {x: 0, y: 1.5, z: 0}
 --- !u!4 &4904273150344114934
 Transform:
   m_ObjectHideFlags: 0

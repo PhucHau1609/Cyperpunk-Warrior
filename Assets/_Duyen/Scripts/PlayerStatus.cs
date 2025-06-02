@@ -41,19 +41,19 @@ public class PlayerStatus : MonoBehaviour
             TakeDamage(10f);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (UseEnergy(10f))
                 StartCoroutine(BlinkImage(qImage));
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             if (UseEnergy(10f))
                 StartCoroutine(BlinkImage(eImage));
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (UseEnergy(10f))
                 StartCoroutine(BlinkImage(rImage));

@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1980102603168256088}
   - component: {fileID: 6309511270213814384}
   - component: {fileID: 7041858962015436885}
-  - component: {fileID: 6199883295772073470}
-  - component: {fileID: -1554456698405819586}
   - component: {fileID: 737772850424910717}
+  - component: {fileID: 6126284305770228425}
+  - component: {fileID: -1802336876685673977}
   m_Layer: 5
   m_Name: CapacitorRotate1
   m_TagString: Untagged
@@ -78,38 +78,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6199883295772073470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7400869755960364526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb228b8ffa938d944ab937c9c7d03e06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blockType: 1
-  block: {fileID: -1554456698405819586}
---- !u!114 &-1554456698405819586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7400869755960364526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfa20fc9868e38944bf20625ece3a644, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  legData:
-    up: 0
-    right: 0
-    down: 0
-    left: 2
-  blockName: CapacitorRotate1
 --- !u!225 &737772850424910717
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -122,3 +90,30 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &6126284305770228425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7400869755960364526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfa20fc9868e38944bf20625ece3a644, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockName: 
+--- !u!114 &-1802336876685673977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7400869755960364526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb228b8ffa938d944ab937c9c7d03e06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockType: 1
+  block: {fileID: 0}
