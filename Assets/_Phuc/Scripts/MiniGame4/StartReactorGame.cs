@@ -11,8 +11,8 @@ public class StartReactorGame : MonoBehaviour
     public Image[] displayPattern;               // 9 ô bên trái để hiển thị thứ tự
 
     [Header("Indicators")]
-    public Image[] levelIndicators;              // 3 nút tròn bên trái (level)
-    public Image[] progressIndicators;           // 3 nút tròn bên phải (bấm đúng)
+    public Image[] levelIndicators;              // 5 nút tròn bên trái (level)
+    public Image[] progressIndicators;           // 5 nút tròn bên phải (bấm đúng)
 
     [Header("Colors")]
     public Color highlightColor = Color.cyan;
@@ -110,7 +110,7 @@ public class StartReactorGame : MonoBehaviour
 
         currentLevel++;
 
-        if (currentLevel > 3)
+        if (currentLevel > 5) // 🔁 Đã đổi từ 3 ➜ 5
         {
             completedText.gameObject.SetActive(true);
             failedText.gameObject.SetActive(false);
