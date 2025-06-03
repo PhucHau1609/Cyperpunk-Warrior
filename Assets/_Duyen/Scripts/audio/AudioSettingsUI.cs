@@ -161,9 +161,8 @@ public class AudioSettingsUI : MonoBehaviour
     void UpdateMusicVolume(int level)
     {
         float volume = (float)level / (musicVolumeButtons.Count - 1);
+        tempMusicLevel = level;
         AudioManager.Instance.bgmSource.volume = volume;
-        PlayerPrefs.SetFloat("MusicVolume", volume);
-        PlayerPrefs.Save();
 
         for (int i = 0; i < musicVolumeButtons.Count; i++)
         {
@@ -174,9 +173,8 @@ public class AudioSettingsUI : MonoBehaviour
     void UpdateSFXVolume(int level)
     {
         float volume = (float)level / (sfxVolumeButtons.Count - 1);
+        tempSFXLevel = level;
         AudioManager.Instance.sfxSource.volume = volume;
-        PlayerPrefs.SetFloat("SFXVolume", volume);
-        PlayerPrefs.Save();
 
         for (int i = 0; i < sfxVolumeButtons.Count; i++)
         {

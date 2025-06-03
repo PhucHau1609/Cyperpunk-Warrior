@@ -144,7 +144,7 @@ public class LoginManager : MonoBehaviour
                     UserSession.Instance.UserId = loginResponse.data.regionID;
                 }
 
-                StartCoroutine(LoadSceneAfterDelay(3f));
+                StartCoroutine(LoadSceneAfterDelay(.5f));
             }
             else
             {
@@ -155,7 +155,7 @@ public class LoginManager : MonoBehaviour
 
     IEnumerator LoadSceneAfterDelay(float delaySeconds)
     {
-        loadingSpinner.SetActive(true); // Bật spinner nếu đã tắt
+        //loadingSpinner.SetActive(true); // Bật spinner nếu đã tắt
         yield return new WaitForSeconds(delaySeconds);
         SceneManager.LoadScene(1);
     }
