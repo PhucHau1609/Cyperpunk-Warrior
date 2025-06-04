@@ -33,7 +33,7 @@ public class TeleportPortal_01 : MonoBehaviour
         isTeleporting = true;
 
         // ✅ Gọi animation biến mất của player nếu chưa gọi
-        Animator playerAnim = other.GetComponent<Animator>();
+        Animator playerAnim = other.GetComponentInChildren<Animator>();
         if (playerAnim != null && !hasTriggeredDisappear)
         {
             playerAnim.ResetTrigger("PlayDisappear");
