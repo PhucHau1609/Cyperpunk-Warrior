@@ -19,6 +19,7 @@ public enum ItemCode
 
     //Health
     PotionMana = 200,
+    HP = 201,
 
     //Clothes
     Clothes_1 = 300,
