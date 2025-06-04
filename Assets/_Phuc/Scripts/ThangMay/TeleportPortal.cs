@@ -36,7 +36,7 @@ public class TeleportPortal : MonoBehaviour
 
         isTeleporting = true;
 
-        Animator playerAnim = other.GetComponent<Animator>();
+        Animator playerAnim = other.GetComponentInChildren<Animator>();
         if (playerAnim != null && !hasTriggeredDisappear)
         {
             playerAnim.ResetTrigger("PlayDisappear"); // tránh trùng trigger
