@@ -37,6 +37,15 @@ public class StartReactorGame : MonoBehaviour
             inputButtons[i].onClick.AddListener(() => OnButtonPressed(idx));
         }
 
+        // ❌ Không tự chạy mini game ở đây nữa
+        // ResetAll();
+        // StartCoroutine(ShowPattern());
+    }
+
+    // ✅ Gọi hàm này từ nút "Start"
+    public void StartGame()
+    {
+        Debug.Log("▶️ StartGame được gọi"); // Kiểm tra bằng log
         ResetAll();
         StartCoroutine(ShowPattern());
     }
@@ -70,7 +79,7 @@ public class StartReactorGame : MonoBehaviour
             pattern.Add(randomIndex);
 
             displayPattern[randomIndex].color = highlightColor;
-            SoundMiniGame4.Instance?.PlayPatternSound(); // 🔊 Phát âm thanh hiển thị pattern
+            SoundMiniGame4.Instance?.PlayPatternSound();
 
             yield return new WaitForSeconds(0.5f);
             displayPattern[randomIndex].color = displayDefaultColor;
@@ -82,7 +91,7 @@ public class StartReactorGame : MonoBehaviour
 
     public void OnButtonPressed(int index)
     {
-        SoundMiniGame4.Instance?.PlayButtonPressSound(); // 🔊 Âm thanh khi nhấn nút
+        SoundMiniGame4.Instance?.PlayButtonPressSound();
 
         if (index == pattern[inputIndex])
         {
@@ -110,11 +119,11 @@ public class StartReactorGame : MonoBehaviour
 
         currentLevel++;
 
-        if (currentLevel > 5) // 🔁 Đã đổi từ 3 ➜ 5
+        if (currentLevel > 5)
         {
             completedText.gameObject.SetActive(true);
             failedText.gameObject.SetActive(false);
-            SoundMiniGame4.Instance?.PlayWinSound(); // 🔊 Âm thanh chiến thắng
+            SoundMiniGame4.Instance?.PlayWinSound();
             yield break;
         }
 
@@ -125,7 +134,7 @@ public class StartReactorGame : MonoBehaviour
     {
         failedText.gameObject.SetActive(true);
         completedText.gameObject.SetActive(false);
-        SoundMiniGame4.Instance?.PlayFailSound(); // 🔊 Âm thanh thất bại
+        SoundMiniGame4.Instance?.PlayFailSound();
 
         for (int i = 0; i < 2; i++)
         {

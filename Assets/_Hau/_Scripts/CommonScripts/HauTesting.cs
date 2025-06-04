@@ -13,6 +13,8 @@ public class HauTesting : MonoBehaviour
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_3, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_4, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Artefacts_1, 1, new Vector3(-5, -2, 0));
+        ItemsDropManager.Instance.DropManyItems(ItemCode.HP, 1, new Vector3(-5, -2, 0));
+
 
     }
 }
