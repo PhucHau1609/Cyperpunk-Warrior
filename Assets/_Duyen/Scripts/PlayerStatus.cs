@@ -4,11 +4,7 @@ using System.Collections;
 
 public class PlayerStatus : MonoBehaviour
 {
-    public Image hpBar;
     public Image energyBar;
-
-    public float maxHP = 100f;
-    public float currentHP = 100f;
 
     public float maxEnergy = 100f;
     public float currentEnergy = 100f;
@@ -19,7 +15,6 @@ public class PlayerStatus : MonoBehaviour
 
     void Awake()
     {
-        // Nếu đã tồn tại 1 phiên bản PlayerStatus, thì huỷ phiên bản mới
         if (Object.FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None).Length > 1)
         {
             Destroy(gameObject);
@@ -36,11 +31,6 @@ public class PlayerStatus : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            TakeDamage(10f);
-        }
-
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (UseEnergy(10f))
@@ -62,11 +52,6 @@ public class PlayerStatus : MonoBehaviour
         UpdateBars();
     }
 
-    void TakeDamage(float amount)
-    {
-        currentHP = Mathf.Clamp(currentHP - amount, 0, maxHP);
-    }
-
     bool UseEnergy(float amount)
     {
         if (currentEnergy >= amount)
@@ -79,20 +64,17 @@ public class PlayerStatus : MonoBehaviour
 
     void UpdateBars()
     {
-        if (hpBar != null)
-            hpBar.fillAmount = currentHP / maxHP;
-
         if (energyBar != null)
             energyBar.fillAmount = currentEnergy / maxEnergy;
     }
 
-    IEnumerator BlinkImage(Image img) //chớp chớp image 
+    IEnumerator BlinkImage(Image img)
     {
         if (img == null) yield break;
 
         Color originalColor = img.color;
 
-        for (int i = 0; i < 3; i++)// Chớp 3 lần
+        for (int i = 0; i < 3; i++)
         {
             img.color = Color.red;
             yield return new WaitForSeconds(0.1f);
@@ -100,7 +82,8 @@ public class PlayerStatus : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
-    IEnumerator RegenerateEnergy() //hồi năng lượng 
+
+    IEnumerator RegenerateEnergy()
     {
         while (true)
         {
