@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class playerHealth : MonoBehaviour
 {
@@ -10,16 +11,32 @@ public class playerHealth : MonoBehaviour
     [Header("UI Thanh Máu")]
     public Image healthBar;
 
+    [Header("Hiệu ứng hồi máu")]
+    public GameObject healEffect; // ← gán prefab hoặc GameObject con tại đây
+
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     void Start()
     {
-       
         if (maxHealth <= 0) maxHealth = health;
+
+        if (healEffect != null)
+            healEffect.SetActive(false); // Tắt hiệu ứng lúc đầu
     }
 
     void Update()
     {
-       
-        healthBar.fillAmount = Mathf.Clamp01(health / maxHealth);
+        if (healthBar != null)
+            healthBar.fillAmount = Mathf.Clamp01(health / maxHealth);
     }
 
     public void TakeDamage(float amount)
@@ -30,7 +47,37 @@ public class playerHealth : MonoBehaviour
         {
             health = 0;
             Debug.Log("Player chết!");
-            
         }
+    }
+
+    public void Heal(float amount)
+    {
+        health = Mathf.Clamp(health + amount, 0f, maxHealth);
+       
+        PlayHealEffect(); 
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameObject found = GameObject.FindWithTag("HealthBar");
+        if (found != null)
+        {
+            healthBar = found.GetComponent<Image>();
+        }
+    }
+
+    public void PlayHealEffect()
+    {
+        if (healEffect == null) return;
+
+        StopAllCoroutines(); 
+        StartCoroutine(HealEffectRoutine());
+    }
+
+    System.Collections.IEnumerator HealEffectRoutine()
+    {
+        healEffect.SetActive(true);
+        yield return new WaitForSeconds(1.5f); 
+        healEffect.SetActive(false);
     }
 }
