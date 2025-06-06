@@ -5224,6 +5224,7 @@ GameObject:
   - component: {fileID: 9093473221193643738}
   - component: {fileID: 7261934776679248696}
   - component: {fileID: 962040126155233556}
+  - component: {fileID: 3196680728342399816}
   m_Layer: 1
   m_Name: Eren
   m_TagString: Player
@@ -5561,9 +5562,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a23c8f67763fde468048cf44051c576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 5
-  maxHealth: 5
+  health: 100
+  maxHealth: 100
   healthBar: {fileID: 0}
+--- !u!114 &3196680728342399816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6680001067583368946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 599f8865b213ff742930df68786d2d30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectToEnable: 18
+  effectDuration: 5
 --- !u!1 &6893562519748869713
 GameObject:
   m_ObjectHideFlags: 0
@@ -5702,7 +5717,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 10
   m_Sprite: {fileID: 658079122, guid: 16e9c50bfcd64124289c7620f2a96928, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
