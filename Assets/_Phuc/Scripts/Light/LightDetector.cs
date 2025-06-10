@@ -5,7 +5,7 @@ public class LightDetector : MonoBehaviour
 {
     private AlarmManager alarmManager;
     private HashSet<GameObject> detectedObjects = new HashSet<GameObject>();
-
+    public List<EnemyMini> enemyMinis; // Gán qua Inspector
     private void Start()
     {
         alarmManager = FindFirstObjectByType<AlarmManager>();
@@ -22,6 +22,11 @@ public class LightDetector : MonoBehaviour
                 {
                     detectedObjects.Add(other.gameObject);
                     alarmManager.StartAlarm();
+                    foreach (var enemy in enemyMinis)
+                    {
+                        enemy.Activate(other.transform);
+                    }
+
                 }
             }
         }
