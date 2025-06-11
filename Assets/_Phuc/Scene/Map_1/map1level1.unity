@@ -18088,7 +18088,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1693520304}
   - {fileID: 1029780877}
   - {fileID: 957212128}
   m_Father: {fileID: 0}
@@ -27265,8 +27264,8 @@ GameObject:
   - component: {fileID: 1693520303}
   - component: {fileID: 1693520302}
   - component: {fileID: 1693520301}
-  - component: {fileID: 1693520300}
   - component: {fileID: 1693520305}
+  - component: {fileID: 1693520306}
   m_Layer: 0
   m_Name: Canvas_2
   m_TagString: Untagged
@@ -27274,19 +27273,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1693520300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1693520299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b858940bdc5a6b7438076f09da0d2665, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelText: {fileID: 837762048}
 --- !u!114 &1693520301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27368,7 +27354,7 @@ RectTransform:
   - {fileID: 2054231977}
   - {fileID: 609928723}
   - {fileID: 1686255053}
-  m_Father: {fileID: 1137807214}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -27387,6 +27373,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1693520306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693520299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b858940bdc5a6b7438076f09da0d2665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelText: {fileID: 837762048}
 --- !u!1 &1700033612
 GameObject:
   m_ObjectHideFlags: 0
@@ -31497,6 +31496,7 @@ SceneRoots:
   - {fileID: 1664549008}
   - {fileID: 1662980344}
   - {fileID: 926333036}
+  - {fileID: 1693520304}
   - {fileID: 1137807214}
   - {fileID: 1336230216}
   - {fileID: 1352702890}
