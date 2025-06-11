@@ -11,6 +11,7 @@ public class ItemProfileSO : ScriptableObject
     public string itemName;
     public Sprite itemSprite;
     public bool isStackable = false;
+    public GameObject prefabItem;
 
     protected virtual void Reset()
     {

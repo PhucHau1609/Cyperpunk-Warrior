@@ -20,13 +20,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Control")]
     public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
 
-    private void Awake()
+   /* private void Awake()
     {
-        DontDestroyOnLoad(this);
-    }
+        DontDestroyOnLoad(gameObject);
+    }*/
 
     void Start()
     {
+        DontDestroyOnLoad(gameObject);
         GetComponentInChildren<Animator>().SetTrigger("PlayAppear");
     }
 
@@ -47,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
             dash = true;
 
-        // Bật/tắt tàng hình bằng phím J
+       /* // Bật/tắt tàng hình bằng phím J
          if (Input.GetKeyDown(KeyCode.J))
         {
             isInvisible = !isInvisible;
@@ -67,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
           }
 
             Debug.Log("Tàng hình: " + isInvisible);
-        }
+        }*/
     }
 
     void FixedUpdate()
