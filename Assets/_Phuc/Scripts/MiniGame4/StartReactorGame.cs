@@ -6,22 +6,22 @@ using TMPro;
 
 public class StartReactorGame : MonoBehaviour
 {
-    [Header("Buttons & Displays")]
-    public Button[] inputButtons;                // 9 nút bên phải
-    public Image[] displayPattern;               // 9 ô bên trái để hiển thị thứ tự
+    public GameObject panel;
+    public GameObject laserBlock;
+    public Button openMiniGameButton;
 
-    [Header("Indicators")]
-    public Image[] levelIndicators;              // 5 nút tròn bên trái (level)
-    public Image[] progressIndicators;           // 5 nút tròn bên phải (bấm đúng)
+    public Button[] inputButtons;
+    public Image[] displayPattern;
 
-    [Header("Colors")]
+    public Image[] levelIndicators;
+    public Image[] progressIndicators;
+
     public Color highlightColor = Color.cyan;
     public Color greenColor = Color.green;
     public Color redColor = Color.red;
-    public Color buttonDefaultColor = Color.white;      // Cho nút & indicator
-    public Color displayDefaultColor = Color.black;     // Cho các ô hiển thị bên trái
+    public Color buttonDefaultColor = Color.white;
+    public Color displayDefaultColor = Color.black;
 
-    [Header("Text Display")]
     public TMP_Text failedText;
     public TMP_Text completedText;
 
@@ -31,21 +31,27 @@ public class StartReactorGame : MonoBehaviour
 
     void Start()
     {
+        panel.SetActive(false);
+
         for (int i = 0; i < inputButtons.Length; i++)
         {
             int idx = i;
             inputButtons[i].onClick.AddListener(() => OnButtonPressed(idx));
         }
-
-        // ❌ Không tự chạy mini game ở đây nữa
-        // ResetAll();
-        // StartCoroutine(ShowPattern());
     }
 
-    // ✅ Gọi hàm này từ nút "Start"
+    public void OpenMiniGame()
+    {
+        panel.SetActive(true);
+    }
+
+    public void CloseMiniGame()
+    {
+        panel.SetActive(false);
+    }
+
     public void StartGame()
     {
-        Debug.Log("▶️ StartGame được gọi"); // Kiểm tra bằng log
         ResetAll();
         StartCoroutine(ShowPattern());
     }
@@ -66,21 +72,16 @@ public class StartReactorGame : MonoBehaviour
         ResetProgressIndicators();
         failedText.gameObject.SetActive(false);
         completedText.gameObject.SetActive(false);
-
         EnableInput(false);
-
         int patternLength = currentLevel;
-
         yield return new WaitForSeconds(0.5f);
 
         for (int i = 0; i < patternLength; i++)
         {
             int randomIndex = Random.Range(0, 9);
             pattern.Add(randomIndex);
-
             displayPattern[randomIndex].color = highlightColor;
             SoundMiniGame4.Instance?.PlayPatternSound();
-
             yield return new WaitForSeconds(0.5f);
             displayPattern[randomIndex].color = displayDefaultColor;
             yield return new WaitForSeconds(0.2f);
@@ -114,9 +115,7 @@ public class StartReactorGame : MonoBehaviour
     IEnumerator NextLevel()
     {
         levelIndicators[currentLevel - 1].color = greenColor;
-
         yield return new WaitForSeconds(1f);
-
         currentLevel++;
 
         if (currentLevel > 5)
@@ -124,6 +123,15 @@ public class StartReactorGame : MonoBehaviour
             completedText.gameObject.SetActive(true);
             failedText.gameObject.SetActive(false);
             SoundMiniGame4.Instance?.PlayWinSound();
+            yield return new WaitForSeconds(1.5f);
+            panel.SetActive(false);
+
+            if (laserBlock != null)
+                laserBlock.SetActive(false);
+
+            if (openMiniGameButton != null)
+                openMiniGameButton.interactable = false;
+
             yield break;
         }
 
@@ -141,7 +149,6 @@ public class StartReactorGame : MonoBehaviour
             SetAllButtonsColor(redColor);
             SetProgressIndicatorsColor(redColor);
             yield return new WaitForSeconds(0.2f);
-
             SetAllButtonsColor(buttonDefaultColor);
             SetProgressIndicatorsColor(buttonDefaultColor);
             yield return new WaitForSeconds(0.2f);
