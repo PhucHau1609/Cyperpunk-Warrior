@@ -24,7 +24,7 @@ public class CodeLock_1 : MonoBehaviour
     [Header("UI Elements")]
     public Button[] numberButtons;
     public Button deleteButton;
-    public TMP_Text[] numberTexts;
+    public Text[] numberTexts;
     public Button closeButton;
     public Button reopenButton;
     public GameObject canvas;
