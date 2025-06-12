@@ -4,37 +4,82 @@ using UnityEngine;
 
 public class PatrolTask : Action
 {
-    private EnemyController enemy;
+    public enum MoveMode { TransformPosition, RigidbodyVelocity }
+
+    [Header("Setup")]
+    public MoveMode movementType = MoveMode.TransformPosition;
+
+    public SharedTransform pointA;
+    public SharedTransform pointB;
+    public SharedFloat moveSpeed;
+    public SharedAnimator animator;
+
     private Transform currentTarget;
+    private Rigidbody2D rb;
 
     public override void OnStart()
     {
-        enemy = GetComponent<EnemyController>();
-        currentTarget = enemy.pointA;
+        currentTarget = pointA.Value;
+
+        if (movementType == MoveMode.RigidbodyVelocity)
+            rb = GetComponent<Rigidbody2D>();
     }
 
     public override TaskStatus OnUpdate()
     {
-        if (enemy == null)
+        if (pointA.Value == null || pointB.Value == null)
             return TaskStatus.Failure;
-
-        enemy.animator.SetBool("Run", true);
 
         Vector3 targetPos = currentTarget.position;
         float dist = Vector2.Distance(transform.position, targetPos);
+        Vector2 dir = (targetPos - transform.position).normalized;
 
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Sign(targetPos.x - transform.position.x) * Mathf.Abs(scale.x);
-        transform.localScale = scale;
-
-        transform.position = Vector2.MoveTowards(transform.position, targetPos, enemy.moveSpeed * Time.deltaTime);
-
-        if (dist < 0.1f)
+        switch (movementType)
         {
-            // Chuyển điểm tuần tra
-            currentTarget = (currentTarget == enemy.pointA) ? enemy.pointB : enemy.pointA;
+            case MoveMode.TransformPosition:
+                transform.position = Vector2.MoveTowards(transform.position, targetPos, moveSpeed.Value * Time.deltaTime);
+                break;
+
+            case MoveMode.RigidbodyVelocity:
+                if (rb == null)
+                {
+                    rb = GetComponent<Rigidbody2D>();
+                    if (rb == null)
+                        return TaskStatus.Failure;
+                }
+
+                rb.linearVelocity = dir * moveSpeed.Value;
+                break;
+        }
+
+        // Flip mặt
+        if (dir.x != 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Sign(dir.x) * Mathf.Abs(scale.x);
+            transform.localScale = scale;
+        }
+
+        animator?.Value?.SetBool("Run", true);
+        animator?.Value?.SetBool("Fly", movementType == MoveMode.RigidbodyVelocity);
+
+        // Đổi target nếu tới nơi
+        if (dist < 0.2f)
+        {
+            currentTarget = (currentTarget == pointA.Value) ? pointB.Value : pointA.Value;
         }
 
         return TaskStatus.Running;
+    }
+
+    public override void OnEnd()
+    {
+        if (movementType == MoveMode.RigidbodyVelocity && rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        animator?.Value?.SetBool("Run", false);
+        animator?.Value?.SetBool("Fly", false);
     }
 }

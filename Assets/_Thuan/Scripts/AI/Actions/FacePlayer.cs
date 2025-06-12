@@ -4,24 +4,31 @@ using UnityEngine;
 
 public class FacePlayer : Action
 {
-    private EnemyController enemy;
+    public SharedTransform player;
 
     public override void OnStart()
     {
-        enemy = GetComponent<EnemyController>();
+        if (player == null || player.Value == null)
+        {
+            var playerGO = GameObject.FindWithTag("Player");
+            if (playerGO != null)
+                player.Value = playerGO.transform;
+            else
+                Debug.LogWarning("[CheckPlayerInShootRange] Không tìm thấy Player với tag!");
+        }
     }
-
     public override TaskStatus OnUpdate()
     {
-        if (enemy == null || enemy.player == null)
+        if (player.Value == null)
             return TaskStatus.Failure;
 
-        Vector2 dir = enemy.player.position - enemy.transform.position;
+        Vector2 dir = player.Value.position - transform.position;
+
         if (dir.x != 0)
         {
-            Vector3 scale = enemy.transform.localScale;
+            Vector3 scale = transform.localScale;
             scale.x = Mathf.Sign(dir.x) * Mathf.Abs(scale.x);
-            enemy.transform.localScale = scale;
+            transform.localScale = scale;
         }
 
         return TaskStatus.Success;
