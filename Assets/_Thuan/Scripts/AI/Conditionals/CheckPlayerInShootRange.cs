@@ -5,20 +5,25 @@ using UnityEngine;
 public class CheckPlayerInShootRange : Conditional
 {
     public float shootRange = 3f;
-    private EnemyController enemy;
+    public SharedTransform player; // không dùng EnemyController nữa
 
-    public override void OnStart()
+     public override void OnStart()
     {
-        enemy = GetComponent<EnemyController>();
+        if (player == null || player.Value == null)
+        {
+            var playerGO = GameObject.FindWithTag("Player");
+            if (playerGO != null)
+                player.Value = playerGO.transform;
+            else
+                Debug.LogWarning("[FacePlayer] Không tìm thấy Player với tag!");
+        }
     }
-
     public override TaskStatus OnUpdate()
     {
-        if (enemy == null || enemy.player == null)
+        if (player == null || player.Value == null)
             return TaskStatus.Failure;
 
-        float dist = Vector2.Distance(transform.position, enemy.player.position);
-        //Debug.Log($"[CheckShootRange] Distance: {dist}, Success: {dist <= shootRange}");
+        float dist = Vector2.Distance(transform.position, player.Value.position);
         return dist <= shootRange ? TaskStatus.Success : TaskStatus.Failure;
     }
 }

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Droid01Bullet : MonoBehaviour
 {
-     public float speed = 8f;                      // Tốc độ bay
-    public float destroyDelay = 0.5f;             // Thời gian chờ animation nổ
+    public float speed = 8f;                      
+    public float destroyDelay = 0.5f;             
     private Rigidbody2D rb;
     private Animator animator;
     private bool isDestroyed = false;
@@ -14,7 +14,12 @@ public class Droid01Bullet : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        rb.linearVelocity = direction * speed;
+
+        if (rb != null)
+        {
+            rb.gravityScale = 0f;
+            rb.linearVelocity = direction * speed;
+        }
 
         Destroy(gameObject, 3f);
     }
@@ -23,10 +28,11 @@ public class Droid01Bullet : MonoBehaviour
     public void SetDirection(Vector2 dir)
     {
         direction = dir.normalized;
+
         if (rb != null)
             rb.linearVelocity = direction * speed;
 
-        // Xoay viên đạn để đầu nó hướng về direction
+        // Xoay viên đạn đúng hướng
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
@@ -35,7 +41,6 @@ public class Droid01Bullet : MonoBehaviour
     {
         if (isDestroyed) return;
 
-        // Đạn gặp bất kỳ collider nào cũng nổ (trừ Enemy hoặc chính nó)
         if (!collision.CompareTag("Enemy") && !collision.isTrigger)
         {
             Explode();
@@ -45,8 +50,10 @@ public class Droid01Bullet : MonoBehaviour
     void Explode()
     {
         isDestroyed = true;
-        rb.linearVelocity = Vector2.zero;
-        animator.SetTrigger("Destroy");
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        animator?.SetTrigger("Destroy");
     }
 
     public void DestroySelf()

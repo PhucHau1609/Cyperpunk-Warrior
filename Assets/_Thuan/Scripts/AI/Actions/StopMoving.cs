@@ -1,23 +1,25 @@
-using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using UnityEngine;
 
 public class StopMoving : Action
 {
-    private EnemyController enemy;
     private Rigidbody2D rb;
+    private Animator animator;
 
     public override void OnStart()
     {
-        enemy = GetComponent<EnemyController>();
         rb = GetComponent<Rigidbody2D>();
-        enemy.animator.SetBool("Run", false);
+        animator = GetComponent<Animator>();
+        animator?.SetBool("Run", false);
+        //animator?.SetBool("Fly", false); // nếu có Fly animation
     }
 
     public override TaskStatus OnUpdate()
     {
         if (rb != null)
+        {
             rb.linearVelocity = Vector2.zero;
+        }
 
         return TaskStatus.Success;
     }
