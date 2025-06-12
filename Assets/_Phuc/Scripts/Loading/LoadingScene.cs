@@ -14,8 +14,10 @@ public class LoadingScene : MonoBehaviour
 
     void Start()
     {
-        barWidth = loadingBar.rectTransform.rect.width;
+        // Lấy chiều rộng thật của thanh loading dựa trên sizeDelta (ổn định hơn)
+        barWidth = loadingBar.rectTransform.sizeDelta.x;
         playerStartPos = player.transform.localPosition;
+
         loadingBar.fillAmount = 0f;
         loadingText.text = "0%";
     }
@@ -31,7 +33,7 @@ public class LoadingScene : MonoBehaviour
         float moveX = barWidth * progress;
         player.transform.localPosition = new Vector3(playerStartPos.x + moveX, playerStartPos.y, playerStartPos.z);
 
-        // Điều khiển animation
-        playerAnimator.SetFloat("Speed", progress < 1f ? 1f : 0f);
+        // Làm animation mượt hơn khi sắp hoàn tất
+        
     }
 }

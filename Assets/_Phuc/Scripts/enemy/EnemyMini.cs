@@ -23,6 +23,11 @@ public class EnemyMini : MonoBehaviour
         {
             Vector3 direction = (player.position - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
+            if (direction.x > 0)
+                transform.localScale = new Vector3(1, 1, 1); // hướng phải
+            else if (direction.x < 0)
+                transform.localScale = new Vector3(-1, 1, 1); // hướng trái
+
         }
     }
 
