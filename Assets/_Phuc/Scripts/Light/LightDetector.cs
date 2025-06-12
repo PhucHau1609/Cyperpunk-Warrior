@@ -5,7 +5,13 @@ public class LightDetector : MonoBehaviour
 {
     private AlarmManager alarmManager;
     private HashSet<GameObject> detectedObjects = new HashSet<GameObject>();
-    public List<EnemyMini> enemyMinis; // Gán qua Inspector
+
+    [Header("Enemy Mini sẽ bay vào nổ")]
+    public List<EnemyMini> enemyMinis; // Gán trong Inspector
+
+    [Header("Enemy Shooter sẽ bắn đạn")]
+    public List<EnemyShooter> enemyShooters; // Gán trong Inspector
+
     private void Start()
     {
         alarmManager = FindFirstObjectByType<AlarmManager>();
@@ -22,11 +28,20 @@ public class LightDetector : MonoBehaviour
                 {
                     detectedObjects.Add(other.gameObject);
                     alarmManager.StartAlarm();
+
+                    // Gọi tất cả EnemyMini
                     foreach (var enemy in enemyMinis)
                     {
-                        enemy.Activate(other.transform);
+                        if (enemy != null)
+                            enemy.Activate(other.transform);
                     }
 
+                    // Gọi tất cả EnemyShooter
+                    foreach (var shooter in enemyShooters)
+                    {
+                        if (shooter != null)
+                            shooter.Activate(other.transform);
+                    }
                 }
             }
         }
