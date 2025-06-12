@@ -8,14 +8,13 @@ public class HauTesting : MonoBehaviour
     [ProButton]
     public void DropManyItemsTesting()
     {
-       /* ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_1, 1, new Vector3(0, 0, 0));
+        ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_1, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_2, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_3, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_4, 1, new Vector3(0, 0, 0));
-        ItemsDropManager.Instance.DropManyItems(ItemCode.Artefacts_1, 1, new Vector3(-5, -2, 0));*/
+        ItemsDropManager.Instance.DropManyItems(ItemCode.Artefacts_1, 1, new Vector3(-4, -2, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_0, 1, new Vector3(-5, -2, 0));
-
-
+        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_1, 1, new Vector3(-6, -2, 0));
     }
 
     [ProButton]

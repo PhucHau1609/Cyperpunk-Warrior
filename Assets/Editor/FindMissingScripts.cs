@@ -6,9 +6,8 @@ public class FindMissingScripts : MonoBehaviour
     [MenuItem("Tools/Find Missing Scripts in Scene")]
     static void FindMissingInScene()
     {
-        GameObject[] go = GameObject.FindObjectsOfType<GameObject>();
+        GameObject[] go = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None); 
         int count = 0;
-
         foreach (GameObject g in go)
         {
             Component[] components = g.GetComponents<Component>();

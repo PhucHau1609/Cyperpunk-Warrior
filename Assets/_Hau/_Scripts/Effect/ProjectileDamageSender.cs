@@ -34,7 +34,7 @@ public abstract class ProjectileDamageSender : DamageSender // E43,E44 create
     protected override void Sender(DamageReceiver damageRecever, Collider2D collision)
     {
         base.Sender(damageRecever, collision);
-        this.ShowHitEffect(collision);
+        //this.ShowHitEffect(collision);
         this.effectCtrl.Despawn.DoDespawn();
     }
 

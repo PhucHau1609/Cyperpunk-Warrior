@@ -6,7 +6,6 @@ public class WeaponSystemManager : MonoBehaviour
 {
     [SerializeField] private Transform weaponHolder; // Nơi gắn vũ khí
     private GameObject currentWeapon;
-
     private int currentWeaponIndex = 0;
     private List<ItemInventory> ownedWeapons = new();
 
@@ -19,30 +18,32 @@ public class WeaponSystemManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            ToggleWeapon();
+            SwapWeapon();
+        }
+
+        if (Input.GetMouseButtonDown(1)) // Chuột phải để tắt vũ khí hiện tại
+        {
+            DeactivateCurrentWeapon();
         }
     }
 
-    // Lọc các vũ khí trong inventory
     void RefreshOwnedWeapons()
     {
         ownedWeapons.Clear();
-
         var inventory = InventoryManager.Instance.ItemInventory().ItemInventories;
 
         foreach (var item in inventory)
         {
             if (item.ItemProfileSO == null) continue;
 
-            // Giả định: bạn gắn tag "Gun" hoặc có enum TypeWeapon nếu cần phân biệt rõ hơn
-            if (item.ItemProfileSO.itemCode == ItemCode.MachineGun_0) // <- có thể thay đổi tùy theo enum/tag bạn dùng
+            if (item.ItemProfileSO.weaponType == WeaponType.Gun)
             {
                 ownedWeapons.Add(item);
             }
         }
     }
 
-    void ToggleWeapon()
+    void SwapWeapon()
     {
         RefreshOwnedWeapons();
 
@@ -52,13 +53,20 @@ public class WeaponSystemManager : MonoBehaviour
             return;
         }
 
-        if (currentWeapon == null)
+        currentWeaponIndex++;
+        if (currentWeaponIndex >= ownedWeapons.Count)
         {
-            EquipWeapon(currentWeaponIndex);
+            currentWeaponIndex = 0; // Vòng lại vũ khí đầu tiên
         }
-        else
+
+        EquipWeapon(currentWeaponIndex);
+    }
+
+    void DeactivateCurrentWeapon()
+    {
+        if (currentWeapon != null)
         {
-            currentWeapon.SetActive(!currentWeapon.activeSelf);
+            currentWeapon.SetActive(false);
         }
     }
 
@@ -75,15 +83,23 @@ public class WeaponSystemManager : MonoBehaviour
             return;
         }
 
-        if (currentWeapon == null)
+        // Nếu đã có vũ khí hiện tại và khác với weapon mới → huỷ vũ khí cũ
+        if (currentWeapon != null)
         {
-            currentWeapon = Instantiate(weaponPrefab);
-            currentWeapon.transform.SetParent(weaponHolder, false);
-            currentWeapon.transform.localPosition = new Vector3(0.806f, 0f, 0f);
-            currentWeapon.transform.localRotation = Quaternion.identity;
+            Destroy(currentWeapon); // Xoá vũ khí cũ nếu cần
         }
 
+        // Instantiate vũ khí mới
+        currentWeapon = Instantiate(weaponPrefab, weaponHolder);
+        currentWeapon.transform.localPosition = new Vector3(0.806f, 0f, 0f);
+        currentWeapon.transform.localRotation = Quaternion.identity;
         currentWeapon.SetActive(true);
-    }
 
+        // Gán cho WeaponAimer
+        if (weaponHolder.TryGetComponent<WeaponAimer>(out var aimer))
+        {
+            aimer.SetCurrentWeapon(currentWeapon.transform);
+        }
+    }
 }
+
