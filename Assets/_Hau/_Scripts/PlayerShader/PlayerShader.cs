@@ -8,9 +8,13 @@ public class PlayerShader : MonoBehaviour
     [Header("Shader Settings")]
     public ShaderEffect effectToEnable = ShaderEffect.Hologram;
     public float effectDuration = 5f;
+    public float cooldownTime = 20f;
+
 
     private AllIn1Shader[] shaderTargets;
     private bool isEffectActive = false;
+    private bool isOnCooldown = false;
+
 
     private static readonly Dictionary<ShaderEffect, string> ShaderEffectKeywords = new Dictionary<ShaderEffect, string>
     {
@@ -49,12 +53,23 @@ public class PlayerShader : MonoBehaviour
 
     void Update()
     {
+        // Giữ phím J để test shader thông thường
         if (Input.GetKeyDown(KeyCode.J) && !isEffectActive)
         {
             StartCoroutine(ActivateEffect());
         }
+
+        // Nhấn phím [1] để kích hoạt hiệu ứng biến hình (ColorRamp)
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (ItemCollectionTracker.Instance.ConditionMet && !isEffectActive && !isOnCooldown)
+            {
+                StartCoroutine(ActivateColorRampEffect());
+            }
+        }
     }
 
+    // Dành riêng cho test/phím J
     IEnumerator ActivateEffect()
     {
         isEffectActive = true;
@@ -74,6 +89,38 @@ public class PlayerShader : MonoBehaviour
         }
 
         isEffectActive = false;
+    }
+
+    // Dành riêng cho biến hình bằng phím 1 (ColorRamp có cooldown)
+    IEnumerator ActivateColorRampEffect()
+    {
+        isEffectActive = true;
+        isOnCooldown = true;
+
+        string keyword = ShaderEffectKeywords[ShaderEffect.ColorRamp];
+
+        foreach (var shader in shaderTargets)
+        {
+            SetKeywordViaReflection(shader, keyword, true);
+        }
+
+        Debug.Log("🌈 Biến hình ColorRamp kích hoạt!");
+
+        yield return new WaitForSeconds(effectDuration);
+
+        foreach (var shader in shaderTargets)
+        {
+            SetKeywordViaReflection(shader, keyword, false);
+        }
+
+        Debug.Log("🕒 Biến hình kết thúc. Bắt đầu hồi chiêu.");
+
+        isEffectActive = false;
+
+        yield return new WaitForSeconds(cooldownTime);
+        isOnCooldown = false;
+
+        Debug.Log("✅ Hồi chiêu xong. Có thể biến hình lại.");
     }
 
     private void SetKeywordViaReflection(AllIn1Shader shader, string keyword, bool state)
