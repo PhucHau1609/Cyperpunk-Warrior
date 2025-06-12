@@ -15,8 +15,10 @@ public class EnemyController : MonoBehaviour
 
     public float maxHealth = 10;
     private float currentHealth;
-    //private bool isHealthBarVisible = false;
 
+    private enum State { Patrolling, Chasing, Returning, Dead }
+    private State currentState = State.Patrolling;
+    private Rigidbody2D rb;
 
     [SerializeField] private LayerMask groundLayer;
 
@@ -30,68 +32,15 @@ public class EnemyController : MonoBehaviour
     {
         initialPosition = transform.position;
         currentHealth = maxHealth;
-        UpdateHealthBar();
-    }
-
-    void LateUpdate()
-    {
-        UpdateHealthBar(); // Đảm bảo thanh máu đúng vị trí theo camera
-    }
-
-    public void TakeDamage(int damage)
-    {
-        ApplyDamage(damage);
+        //UpdateHealthBar();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
     {
-        StickToGround(); // Gọi mỗi frame
+        StickToGround(); 
     }
 
-   public void ApplyDamage(float damage)
-    {
-        currentHealth -= Mathf.Abs(damage);
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-        if (currentHealth > 0)
-        {
-            // Hiện thanh máu khi bị trừ
-            healthSlider.gameObject.SetActive(true);
-            animator.SetTrigger("Hurt");
-        }
-        else
-        {
-            animator.SetTrigger("Death");
-            healthSlider.gameObject.SetActive(false); // Ẩn khi chết
-            this.enabled = false;
-            Destroy(gameObject, 2f);
-        }
-
-        UpdateHealthBar();
-    }
-
-   void UpdateHealthBar()
-    {
-        if (healthSlider != null)
-        {
-            float healthRatio = currentHealth / maxHealth;
-
-            // Cập nhật giá trị
-            healthSlider.value = healthRatio;
-
-            // Đổi màu từ Đỏ (ít máu) sang Xanh Lá (đầy máu)
-            Color healthColor = Color.Lerp(Color.red, Color.green, healthRatio);
-            healthSlider.fillRect.GetComponent<Image>().color = healthColor;
-
-            // Vị trí thanh máu theo Enemy
-            Vector3 offset = new Vector3(0, 1.5f, 0);
-            Vector3 pos = Camera.main.WorldToScreenPoint(transform.position + offset);
-            pos.z = 0f;
-            healthSlider.transform.position = pos;
-        }
-    }
-
-    // Public để các Task có thể gọi
     public void FacePlayer()
     {
         if (player == null) return;
@@ -110,5 +59,31 @@ public class EnemyController : MonoBehaviour
             pos.y = hit.point.y + 0.1f;
             transform.position = pos;
         }
+    }
+    
+    public void TakeDamage(int damage)
+    {
+        if (currentState == State.Dead) return;
+
+        currentHealth -= damage;
+        animator.SetTrigger("Hurt");
+
+        HealthBarEnemy.Instance?.ShowHealthBar(transform, currentHealth / (float)maxHealth);
+
+        if (currentHealth <= 0)
+        {
+            animator.SetTrigger("Death");
+            currentState = State.Dead;
+            rb.linearVelocity = Vector2.zero;
+            GetComponent<Collider2D>().enabled = false;
+            this.enabled = false;
+            HealthBarEnemy.Instance?.HideHealthBar();
+
+            var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+            if (behavior != null) behavior.DisableBehavior();
+            Destroy(gameObject, 2f);
+        }
+
+        CameraFollow.Instance?.ShakeCamera();
     }
 }

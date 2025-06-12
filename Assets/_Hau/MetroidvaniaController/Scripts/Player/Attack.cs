@@ -85,11 +85,23 @@ public class Attack : MonoBehaviour
                     damageToDeal = -Mathf.Abs(dmgValue);
                 }
 
-                var enemyHealth = collidersEnemies[i].GetComponent<Droid02Controller>(); 
+                var enemyHealth = collidersEnemies[i].GetComponent<EnemyController>(); 
+                var Droid01Health = collidersEnemies[i].GetComponent<FlyingDroidController>();
+                var BombHealth = collidersEnemies[i].GetComponent<BomberController>();
 
                 if (enemyHealth != null)
                 {
-                    enemyHealth.TakeDamage(Mathf.Abs(damageToDeal)); 
+                    enemyHealth.TakeDamage(Mathf.Abs(damageToDeal));
+                    //cam.GetComponent<CameraFollow>()?.ShakeCamera();
+                }
+                else if (Droid01Health != null)
+                {
+                    Droid01Health.TakeDamage(Mathf.Abs(damageToDeal));
+                    //cam.GetComponent<CameraFollow>()?.ShakeCamera();
+                }
+                else if (BombHealth != null)
+                {
+                    BombHealth.TakeDamage(Mathf.Abs(damageToDeal));
                     //cam.GetComponent<CameraFollow>()?.ShakeCamera();
                 }
                 else
