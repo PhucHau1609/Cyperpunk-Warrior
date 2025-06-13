@@ -108,6 +108,8 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 isRotating = false;
                 rotateTween = null;
                 AudioManager.Instance?.PlayBlockInteractSFX();
+
+                MinigameManager.Instance?.CheckLevel();
             });
     }
 
