@@ -1,24 +1,38 @@
-using UnityEngine;
 using BehaviorDesigner.Runtime;
+using UnityEngine;
 
+[RequireComponent(typeof(Behavior))]
 public class BehaviorAutoBinder : MonoBehaviour
 {
-    public BehaviorTree behaviorTree;
+    public Transform pointA;
+    public Transform pointB;
+    public float speed = 2f;
 
     void Start()
     {
-        if (behaviorTree == null)
-            behaviorTree = GetComponent<BehaviorTree>();
+        var behavior = GetComponent<Behavior>();
+        if (behavior == null) return;
 
-        Transform player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        // Gán biến "player"
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            behavior.SetVariable("player", new SharedTransform { Value = player.transform });
+        }
 
-        if (behaviorTree != null && player != null)
-        {
-            behaviorTree.SetVariableValue("player", player);
-        }
-        else
-        {
-            Debug.LogWarning("Không tìm thấy Player hoặc BehaviorTree để gán.");
-        }
+        // Gán pointA, pointB
+        if (pointA != null)
+            behavior.SetVariable("pointA", new SharedTransform { Value = pointA });
+
+        if (pointB != null)
+            behavior.SetVariable("pointB", new SharedTransform { Value = pointB });
+
+        // Gán moveSpeed
+        behavior.SetVariable("moveSpeed", new SharedFloat { Value = speed });
+
+        // Gán animator
+        var anim = GetComponentInChildren<Animator>();
+        if (anim != null)
+            behavior.SetVariable("animator", new SharedAnimator { Value = anim });
     }
 }
