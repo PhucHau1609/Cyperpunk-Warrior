@@ -8,9 +8,11 @@ public class ItemProfileSO : ScriptableObject
 {
     public InventoryCodeName invCodeName;
     public ItemCode itemCode;
+    public WeaponType weaponType;
     public string itemName;
     public Sprite itemSprite;
     public bool isStackable = false;
+    public GameObject prefabItem;
 
     protected virtual void Reset()
     {

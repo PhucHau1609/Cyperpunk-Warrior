@@ -34,10 +34,11 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
 
     protected override void OnDisable()
     {
-        if (ObserverManager.Instance == null) return;
+        if (!ObserverManager.HasInstance) return;
         ObserverManager.Instance.RemoveListener(EventID.InventoryChanged, OnInventoryChanged);
         ObserverManager.Instance.RemoveListener(EventID.OpenInventory, OnOpenInventory);
     }
+
 
 
 

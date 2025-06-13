@@ -27,6 +27,8 @@ public class AudioSettingsUI : MonoBehaviour
     public Button closeButton;
     public Button openButton;
 
+    private int savedMusicLevel;
+    private int savedSFXLevel;
     private int tempMusicLevel;
     private int tempSFXLevel;
 
@@ -88,12 +90,16 @@ public class AudioSettingsUI : MonoBehaviour
         float musicVol = PlayerPrefs.GetFloat("MusicVolume", 1f);
         float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 1f);
 
-        tempMusicLevel = Mathf.RoundToInt(musicVol * (musicVolumeButtons.Count - 1));
-        tempSFXLevel = Mathf.RoundToInt(sfxVol * (sfxVolumeButtons.Count - 1));
+        int musicLevel = Mathf.RoundToInt(musicVol * (musicVolumeButtons.Count - 1));
+        int sfxLevel = Mathf.RoundToInt(sfxVol * (sfxVolumeButtons.Count - 1));
 
-        UpdateMusicVolume(tempMusicLevel);
-        UpdateSFXVolume(tempSFXLevel);
+        savedMusicLevel = musicLevel;
+        savedSFXLevel = sfxLevel;
+
+        UpdateMusicVolume(savedMusicLevel);
+        UpdateSFXVolume(savedSFXLevel);
     }
+
 
     void RebindUI()
     {
@@ -147,16 +153,20 @@ public class AudioSettingsUI : MonoBehaviour
         AudioManager.Instance.bgmSource.volume = musicVol;
         AudioManager.Instance.sfxSource.volume = sfxVol;
 
+        savedMusicLevel = tempMusicLevel;
+        savedSFXLevel = tempSFXLevel;
+
         CloseSettingsPanel();
     }
 
     void OnDeny()
     {
         AudioManager.Instance.PlayClickSFX();
-        UpdateMusicVolume(tempMusicLevel);
-        UpdateSFXVolume(tempSFXLevel);
+        UpdateMusicVolume(savedMusicLevel);
+        UpdateSFXVolume(savedSFXLevel);
         CloseSettingsPanel();
     }
+
 
     void UpdateMusicVolume(int level)
     {

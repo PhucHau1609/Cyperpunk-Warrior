@@ -20,14 +20,6 @@ public class HealthBarEnemy : MonoBehaviour
         canvas.enabled = false;
     }
 
-    void LateUpdate()
-    {
-        if (target != null)
-        {
-            transform.position = Camera.main.WorldToScreenPoint(target.position + offset);
-        }
-    }
-
     public void ShowHealthBar(Transform enemyTransform, float healthPercent)
     {
         target = enemyTransform;

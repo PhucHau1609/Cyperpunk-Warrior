@@ -2,6 +2,7 @@
 using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using com.cyborgAssets.inspectorButtonPro;
 
 public class CharacterController2D : MonoBehaviour
 {
@@ -351,6 +352,7 @@ public class CharacterController2D : MonoBehaviour
 		transform.localScale = theScale;
 	}
 
+	[ProButton]
 	public void ApplyDamage(float damage, Vector3 position) 
 	{
 		if (!invincible)
@@ -359,7 +361,7 @@ public class CharacterController2D : MonoBehaviour
 			life -= damage;
 			Vector2 damageDir = Vector3.Normalize(transform.position - position) * 40f ;
 			m_Rigidbody2D.linearVelocity = Vector2.zero;
-			m_Rigidbody2D.AddForce(damageDir * 10);
+			//m_Rigidbody2D.AddForce(damageDir * 10);
 			if (life <= 0)
 			{
 				StartCoroutine(WaitToDead());
@@ -421,14 +423,15 @@ public class CharacterController2D : MonoBehaviour
 
 	IEnumerator WaitToDead()
 	{
-		animator.SetBool("IsDead", true);
+        //yield return new WaitForSeconds(0.2f);
+        animator.SetBool("IsDead", true);
 		canMove = false;
 		invincible = true;
-		GetComponent<Attack>().enabled = false;
+		//GetComponent<Attack>().enabled = false;
 		yield return new WaitForSeconds(0.4f);
-		m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
-		yield return new WaitForSeconds(1.1f);
-		SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+		//m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
+		//yield return new WaitForSeconds(1.1f);
+		//SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
 	}
 
     public void SyncFacingDirection()

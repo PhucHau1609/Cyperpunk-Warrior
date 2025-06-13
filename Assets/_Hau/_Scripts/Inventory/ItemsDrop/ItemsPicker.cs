@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 [RequireComponent(typeof(CircleCollider2D))]
 public class ItemsPicker : HauMonoBehaviour
@@ -30,6 +31,7 @@ public class ItemsPicker : HauMonoBehaviour
         ItemsDropCtrl itemsDropCtrl = other.transform.parent.GetComponent<ItemsDropCtrl>();
         if (itemsDropCtrl == null) return;
 
+        ItemCollectionTracker.Instance.OnItemCollected(itemsDropCtrl.ItemCode);
         itemsDropCtrl.Despawn.DoDespawn();
     }
 }

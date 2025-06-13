@@ -3,6 +3,8 @@
 public abstract class HauSingleton<T> : HauMonoBehaviour where T : HauMonoBehaviour
 {
     private static T _instance;
+    public static bool HasInstance => _instance != null;
+
 
     public static T Instance
     {
