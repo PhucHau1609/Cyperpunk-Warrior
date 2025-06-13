@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering.Universal; // THÊM NÀY nếu bạn dùng Light 2D URP
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -119,4 +120,10 @@ public class PlayerMovement : MonoBehaviour
             transform.parent = null;
         }
     }
+
+    void OnDestroy()
+    {
+        Debug.LogError("Player bị xóa bởi đối tượng: " + gameObject.name + " - Stack Trace: " + Environment.StackTrace);
+    }
+
 }
