@@ -100,8 +100,6 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         float duration = 0.25f;
         float angle = 90f;
 
-        // KHÔNG DOKill() – để tween scale không bị ảnh hưởng
-
         rotateTween = transform
             .DORotate(transform.eulerAngles + new Vector3(0, 0, -angle), duration)
             .SetEase(Ease.OutCubic)
