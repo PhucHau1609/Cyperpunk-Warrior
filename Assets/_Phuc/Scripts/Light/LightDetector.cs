@@ -23,8 +23,9 @@ public class LightDetector : MonoBehaviour
         {
             if (!detectedObjects.Contains(other.gameObject))
             {
-                PlayerMovement player = other.GetComponent<PlayerMovement>();
-                if (player != null && !player.IsInvisible())
+                // ✅ Đổi sang gọi PlayerShader thay vì PlayerMovement
+                PlayerShader playerShader = other.GetComponent<PlayerShader>();
+                if (playerShader != null && !playerShader.IsInvisible())
                 {
                     detectedObjects.Add(other.gameObject);
                     alarmManager.StartAlarm();

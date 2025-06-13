@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerShader : MonoBehaviour
 {
@@ -10,11 +11,14 @@ public class PlayerShader : MonoBehaviour
     public float effectDuration = 5f;
     public float cooldownTime = 20f;
 
+    [Header("Invisibility")]
+    public Light2D invisibilityLight;
+    private SpriteRenderer spriteRenderer;
+    private bool isInvisible = false;
 
     private AllIn1Shader[] shaderTargets;
     private bool isEffectActive = false;
     private bool isOnCooldown = false;
-
 
     private static readonly Dictionary<ShaderEffect, string> ShaderEffectKeywords = new Dictionary<ShaderEffect, string>
     {
@@ -44,6 +48,7 @@ public class PlayerShader : MonoBehaviour
     void Start()
     {
         shaderTargets = Object.FindObjectsByType<AllIn1Shader>(FindObjectsSortMode.None);
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (shaderTargets.Length == 0)
         {
@@ -53,13 +58,13 @@ public class PlayerShader : MonoBehaviour
 
     void Update()
     {
-        // Giữ phím J để test shader thông thường
+        // Nhấn J để bật shader + tàng hình trong effectDuration giây
         if (Input.GetKeyDown(KeyCode.J) && !isEffectActive)
         {
-            StartCoroutine(ActivateEffect());
+            StartCoroutine(ActivateEffectWithInvisibility());
         }
 
-        // Nhấn phím [1] để kích hoạt hiệu ứng biến hình (ColorRamp)
+        // Nhấn phím 1 để biến hình ColorRamp (có cooldown)
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (ItemCollectionTracker.Instance.ConditionMet && !isEffectActive && !isOnCooldown)
@@ -69,10 +74,10 @@ public class PlayerShader : MonoBehaviour
         }
     }
 
-    // Dành riêng cho test/phím J
-    IEnumerator ActivateEffect()
+    IEnumerator ActivateEffectWithInvisibility()
     {
         isEffectActive = true;
+        isInvisible = true;
 
         string keyword = ShaderEffectKeywords[effectToEnable];
 
@@ -81,17 +86,49 @@ public class PlayerShader : MonoBehaviour
             SetKeywordViaReflection(shader, keyword, true);
         }
 
+        // Tàng hình bằng alpha
+        if (spriteRenderer != null)
+        {
+            Color color = spriteRenderer.color;
+            color.a = 0.149f;
+            spriteRenderer.color = color;
+        }
+
+        // Tắt đèn phát hiện
+        if (invisibilityLight != null)
+        {
+            invisibilityLight.enabled = false;
+        }
+
+        Debug.Log("🔮 Shader & Tàng hình kích hoạt!");
+
         yield return new WaitForSeconds(effectDuration);
 
+        // Tắt shader
         foreach (var shader in shaderTargets)
         {
             SetKeywordViaReflection(shader, keyword, false);
         }
 
+        // Hết tàng hình
+        isInvisible = false;
+
+        if (spriteRenderer != null)
+        {
+            Color color = spriteRenderer.color;
+            color.a = 1f;
+            spriteRenderer.color = color;
+        }
+
+        if (invisibilityLight != null)
+        {
+            invisibilityLight.enabled = true;
+        }
+
+        Debug.Log("⏱️ Shader & Tàng hình kết thúc.");
         isEffectActive = false;
     }
 
-    // Dành riêng cho biến hình bằng phím 1 (ColorRamp có cooldown)
     IEnumerator ActivateColorRampEffect()
     {
         isEffectActive = true;
@@ -114,7 +151,6 @@ public class PlayerShader : MonoBehaviour
         }
 
         Debug.Log("🕒 Biến hình kết thúc. Bắt đầu hồi chiêu.");
-
         isEffectActive = false;
 
         yield return new WaitForSeconds(cooldownTime);
@@ -131,5 +167,11 @@ public class PlayerShader : MonoBehaviour
         shader.GetType()
               .GetMethod("SetKeyword", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
               ?.Invoke(shader, new object[] { keyword, state });
+    }
+
+    // Cho LightDetector dùng
+    public bool IsInvisible()
+    {
+        return isInvisible;
     }
 }
