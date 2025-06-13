@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class GridSlot : MonoBehaviour, IDropHandler
@@ -12,12 +13,28 @@ public class GridSlot : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         BlockController dropped = eventData.pointerDrag?.GetComponent<BlockController>();
-
         if (dropped == null) return;
 
-        // Gán vào slot
+        // Nếu slot này đã có block, từ chối nhận block mới
+        if (currentBlock != null)
+        {
+            dropped.ResetToOriginalPosition();
+            return;
+        }
+        //if (currentBlock != null)
+        //{
+        //    // Đưa block về lại chỗ cũ
+        //    dropped.transform.SetParent(dropped.originalParent);
+        //    dropped.GetComponent<RectTransform>()
+        //           .DOAnchorPos(dropped.originalPosition, 0.25f)
+        //           .SetEase(Ease.OutBack);
+        //    return;
+        //}
+
+        // Nếu slot trống -> gán block
         SetBlock(dropped);
     }
+
 
     public void SetBlock(BlockController block)
     {

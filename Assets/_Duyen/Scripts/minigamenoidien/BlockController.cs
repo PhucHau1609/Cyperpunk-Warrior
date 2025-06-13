@@ -9,19 +9,21 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public BlockType blockType;
     public Block block;
 
+    public Transform originalParent { get; private set; }
+    public Vector2 originalPosition { get; private set; }
+
     private Vector3 originalScale;
     private bool isRotating = false;
     private Tween rotateTween; // để lưu tween xoay
-
+    private bool isDragging = false;
 
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Canvas mainCanvas;
 
-    private Vector3 originalPosition;
-    private Transform originalParent;
     private float pointerDownTime;
     private const float clickThreshold = 0.15f;
+
 
     private void Awake()
     {
@@ -33,28 +35,37 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (blockType == BlockType.Fixed || blockType == BlockType.RotateOnly)
+            return;
+
         pointerDownTime = Time.time;
 
-        // Tween scale riêng, không DOKill toàn bộ transform nữa
         transform.DOScale(originalScale * 0.7f, 0.1f).SetEase(Ease.OutSine);
     }
 
+
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (blockType == BlockType.Fixed)
+            return;
+
         transform.DOScale(originalScale, 0.15f).SetEase(Ease.OutBack);
 
+        // Chỉ RotateOnly và MoveRotate mới xoay được
         if (Time.time - pointerDownTime < clickThreshold &&
             (blockType == BlockType.RotateOnly || blockType == BlockType.MoveRotate))
         {
-            Rotate(); // rotate đã chặn mọi thứ
+            Rotate();
             MinigameManager.Instance?.CheckLevel();
         }
     }
 
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (blockType == BlockType.Fixed || blockType == BlockType.RotateOnly) return;
+        if (!IsDraggable()) return;
 
+        isDragging = true;
         originalParent = transform.parent;
         originalPosition = rectTransform.anchoredPosition;
         canvasGroup.blocksRaycasts = false;
@@ -65,8 +76,11 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         transform.SetParent(mainCanvas.transform);
     }
 
+
     public void OnDrag(PointerEventData eventData)
     {
+        if (!isDragging) return;
+
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
             mainCanvas.transform as RectTransform,
             eventData.position,
@@ -77,8 +91,12 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
     }
 
+
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!isDragging) return;
+        isDragging = false;
+
         canvasGroup.blocksRaycasts = true;
 
         if (transform.parent == mainCanvas.transform)
@@ -86,9 +104,17 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             transform.SetParent(originalParent);
             rectTransform.DOAnchorPos(originalPosition, 0.25f).SetEase(Ease.OutBack);
         }
+
         AudioManager.Instance?.PlayBlockInteractSFX();
         MinigameManager.Instance?.CheckLevel();
     }
+
+
+    private bool IsDraggable()
+    {
+        return blockType == BlockType.MoveOnly || blockType == BlockType.MoveRotate;
+    }
+
 
     private void Rotate()
     {
@@ -112,5 +138,9 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 MinigameManager.Instance?.CheckLevel();
             });
     }
-
+    public void ResetToOriginalPosition()
+    {
+        transform.SetParent(originalParent);
+        rectTransform.DOAnchorPos(originalPosition, 0.25f).SetEase(Ease.OutBack);
+    }
 }
