@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Rendering.Universal; // THÊM NÀY nếu bạn dùng Light 2D URP
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,19 +10,8 @@ public class PlayerMovement : MonoBehaviour
     private bool jump = false;
     private bool dash = false;
 
-   private SpriteRenderer spriteRenderer;
-   private bool isInvisible = false;
-
-     [Header("Invisibility Light")]
-     public Light2D invisibilityLight; // GÁN OBJECT NÀY TRONG INSPECTOR
-
     [Header("Movement Control")]
-    public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
-
-   /* private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }*/
+    public bool canMove = true;
 
     void Start()
     {
@@ -33,12 +21,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!canMove) return; // ⚠️ MỚI: Nếu bị khóa thì không làm gì
+        if (!canMove) return;
 
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
             return;
 
-        // Di chuyển
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
@@ -47,35 +34,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
             dash = true;
-
-       /* // Bật/tắt tàng hình bằng phím J
-         if (Input.GetKeyDown(KeyCode.J))
-        {
-            isInvisible = !isInvisible;
-
-           // Bật/tắt Spot Light
-           if (invisibilityLight != null)
-           {
-                invisibilityLight.enabled = !isInvisible;
-            }
-
-        //     // Thay đổi độ alpha của nhân vật
-            if (spriteRenderer != null)
-            {
-               Color color = spriteRenderer.color;
-               color.a = isInvisible ? 0.1490196f : 1f;
-               spriteRenderer.color = color;
-          }
-
-            Debug.Log("Tàng hình: " + isInvisible);
-        }*/
     }
 
     void FixedUpdate()
     {
         if (!canMove)
         {
-            controller.Move(0f, false, false); // Ngừng di chuyển
+            controller.Move(0f, false, false);
             return;
         }
 
@@ -84,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         dash = false;
     }
 
-    public void SetCanMove(bool state) // ⚠️ MỚI: Hàm khóa/mở di chuyển
+    public void SetCanMove(bool state)
     {
         canMove = state;
     }
@@ -97,11 +62,6 @@ public class PlayerMovement : MonoBehaviour
     public void OnLanding()
     {
         animator.SetBool("IsJumping", false);
-    }
-
-     public bool IsInvisible()
-    {
-        return isInvisible;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
