@@ -9,6 +9,9 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public BlockType blockType;
     public Block block;
 
+    public Transform originalParent { get; private set; }
+    public Vector2 originalPosition { get; private set; }
+
     private Vector3 originalScale;
     private bool isRotating = false;
     private Tween rotateTween; // để lưu tween xoay
@@ -18,10 +21,9 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private CanvasGroup canvasGroup;
     private Canvas mainCanvas;
 
-    private Vector3 originalPosition;
-    private Transform originalParent;
     private float pointerDownTime;
     private const float clickThreshold = 0.15f;
+
 
     private void Awake()
     {
@@ -112,5 +114,9 @@ public class BlockController : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 MinigameManager.Instance?.CheckLevel();
             });
     }
-
+    public void ResetToOriginalPosition()
+    {
+        transform.SetParent(originalParent);
+        rectTransform.DOAnchorPos(originalPosition, 0.25f).SetEase(Ease.OutBack);
+    }
 }
