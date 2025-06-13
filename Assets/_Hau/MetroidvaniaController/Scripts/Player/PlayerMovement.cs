@@ -21,14 +21,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Control")]
     public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
 
-   /* private void Awake()
+
+    void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-    }*/
+        DontDestroyOnLoad(this.gameObject); 
+    }
 
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
         GetComponentInChildren<Animator>().SetTrigger("PlayAppear");
     }
 
@@ -123,7 +123,9 @@ public class PlayerMovement : MonoBehaviour
 
     void OnDestroy()
     {
-        Debug.LogError("Player bị xóa bởi đối tượng: " + gameObject.name + " - Stack Trace: " + Environment.StackTrace);
+        Debug.LogError($"[OnDestroy] Player bị xóa. Tên: {gameObject.name}, Time: {Time.time}, Scene: {gameObject.scene.name}");
+        Debug.LogError(Environment.StackTrace);
     }
+
 
 }
