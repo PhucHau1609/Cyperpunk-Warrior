@@ -30,5 +30,8 @@ public class GridSlot : MonoBehaviour, IDropHandler
         currentBlock = block;
         block.transform.SetParent(transform);
         block.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+        MinigameManager.Instance?.CheckLevel();
+
     }
 }
