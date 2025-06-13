@@ -24,11 +24,19 @@ public class FlyingDroidController : MonoBehaviour
     private enum State { Patrolling, Chasing, Returning, Dead }
     private State currentState = State.Patrolling;
 
+     public HealthBarEnemy healthBarEnemy;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         target = pointB.position;
         currentHealth = maxHealth;
+
+        // float normalizedHealth = currentHealth / (float)maxHealth;
+        // if (normalizedHealth < 1f && normalizedHealth > 0f)
+        // {
+        //     healthBarEnemy?.ShowHealthBar(normalizedHealth);
+        // }
     }
 
     void FixedUpdate()
@@ -87,7 +95,8 @@ public class FlyingDroidController : MonoBehaviour
         currentHealth -= damage;
         animator.SetTrigger("Hurt");
 
-        HealthBarEnemy.Instance?.ShowHealthBar(transform, currentHealth / (float)maxHealth);
+        // Hiển thị thanh máu của Enemy này
+        healthBarEnemy?.ShowHealthBar(currentHealth / (float)maxHealth);
 
         if (currentHealth <= 0)
         {
@@ -96,7 +105,9 @@ public class FlyingDroidController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             GetComponent<Collider2D>().enabled = false;
             this.enabled = false;
-            HealthBarEnemy.Instance?.HideHealthBar();
+            
+            // Ẩn thanh máu của Enemy này
+            healthBarEnemy?.HideHealthBar();
 
             var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
             if (behavior != null) behavior.DisableBehavior();

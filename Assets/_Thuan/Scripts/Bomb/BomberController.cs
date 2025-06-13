@@ -20,6 +20,8 @@ public class BomberController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
 
+     public HealthBarEnemy healthBarEnemy;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -28,6 +30,12 @@ public class BomberController : MonoBehaviour
         animator = GetComponent<Animator>();
 
         currentHealth = maxHealth;
+
+        float normalizedHealth = currentHealth / (float)maxHealth;
+        if (normalizedHealth < 1f && normalizedHealth > 0f)
+        {
+            healthBarEnemy?.ShowHealthBar(normalizedHealth);
+        }
     }
 
     void Update()
@@ -68,7 +76,8 @@ public class BomberController : MonoBehaviour
         currentHealth -= damage;
         animator.SetTrigger("Hurt");
 
-        HealthBarEnemy.Instance?.ShowHealthBar(transform, currentHealth / (float)maxHealth);
+        // Hiển thị thanh máu của Enemy này
+        healthBarEnemy?.ShowHealthBar(currentHealth / (float)maxHealth);
 
         if (currentHealth <= 0)
         {
@@ -77,7 +86,9 @@ public class BomberController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             GetComponent<Collider2D>().enabled = false;
             this.enabled = false;
-            HealthBarEnemy.Instance?.HideHealthBar();
+            
+            // Ẩn thanh máu của Enemy này
+            healthBarEnemy?.HideHealthBar();
 
             var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
             if (behavior != null) behavior.DisableBehavior();
