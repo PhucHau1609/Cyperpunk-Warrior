@@ -226,13 +226,7 @@ public class CodeLock_1 : MonoBehaviour
             reopenButton.onClick.RemoveAllListeners();
             reopenButton.interactable = false;
 
-            // ✅ Mở cửa
-            if (doorAnimator != null)
-                doorAnimator.SetTrigger("Open");
-            if (doorController != null)
-                doorController.DisableCollider();
-
-            StartCoroutine(CloseCanvasAfterDelay(0.5f));
+            StartCoroutine(CloseCanvasAfterDelay(.2f));
         }
         else
         {
@@ -271,5 +265,11 @@ public class CodeLock_1 : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         CloseCanvas();
+
+        // ✅ Mở cửa
+        if (doorAnimator != null)
+            doorAnimator.SetTrigger("Open");
+        if (doorController != null)
+            doorController.DisableCollider();
     }
 }
