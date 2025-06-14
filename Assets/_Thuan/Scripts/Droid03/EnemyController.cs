@@ -22,6 +22,8 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private LayerMask groundLayer;
 
+     public HealthBarEnemy healthBarEnemy;
+
     void Awake()
     {
         if (player == null)
@@ -34,6 +36,12 @@ public class EnemyController : MonoBehaviour
         currentHealth = maxHealth;
         //UpdateHealthBar();
         rb = GetComponent<Rigidbody2D>();
+
+        float normalizedHealth = currentHealth / (float)maxHealth;
+        if (normalizedHealth < 1f && normalizedHealth > 0f)
+        {
+            healthBarEnemy?.ShowHealthBar(normalizedHealth);
+        }
     }
 
     void FixedUpdate()
@@ -61,14 +69,15 @@ public class EnemyController : MonoBehaviour
         }
     }
     
-    public void TakeDamage(int damage)
+     public void TakeDamage(int damage)
     {
         if (currentState == State.Dead) return;
 
         currentHealth -= damage;
         animator.SetTrigger("Hurt");
 
-        HealthBarEnemy.Instance?.ShowHealthBar(transform, currentHealth / (float)maxHealth);
+        // Hiển thị thanh máu của Enemy này
+        healthBarEnemy?.ShowHealthBar(currentHealth / (float)maxHealth);
 
         if (currentHealth <= 0)
         {
@@ -77,7 +86,9 @@ public class EnemyController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             GetComponent<Collider2D>().enabled = false;
             this.enabled = false;
-            HealthBarEnemy.Instance?.HideHealthBar();
+            
+            // Ẩn thanh máu của Enemy này
+            healthBarEnemy?.HideHealthBar();
 
             var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
             if (behavior != null) behavior.DisableBehavior();

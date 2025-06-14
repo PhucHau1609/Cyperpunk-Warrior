@@ -218,7 +218,7 @@ public class Droid02Controller : MonoBehaviour
         currentHealth -= damage;
         anim.SetTrigger("Hurt");
 
-        HealthBarEnemy.Instance?.ShowHealthBar(transform, currentHealth / (float)maxHealth);
+        //HealthBarEnemy.Instance?.ShowHealthBar(transform, currentHealth / (float)maxHealth);
 
         if (currentHealth <= 0)
         {
@@ -227,7 +227,7 @@ public class Droid02Controller : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             GetComponent<Collider2D>().enabled = false;
             this.enabled = false;
-            HealthBarEnemy.Instance?.HideHealthBar();
+            //HealthBarEnemy.Instance?.HideHealthBar();
         }
 
         CameraFollow.Instance?.ShakeCamera();
