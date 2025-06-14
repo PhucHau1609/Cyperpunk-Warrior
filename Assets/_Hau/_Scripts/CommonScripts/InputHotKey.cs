@@ -17,6 +17,8 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     private void Update()
     {
         this.OpenInventory();
+        this.Weapon_Toogle();
+        this.Weapon_Swap();
         //this.OpenMusic();
         //this.OpenSetting();
     }
@@ -41,5 +43,21 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     protected virtual void OpenSetting()
     {
         this.isToogleSetting = Input.GetKeyUp(KeyCode.N);
+    }
+
+    protected virtual void Weapon_Toogle()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            ObserverManager.Instance.PostEvent(EventID.Weapon_Toggle);
+        }
+    }
+
+    protected virtual void Weapon_Swap()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            ObserverManager.Instance.PostEvent(EventID.Weapon_Swap);
+        }
     }
 }

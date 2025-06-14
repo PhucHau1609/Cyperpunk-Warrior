@@ -6,6 +6,7 @@ public class Fire1Ctrl : EffectFlyAbstract
 {
     public override string GetName()
     {
-        return "Fire_1";
+        //return "Fire_1";
+        return BulletGunName.Fire_1.ToString();
     }
 }

@@ -108,6 +108,8 @@ MonoBehaviour:
   firePoint: {fileID: 8619749321405063064}
   bulletName: 1
   bulletDamage: 1
+  shellParticle: {fileID: 8822572752974207521}
+  flameParticle: {fileID: 4515941168799838092}
 --- !u!1001 &2857424943922287540
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -233,6 +235,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2315886009143866479, guid: 2b492e12b12e19c439ac181c921ff4b8, type: 3}
   m_PrefabInstance: {fileID: 2857424943922287540}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &4515941168799838092 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1804892634921335864, guid: 2b492e12b12e19c439ac181c921ff4b8, type: 3}
+  m_PrefabInstance: {fileID: 2857424943922287540}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7895245389899061592 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5347486900840909548, guid: 2b492e12b12e19c439ac181c921ff4b8, type: 3}
@@ -274,3 +281,8 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: -0.015669346, y: 0}
   m_Radius: 0.48433065
+--- !u!198 &8822572752974207521 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6762031644204681621, guid: 2b492e12b12e19c439ac181c921ff4b8, type: 3}
+  m_PrefabInstance: {fileID: 2857424943922287540}
+  m_PrefabAsset: {fileID: 0}

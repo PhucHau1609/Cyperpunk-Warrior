@@ -15,6 +15,11 @@ public enum EventID
     OpenInventory,
     InventoryChanged,
 
+    //Weapon
+    Weapon_Toggle,
+    Weapon_Swap,
+
+
 }
 
 public class ObserverManager : HauSingleton<ObserverManager>
