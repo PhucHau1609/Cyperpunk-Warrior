@@ -29,6 +29,8 @@ public class CodeLock_1 : MonoBehaviour
     public Button reopenButton;
     public GameObject canvas;
     public Sprite image2;
+    public SplitDoorController doorController;
+    public Animator doorAnimator;
 
     [Header("Hint Sprites for 0–9")]
     public SpriteList[] hintImagesPerNumber = new SpriteList[10];
@@ -89,15 +91,6 @@ public class CodeLock_1 : MonoBehaviour
         canvasGroup.DOFade(1, 0.4f);
         canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
     }
-
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Return))
-    //    {
-    //        AudioManager.Instance.PlayClickSFX(); 
-    //        CheckCode();
-    //    }
-    //}
 
     void AddNumber(int number)
     {
@@ -227,7 +220,13 @@ public class CodeLock_1 : MonoBehaviour
         {
             string correctCodeString = string.Join("", correctCode);
             PetUnlocked = true;
-            StartCoroutine(CloseCanvasAfterDelay(0.5f));
+
+            // Đổi ảnh và vô hiệu hóa nút
+            reopenButton.image.sprite = image2;
+            reopenButton.onClick.RemoveAllListeners();
+            reopenButton.interactable = false;
+
+            StartCoroutine(CloseCanvasAfterDelay(.2f));
         }
         else
         {
@@ -266,5 +265,11 @@ public class CodeLock_1 : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         CloseCanvas();
+
+        // ✅ Mở cửa
+        if (doorAnimator != null)
+            doorAnimator.SetTrigger("Open");
+        if (doorController != null)
+            doorController.DisableCollider();
     }
 }
