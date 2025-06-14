@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,6 +49,7 @@ public abstract class Spawner<T> : HauMonoBehaviour where T : PoolObj // Day 6 -
         if(newObject == null)
         {
             newObject = Instantiate(Prefab);
+            newObject.SetOriginalPrefabReference(Prefab); // ✅ Quan trọng
             this.spawnCount++;
             this.UpdateName(Prefab.transform, newObject.transform);
         }
@@ -101,7 +102,24 @@ public abstract class Spawner<T> : HauMonoBehaviour where T : PoolObj // Day 6 -
         newObject.name = prefab.name + "_" + this.spawnCount;
     }
 
-    protected virtual T GetObjFromPool(T prefab) // Day 6 - E42
+
+    protected virtual T GetObjFromPool(T prefab)
+    {
+        foreach (T obj in this.inPoolObj)
+        {
+            if (obj.OriginalPrefabReference == prefab) // ✅ So sánh đúng theo instance gốc
+            {
+                this.RemoveObjectToPool(obj);
+                //Debug.Log($"[Spawn] Getting from pool: {obj.name} with ref: {obj.OriginalPrefabReference?.name}");
+                return obj;
+            }
+        }
+        return null;
+    }
+
+
+
+    /*protected virtual T GetObjFromPool(T prefab) // Day 6 - E42
     {
         foreach (T obj in this.inPoolObj)
         {
@@ -113,5 +131,5 @@ public abstract class Spawner<T> : HauMonoBehaviour where T : PoolObj // Day 6 -
         }
 
         return null;
-    }
+    }*/
 }

@@ -8,6 +8,9 @@ public class WeaponShooter : MonoBehaviour
 
     private int lastDirection = 1; // 1: phải, -1: trái
 
+    [SerializeField] private ParticleSystem shellParticle;
+    [SerializeField] private ParticleSystem flameParticle;
+
     private void Update()
     {
         // Chỉ bắn khi vũ khí này đang được bật
@@ -36,6 +39,8 @@ public class WeaponShooter : MonoBehaviour
         // Spawn từ EffectSpawner
         EffectCtrl bulletBase = EffectSpawnerCtrl.Instance.EffectSpawner.PoolPrefabs.GetPrefabByName(bulletName.ToString());
         EffectCtrl spawnedBullet = EffectSpawnerCtrl.Instance.EffectSpawner.Spawn(bulletBase, firePoint.position);
+
+        //Debug.Log($"[Shoot] Expecting Bullet: {bulletName}");
 
         if (spawnedBullet == null)
         {
@@ -69,5 +74,11 @@ public class WeaponShooter : MonoBehaviour
         {
             damageSender.SetDamage(bulletDamage);
         }
+
+
+
+        // 🔥 Bắn hiệu ứng
+        if (shellParticle != null) shellParticle.Play();
+        if (flameParticle != null) flameParticle.Play();
     }
 }

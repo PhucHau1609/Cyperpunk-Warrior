@@ -7,7 +7,7 @@ public class WeaponAimer : MonoBehaviour
     public Transform weaponPivot;  // new
     private Transform currentWeapon;
 
-    //[SerializeField] private bool flipSprite = true;
+    [SerializeField] private CharacterController2D characterController;
 
     [SerializeField] private Vector3 weaponOffset = new Vector3(0.806f, 0f, 0f);
 
@@ -25,7 +25,6 @@ public class WeaponAimer : MonoBehaviour
         AimAtMouse(mouseWorldPos);         // ⬅ Rồi mới xoay
     }
 
-
     void AimAtMouse(Vector3 mouseWorldPos)
     {
         if (weaponHolder == null || Camera.main == null) return;
@@ -37,36 +36,31 @@ public class WeaponAimer : MonoBehaviour
 
         if (currentDirection < 0)
         {
-            angle = 180 - angle;
+            // Nếu xoay trái → cộng 180 độ để lật vũ khí đúng hướng
+            angle += 180f;
         }
 
         weaponHolder.rotation = Quaternion.Euler(0, 0, angle);
 
-        // ✅ Đảm bảo update vị trí vũ khí mỗi frame
+        // Cập nhật vị trí theo hướng mới
         UpdateWeaponOffset(currentDirection);
     }
 
-
-
-
     void FlipPlayerIfNeeded(Vector3 mousePos)
     {
-        if (playerTransform == null) return;
+        if (playerTransform == null || characterController == null) return;
 
         float mouseDirection = mousePos.x - playerTransform.position.x;
         float currentFacing = playerTransform.localScale.x;
 
-        // Nếu hướng chuột khác với hướng nhìn hiện tại → flip player
+        // Nếu hướng chuột khác hướng nhìn hiện tại
         if ((mouseDirection < 0 && currentFacing > 0) || (mouseDirection > 0 && currentFacing < 0))
         {
-            Vector3 scale = playerTransform.localScale;
-            scale.x *= -1;
-            playerTransform.localScale = scale;
-
-            // Cập nhật lại vị trí weapon theo hướng mới
-            UpdateWeaponOffset((int)Mathf.Sign(scale.x));
+            characterController.Flip(); // GỌI HÀM FLIP CHÍNH THỨC
+            UpdateWeaponOffset((int)Mathf.Sign(playerTransform.localScale.x));
         }
     }
+
 
     void UpdateWeaponOffset(int direction)
     {
@@ -90,4 +84,42 @@ public class WeaponAimer : MonoBehaviour
 
 }
 
+/*void AimAtMouse(Vector3 mouseWorldPos)
+  {
+      if (weaponHolder == null || Camera.main == null) return;
 
+      Vector3 direction = mouseWorldPos - weaponHolder.position;
+      float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+      int currentDirection = (int)Mathf.Sign(playerTransform.localScale.x);
+
+      if (currentDirection < 0)
+      {
+          angle = 180 - angle;
+      }
+
+      weaponHolder.rotation = Quaternion.Euler(0, 0, angle);
+
+      // ✅ Đảm bảo update vị trí vũ khí mỗi frame
+      UpdateWeaponOffset(currentDirection);
+  }*/
+
+
+/* void FlipPlayerIfNeeded(Vector3 mousePos)
+    {
+        if (playerTransform == null) return;
+
+        float mouseDirection = mousePos.x - playerTransform.position.x;
+        float currentFacing = playerTransform.localScale.x;
+
+        // Nếu hướng chuột khác với hướng nhìn hiện tại → flip player
+        if ((mouseDirection < 0 && currentFacing > 0) || (mouseDirection > 0 && currentFacing < 0))
+        {
+            Vector3 scale = playerTransform.localScale;
+            scale.x *= -1;
+            playerTransform.localScale = scale;
+
+            // Cập nhật lại vị trí weapon theo hướng mới
+            UpdateWeaponOffset((int)Mathf.Sign(scale.x));
+        }
+    }*/
