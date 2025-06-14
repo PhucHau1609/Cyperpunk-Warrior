@@ -121,11 +121,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+/*    void OnDestroy()
     {
         Debug.LogError($"[OnDestroy] Player bị xóa. Tên: {gameObject.name}, Time: {Time.time}, Scene: {gameObject.scene.name}");
         Debug.LogError(Environment.StackTrace);
-    }
+    }*/
 
 
 }
