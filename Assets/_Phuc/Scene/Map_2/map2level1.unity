@@ -111352,6 +111352,7 @@ GameObject:
   - component: {fileID: 3881348814291804878}
   - component: {fileID: 5366969262598554325}
   - component: {fileID: 8730959715252825803}
+  - component: {fileID: 9176462443835466099}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Enemy
@@ -111580,8 +111581,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!222 &5399110516443352143
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -111917,6 +111918,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &9176462443835466099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3460962177789480767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!114 &9180988783362386616
 MonoBehaviour:
   m_ObjectHideFlags: 0

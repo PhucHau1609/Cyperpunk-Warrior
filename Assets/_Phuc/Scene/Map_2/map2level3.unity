@@ -84873,7 +84873,6 @@ MonoBehaviour:
   healthSlider: {fileID: 0}
   player: {fileID: 0}
   initialPosition: {x: 0, y: 0, z: 0}
-  maxHealth: 10
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -85690,6 +85689,7 @@ GameObject:
   - component: {fileID: 159920322170410859}
   - component: {fileID: 7847187969098950360}
   - component: {fileID: 3736396947465026314}
+  - component: {fileID: 7847187969098950361}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Enemy
@@ -96049,6 +96049,21 @@ MonoBehaviour:
       Version: 1.7.7
   gizmoViewMode: 2
   showBehaviorDesignerGizmo: 1
+--- !u!114 &7847187969098950361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5068305406707585954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!114 &7905095496809611360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96216,6 +96231,7 @@ GameObject:
   - component: {fileID: 4666234806580311473}
   - component: {fileID: 2303738549575147447}
   - component: {fileID: 356160084398557277}
+  - component: {fileID: 8741600606853230316}
   m_Layer: 12
   m_Name: Enemy1
   m_TagString: Enemy
@@ -96223,6 +96239,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8741600606853230316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8741600606853230315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!4 &8791365482325353359
 Transform:
   m_ObjectHideFlags: 0

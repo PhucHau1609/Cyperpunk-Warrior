@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class DamageReceiver : HauMonoBehaviour // E43,E44 create
+public abstract class DamageReceiver : HauMonoBehaviour, IDamageable // E43,E44 create
 {
     [SerializeField] protected int currentHP = 10;
     public int CurrentHP => currentHP;
@@ -48,5 +48,10 @@ public abstract class DamageReceiver : HauMonoBehaviour // E43,E44 create
     protected virtual void RebornEnemyFromPool() //E49,50 create
     {
         this.currentHP = this.maxHP;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Deduct(damage);
     }
 }
