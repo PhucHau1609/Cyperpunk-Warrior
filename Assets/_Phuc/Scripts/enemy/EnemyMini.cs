@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnemyMini : MonoBehaviour
+public class EnemyMini : MonoBehaviour, IExplodable
 {
     public enum State { Sleep, Awaken, Chase }
     private State currentState = State.Sleep;
@@ -67,7 +67,7 @@ public class EnemyMini : MonoBehaviour
         }
     }
 
-    private void Explode()
+    public void Explode()
     {
         // Gọi hiệu ứng nổ (nếu có)
         if (explosionPrefab != null)

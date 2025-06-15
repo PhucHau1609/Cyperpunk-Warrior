@@ -92,6 +92,8 @@ public class EnemyController : MonoBehaviour
 
             var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
             if (behavior != null) behavior.DisableBehavior();
+            //ItemsDropManager.Instance.DropItem(ItemCode.MachineGun_0, 1, this.transform.position);
+
             Destroy(gameObject, 2f);
         }
 

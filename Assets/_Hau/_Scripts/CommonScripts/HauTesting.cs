@@ -8,11 +8,11 @@ public class HauTesting : MonoBehaviour
     [ProButton]
     public void DropManyItemsTesting()
     {
-        ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_1, 1, new Vector3(0, 0, 0));
+       /* ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_1, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_2, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_3, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_4, 1, new Vector3(0, 0, 0));
-        ItemsDropManager.Instance.DropManyItems(ItemCode.Artefacts_1, 1, new Vector3(-4, -2, 0));
+        ItemsDropManager.Instance.DropManyItems(ItemCode.Artefacts_1, 1, new Vector3(-4, -2, 0));*/
         ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_0, 1, new Vector3(-5, -2, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_1, 1, new Vector3(-6, -2, 0));
     }
@@ -25,5 +25,12 @@ public class HauTesting : MonoBehaviour
         EffectCtrl prefab = EffectSpawnerCtrl.Instance.EffectSpawner.PoolPrefabs.GetPrefabByName("Fire_1");
         EffectCtrl newHitEffect = EffectSpawnerCtrl.Instance.EffectSpawner.Spawn(prefab, hitPos);
         newHitEffect.gameObject.SetActive(true);
+    }
+    [ProButton]
+    public virtual void AddItem(ItemCode itemCode, int itemCount)
+    {
+        ItemProfileSO itemProfile = InventoryManager.Instance.GetProfileByCode(itemCode);
+        ItemInventory item = new(itemProfile, itemCount);
+        InventoryManager.Instance.AddItem(item);
     }
 }
