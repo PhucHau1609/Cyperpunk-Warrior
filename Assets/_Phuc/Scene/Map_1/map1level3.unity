@@ -1774,6 +1774,7 @@ GameObject:
   - component: {fileID: 587990482}
   - component: {fileID: 587990481}
   - component: {fileID: 587990479}
+  - component: {fileID: 587990488}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Enemy
@@ -1856,8 +1857,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 1.7.7
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!50 &587990483
 Rigidbody2D:
   serializedVersion: 5
@@ -2025,6 +2026,21 @@ Transform:
   - {fileID: 122211337}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &587990488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587990478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!1 &589051125
 GameObject:
   m_ObjectHideFlags: 0
@@ -38833,6 +38849,7 @@ GameObject:
   - component: {fileID: 1464869555}
   - component: {fileID: 1464869554}
   - component: {fileID: 1464869552}
+  - component: {fileID: 1464869561}
   m_Layer: 12
   m_Name: Enemy2
   m_TagString: Enemy
@@ -38915,8 +38932,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 1.7.7
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!50 &1464869556
 Rigidbody2D:
   serializedVersion: 5
@@ -39084,6 +39101,21 @@ Transform:
   - {fileID: 6912088455933921184}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1464869561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464869551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!1001 &1468990052
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnemyShooter : MonoBehaviour
+public class EnemyShooter : MonoBehaviour, IExplodable
 {
     public enum State { Sleep, Awaken, MoveToShoot, Returning }
     private State currentState = State.Sleep;
@@ -15,6 +15,11 @@ public class EnemyShooter : MonoBehaviour
 
     public Vector2 moveAreaMin;
     public Vector2 moveAreaMax;
+
+    [Header("Explosion")]
+    public GameObject explosionPrefab;
+    public GameObject explosionSoundPrefab;
+
 
     private Transform player;
     private Animator animator;
@@ -138,5 +143,19 @@ public class EnemyShooter : MonoBehaviour
         chaseTimer = 0f;
         shootTimer = 0f;
         animator.SetTrigger("Chase");
+    }
+
+    public void Explode()
+    {
+        // Gọi hiệu ứng nổ (nếu có)
+        if (explosionPrefab != null)
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+
+        // Gọi prefab phát âm thanh
+        if (explosionSoundPrefab != null)
+            Instantiate(explosionSoundPrefab, transform.position, Quaternion.identity);
+
+        // Hủy enemy
+        Destroy(gameObject);
     }
 }

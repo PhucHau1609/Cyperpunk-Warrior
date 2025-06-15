@@ -533,6 +533,7 @@ GameObject:
   - component: {fileID: 184849882}
   - component: {fileID: 184849881}
   - component: {fileID: 184849880}
+  - component: {fileID: 184849886}
   m_Layer: 0
   m_Name: LyraEnemy_2
   m_TagString: Untagged
@@ -724,6 +725,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &184849886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184849878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3102f028ed9ff4d98b09051d9b1d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 5
+  IsImmotal: 0
+  explodableTarget: {fileID: 184849881}
 --- !u!1 &194193551
 GameObject:
   m_ObjectHideFlags: 0
@@ -2134,6 +2151,7 @@ GameObject:
   - component: {fileID: 449145305}
   - component: {fileID: 449145304}
   - component: {fileID: 449145303}
+  - component: {fileID: 449145309}
   m_Layer: 0
   m_Name: LyraEnemy_Attack_2
   m_TagString: Untagged
@@ -2179,6 +2197,8 @@ MonoBehaviour:
   firePoint: {fileID: 20600784}
   moveAreaMin: {x: 0, y: 17}
   moveAreaMax: {x: 15, y: 30}
+  explosionPrefab: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
+  explosionSoundPrefab: {fileID: 921976093475213290, guid: 8775e14bfed49d7438d2745fb24aeeb1, type: 3}
 --- !u!114 &449145304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2331,6 +2351,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &449145309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449145301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3102f028ed9ff4d98b09051d9b1d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 5
+  IsImmotal: 0
+  explodableTarget: {fileID: 449145303}
 --- !u!21 &473685735
 Material:
   serializedVersion: 8
@@ -53933,51 +53969,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!1 &1198207671
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1198207673}
-  - component: {fileID: 1198207672}
-  m_Layer: 0
-  m_Name: SpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1198207672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1198207671}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc45a864ceb11fa468ffd3e64231b18d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneName: 3
---- !u!4 &1198207673
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1198207671}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.69, y: 1.34, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1208670206
 GameObject:
   m_ObjectHideFlags: 0
@@ -84920,6 +84911,7 @@ GameObject:
   - component: {fileID: 1524785266}
   - component: {fileID: 1524785265}
   - component: {fileID: 1524785264}
+  - component: {fileID: 1524785270}
   m_Layer: 0
   m_Name: LyraEnemy_Attack
   m_TagString: Untagged
@@ -84965,6 +84957,8 @@ MonoBehaviour:
   firePoint: {fileID: 1528312705}
   moveAreaMin: {x: -30, y: 17}
   moveAreaMax: {x: -15, y: 30}
+  explosionPrefab: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
+  explosionSoundPrefab: {fileID: 921976093475213290, guid: 8775e14bfed49d7438d2745fb24aeeb1, type: 3}
 --- !u!114 &1524785265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85117,6 +85111,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1524785270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524785262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3102f028ed9ff4d98b09051d9b1d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 5
+  IsImmotal: 0
+  explodableTarget: {fileID: 1524785264}
 --- !u!1 &1528312704
 GameObject:
   m_ObjectHideFlags: 0
@@ -86488,6 +86498,7 @@ GameObject:
   - component: {fileID: 2025998396}
   - component: {fileID: 2025998395}
   - component: {fileID: 2025998394}
+  - component: {fileID: 2025998400}
   m_Layer: 0
   m_Name: LyraEnemy_1
   m_TagString: Untagged
@@ -86679,6 +86690,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2025998400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025998392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3102f028ed9ff4d98b09051d9b1d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 5
+  IsImmotal: 0
+  explodableTarget: {fileID: 2025998395}
 --- !u!1001 &2031823776
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86937,6 +86964,7 @@ GameObject:
   - component: {fileID: 2096261048}
   - component: {fileID: 2096261047}
   - component: {fileID: 2096261046}
+  - component: {fileID: 2096261052}
   m_Layer: 0
   m_Name: LyraEnemy_Attack_1
   m_TagString: Untagged
@@ -86982,6 +87010,8 @@ MonoBehaviour:
   firePoint: {fileID: 164576528}
   moveAreaMin: {x: -15, y: 17}
   moveAreaMax: {x: 0, y: 30}
+  explosionPrefab: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
+  explosionSoundPrefab: {fileID: 921976093475213290, guid: 8775e14bfed49d7438d2745fb24aeeb1, type: 3}
 --- !u!114 &2096261047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87134,6 +87164,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2096261052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096261044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3102f028ed9ff4d98b09051d9b1d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 5
+  IsImmotal: 0
+  explodableTarget: {fileID: 2096261046}
 --- !u!1 &2121031190
 GameObject:
   m_ObjectHideFlags: 0
@@ -87607,6 +87653,7 @@ GameObject:
   - component: {fileID: 7369304822582610383}
   - component: {fileID: 8365645386917143173}
   - component: {fileID: 8365645386917143174}
+  - component: {fileID: 8365645386917143175}
   m_Layer: 0
   m_Name: LyraEnemy
   m_TagString: Untagged
@@ -88433,6 +88480,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
+--- !u!114 &8365645386917143175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3016476175225375155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3102f028ed9ff4d98b09051d9b1d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 5
+  IsImmotal: 0
+  explodableTarget: {fileID: 8365645386917143173}
 --- !u!1 &8541253488422803472
 GameObject:
   m_ObjectHideFlags: 0
@@ -88485,6 +88548,7 @@ GameObject:
   - component: {fileID: 4244715628654944612}
   - component: {fileID: 6068225640888209623}
   - component: {fileID: 795516223056121093}
+  - component: {fileID: 9172860543897182651}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Enemy
@@ -88519,6 +88583,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &9172860543897182651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9117071366131869101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -88536,7 +88615,6 @@ SceneRoots:
   - {fileID: 1139584011}
   - {fileID: 780053757}
   - {fileID: 1278123629}
-  - {fileID: 1198207673}
   - {fileID: 2031823776}
   - {fileID: 1394115873}
   - {fileID: 1567603094}

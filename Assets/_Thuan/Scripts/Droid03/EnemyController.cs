@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IDamageResponder
 {
     public float moveSpeed = 2f;
     public Transform pointA;
@@ -13,40 +13,42 @@ public class EnemyController : MonoBehaviour
 
     [HideInInspector] public Vector3 initialPosition;
 
-    public float maxHealth = 10;
-    private float currentHealth;
-
     private enum State { Patrolling, Chasing, Returning, Dead }
     private State currentState = State.Patrolling;
-    private Rigidbody2D rb;
 
+    private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
 
-     public HealthBarEnemy healthBarEnemy;
+    public HealthBarEnemy healthBarEnemy;
+    private EnemyDamageReceiver damageReceiver;
 
     void Awake()
     {
         if (player == null)
             player = GameObject.FindWithTag("Player")?.transform;
+
+        damageReceiver = GetComponent<EnemyDamageReceiver>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Start()
     {
         initialPosition = transform.position;
-        currentHealth = maxHealth;
-        //UpdateHealthBar();
-        rb = GetComponent<Rigidbody2D>();
 
-        float normalizedHealth = currentHealth / (float)maxHealth;
-        if (normalizedHealth < 1f && normalizedHealth > 0f)
+        // Ẩn HealthBar lúc bắt đầu (nếu đầy máu)
+        float normalizedHealth = GetNormalizedHealth();
+        if (healthBarEnemy != null)
         {
-            healthBarEnemy?.ShowHealthBar(normalizedHealth);
+            if (normalizedHealth < 1f)
+                healthBarEnemy.ShowHealthBar(normalizedHealth);
+            else
+                healthBarEnemy.HideHealthBar();
         }
     }
 
     void FixedUpdate()
     {
-        StickToGround(); 
+        StickToGround();
     }
 
     public void FacePlayer()
@@ -68,33 +70,41 @@ public class EnemyController : MonoBehaviour
             transform.position = pos;
         }
     }
-    
-     public void TakeDamage(int damage)
+
+    public void OnHurt()
     {
         if (currentState == State.Dead) return;
 
-        currentHealth -= damage;
         animator.SetTrigger("Hurt");
-
-        // Hiển thị thanh máu của Enemy này
-        healthBarEnemy?.ShowHealthBar(currentHealth / (float)maxHealth);
-
-        if (currentHealth <= 0)
-        {
-            animator.SetTrigger("Death");
-            currentState = State.Dead;
-            rb.linearVelocity = Vector2.zero;
-            GetComponent<Collider2D>().enabled = false;
-            this.enabled = false;
-            
-            // Ẩn thanh máu của Enemy này
-            healthBarEnemy?.HideHealthBar();
-
-            var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
-            if (behavior != null) behavior.DisableBehavior();
-            Destroy(gameObject, 2f);
-        }
-
         CameraFollow.Instance?.ShakeCamera();
+
+        if (healthBarEnemy != null)
+        {
+            healthBarEnemy.ShowHealthBar(GetNormalizedHealth());
+        }
+    }
+
+    public void OnDead()
+    {
+        animator.SetTrigger("Death");
+        currentState = State.Dead;
+        rb.linearVelocity = Vector2.zero;
+        GetComponent<Collider2D>().enabled = false;
+        this.enabled = false;
+
+        healthBarEnemy?.HideHealthBar();
+
+        var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+        if (behavior != null) behavior.DisableBehavior();
+
+        Destroy(gameObject, 2f);
+    }
+
+    private float GetNormalizedHealth()
+    {
+        if (damageReceiver != null && damageReceiver.MaxHP > 0)
+            return damageReceiver.CurrentHP / (float)damageReceiver.MaxHP;
+        else
+            return 1f;
     }
 }

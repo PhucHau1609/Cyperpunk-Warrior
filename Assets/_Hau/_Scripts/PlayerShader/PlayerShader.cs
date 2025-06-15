@@ -16,7 +16,7 @@ public class PlayerShader : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private bool isInvisible = false;
 
-    private AllIn1Shader[] shaderTargets;
+    private AllIn1Shader playerShaderComponent;
     private bool isEffectActive = false;
     private bool isOnCooldown = false;
 
@@ -47,12 +47,18 @@ public class PlayerShader : MonoBehaviour
 
     void Start()
     {
-        shaderTargets = Object.FindObjectsByType<AllIn1Shader>(FindObjectsSortMode.None);
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerShaderComponent = GetComponent<AllIn1Shader>();
 
-        if (shaderTargets.Length == 0)
+        if (spriteRenderer != null)
         {
-            Debug.LogWarning("Không tìm thấy bất kỳ AllIn1Shader nào trong scene.");
+            // Nhân bản material để không dùng chung
+            spriteRenderer.material = new Material(spriteRenderer.material);
+        }
+
+        if (playerShaderComponent == null)
+        {
+            Debug.LogWarning("Player chưa có component AllIn1Shader!");
         }
     }
 
@@ -80,13 +86,8 @@ public class PlayerShader : MonoBehaviour
         isInvisible = true;
 
         string keyword = ShaderEffectKeywords[effectToEnable];
+        SetKeywordOnSelf(keyword, true);
 
-        foreach (var shader in shaderTargets)
-        {
-            SetKeywordViaReflection(shader, keyword, true);
-        }
-
-        // Tàng hình bằng alpha
         if (spriteRenderer != null)
         {
             Color color = spriteRenderer.color;
@@ -94,7 +95,6 @@ public class PlayerShader : MonoBehaviour
             spriteRenderer.color = color;
         }
 
-        // Tắt đèn phát hiện
         if (invisibilityLight != null)
         {
             invisibilityLight.enabled = false;
@@ -104,13 +104,8 @@ public class PlayerShader : MonoBehaviour
 
         yield return new WaitForSeconds(effectDuration);
 
-        // Tắt shader
-        foreach (var shader in shaderTargets)
-        {
-            SetKeywordViaReflection(shader, keyword, false);
-        }
+        SetKeywordOnSelf(keyword, false);
 
-        // Hết tàng hình
         isInvisible = false;
 
         if (spriteRenderer != null)
@@ -135,20 +130,13 @@ public class PlayerShader : MonoBehaviour
         isOnCooldown = true;
 
         string keyword = ShaderEffectKeywords[ShaderEffect.ColorRamp];
-
-        foreach (var shader in shaderTargets)
-        {
-            SetKeywordViaReflection(shader, keyword, true);
-        }
+        SetKeywordOnSelf(keyword, true);
 
         Debug.Log("🌈 Biến hình ColorRamp kích hoạt!");
 
         yield return new WaitForSeconds(effectDuration);
 
-        foreach (var shader in shaderTargets)
-        {
-            SetKeywordViaReflection(shader, keyword, false);
-        }
+        SetKeywordOnSelf(keyword, false);
 
         Debug.Log("🕒 Biến hình kết thúc. Bắt đầu hồi chiêu.");
         isEffectActive = false;
@@ -159,14 +147,14 @@ public class PlayerShader : MonoBehaviour
         Debug.Log("✅ Hồi chiêu xong. Có thể biến hình lại.");
     }
 
-    private void SetKeywordViaReflection(AllIn1Shader shader, string keyword, bool state)
+    private void SetKeywordOnSelf(string keyword, bool state)
     {
-        if (shader == null) return;
+        if (playerShaderComponent == null) return;
 
-        shader.SendMessage("SetSceneDirty", SendMessageOptions.DontRequireReceiver);
-        shader.GetType()
-              .GetMethod("SetKeyword", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-              ?.Invoke(shader, new object[] { keyword, state });
+        playerShaderComponent.SendMessage("SetSceneDirty", SendMessageOptions.DontRequireReceiver);
+        playerShaderComponent.GetType()
+            .GetMethod("SetKeyword", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.Invoke(playerShaderComponent, new object[] { keyword, state });
     }
 
     // Cho LightDetector dùng
@@ -175,3 +163,4 @@ public class PlayerShader : MonoBehaviour
         return isInvisible;
     }
 }
+

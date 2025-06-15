@@ -80,36 +80,63 @@ public class Attack : MonoBehaviour
         {
             if (collidersEnemies[i].CompareTag("Enemy"))
             {
-                if (collidersEnemies[i].transform.position.x - transform.position.x < 0)
-                {
-                    damageToDeal = -Mathf.Abs(dmgValue);
-                }
+                // Tìm component có thể nhận damage
+                IDamageable damageable = collidersEnemies[i].GetComponent<IDamageable>();
 
-                var enemyHealth = collidersEnemies[i].GetComponent<EnemyController>(); 
-                var Droid01Health = collidersEnemies[i].GetComponent<FlyingDroidController>();
-                var BombHealth = collidersEnemies[i].GetComponent<BomberController>();
-
-                if (enemyHealth != null)
+                if (damageable != null)
                 {
-                    enemyHealth.TakeDamage(Mathf.Abs(damageToDeal));
-                    //cam.GetComponent<CameraFollow>()?.ShakeCamera();
-                }
-                else if (Droid01Health != null)
-                {
-                    Droid01Health.TakeDamage(Mathf.Abs(damageToDeal));
-                    //cam.GetComponent<CameraFollow>()?.ShakeCamera();
-                }
-                else if (BombHealth != null)
-                {
-                    BombHealth.TakeDamage(Mathf.Abs(damageToDeal));
-                    //cam.GetComponent<CameraFollow>()?.ShakeCamera();
+                    damageable.TakeDamage(damageToDeal);
+                    // Có thể gọi shake camera nếu cần
+                    // CameraFollow.Instance?.ShakeCamera();
                 }
                 else
                 {
-                    Debug.LogWarning("Enemy không có component chứa TakeDamage");
+                    Debug.LogWarning($"{collidersEnemies[i].name} không có component IDamageable");
                 }
             }
         }
     }
+
+
+    /*  public void DoDashDamage()
+      {
+          int damageToDeal = Mathf.Abs(dmgValue);
+
+          Collider2D[] collidersEnemies = Physics2D.OverlapCircleAll(attackCheck.position, 0.9f);
+          for (int i = 0; i < collidersEnemies.Length; i++)
+          {
+              if (collidersEnemies[i].CompareTag("Enemy"))
+              {
+                  if (collidersEnemies[i].transform.position.x - transform.position.x < 0)
+                  {
+                      damageToDeal = -Mathf.Abs(dmgValue);
+                  }
+
+                  var enemyHealth = collidersEnemies[i].GetComponent<EnemyController>(); 
+                  var Droid01Health = collidersEnemies[i].GetComponent<FlyingDroidController>();
+                  var BombHealth = collidersEnemies[i].GetComponent<BomberController>();
+
+                  if (enemyHealth != null)
+                  {
+                      //enemyHealth.TakeDamage(Mathf.Abs(damageToDeal));
+                      //cam.GetComponent<CameraFollow>()?.ShakeCamera();
+                  }
+                  else if (Droid01Health != null)
+                  {
+                      Droid01Health.TakeDamage(Mathf.Abs(damageToDeal));
+                      //cam.GetComponent<CameraFollow>()?.ShakeCamera();
+                  }
+                  else if (BombHealth != null)
+                  {
+                      BombHealth.TakeDamage(Mathf.Abs(damageToDeal));
+                      //cam.GetComponent<CameraFollow>()?.ShakeCamera();
+                  }
+                  else
+                  {
+                      Debug.LogWarning("Enemy không có component chứa TakeDamage");
+                  }
+              }
+          }
+      }*/
 }
 
