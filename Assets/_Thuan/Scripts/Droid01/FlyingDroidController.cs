@@ -23,6 +23,8 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
     [Header("Health")]
     public HealthBarEnemy healthBarEnemy;
     private EnemyDamageReceiver damageReceiver;
+    private ItemDropTable itemDropTable;
+
 
     void Awake()
     {
@@ -31,6 +33,8 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
 
         rb = GetComponent<Rigidbody2D>();
         damageReceiver = GetComponent<EnemyDamageReceiver>();
+        itemDropTable = GetComponent<ItemDropTable>();
+
     }
 
     void Start()
@@ -122,6 +126,7 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
 
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
+        itemDropTable?.TryDropItems();
 
         Destroy(gameObject, 2f);
     }
