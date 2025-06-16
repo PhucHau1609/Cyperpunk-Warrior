@@ -18,6 +18,8 @@ public class BomberController : MonoBehaviour, IDamageResponder
     private Rigidbody2D rb;
     private Animator animator;
     private EnemyDamageReceiver damageReceiver;
+    private ItemDropTable itemDropTable;
+
 
     private enum State { Patrolling, Chasing, Returning, Dead }
     private State currentState = State.Patrolling;
@@ -28,6 +30,8 @@ public class BomberController : MonoBehaviour, IDamageResponder
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         damageReceiver = GetComponent<EnemyDamageReceiver>();
+        itemDropTable = GetComponent<ItemDropTable>();
+
     }
 
     void Start()
@@ -96,6 +100,8 @@ public class BomberController : MonoBehaviour, IDamageResponder
 
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
+
+        itemDropTable?.TryDropItems();
 
         Destroy(gameObject, 2f);
     }

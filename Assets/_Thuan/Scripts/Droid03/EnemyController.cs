@@ -21,6 +21,8 @@ public class EnemyController : MonoBehaviour, IDamageResponder
 
     public HealthBarEnemy healthBarEnemy;
     private EnemyDamageReceiver damageReceiver;
+    private ItemDropTable itemDropTable;
+
 
     void Awake()
     {
@@ -29,6 +31,7 @@ public class EnemyController : MonoBehaviour, IDamageResponder
 
         damageReceiver = GetComponent<EnemyDamageReceiver>();
         rb = GetComponent<Rigidbody2D>();
+        itemDropTable = GetComponent<ItemDropTable>();
     }
 
     void Start()
@@ -97,6 +100,7 @@ public class EnemyController : MonoBehaviour, IDamageResponder
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
 
+        itemDropTable?.TryDropItems();
         Destroy(gameObject, 2f);
     }
 
