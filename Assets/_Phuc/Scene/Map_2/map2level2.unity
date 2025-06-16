@@ -75999,7 +75999,6 @@ MonoBehaviour:
   dropPoint: {fileID: 4426132349869863310}
   dropInterval: 0.3
   bombCount: 5
-  maxHealth: 10
   healthBarEnemy: {fileID: 3075621908041835562}
 --- !u!95 &3286585694449679400
 Animator:
@@ -76623,6 +76622,7 @@ GameObject:
   - component: {fileID: 2286965942140767303}
   - component: {fileID: 3237306282758430809}
   - component: {fileID: 7358951982973534081}
+  - component: {fileID: 7358951982973534082}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Enemy
@@ -76667,6 +76667,24 @@ MonoBehaviour:
   currentHP: 10
   maxHP: 10
   IsImmotal: 0
+--- !u!114 &7358951982973534082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7331982995989152173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f4f3b40553aee4fb3900a39dfbc13f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropEntries:
+  - itemCode: 303
+    dropChance: 1
+    minAmount: 1
+    maxAmount: 1
+  spawnHeight: 1
 --- !u!1 &7823527108034746126
 GameObject:
   m_ObjectHideFlags: 0

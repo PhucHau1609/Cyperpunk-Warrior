@@ -87883,7 +87883,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.004999995, y: 0.15}
+  m_Offset: {x: -0.12597466, y: 0.7211913}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.48387095, y: -0.035714287}
@@ -87893,7 +87893,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.31, y: 0.28000003}
+  m_Size: {x: 1.3432426, y: 1.4223826}
   m_EdgeRadius: 0
 --- !u!1 &5819385875800983220
 GameObject:
@@ -88409,6 +88409,7 @@ GameObject:
   - component: {fileID: 6068225640888209623}
   - component: {fileID: 795516223056121093}
   - component: {fileID: 9172860543897182651}
+  - component: {fileID: 9172860543897182652}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Enemy
@@ -88458,6 +88459,24 @@ MonoBehaviour:
   currentHP: 10
   maxHP: 10
   IsImmotal: 0
+--- !u!114 &9172860543897182652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9117071366131869101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f4f3b40553aee4fb3900a39dfbc13f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropEntries:
+  - itemCode: 301
+    dropChance: 1
+    minAmount: 1
+    maxAmount: 1
+  spawnHeight: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
