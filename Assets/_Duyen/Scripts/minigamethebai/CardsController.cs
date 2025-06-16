@@ -2,26 +2,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardsController : MonoBehaviour
 {
+    [Header("Prefabs & Transforms")]
     [SerializeField] Card cardPrefab;
     [SerializeField] Transform gridTransform;
+    [SerializeField] Transform playerHandTransform;
+    [SerializeField] Transform playedCardSlot;
+
+    [Header("Sprites")]
     [SerializeField] Sprite[] sprites;
+    [SerializeField] Sprite hiddenCardSprite;
 
     [Header("UI Panels")]
     [SerializeField] GameObject gamePanel;
     [SerializeField] GameObject finishPanel;
 
-    private List<Sprite> spritePairs = new List<Sprite>();
-    private List<Card> activeCards = new List<Card>();
+    private List<Card> deckCards = new List<Card>();
+    private List<Card> playerHand = new List<Card>();
+    private Card playedCard;
 
-    Card firstSelected;
-    Card secondSelected;
+    private int flipAttempts = 0;
+    private List<Card> flippedCards = new List<Card>();
 
-    int matchCounts;
-
-    private void Start()
+    void Start()
     {
         gamePanel.SetActive(false);
         finishPanel.SetActive(false);
@@ -31,174 +37,169 @@ public class CardsController : MonoBehaviour
     {
         gamePanel.SetActive(true);
         finishPanel.SetActive(false);
+
         ResetGame();
     }
 
     void ResetGame()
     {
-        matchCounts = 0;
-        firstSelected = null;
-        secondSelected = null;
+        // Clear existing
+        foreach (Transform t in gridTransform) Destroy(t.gameObject);
+        foreach (Transform t in playerHandTransform) Destroy(t.gameObject);
+        if (playedCard != null) Destroy(playedCard.gameObject);
 
-        // Xóa thẻ cũ nếu có
-        foreach (Transform child in gridTransform)
-            Destroy(child.gameObject);
+        deckCards.Clear();
+        playerHand.Clear();
+        flippedCards.Clear();
+        flipAttempts = 0;
 
-        activeCards.Clear();
-        PrepareSprites();
-        CreateCards();
-    }
+        // Build deck
+        List<Sprite> deckSprites = new List<Sprite>();
+        for (int i = 0; i < sprites.Length; i++) deckSprites.Add(sprites[i]);
+        Shuffle(deckSprites);
 
-    private void PrepareSprites()
-    {
-        spritePairs = new List<Sprite>();
-        for(int i = 0; i < sprites.Length; i++)
+        // Create deck cards
+        for (int i = 0; i < 16 && i < deckSprites.Count; i++)
         {
-            spritePairs.Add(sprites[i]);
-            spritePairs.Add(sprites[i]);
+            Card c = Instantiate(cardPrefab, gridTransform);
+            c.SetIconSprite(deckSprites[i], false); // ẩn
+            c.hiddenIconSprite = hiddenCardSprite;
+            c.controller = this;
+            deckCards.Add(c);
         }
 
-        ShuffleSprites(spritePairs);
-    }
-
-    void CreateCards()
-    {
-        for(int i = 0; i < spritePairs.Count; i++)
+        // Create 5 player cards
+        for (int i = 0; i < 5; i++)
         {
-            Card card = Instantiate(cardPrefab, gridTransform);
-            card.SetIconSprite(spritePairs[i]);
-            card.controller = this;
-            //card.originalPosition = card.transform.localPosition;
-            activeCards.Add(card);
+            Card c = Instantiate(cardPrefab, playerHandTransform);
+            c.SetIconSprite(deckSprites[Random.Range(0, deckSprites.Count)], true); // hiện
+            c.hiddenIconSprite = hiddenCardSprite;
+            c.controller = this;
+            playerHand.Add(c);
         }
     }
 
-    public void SetSelected(Card card)
+    public void OnCardClicked(Card card)
     {
-        if (card.isSelected == false)
+        if (playerHand.Contains(card) && playedCard == null)
+        {
+            // Đánh bài
+            playedCard = card;
+            playerHand.Remove(card);
+            card.transform.SetParent(playedCardSlot);
+            card.transform.localPosition = Vector3.zero;
+        }
+        else if (deckCards.Contains(card) && playedCard != null && flipAttempts < 3 && !flippedCards.Contains(card))
         {
             card.Show();
+            flippedCards.Add(card);
+            flipAttempts++;
 
-            if (firstSelected == null)
+            if (card.iconSprite == playedCard.iconSprite)
             {
-                firstSelected = card;
-                return;
+                // Trùng -> destroy và reset lượt
+                StartCoroutine(HandleMatched(card));
             }
-
-            if (secondSelected == null)
+            else if (flipAttempts >= 3)
             {
-                secondSelected = card;
-                StartCoroutine(CheckMatching(firstSelected, secondSelected));
-                firstSelected = null;
-                secondSelected = null;
+                StartCoroutine(HandleMismatch());
             }
         }
     }
 
-    IEnumerator CheckMatching(Card a, Card b)
+    IEnumerator HandleMatched(Card matchCard)
     {
-        yield return new WaitForSeconds(.3f);
-        if(a.iconSprite == b.iconSprite)
+        yield return new WaitForSeconds(0.5f);
+
+        playedCard.FadeOut();
+        Destroy(playedCard.gameObject);
+        playedCard = null;
+
+        foreach (Card c in flippedCards)
         {
-            matchCounts++;
-
-            a.Match();
-            b.Match();
-
-            // Xoá sau khi đã lật trùng
-            yield return new WaitForSeconds(0.2f);
-            a.FadeOut();
-            b.FadeOut();
-            activeCards.Remove(a);
-            activeCards.Remove(b);
-            ShuffleRemainingCards();
-
-            if (activeCards.Count == 0)
-            {
-                yield return new WaitForSeconds(0.5f);
-                gamePanel.SetActive(false);
-                finishPanel.SetActive(true);
-            }
+            c.Hide();
         }
-        else
-        {
-            a.Hide();
-            b.Hide();
-        }
+
+        ShuffleDeck();
+        flippedCards.Clear();
+        flipAttempts = 0;
+
+        CheckWinLose();
     }
 
-    //void ShuffleCardPositions()
-    //{
-    //    List<Card> remaining = new List<Card>();
-    //    foreach (Card card in activeCards)
-    //    {
-    //        if (!card.isMatched)
-    //            remaining.Add(card);
-    //    }
-
-    //    // Lấy vị trí hiện tại
-    //    List<Vector3> positions = new List<Vector3>();
-    //    foreach (Card card in remaining)
-    //    {
-    //        positions.Add(card.transform.localPosition);
-    //    }
-
-    //    // Shuffle vị trí
-    //    for (int i = positions.Count - 1; i > 0; i--)
-    //    {
-    //        int j = Random.Range(0, i + 1);
-    //        (positions[i], positions[j]) = (positions[j], positions[i]);
-    //    }
-
-    //    // Tween tới vị trí mới
-    //    for (int i = 0; i < remaining.Count; i++)
-    //    {
-    //        remaining[i].transform.DOLocalMove(positions[i], 0.4f).SetEase(Ease.InOutBack);
-    //    }
-    //}
-
-    void ShuffleRemainingCards()
+    IEnumerator HandleMismatch()
     {
-        // Lấy các thẻ chưa match
-        List<Card> remaining = new List<Card>();
-        foreach (Card card in activeCards)
+        yield return new WaitForSeconds(0.5f);
+
+        foreach (Card c in flippedCards)
         {
-            if (!card.isMatched)
-                remaining.Add(card);
+            c.Hide();
         }
 
-        // Lấy sprite hiện tại của chúng
-        List<Sprite> remainingSprites = new List<Sprite>();
-        foreach (Card card in remaining)
+        ShuffleDeck();
+
+        // Trả bài lại tay và thêm 1 bài mới
+        playedCard.transform.SetParent(playerHandTransform);
+        playedCard.iconImage.sprite = playedCard.iconSprite;
+        playerHand.Add(playedCard);
+        playedCard = null;
+
+        AddRandomCardToHand();
+
+        flippedCards.Clear();
+        flipAttempts = 0;
+
+        CheckWinLose();
+    }
+
+    void AddRandomCardToHand()
+    {
+        Sprite sp = sprites[Random.Range(0, sprites.Length)];
+        Card newCard = Instantiate(cardPrefab, playerHandTransform);
+        newCard.SetIconSprite(sp, true); // hiện mặt
+        newCard.hiddenIconSprite = hiddenCardSprite;
+        newCard.controller = this;
+        playerHand.Add(newCard);
+    }
+
+    void CheckWinLose()
+    {
+        if (playerHand.Count == 0)
         {
-            remainingSprites.Add(card.iconSprite);
+            Debug.Log("WIN");
+            gamePanel.SetActive(false);
+            finishPanel.SetActive(true);
         }
-
-        // Xáo trộn sprite
-        for (int i = remainingSprites.Count - 1; i > 0; i--)
+        else if (playerHand.Count > 10)
         {
-            int j = Random.Range(0, i + 1);
-            var temp = remainingSprites[i];
-            remainingSprites[i] = remainingSprites[j];
-            remainingSprites[j] = temp;
-        }
-
-        // Gán sprite mới cho thẻ + hiệu ứng
-        for (int i = 0; i < remaining.Count; i++)
-        {
-            remaining[i].SetIconSprite(remainingSprites[i]);
-
-            // Option: hiệu ứng lắc nhẹ
-            remaining[i].transform.DOShakeRotation(0.3f, 10f, 10, 90f);
+            Debug.Log("LOSE");
+            gamePanel.SetActive(false);
+            finishPanel.SetActive(true);
         }
     }
 
-    void ShuffleSprites(List<Sprite> list)
+    void ShuffleDeck()
+    {
+        List<Sprite> currentSprites = new List<Sprite>();
+        foreach (Card c in deckCards)
+        {
+            currentSprites.Add(c.iconSprite);
+        }
+
+        Shuffle(currentSprites);
+
+        for (int i = 0; i < deckCards.Count; i++)
+        {
+            deckCards[i].SetIconSprite(currentSprites[i]);
+        }
+    }
+
+    void Shuffle<T>(List<T> list)
     {
         for (int i = list.Count - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
-            var temp = list[i];
+            T temp = list[i];
             list[i] = list[j];
             list[j] = temp;
         }

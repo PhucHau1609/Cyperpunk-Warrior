@@ -4,29 +4,32 @@ using DG.Tweening;
 
 public class Card : MonoBehaviour
 {
-    [SerializeField] private Image iconImage;
-    //[HideInInspector] public Vector3 originalPosition;
+    [SerializeField] public Image iconImage;
 
     public Sprite hiddenIconSprite;
     public Sprite iconSprite;
 
     public bool isSelected;
     public bool isMatched;
+    public bool isFaceUp => iconImage.sprite == iconSprite;
 
     public CardsController controller;
 
     public void OnCardClick()
     {
-        if (!isMatched)
-            controller.SetSelected(this);
+        controller.OnCardClicked(this);
     }
 
-    public void SetIconSprite(Sprite sp)
+    public void SetIconSprite(Sprite sp, bool faceUp = false)
     {
         iconSprite = sp;
-        iconImage.sprite = hiddenIconSprite;
         isSelected = false;
         isMatched = false;
+
+        if (faceUp)
+            iconImage.sprite = iconSprite;
+        else
+            iconImage.sprite = hiddenIconSprite;
     }
 
     public void Show()
@@ -58,13 +61,17 @@ public class Card : MonoBehaviour
 
         CanvasGroup cg = GetComponent<CanvasGroup>();
         if (cg == null)
-        {
             cg = gameObject.AddComponent<CanvasGroup>();
-        }
 
         cg.DOFade(0f, 0.3f).SetEase(Ease.InOutSine);
         cg.interactable = false;
         cg.blocksRaycasts = false;
     }
 
+    public void FlipUpWithAnim()
+    {
+        transform.DORotate(new Vector3(0f, 180f, 0f), .3f);
+        DOVirtual.DelayedCall(0.15f, () => iconImage.sprite = iconSprite);
+        isSelected = false;
+    }
 }
