@@ -5,6 +5,7 @@ using DG.Tweening;
 public class Card : MonoBehaviour
 {
     [SerializeField] private Image iconImage;
+    //[HideInInspector] public Vector3 originalPosition;
 
     public Sprite hiddenIconSprite;
     public Sprite iconSprite;
