@@ -63,9 +63,14 @@ public class Card : MonoBehaviour
         if (cg == null)
             cg = gameObject.AddComponent<CanvasGroup>();
 
-        cg.DOFade(0f, 0.3f).SetEase(Ease.InOutSine);
-        cg.interactable = false;
         cg.blocksRaycasts = false;
+        cg.DOFade(0f, 0.3f)
+        .SetEase(Ease.InOutSine)
+        .OnComplete(() =>
+        {
+            if (this != null && gameObject != null) // kiểm tra an toàn
+                Destroy(gameObject);
+        });
     }
 
     public void FlipUpWithAnim()
@@ -73,5 +78,9 @@ public class Card : MonoBehaviour
         transform.DORotate(new Vector3(0f, 180f, 0f), .3f);
         DOVirtual.DelayedCall(0.15f, () => iconImage.sprite = iconSprite);
         isSelected = false;
+    }
+    void OnDestroy()
+    {
+        DOTween.Kill(this); // hoặc DOTween.Kill(gameObject);
     }
 }
