@@ -156,20 +156,35 @@ public class CardsController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
 
-        // Lắc và mờ dần lá bài đánh ra
-        Sequence seq1 = DOTween.Sequence();
-        seq1.Append(playedCard.transform.DOShakeRotation(0.3f, 15, 10));
-        seq1.Append(playedCard.GetComponent<CanvasGroup>().DOFade(0, 0.3f));
-        seq1.OnComplete(() => Destroy(playedCard.gameObject));
+        // ✅ Lưu local tránh lỗi NullReference khi callback chạy sau
+        Card tempCard = playedCard;
 
-        // Hiệu ứng matchCard: phóng to rồi thu nhỏ
-        Sequence seq2 = DOTween.Sequence();
-        seq2.Append(matchCard.transform.DOScale(1.5f, 0.2f).SetEase(Ease.OutBack));
-        seq2.Append(matchCard.transform.DOScale(1f, 0.2f).SetEase(Ease.InOutSine));
+        // Lắc và mờ dần
+        if (tempCard != null)
+        {
+            CanvasGroup cg = tempCard.GetComponent<CanvasGroup>();
+            if (cg == null) cg = tempCard.gameObject.AddComponent<CanvasGroup>();
+
+            Sequence seq1 = DOTween.Sequence();
+            seq1.Append(tempCard.transform.DOShakeRotation(0.3f, 15, 10));
+            seq1.Append(cg.DOFade(0, 0.3f));
+            seq1.OnComplete(() =>
+            {
+                if (tempCard != null)
+                    Destroy(tempCard.gameObject);
+            });
+        }
+
+        // Phóng to – thu nhỏ lá trùng
+        if (matchCard != null)
+        {
+            Sequence seq2 = DOTween.Sequence();
+            seq2.Append(matchCard.transform.DOScale(1.5f, 0.3f).SetEase(Ease.OutBack));
+            seq2.Append(matchCard.transform.DOScale(1f, 0.3f).SetEase(Ease.InOutSine));
+        }
 
         yield return new WaitForSeconds(0.5f);
 
-        // Úp lại tất cả lá lật
         foreach (Card c in flippedCards)
         {
             if (c != null) c.Hide();
