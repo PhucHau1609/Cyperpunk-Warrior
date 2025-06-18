@@ -1195,6 +1195,7 @@ GameObject:
   m_Component:
   - component: {fileID: 51169406}
   - component: {fileID: 51169405}
+  - component: {fileID: 51169407}
   m_Layer: 0
   m_Name: pixel-cyberpunk-interior_110
   m_TagString: Untagged
@@ -1246,7 +1247,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: -448698473, guid: e35b2ef50add50445be63b4e08d55229, type: 3}
+  m_Sprite: {fileID: -4424780041397978121, guid: 0d0dbbdd91faab34c9c8a1aaa9c24115, type: 3}
   m_Color: {r: 0.7132075, g: 0.7132075, b: 0.7132075, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1267,11 +1268,33 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.83, y: -0.6600003, z: 0}
-  m_LocalScale: {x: 2.0259576, y: 2.0259576, z: 2.0259576}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 7.34, y: 7.34, z: 7.34}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 940806961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &51169407
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51169404}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 41b12707a63df8b4db1eba47c3d3c53b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &55495475
 GameObject:
   m_ObjectHideFlags: 0
@@ -11892,6 +11915,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+--- !u!114 &634544008 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6522751023682975850, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+  m_PrefabInstance: {fileID: 634544007}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820779986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8644d33345e77614ba3ace9c18398d0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &635167239
 GameObject:
   m_ObjectHideFlags: 0
@@ -14535,6 +14569,7 @@ MonoBehaviour:
   imageToChange: {fileID: 653418950}
   image2: {fileID: 21300000, guid: 24b54afa81bf5544a8d11546d85c398a, type: 3}
   reopenDisabledSprite: {fileID: 21300000, guid: 21e2b1c1a6d9c0c4bb11ccbd0ca63e9e, type: 3}
+  playerMovement: {fileID: 0}
   hintImages:
   - {fileID: 21300000, guid: dc783425d973f464d83ca4d77475552d, type: 3}
   - {fileID: 21300000, guid: e8e465325f178ce4e9e46d9536611774, type: 3}
@@ -67634,6 +67669,7 @@ MonoBehaviour:
   pauseButton: {fileID: 2054231974}
   imagePause: {fileID: 21300000, guid: 99aeea1f4574c3e49a52edfc854af043, type: 3}
   imagePlay: {fileID: 21300000, guid: d5fb3b019f8e18a44bc9ac2f5ba067f3, type: 3}
+  playerMovement: {fileID: 634544008}
 --- !u!114 &2054231974
 MonoBehaviour:
   m_ObjectHideFlags: 0
