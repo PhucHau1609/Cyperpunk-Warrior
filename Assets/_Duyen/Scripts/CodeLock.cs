@@ -19,6 +19,8 @@ public class CodeLock : MonoBehaviour
     public Image imageToChange;
     public Sprite image2;
     public Sprite reopenDisabledSprite;
+    public PlayerMovement playerMovement; // GÁN TRONG INSPECTOR
+
 
     public Sprite[] hintImages;
     public Image[] hintImageSlots;
@@ -73,6 +75,10 @@ public class CodeLock : MonoBehaviour
         canvas.SetActive(false);
         canvasGroup.DOFade(1, 0.4f);
         canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
+
+        if (playerMovement != null)
+            playerMovement.SetCanMove(false); // ⚠️ Khóa di chuyển khi mở minigame
+
     }
 
     void Update()
@@ -156,47 +162,15 @@ public class CodeLock : MonoBehaviour
         }
     }
 
-
-    //void CheckCode()
-    //{
-    //    bool isCorrect = true;
-
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        if (currentValues[i] != correctCode[i])
-    //        {
-    //            isCorrect = false;
-    //            buttons[i].image.DOColor(Color.red, 0.2f).OnComplete(() =>
-    //            {
-    //                buttons[i].image.DOColor(Color.white, 0.3f);
-    //            });
-    //        }
-    //        else
-    //        {
-    //            buttons[i].image.DOColor(Color.green, 0.2f).OnComplete(() =>
-    //            {
-    //                buttons[i].image.DOColor(Color.white, 0.3f);
-    //            });
-    //        }
-    //    }
-
-    //    if (isCorrect)
-    //    {
-    //        string correctCodeString = string.Join("", correctCode);
-    //        messageText.text = correctCodeString;
-    //        imageToChange.sprite = image2;
-
-    //        PetUnlocked = true;
-    //        StartCoroutine(CloseCanvasAfterDelay(0.5f));
-    //    }
-    //}
-
     void CloseCanvas()
     {
         canvasGroup.DOFade(0, 0.4f);
         canvas.transform.DOScale(0, 0.4f).SetEase(Ease.InBack).OnComplete(() =>
         {
             canvas.SetActive(false);
+            if (playerMovement != null)
+                playerMovement.SetCanMove(true); // ⚠️ Mở lại di chuyển sau khi tắt minigame
+
         });
     }
 
@@ -207,6 +181,9 @@ public class CodeLock : MonoBehaviour
         canvas.transform.localScale = Vector3.zero;
         canvasGroup.DOFade(1, 0.4f);
         canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
+        if (playerMovement != null)
+            playerMovement.SetCanMove(false); // ⚠️ Khóa lại nếu mở lại minigame
+
     }
 
     IEnumerator CloseCanvasAfterDelay(float delay)

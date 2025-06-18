@@ -14,6 +14,8 @@ public class pausegame : MonoBehaviour
     public Sprite imagePlay;
 
     private Image pauseButtonImage;
+    public PlayerMovement playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+
 
     public static pausegame Instance { get; private set; }
 
@@ -50,6 +52,8 @@ public class pausegame : MonoBehaviour
     public void OnPauseClicked()
     {
         AudioManager.Instance.PlayClickSFX();
+        if (playerMovement != null)
+            playerMovement.SetCanMove(false);
 
         Time.timeScale = 0f;
         pannelpause.SetActive(true);
@@ -97,6 +101,10 @@ public class pausegame : MonoBehaviour
         DOVirtual.DelayedCall(0.22f, () =>
         {
             Time.timeScale = 1f;
+
+            if (playerMovement != null)
+                playerMovement.SetCanMove(true);
+
             pannelpause.SetActive(false);
             panelOptions.SetActive(false);
 
