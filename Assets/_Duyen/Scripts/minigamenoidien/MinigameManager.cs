@@ -21,7 +21,7 @@ public class MinigameManager : MonoBehaviour
     private bool isCompleted = false;
     private AudioClip previousBGM;
     public int nextSceneIndex;
-    public PlayerMovement playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+    public Player playerMovement; // ⚠️ GÁN TRONG INSPECTOR
 
 
     private void Awake()
