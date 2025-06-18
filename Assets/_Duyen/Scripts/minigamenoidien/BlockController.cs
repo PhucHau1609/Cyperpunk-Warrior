@@ -2,11 +2,12 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BlockController : RotatableBlockBase, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+public class BlockController : BaseBlockController,
+    IBeginDragHandler, IDragHandler, IEndDragHandler,
+    IPointerDownHandler, IPointerUpHandler
 {
     public enum BlockType { MoveOnly, MoveRotate }
     public BlockType blockType;
-    public Block block;
 
     public Transform originalParent { get; private set; }
     public Vector2 originalPosition { get; private set; }
@@ -91,5 +92,9 @@ public class BlockController : RotatableBlockBase, IBeginDragHandler, IDragHandl
     {
         transform.SetParent(originalParent);
         rectTransform.DOAnchorPos(originalPosition, 0.25f).SetEase(Ease.OutBack);
+        if (originalParent.TryGetComponent(out GridSlot originSlot))
+        {
+            originSlot.SetBlock(this);
+        }
     }
 }
