@@ -53,14 +53,25 @@ public class WeaponShooter : MonoBehaviour
         // Gán hướng bay
         Vector3 shootDir = firePoint.TransformDirection(Vector3.right).normalized;
 
+        // Flip SpriteRenderer nếu có
+
         if (spawnedBullet is EffectFlyAbstract effectFly)
         {
             if (effectFly.EffectFlyToTarget != null)
             {
+                // Hướng bay
+
                 float angle = Mathf.Atan2(shootDir.y, shootDir.x) * Mathf.Rad2Deg;
                 spawnedBullet.transform.rotation = Quaternion.Euler(0, 0, angle);
 
                 lastDirection = shootDir.x >= 0 ? 1 : -1;
+
+                SpriteRenderer spriteRenderer = spawnedBullet.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.flipX = shootDir.x < 0;
+                }
+
 
                 Vector3 localScale = spawnedBullet.transform.localScale;
                 localScale.x = Mathf.Abs(localScale.x) * lastDirection;
@@ -82,3 +93,23 @@ public class WeaponShooter : MonoBehaviour
         if (flameParticle != null) flameParticle.Play();
     }
 }
+
+
+
+/* if (spawnedBullet is EffectFlyAbstract effectFly)
+ {
+     if (effectFly.EffectFlyToTarget != null)
+     {
+         // Hướng bay
+         Vector2 dir = shootDir.x >= 0 ? Vector2.right : Vector2.left;
+         effectFly.EffectFlyToTarget.SetDirection(dir);
+         */
+/*  float angle = Mathf.Atan2(shootDir.y, shootDir.x) * Mathf.Rad2Deg;
+           spawnedBullet.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+           lastDirection = shootDir.x >= 0 ? 1 : -1;
+
+           Vector3 localScale = spawnedBullet.transform.localScale;
+           localScale.x = Mathf.Abs(localScale.x) * lastDirection;
+           spawnedBullet.transform.localScale = localScale;*/
+
