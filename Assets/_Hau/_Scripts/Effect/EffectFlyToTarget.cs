@@ -17,7 +17,8 @@ public class EffectFlyToTarget : MonoBehaviour
 
     protected virtual void Flying()
     {
-        transform.parent.Translate(direction.normalized * speed * Time.deltaTime);
+        //transform.parent.Translate(direction.normalized * speed * Time.deltaTime);
+        transform.Translate(direction.normalized * speed * Time.deltaTime);
     }
 
 
