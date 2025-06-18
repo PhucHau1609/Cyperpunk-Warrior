@@ -150,12 +150,20 @@ public class PlayerShader : MonoBehaviour
     private void SetKeywordOnSelf(string keyword, bool state)
     {
         if (playerShaderComponent == null) return;
-
-        playerShaderComponent.SendMessage("SetSceneDirty", SendMessageOptions.DontRequireReceiver);
-        playerShaderComponent.GetType()
-            .GetMethod("SetKeyword", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-            ?.Invoke(playerShaderComponent, new object[] { keyword, state });
+        playerShaderComponent.SetShaderKeyword(keyword, state);
     }
+
+
+
+    /*  private void SetKeywordOnSelf(string keyword, bool state)
+      {
+          if (playerShaderComponent == null) return;
+
+          playerShaderComponent.SendMessage("SetSceneDirty", SendMessageOptions.DontRequireReceiver);
+          playerShaderComponent.GetType()
+              .GetMethod("SetKeyword", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+              ?.Invoke(playerShaderComponent, new object[] { keyword, state });
+      }*/
 
     // Cho LightDetector dùng
     public bool IsInvisible()

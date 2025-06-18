@@ -263,6 +263,12 @@ namespace AllIn1SpriteShader
             SetSceneDirty();
         }
 
+        public void SetShaderKeyword(string keyword, bool enable)
+        {
+            SetKeyword(keyword, enable);
+        }
+
+
         private void SetKeyword(string keyword, bool state = false)
         {
             if (destroyed) return;
