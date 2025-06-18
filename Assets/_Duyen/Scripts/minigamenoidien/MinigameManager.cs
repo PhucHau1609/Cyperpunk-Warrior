@@ -14,13 +14,15 @@ public class MinigameManager : MonoBehaviour
     public GameObject winImage;
     public Button openMinigameButton;
     public Button closeMinigameButton;
-    public Sprite openedButtonSprite;
+    public Animator doorAnimator;
 
     public GridSlot[] gridSlots;
 
     private bool isCompleted = false;
     private AudioClip previousBGM;
     public int nextSceneIndex;
+    public PlayerMovement playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+
 
     private void Awake()
     {
@@ -69,6 +71,8 @@ public class MinigameManager : MonoBehaviour
         PlayBGMIfNeeded(AudioManager.Instance.minigameBGM);
 
         AssignExistingBlocks();
+        if (playerMovement != null)
+            playerMovement.SetCanMove(false);
     }
 
     public void CloseMinigame()
@@ -76,6 +80,8 @@ public class MinigameManager : MonoBehaviour
         canvasUI.transform.DOScale(Vector3.zero, 0.25f).SetEase(Ease.InBack).OnComplete(() => {
             canvasUI.SetActive(false);
             levelPanel.SetActive(false);
+            if (playerMovement != null)
+                playerMovement.SetCanMove(true);
         });
 
         if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
@@ -139,11 +145,14 @@ public class MinigameManager : MonoBehaviour
 
         CloseMinigame();
 
-        if (openedButtonSprite != null)
+        openMinigameButton.interactable = false;
+
+        // Chạy animation mở cửa
+        if (doorAnimator != null)
         {
-            openMinigameButton.GetComponent<Image>().sprite = openedButtonSprite;
+            doorAnimator.SetTrigger("Open");  // animation phải có trigger "Open"
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(nextSceneIndex);
     }
 
