@@ -17,6 +17,7 @@ TagManager:
   - MapBounds
   - HealthBar
   - FX
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -32,7 +33,7 @@ TagManager:
   - Block
   - Enemy
   - Weapon
-  - 
+  - Bullet
   - 
   - 
   - 
@@ -53,6 +54,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Bullet
+    uniqueID: 1278711363
     locked: 0
   m_RenderingLayers:
   - Default

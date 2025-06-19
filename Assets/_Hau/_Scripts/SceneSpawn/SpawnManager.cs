@@ -35,11 +35,23 @@ public class SpawnManager : MonoBehaviour
 
     private IEnumerator DelayedSpawn()
     {
-        yield return new WaitUntil(() => GameObject.FindGameObjectWithTag("Player") != null);
-        yield return new WaitForEndOfFrame();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
 
+        // Chờ tới khi Player từ DontDestroyOnLoad xuất hiện
+        yield return new WaitUntil(() => player != null);
+
+        // Tránh bug nếu scene có sẵn player khác
+        Scene playerScene = player.scene;
+        if (playerScene.name != "DontDestroyOnLoad")
+        {
+            Debug.LogWarning("Có thể player hiện tại không phải từ DontDestroyOnLoad");
+            yield break;
+        }
+
+        yield return new WaitForEndOfFrame();
         MovePlayerToSpawnPoint();
     }
+
 
 
     private void MovePlayerToSpawnPoint()
@@ -67,6 +79,7 @@ public class SpawnManager : MonoBehaviour
 
                 if (rb != null)
                     StartCoroutine(ReenablePhysics(rb));
+                Debug.Log("Player hiện đang ở scene: " + player.scene.name);
 
                 return;
             }

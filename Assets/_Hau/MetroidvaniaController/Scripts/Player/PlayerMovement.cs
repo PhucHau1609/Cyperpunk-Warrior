@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering.Universal; // THÊM NÀY nếu bạn dùng Light 2D URP
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -20,14 +21,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Control")]
     public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
 
-   /* private void Awake()
+
+    void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-    }*/
+        DontDestroyOnLoad(this.gameObject); 
+    }
 
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
         GetComponentInChildren<Animator>().SetTrigger("PlayAppear");
     }
 
@@ -119,4 +120,12 @@ public class PlayerMovement : MonoBehaviour
             transform.parent = null;
         }
     }
+
+/*    void OnDestroy()
+    {
+        Debug.LogError($"[OnDestroy] Player bị xóa. Tên: {gameObject.name}, Time: {Time.time}, Scene: {gameObject.scene.name}");
+        Debug.LogError(Environment.StackTrace);
+    }*/
+
+
 }

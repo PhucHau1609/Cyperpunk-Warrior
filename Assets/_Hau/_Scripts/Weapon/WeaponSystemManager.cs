@@ -1,13 +1,15 @@
-﻿using com.cyborgAssets.internalIBP;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class WeaponSystemManager : MonoBehaviour
 {
-    [SerializeField] private Transform weaponHolder; // Nơi gắn vũ khí
+    [SerializeField] private Transform weaponHolder;
     private GameObject currentWeapon;
     private int currentWeaponIndex = 0;
+    private bool isWeaponActive = false;
+
     private List<ItemInventory> ownedWeapons = new();
+    private Dictionary<int, GameObject> instantiatedWeapons = new(); // key: index
 
     void Start()
     {
@@ -21,9 +23,9 @@ public class WeaponSystemManager : MonoBehaviour
             SwapWeapon();
         }
 
-        if (Input.GetMouseButtonDown(1)) // Chuột phải để tắt vũ khí hiện tại
+        if (Input.GetMouseButtonDown(1))
         {
-            DeactivateCurrentWeapon();
+            ToggleWeapon();
         }
     }
 
@@ -32,14 +34,31 @@ public class WeaponSystemManager : MonoBehaviour
         ownedWeapons.Clear();
         var inventory = InventoryManager.Instance.ItemInventory().ItemInventories;
 
-        foreach (var item in inventory)
+        for (int i = 0; i < inventory.Count; i++)
         {
+            var item = inventory[i];
             if (item.ItemProfileSO == null) continue;
 
             if (item.ItemProfileSO.weaponType == WeaponType.Gun)
             {
                 ownedWeapons.Add(item);
             }
+        }
+    }
+
+    void ToggleWeapon()
+    {
+        if (ownedWeapons.Count == 0) return;
+
+        if (currentWeapon == null)
+        {
+            EquipWeapon(currentWeaponIndex);
+            isWeaponActive = true;
+        }
+        else
+        {
+            isWeaponActive = !isWeaponActive;
+            currentWeapon.SetActive(isWeaponActive);
         }
     }
 
@@ -53,21 +72,21 @@ public class WeaponSystemManager : MonoBehaviour
             return;
         }
 
+        int previousIndex = currentWeaponIndex;
+
         currentWeaponIndex++;
         if (currentWeaponIndex >= ownedWeapons.Count)
         {
-            currentWeaponIndex = 0; // Vòng lại vũ khí đầu tiên
+            currentWeaponIndex = 0;
         }
 
-        EquipWeapon(currentWeaponIndex);
-    }
-
-    void DeactivateCurrentWeapon()
-    {
+        // Tắt vũ khí cũ nếu đang bật
         if (currentWeapon != null)
         {
             currentWeapon.SetActive(false);
         }
+
+        EquipWeapon(currentWeaponIndex); // Giữ trạng thái isWeaponActive
     }
 
     void EquipWeapon(int index)
@@ -83,17 +102,23 @@ public class WeaponSystemManager : MonoBehaviour
             return;
         }
 
-        // Nếu đã có vũ khí hiện tại và khác với weapon mới → huỷ vũ khí cũ
-        if (currentWeapon != null)
+        GameObject weaponInstance;
+
+        // Nếu vũ khí đã từng instantiate rồi
+        if (instantiatedWeapons.ContainsKey(index))
         {
-            Destroy(currentWeapon); // Xoá vũ khí cũ nếu cần
+            weaponInstance = instantiatedWeapons[index];
+        }
+        else
+        {
+            weaponInstance = Instantiate(weaponPrefab, weaponHolder);
+            weaponInstance.transform.localPosition = new Vector3(0.806f, 0f, 0f);
+            weaponInstance.transform.localRotation = Quaternion.identity;
+            instantiatedWeapons.Add(index, weaponInstance);
         }
 
-        // Instantiate vũ khí mới
-        currentWeapon = Instantiate(weaponPrefab, weaponHolder);
-        currentWeapon.transform.localPosition = new Vector3(0.806f, 0f, 0f);
-        currentWeapon.transform.localRotation = Quaternion.identity;
-        currentWeapon.SetActive(true);
+        currentWeapon = weaponInstance;
+        currentWeapon.SetActive(isWeaponActive);
 
         // Gán cho WeaponAimer
         if (weaponHolder.TryGetComponent<WeaponAimer>(out var aimer))
@@ -102,4 +127,133 @@ public class WeaponSystemManager : MonoBehaviour
         }
     }
 }
+
+
+
+/*public class WeaponSystemManager : MonoBehaviour
+{
+    [SerializeField] private Transform weaponHolder;
+    private GameObject currentWeapon;
+    private int currentWeaponIndex = 0;
+    private bool isWeaponActive = false;
+
+    private List<ItemInventory> ownedWeapons = new();
+    private Dictionary<int, GameObject> instantiatedWeapons = new(); // key: index
+
+    void Start()
+    {
+        RefreshOwnedWeapons();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SwapWeapon();
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            ToggleWeapon();
+        }
+    }
+
+    void RefreshOwnedWeapons()
+    {
+        ownedWeapons.Clear();
+        var inventory = InventoryManager.Instance.ItemInventory().ItemInventories;
+
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            var item = inventory[i];
+            if (item.ItemProfileSO == null) continue;
+
+            if (item.ItemProfileSO.weaponType == WeaponType.Gun)
+            {
+                ownedWeapons.Add(item);
+            }
+        }
+    }
+
+    void ToggleWeapon()
+    {
+        if (ownedWeapons.Count == 0) return;
+
+        if (currentWeapon == null)
+        {
+            EquipWeapon(currentWeaponIndex);
+            isWeaponActive = true;
+        }
+        else
+        {
+            isWeaponActive = !isWeaponActive;
+            currentWeapon.SetActive(isWeaponActive);
+        }
+    }
+
+    void SwapWeapon()
+    {
+        RefreshOwnedWeapons();
+
+        if (ownedWeapons.Count == 0)
+        {
+            Debug.Log("Không có vũ khí nào trong inventory.");
+            return;
+        }
+
+        int previousIndex = currentWeaponIndex;
+
+        currentWeaponIndex++;
+        if (currentWeaponIndex >= ownedWeapons.Count)
+        {
+            currentWeaponIndex = 0;
+        }
+
+        // Tắt vũ khí cũ nếu đang bật
+        if (currentWeapon != null)
+        {
+            currentWeapon.SetActive(false);
+        }
+
+        EquipWeapon(currentWeaponIndex); // Giữ trạng thái isWeaponActive
+    }
+
+    void EquipWeapon(int index)
+    {
+        if (index < 0 || index >= ownedWeapons.Count) return;
+
+        var item = ownedWeapons[index];
+        var weaponPrefab = item.ItemProfileSO.prefabItem;
+
+        if (weaponPrefab == null)
+        {
+            Debug.LogWarning("Vũ khí không có prefab.");
+            return;
+        }
+
+        GameObject weaponInstance;
+
+        // Nếu vũ khí đã từng instantiate rồi
+        if (instantiatedWeapons.ContainsKey(index))
+        {
+            weaponInstance = instantiatedWeapons[index];
+        }
+        else
+        {
+            weaponInstance = Instantiate(weaponPrefab, weaponHolder);
+            weaponInstance.transform.localPosition = new Vector3(0.806f, 0f, 0f);
+            weaponInstance.transform.localRotation = Quaternion.identity;
+            instantiatedWeapons.Add(index, weaponInstance);
+        }
+
+        currentWeapon = weaponInstance;
+        currentWeapon.SetActive(isWeaponActive);
+
+        // Gán cho WeaponAimer
+        if (weaponHolder.TryGetComponent<WeaponAimer>(out var aimer))
+        {
+            aimer.SetCurrentWeapon(currentWeapon.transform);
+        }
+    }
+}*/
 

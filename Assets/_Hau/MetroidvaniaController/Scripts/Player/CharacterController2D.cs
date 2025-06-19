@@ -341,7 +341,7 @@ public class CharacterController2D : MonoBehaviour
 	}
 
 
-	private void Flip()
+	public void Flip()
 	{
 		// Switch the way the player is labelled as facing.
 		m_FacingRight = !m_FacingRight;
@@ -358,6 +358,7 @@ public class CharacterController2D : MonoBehaviour
 		if (!invincible)
 		{
 			animator.SetBool("Hit", true);
+			CameraFollow.Instance.ShakeCamera();
 			life -= damage;
 			Vector2 damageDir = Vector3.Normalize(transform.position - position) * 40f ;
 			m_Rigidbody2D.linearVelocity = Vector2.zero;

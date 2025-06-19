@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnemyMini : MonoBehaviour
+public class EnemyMini : MonoBehaviour, IExplodable
 {
     public enum State { Sleep, Awaken, Chase }
     private State currentState = State.Sleep;
@@ -23,6 +23,11 @@ public class EnemyMini : MonoBehaviour
         {
             Vector3 direction = (player.position - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
+            if (direction.x > 0)
+                transform.localScale = new Vector3(1, 1, 1); // hướng phải
+            else if (direction.x < 0)
+                transform.localScale = new Vector3(-1, 1, 1); // hướng trái
+
         }
     }
 
@@ -62,7 +67,7 @@ public class EnemyMini : MonoBehaviour
         }
     }
 
-    private void Explode()
+    public void Explode()
     {
         // Gọi hiệu ứng nổ (nếu có)
         if (explosionPrefab != null)

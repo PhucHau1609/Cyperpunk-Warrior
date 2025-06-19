@@ -21,13 +21,13 @@ MonoBehaviour:
       startIndex: 
       variableStartIndex: 
       JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(76.32886,-97.34543)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-4.50469971,102.654572)"},"ID":1,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-527.225952,102.892448)","Comment":"Shoot"},"ID":2,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"CheckPlayerInShootRange","NodeData":{"Offset":"(-231.035034,103.938263)"},"ID":3,"Name":"Check
-        Player In Shoot Range","Instant":true,"SingleshootRange":3},{"Type":"StopMoving","NodeData":{"Offset":"(-57.43506,103.138275)"},"ID":4,"Name":"Stop
+        Player In Shoot Range","Instant":true,"SingleshootRange":3,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null}},{"Type":"StopMoving","NodeData":{"Offset":"(-57.43506,103.138275)"},"ID":4,"Name":"Stop
         Moving","Instant":true},{"Type":"FacePlayer","NodeData":{"Offset":"(56.56494,100.738251)"},"ID":5,"Name":"Face
-        Player","Instant":true},{"Type":"ShootPlayer","NodeData":{"Offset":"(181.364929,98.73828)"},"ID":6,"Name":"Shoot
+        Player","Instant":true,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null}},{"Type":"ShootPlayer","NodeData":{"Offset":"(181.364929,98.73828)"},"ID":6,"Name":"Shoot
         Player","Instant":true,"GameObjectbulletPrefab":0,"SingleshootInterval":1}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-2.42101288,102.892517)","Comment":"Chase"},"ID":7,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"CheckPlayerInTargetRange","NodeData":{"Offset":"(-97.07117,96.61105)"},"ID":8,"Name":"Check
         Player In Target Range","Instant":true,"SingletargetRange":6},{"Type":"ChasePlayer","NodeData":{"Offset":"(66.87834,102.954071)"},"ID":9,"Name":"Chase
         Player","Instant":true}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(447.102356,102.892448)","Comment":"Patrol"},"ID":10,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"PatrolTask","NodeData":{"Offset":"(1.03686523,98.49402)"},"ID":11,"Name":"Patrol
-        Task","Instant":true}]}]},"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":"startPosition","IsShared":true,"Vector3mValue":"(0,0,0)"},{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"targetPlayer","IsShared":true}]}'
+        Task","Instant":true,"MoveModemovementType":"TransformPosition","SharedTransformpointA":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedTransformpointB":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedFloatmoveSpeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":0},"SharedAnimatoranimator":{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":null}}]}]}}'
       fieldSerializationData:
         typeName: []
         fieldNameHash: 

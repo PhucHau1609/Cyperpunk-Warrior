@@ -14,10 +14,13 @@ public class playerHealth : MonoBehaviour
     [Header("Hiệu ứng hồi máu")]
     public GameObject healEffect; // ← gán prefab hoặc GameObject con tại đây
 
+    private CharacterController2D characterController;
+
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+        characterController = GetComponent<CharacterController2D>();
     }
 
     void OnDestroy()
@@ -43,10 +46,13 @@ public class playerHealth : MonoBehaviour
     {
         health -= amount;
 
+        
+        characterController.ApplyDamage(amount,this.transform.position);
+
         if (health <= 0)
         {
             health = 0;
-            Debug.Log("Player chết!");
+            //Debug.Log("Player chết!");
         }
     }
 

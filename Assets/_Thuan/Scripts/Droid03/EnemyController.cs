@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IDamageResponder
 {
     public float moveSpeed = 2f;
     public Transform pointA;
@@ -13,85 +13,47 @@ public class EnemyController : MonoBehaviour
 
     [HideInInspector] public Vector3 initialPosition;
 
-    public float maxHealth = 10;
-    private float currentHealth;
-    //private bool isHealthBarVisible = false;
+    private enum State { Patrolling, Chasing, Returning, Dead }
+    private State currentState = State.Patrolling;
 
-
+    private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
+
+    public HealthBarEnemy healthBarEnemy;
+    private EnemyDamageReceiver damageReceiver;
+    private ItemDropTable itemDropTable;
+
 
     void Awake()
     {
         if (player == null)
             player = GameObject.FindWithTag("Player")?.transform;
+
+        damageReceiver = GetComponent<EnemyDamageReceiver>();
+        rb = GetComponent<Rigidbody2D>();
+        itemDropTable = GetComponent<ItemDropTable>();
     }
 
     void Start()
     {
         initialPosition = transform.position;
-        currentHealth = maxHealth;
-        UpdateHealthBar();
-    }
 
-    void LateUpdate()
-    {
-        UpdateHealthBar(); // Đảm bảo thanh máu đúng vị trí theo camera
-    }
-
-    public void TakeDamage(int damage)
-    {
-        ApplyDamage(damage);
+        // Ẩn HealthBar lúc bắt đầu (nếu đầy máu)
+        float normalizedHealth = GetNormalizedHealth();
+        if (healthBarEnemy != null)
+        {
+            if (normalizedHealth < 1f)
+                healthBarEnemy.ShowHealthBar(normalizedHealth);
+            else
+                healthBarEnemy.HideHealthBar();
+        }
     }
 
     void FixedUpdate()
     {
-        StickToGround(); // Gọi mỗi frame
+        StickToGround();
     }
 
-   public void ApplyDamage(float damage)
-    {
-        currentHealth -= Mathf.Abs(damage);
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-        if (currentHealth > 0)
-        {
-            // Hiện thanh máu khi bị trừ
-            healthSlider.gameObject.SetActive(true);
-            animator.SetTrigger("Hurt");
-        }
-        else
-        {
-            animator.SetTrigger("Death");
-            healthSlider.gameObject.SetActive(false); // Ẩn khi chết
-            this.enabled = false;
-            Destroy(gameObject, 2f);
-        }
-
-        UpdateHealthBar();
-    }
-
-   void UpdateHealthBar()
-    {
-        if (healthSlider != null)
-        {
-            float healthRatio = currentHealth / maxHealth;
-
-            // Cập nhật giá trị
-            healthSlider.value = healthRatio;
-
-            // Đổi màu từ Đỏ (ít máu) sang Xanh Lá (đầy máu)
-            Color healthColor = Color.Lerp(Color.red, Color.green, healthRatio);
-            healthSlider.fillRect.GetComponent<Image>().color = healthColor;
-
-            // Vị trí thanh máu theo Enemy
-            Vector3 offset = new Vector3(0, 1.5f, 0);
-            Vector3 pos = Camera.main.WorldToScreenPoint(transform.position + offset);
-            pos.z = 0f;
-            healthSlider.transform.position = pos;
-        }
-    }
-
-    // Public để các Task có thể gọi
     public void FacePlayer()
     {
         if (player == null) return;
@@ -110,5 +72,43 @@ public class EnemyController : MonoBehaviour
             pos.y = hit.point.y + 0.1f;
             transform.position = pos;
         }
+    }
+
+    public void OnHurt()
+    {
+        if (currentState == State.Dead) return;
+
+        animator.SetTrigger("Hurt");
+        CameraFollow.Instance?.ShakeCamera();
+
+        if (healthBarEnemy != null)
+        {
+            healthBarEnemy.ShowHealthBar(GetNormalizedHealth());
+        }
+    }
+
+    public void OnDead()
+    {
+        animator.SetTrigger("Death");
+        currentState = State.Dead;
+        rb.linearVelocity = Vector2.zero;
+        GetComponent<Collider2D>().enabled = false;
+        this.enabled = false;
+
+        healthBarEnemy?.HideHealthBar();
+
+        var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+        if (behavior != null) behavior.DisableBehavior();
+
+        itemDropTable?.TryDropItems();
+        Destroy(gameObject, 2f);
+    }
+
+    private float GetNormalizedHealth()
+    {
+        if (damageReceiver != null && damageReceiver.MaxHP > 0)
+            return damageReceiver.CurrentHP / (float)damageReceiver.MaxHP;
+        else
+            return 1f;
     }
 }

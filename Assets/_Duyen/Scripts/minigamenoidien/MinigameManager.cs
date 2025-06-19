@@ -3,27 +3,26 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Linq;
 
 public class MinigameManager : MonoBehaviour
 {
     public static MinigameManager Instance;
 
-    [Header("UI")]
     public GameObject levelPanel;
     public GameObject canvasUI;
     public GameObject winImage;
     public Button openMinigameButton;
     public Button closeMinigameButton;
-    public Sprite openedButtonSprite;
+    public Animator doorAnimator;
 
-    [Header("Gameplay")]
     public GridSlot[] gridSlots;
 
     private bool isCompleted = false;
     private AudioClip previousBGM;
-
-    [Header("Scene Settings")]
     public int nextSceneIndex;
+    public Player playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+
 
     private void Awake()
     {
@@ -62,18 +61,18 @@ public class MinigameManager : MonoBehaviour
 
         canvasUI.SetActive(true);
         levelPanel.SetActive(true);
-
         canvasUI.transform.localScale = Vector3.zero;
         canvasUI.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
 
-        // Lưu nhạc cũ nếu nó KHÁC minigameBGM
         if (AudioManager.Instance.bgmSource.clip != AudioManager.Instance.minigameBGM)
         {
             previousBGM = AudioManager.Instance.bgmSource.clip;
         }
-        AudioManager.Instance.PlayBGM(AudioManager.Instance.minigameBGM);
+        PlayBGMIfNeeded(AudioManager.Instance.minigameBGM);
 
         AssignExistingBlocks();
+        if (playerMovement != null)
+            playerMovement.SetCanMove(false);
     }
 
     public void CloseMinigame()
@@ -81,41 +80,59 @@ public class MinigameManager : MonoBehaviour
         canvasUI.transform.DOScale(Vector3.zero, 0.25f).SetEase(Ease.InBack).OnComplete(() => {
             canvasUI.SetActive(false);
             levelPanel.SetActive(false);
+            if (playerMovement != null)
+                playerMovement.SetCanMove(true);
         });
 
         if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
         {
             AudioManager.Instance.StopBGM();
         }
-        // Phát lại nhạc cũ nếu hợp lệ
         if (previousBGM != null && previousBGM != AudioManager.Instance.minigameBGM)
         {
             AudioManager.Instance.PlayBGM(previousBGM);
         }
     }
 
+    private void PlayBGMIfNeeded(AudioClip clip)
+    {
+        if (AudioManager.Instance.bgmSource.clip != clip)
+            AudioManager.Instance.PlayBGM(clip);
+    }
+
     private void AssignExistingBlocks()
     {
         foreach (var slot in gridSlots)
         {
-            if (slot.transform.childCount > 0)
-            {
-                var block = slot.transform.GetChild(0).GetComponent<BlockController>();
-                if (block != null)
-                    slot.SetBlock(block);
-            }
-            else
-            {
-                slot.SetBlock(null);
-            }
+            BlockController block = slot.transform.childCount > 0
+                ? slot.transform.GetChild(0).GetComponent<BlockController>()
+                : null;
+            slot.SetBlock(block);
         }
     }
 
+    private bool IsLevelCompleted()
+    {
+        return gridSlots.All(slot =>
+        {
+            if (string.IsNullOrWhiteSpace(slot.requiredBlockName)) return true;
+            if (slot.currentBlock == null) return false;
+
+            string currentName = slot.currentBlock.block.blockName.Trim();
+            string requiredName = slot.requiredBlockName.Trim();
+            if (!currentName.Equals(requiredName)) return false;
+
+            float angleDiff = Mathf.Abs(Mathf.DeltaAngle(
+                slot.currentBlock.transform.localEulerAngles.z,
+                slot.requiredEulerAngles.z));
+
+            return angleDiff <= 5f;
+        });
+    }
 
     private IEnumerator HandleMinigameCompleted()
     {
         yield return new WaitForSeconds(.5f);
-        // Thắng -> phát win SFX
         if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
         {
             AudioManager.Instance.StopBGM();
@@ -128,39 +145,15 @@ public class MinigameManager : MonoBehaviour
 
         CloseMinigame();
 
-        if (openedButtonSprite != null)
+        openMinigameButton.interactable = false;
+
+        // Chạy animation mở cửa
+        if (doorAnimator != null)
         {
-            openMinigameButton.GetComponent<Image>().sprite = openedButtonSprite;
+            doorAnimator.SetTrigger("Open");  // animation phải có trigger "Open"
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(nextSceneIndex);
-    }
-
-    private bool IsLevelCompleted()
-    {
-        foreach (var slot in gridSlots)
-        {
-            if (string.IsNullOrWhiteSpace(slot.requiredBlockName))
-                continue;
-
-            if (slot.currentBlock == null)
-                return false;
-
-            string currentName = slot.currentBlock.block.blockName.Trim();
-            string requiredName = slot.requiredBlockName.Trim();
-
-            if (currentName != requiredName)
-                return false;
-
-            float currentZ = slot.currentBlock.transform.localEulerAngles.z;
-            float requiredZ = slot.requiredEulerAngles.z;
-            float diff = Mathf.Abs(Mathf.DeltaAngle(currentZ, requiredZ));
-
-            if (diff > 5f)
-                return false;
-        }
-
-        return true;
     }
 
     private void ResetMinigame()
@@ -189,7 +182,6 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
-    // Gọi từ BlockController hoặc nơi bạn xử lý kéo/thả block
     public void PlayMoveBlockSFX()
     {
         AudioManager.Instance?.PlayClickSFX();
