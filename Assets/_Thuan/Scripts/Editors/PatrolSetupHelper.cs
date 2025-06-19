@@ -61,7 +61,7 @@ public class PatrolSetupHelper : EditorWindow
     private void SetupPatrolSystem()
     {
         // Tìm tất cả enemies trong scene
-        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
         
         int setupCount = 0;
         int pointsCreated = 0;
