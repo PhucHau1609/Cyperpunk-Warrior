@@ -261,7 +261,6 @@ GameObject:
   - component: {fileID: 491781296168327313}
   - component: {fileID: 7807031554999659362}
   - component: {fileID: 7280724834678867785}
-  - component: {fileID: 3115906953167019235}
   m_Layer: 12
   m_Name: Droid03
   m_TagString: Enemy
@@ -464,19 +463,13 @@ MonoBehaviour:
       parentIndex: 
       startIndex: 
       variableStartIndex: 
-      JSONSerialization: '{"Variables":[{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"pointA
-        ","IsShared":true,"TransformmValue":0},{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":"pointB","IsShared":true,"TransformmValue":1},{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":"moveSpeed
-        ","IsShared":true,"SinglemValue":2},{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":"animator
-        ","IsShared":true,"AnimatormValue":2}]}'
+      JSONSerialization: '{}'
       fieldSerializationData:
         typeName: []
         fieldNameHash: 
         startIndex: 
         dataPosition: 
-        unityObjects:
-        - {fileID: 0}
-        - {fileID: 0}
-        - {fileID: 8386868269097187428}
+        unityObjects: []
         byteData: 
         byteDataArray: 
       Version: 1.7.7
@@ -506,19 +499,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
---- !u!114 &3115906953167019235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7642006444411904898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d59a06966282db74ba85acfdb18de413, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  behaviorTree: {fileID: 7807031554999659362}
+  healthBarEnemy: {fileID: 0}
 --- !u!1 &8211453441084629896
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,11 +615,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 873c037ef5a5ab64c8997a61f0090ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 1241648663205878958}
-  gradient:
+  healthBarCanvas: {fileID: 0}
+  healthSlider: {fileID: 0}
+  healthBarGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0.020481993, b: 0, a: 1}
-    key1: {r: 0, g: 1, b: 0.11752653, a: 1}
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -662,10 +644,9 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_ColorSpace: 0
+    m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  fillImage: {fileID: 8028851124623674122}
 --- !u!1 &9214526718471451889
 GameObject:
   m_ObjectHideFlags: 0
