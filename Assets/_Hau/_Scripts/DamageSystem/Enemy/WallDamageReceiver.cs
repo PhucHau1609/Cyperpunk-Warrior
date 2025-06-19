@@ -4,6 +4,18 @@ public class WallDamageReceiver : DamageReceiver, IDamageResponder
 {
     private IDamageResponder responder;
 
+    protected override void ResetValue()
+    {
+        base.ResetValue();
+        this.maxHP = 50;
+        this.currentHP = 50;
+    }
+
+    protected virtual void AddHp()
+    {
+        this.currentHP += 20;
+    }    
+
     protected override void Awake()
     {
         base.Awake();
