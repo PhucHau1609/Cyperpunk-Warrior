@@ -20,6 +20,16 @@ public class AudioManager : MonoBehaviour
     public AudioClip winSFX;
     public AudioClip blockInteractSFX;
 
+    [Header("Minigame Card")]
+    public AudioClip flipCardSFX;
+    public AudioClip dealCardSFX;
+    public AudioClip playCardSFX;
+    public AudioClip returnCardSFX;
+    public AudioClip correctSFX;
+    public AudioClip wrongSFX;
+    public AudioClip winGameSFX;
+    public AudioClip loseGameSFX;
+
     private void Awake()
     {
         if (Instance == null)
@@ -93,4 +103,13 @@ public class AudioManager : MonoBehaviour
     {
         PlaySFX(blockInteractSFX);
     }
+
+    public void PlayFlipCard() => PlaySFX(flipCardSFX);
+    public void PlayDealCard() => PlaySFX(dealCardSFX);
+    public void PlayPlayCard() => PlaySFX(playCardSFX);
+    public void PlayReturnCard() => PlaySFX(returnCardSFX);
+    public void PlayCorrect() => PlaySFX(correctSFX);
+    public void PlayWrong() => PlaySFX(wrongSFX);
+    public void PlayWinGame() => PlaySFX(winGameSFX);
+    public void PlayLoseGame() => PlaySFX(loseGameSFX);
 }
