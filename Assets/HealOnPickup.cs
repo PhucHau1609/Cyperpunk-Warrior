@@ -11,21 +11,18 @@ public class HealOnPickup : MonoBehaviour
     {
         if (collected) return;
 
-        playerHealth player = other.GetComponent<playerHealth>();
-        if (player != null)
-        {
-            // Nếu máu chưa đầy mới cho nhặt
-            if (player.health < player.maxHealth)
-            {
-                player.Heal(healAmount);              // Hồi máu
-                player.PlayHealEffect();              // Gọi hiệu ứng hồi phục (nếu có)
-            }
-            else
-            {
-                return; // Không nhặt nếu máu đầy
-            }
+        // Lấy Component đúng
+        CharacterController2D player = other.GetComponent<CharacterController2D>();
 
-            // Phát âm thanh bằng AudioSource tạm
+        // Nếu có player và máu chưa đầy
+        if (player != null && player.life < player.maxLife)
+        {
+            collected = true;
+
+            // Hồi máu (CharacterController2D đã có sẵn hàm Heal)
+            player.Heal(healAmount);
+
+            // Phát âm thanh nếu có
             if (healSound != null)
             {
                 GameObject audioObj = new GameObject("HealSoundTemp");
@@ -34,8 +31,8 @@ public class HealOnPickup : MonoBehaviour
                 Destroy(audioObj, healSound.length);
             }
 
-            collected = true;
-            Destroy(gameObject); // Huỷ vật phẩm ngay
+            // Xoá vật phẩm
+            Destroy(gameObject);
         }
     }
 }
