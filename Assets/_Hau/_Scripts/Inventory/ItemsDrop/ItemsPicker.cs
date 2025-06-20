@@ -32,6 +32,7 @@ public class ItemsPicker : HauMonoBehaviour
         if (itemsDropCtrl == null) return;
 
         ItemCollectionTracker.Instance.OnItemCollected(itemsDropCtrl.ItemCode);
+        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.PickUpItem);
         itemsDropCtrl.Despawn.DoDespawn();
     }
 }

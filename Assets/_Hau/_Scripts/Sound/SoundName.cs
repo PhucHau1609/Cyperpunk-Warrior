@@ -11,4 +11,8 @@ public enum SoundName
     LaserKickDrum = 100,
     LaserOneShot = 101,
     LaserKickDrumBoss = 102,
+
+
+    //Pickup,Collect, Something else
+    PickUpItem = 200,
 }
