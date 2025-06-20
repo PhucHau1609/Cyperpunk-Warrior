@@ -73,7 +73,7 @@ public class CardsController : MonoBehaviour
 
             ArrangeHand();
         }
-        else if (deckCards.Contains(card) && playedCard != null && flipAttempts < 3 && !flippedCards.Contains(card))
+        else if (deckCards.Contains(card) && playedCard != null && flipAttempts < 5 && !flippedCards.Contains(card))
         {
             card.Show();
             flippedCards.Add(card);
@@ -83,7 +83,7 @@ public class CardsController : MonoBehaviour
             {
                 StartCoroutine(HandleMatched(card));
             }
-            else if (flipAttempts >= 3)
+            else if (flipAttempts >= 5)
             {
                 StartCoroutine(HandleMismatch());
             }
