@@ -20,7 +20,7 @@ public class UIKiller : MonoBehaviour
         string sceneName = scene.name;
         bool isLoading = sceneName == loadingSceneName;
 
-        foreach (var go in FindObjectsOfType<GameObject>())
+        foreach(var go in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
         {
             foreach (var name in uiNamesToHide)
             {
