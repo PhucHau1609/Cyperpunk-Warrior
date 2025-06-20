@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 
-public class WeaponShooter : MonoBehaviour
+public class WeaponShooter : WeaponAbstract
 {
+    [Header("Shoot")]
     [SerializeField] private Transform firePoint; // Nòng súng
     [SerializeField] private BulletGunName bulletName; // Tên đạn trong Pool
     [SerializeField] private int bulletDamage = 1; // Có thể config nếu muốn
 
     private int lastDirection = 1; // 1: phải, -1: trái
 
+    [Header("Particle")]
     [SerializeField] private ParticleSystem shellParticle;
     [SerializeField] private ParticleSystem flameParticle;
 
@@ -86,7 +88,7 @@ public class WeaponShooter : MonoBehaviour
             damageSender.SetDamage(bulletDamage);
         }
 
-        
+        this.SpawnSound(this.transform.position);
 
         // 🔥 Bắn hiệu ứng
         if (shellParticle != null) shellParticle.Play();
