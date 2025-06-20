@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class CardsController : MonoBehaviour
@@ -27,6 +28,7 @@ public class CardsController : MonoBehaviour
 
     private int flipAttempts = 0;
     private List<Card> flippedCards = new List<Card>();
+
 
     void Start()
     {
@@ -70,12 +72,13 @@ public class CardsController : MonoBehaviour
             card.transform.DOLocalMove(Vector3.zero, 0.3f).SetEase(Ease.OutQuad);
             card.transform.DOLocalRotate(Vector3.zero, 0.3f).SetEase(Ease.OutQuad);
             card.transform.DOScale(Vector3.one * 1.5f, 0.3f).SetEase(Ease.OutQuad);
-
+            AudioManager.Instance?.PlayPlayCard();
             ArrangeHand();
         }
-        else if (deckCards.Contains(card) && playedCard != null && flipAttempts < 3 && !flippedCards.Contains(card))
+        else if (deckCards.Contains(card) && playedCard != null && flipAttempts < 5 && !flippedCards.Contains(card))
         {
             card.Show();
+            AudioManager.Instance?.PlayFlipCard();
             flippedCards.Add(card);
             flipAttempts++;
 
@@ -83,7 +86,7 @@ public class CardsController : MonoBehaviour
             {
                 StartCoroutine(HandleMatched(card));
             }
-            else if (flipAttempts >= 3)
+            else if (flipAttempts >= 5)
             {
                 StartCoroutine(HandleMismatch());
             }
@@ -114,6 +117,7 @@ public class CardsController : MonoBehaviour
             c.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
 
             deckCards.Add(c);
+            AudioManager.Instance?.PlayDealCard();
             yield return new WaitForSeconds(0.12f);
         }
 
@@ -146,6 +150,7 @@ public class CardsController : MonoBehaviour
             c.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
 
             playerHand.Add(c);
+            AudioManager.Instance?.PlayDealCard();
             yield return new WaitForSeconds(0.15f);
         }
 
@@ -155,6 +160,7 @@ public class CardsController : MonoBehaviour
     IEnumerator HandleMatched(Card matchCard)
     {
         yield return new WaitForSeconds(0.2f);
+        AudioManager.Instance?.PlayCorrect();
 
         // ✅ Lưu local tránh lỗi NullReference khi callback chạy sau
         Card tempCard = playedCard;
@@ -200,6 +206,7 @@ public class CardsController : MonoBehaviour
     IEnumerator HandleMismatch()
     {
         yield return new WaitForSeconds(0.5f);
+        AudioManager.Instance?.PlayWrong();
 
         foreach (Card c in flippedCards)
         {
@@ -216,6 +223,7 @@ public class CardsController : MonoBehaviour
         playedCard.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutQuad);
         playedCard.iconImage.sprite = playedCard.iconSprite;
         playerHand.Add(playedCard);
+        AudioManager.Instance?.PlayReturnCard();
         playedCard = null;
 
         AddRandomCardToHand();
@@ -240,6 +248,7 @@ public class CardsController : MonoBehaviour
         newCard.transform.DOLocalMove(Vector3.zero, 0.3f).SetEase(Ease.OutQuad);
 
         playerHand.Add(newCard);
+        AudioManager.Instance?.PlayDealCard();
         ArrangeHand();
     }
 
@@ -278,12 +287,14 @@ public class CardsController : MonoBehaviour
             Debug.Log("WIN");
             gamePanel.SetActive(false);
             finishPanel.SetActive(true);
+            AudioManager.Instance?.PlayWinGame();
         }
         else if (playerHand.Count > 10)
         {
             Debug.Log("LOSE");
             gamePanel.SetActive(false);
             finishPanel.SetActive(true);
+            AudioManager.Instance?.PlayLoseGame();
         }
     }
 
