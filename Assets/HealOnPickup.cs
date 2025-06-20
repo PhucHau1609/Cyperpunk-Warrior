@@ -7,7 +7,7 @@ public class HealOnPickup : MonoBehaviour
 
     private bool collected = false;
 
-    void OnTriggerEnter2D(Collider2D other)
+   /* void OnTriggerEnter2D(Collider2D other)
     {
         if (collected) return;
 
@@ -34,5 +34,5 @@ public class HealOnPickup : MonoBehaviour
             // Xoá vật phẩm
             Destroy(gameObject);
         }
-    }
+    }*/
 }
