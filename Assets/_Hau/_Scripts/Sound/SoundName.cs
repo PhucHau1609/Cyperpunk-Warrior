@@ -10,4 +10,5 @@ public enum SoundName
     //VFX
     LaserKickDrum = 100,
     LaserOneShot = 101,
+    LaserKickDrumBoss = 102,
 }
