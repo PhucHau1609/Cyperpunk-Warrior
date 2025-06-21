@@ -18,6 +18,8 @@ public enum ItemCode
     Gun_2 = 101,
     MachineGun_0 = 102,
     MachineGun_1 = 103,
+    MachineGun_2 = 104,
+    MachineGun_3 = 105,
 
     //Health
     PotionMana = 200,

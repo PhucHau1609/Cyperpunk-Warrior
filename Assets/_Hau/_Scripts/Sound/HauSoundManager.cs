@@ -115,4 +115,11 @@ public class HauSoundManager : HauSingleton<HauSoundManager>
         bool status = this.bgMusic.gameObject.activeSelf;
         this.bgMusic.gameObject.SetActive(!status);
     }
+
+    public virtual void SpawnSound(Vector3 spawnPos, SoundName SFXName)
+    {
+        SFXCtrl newSfx = this.CreateSfx(SFXName);
+        newSfx.transform.position = spawnPos;
+        newSfx.gameObject.SetActive(true);
+    }
 }

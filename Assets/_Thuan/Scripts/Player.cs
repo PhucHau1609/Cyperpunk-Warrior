@@ -9,9 +9,10 @@ public class Player : MonoBehaviour
 
     private float horizontalMove = 0f;
     private bool jump = false;
-    private bool dash = false;
+    private bool dashX = false; // ⚠️ THAY ĐỔI: dash ngang
+    private bool dashY = false; // ⚠️ MỚI: dash dọc
 
-   private SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer;
    private bool isInvisible = false;
 
      [Header("Invisibility Light")]
@@ -46,10 +47,13 @@ public class Player : MonoBehaviour
             jump = true;
 
         if (Input.GetKeyDown(KeyCode.E))
-            dash = true;
+            dashX = true; // ⚠️ THAY ĐỔI: dash ngang
+
+        if (Input.GetKeyDown(KeyCode.S))
+            dashY = true; // ⚠️ MỚI: dash dọc
 
         // Bật/tắt tàng hình bằng phím J
-         if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             isInvisible = !isInvisible;
 
@@ -75,13 +79,14 @@ public class Player : MonoBehaviour
     {
         if (!canMove)
         {
-            controller.Move(0f, false, false); // Ngừng di chuyển
+            controller.Move(0f, false, false, false); // ⚠️ THAY ĐỔI: thêm tham số dashY
             return;
         }
 
-        controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dash);
+        controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dashX, dashY); // ⚠️ THAY ĐỔI: thêm dashY
         jump = false;
-        dash = false;
+        dashX = false; // ⚠️ THAY ĐỔI
+        dashY = false; // ⚠️ MỚI
     }
 
     public void SetCanMove(bool state) // ⚠️ MỚI: Hàm khóa/mở di chuyển
