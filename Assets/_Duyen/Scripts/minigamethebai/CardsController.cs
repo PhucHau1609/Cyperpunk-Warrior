@@ -21,6 +21,8 @@ public class CardsController : MonoBehaviour
     [Header("UI Panels")]
     [SerializeField] GameObject gamePanel;
     [SerializeField] GameObject finishPanel;
+    [SerializeField] GameObject buttonPanel;
+    [SerializeField] GameObject banPanel;
 
     private List<Card> deckCards = new List<Card>();
     private List<Card> playerHand = new List<Card>();
@@ -34,12 +36,16 @@ public class CardsController : MonoBehaviour
     {
         gamePanel.SetActive(false);
         finishPanel.SetActive(false);
+        buttonPanel.SetActive(true);
+        banPanel.SetActive(true);
     }
 
     public void StartGame()
     {
         gamePanel.SetActive(true);
         finishPanel.SetActive(false);
+        buttonPanel.SetActive(false);
+        banPanel.SetActive(true);
 
         ResetGame();
     }
@@ -71,7 +77,7 @@ public class CardsController : MonoBehaviour
             card.transform.SetParent(playedCardSlot);
             card.transform.DOLocalMove(Vector3.zero, 0.3f).SetEase(Ease.OutQuad);
             card.transform.DOLocalRotate(Vector3.zero, 0.3f).SetEase(Ease.OutQuad);
-            card.transform.DOScale(Vector3.one * 1.5f, 0.3f).SetEase(Ease.OutQuad);
+            card.transform.DOScale(Vector3.one * 1.2f, 0.3f).SetEase(Ease.OutQuad);
             AudioManager.Instance?.PlayPlayCard();
             ArrangeHand();
         }
@@ -172,7 +178,9 @@ public class CardsController : MonoBehaviour
             if (cg == null) cg = tempCard.gameObject.AddComponent<CanvasGroup>();
 
             Sequence seq1 = DOTween.Sequence();
-            seq1.Append(tempCard.transform.DOShakeRotation(0.3f, 15, 10));
+            //seq1.Append(tempCard.transform.DOShakeRotation(0.2f, 1.2f, 1));
+            seq1.Append(tempCard.transform.DOShakeRotation(0.25f, new Vector3(0, 0, 5f), 10, 45f));
+
             seq1.Append(cg.DOFade(0, 0.3f));
             seq1.OnComplete(() =>
             {
@@ -185,8 +193,8 @@ public class CardsController : MonoBehaviour
         if (matchCard != null)
         {
             Sequence seq2 = DOTween.Sequence();
-            seq2.Append(matchCard.transform.DOScale(1.5f, 0.3f).SetEase(Ease.OutBack));
-            seq2.Append(matchCard.transform.DOScale(1f, 0.3f).SetEase(Ease.InOutSine));
+            seq2.Append(matchCard.transform.DOScale(new Vector3(1.05f, 1.1f, 1f), 0.2f).SetEase(Ease.OutBack));
+            seq2.Append(matchCard.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.InOutSine));
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -212,7 +220,7 @@ public class CardsController : MonoBehaviour
         {
             // Lắc nhẹ rồi ẩn
             Sequence seq = DOTween.Sequence();
-            seq.Append(c.transform.DOShakePosition(0.3f, 10, 10));
+            seq.Append(c.transform.DOShakePosition(0.25f, new Vector3(0.15f, 0f, 0f), 8, 90, false));
             seq.AppendCallback(() => c.Hide());
         }
 
@@ -257,7 +265,7 @@ public class CardsController : MonoBehaviour
         int count = playerHand.Count;
         if (count == 0) return;
 
-        float spacing = 80f;
+        float spacing = 1f;
         float totalWidth = spacing * (count - 1);
         float startX = -totalWidth / 2f;
         float y = 0f;
@@ -287,13 +295,18 @@ public class CardsController : MonoBehaviour
             Debug.Log("WIN");
             gamePanel.SetActive(false);
             finishPanel.SetActive(true);
+            buttonPanel.SetActive(false);
+            banPanel.SetActive(false);
+
             AudioManager.Instance?.PlayWinGame();
         }
         else if (playerHand.Count > 10)
         {
             Debug.Log("LOSE");
             gamePanel.SetActive(false);
-            finishPanel.SetActive(true);
+            finishPanel.SetActive(false);
+            buttonPanel.SetActive(true);
+            banPanel.SetActive(true);
             AudioManager.Instance?.PlayLoseGame();
         }
     }
