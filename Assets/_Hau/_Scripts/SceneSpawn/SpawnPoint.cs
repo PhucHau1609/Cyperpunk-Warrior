@@ -18,5 +18,6 @@ public enum SpawnSceneName
     map2level2,
     map2level3,
     map2level4,
+    Map_Boss01,
 
 }

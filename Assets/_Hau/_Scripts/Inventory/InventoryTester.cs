@@ -28,4 +28,11 @@ public class InventoryTester : HauMonoBehaviour //E75 create
             InventoryManager.Instance.RemoveItem(itemCode, 1);
         }
     }
+
+
+    [ProButton]
+    public virtual void PlaySound()
+    {
+        HauSoundManager.Instance.SpawnSound(Vector3.zero,SoundName.PickUpItem);
+    }
 }
