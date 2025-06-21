@@ -31,7 +31,7 @@ public class BossPhuAttackHitDetector : MonoBehaviour
         {
             GameObject punchHitObj = new GameObject("PunchHitBox");
             punchHitObj.transform.SetParent(transform);
-            punchHitObj.transform.localPosition = new Vector3(1.5f, 0f, 0f); // Trước mặt boss
+            punchHitObj.transform.localPosition = new Vector3(1f, -0.5f, 0f); // Trước mặt boss
             punchHitBox = punchHitObj.transform;
         }
         
@@ -49,7 +49,7 @@ public class BossPhuAttackHitDetector : MonoBehaviour
     {
         if (!canDealDamage) return;
         
-        Debug.Log("Checking punch hit...");
+        //Debug.Log("Checking punch hit...");
         CheckHit(punchHitBox.position, punchHitSize, "Punch");
     }
     
@@ -58,7 +58,7 @@ public class BossPhuAttackHitDetector : MonoBehaviour
     {
         if (!canDealDamage) return;
         
-        Debug.Log("Checking slam hit...");
+        //Debug.Log("Checking slam hit...");
         CheckHit(slamHitBox.position, slamHitSize, "Slam");
     }
     
@@ -109,7 +109,7 @@ public class BossPhuAttackHitDetector : MonoBehaviour
     private void DisableDamageTemporarily()
     {
         canDealDamage = false;
-        Invoke("EnableDamage", 0.5f); // Đợi 0.5s trước khi có thể gây damage lại
+        Invoke("EnableDamage", 0f); // Đợi 0.5s trước khi có thể gây damage lại
     }
     
     private void EnableDamage()

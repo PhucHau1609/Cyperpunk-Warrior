@@ -115,11 +115,11 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         {
             player = playerObj.transform;
             playerDetected = true; // Ngay khi tìm thấy Player là target luôn
-            Debug.Log("Boss đã phát hiện Player!");
+           // Debug.Log("Boss đã phát hiện Player!");
         }
         else
         {
-            Debug.LogWarning("Chưa tìm thấy Player, sẽ tìm lại...");
+            //Debug.LogWarning("Chưa tìm thấy Player, sẽ tìm lại...");
         }
     }
 
@@ -196,6 +196,8 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         animator.SetBool("IsRunning", false);
         animator.SetTrigger("PhaseChange");
 
+        PlaySound(phaseChangeSound);
+
         Invoke("EndPhaseChange", 2f);
     }
 
@@ -203,7 +205,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
     {
         isPhase2 = true;
         isAttacking = false;
-        Debug.Log("Boss đã chuyển sang Phase 2 - Có thêm tấn công tầm xa!");
+        //Debug.Log("Boss đã chuyển sang Phase 2 - Có thêm tấn công tầm xa!");
     }
 
     // Methods cho Behavior Designer Tasks
@@ -235,7 +237,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
                     bulletScript.Initialize(direction, bulletSpeed);
                 }
             }
-            Debug.Log("Boss bắn đạn!");
+            //Debug.Log("Boss bắn đạn!");
         }
     }
 
@@ -297,6 +299,8 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
 
         animator.SetTrigger("Hurt");
         CameraFollow.Instance?.ShakeCamera();
+
+        PlaySound(hurtSound);
 
         if (healthBar != null)
         {
