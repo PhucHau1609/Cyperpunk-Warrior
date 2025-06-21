@@ -4,15 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class playerHealth : MonoBehaviour
 {
-    [Header("Máu Player")]
-    public float health = 5f;
-    public float maxHealth = 5f;
-
     [Header("UI Thanh Máu")]
     public Image healthBar;
 
     [Header("Hiệu ứng hồi máu")]
-    public GameObject healEffect; // ← gán prefab hoặc GameObject con tại đây
+    public GameObject healEffect;
 
     private CharacterController2D characterController;
 
@@ -28,39 +24,37 @@ public class playerHealth : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    void Start()
-    {
-        if (maxHealth <= 0) maxHealth = health;
-
-        if (healEffect != null)
-            healEffect.SetActive(false); // Tắt hiệu ứng lúc đầu
-    }
-
     void Update()
     {
-        if (healthBar != null)
-            healthBar.fillAmount = Mathf.Clamp01(health / maxHealth);
+        if (characterController != null && healthBar != null)
+        {
+            float current = characterController.life;
+            float max = characterController.maxLife;
+
+            healthBar.fillAmount = Mathf.Clamp01(current / max);
+        }
     }
+
 
     public void TakeDamage(float amount)
     {
-        health -= amount;
-
-        
-        characterController.ApplyDamage(amount,this.transform.position);
-
-        if (health <= 0)
+        if (characterController != null)
         {
-            health = 0;
-            //Debug.Log("Player chết!");
+            characterController.ApplyDamage(amount, this.transform.position);
         }
     }
 
     public void Heal(float amount)
     {
-        health = Mathf.Clamp(health + amount, 0f, maxHealth);
-       
-        PlayHealEffect(); 
+        if (characterController != null)
+        {
+            characterController.life = Mathf.Clamp(
+                characterController.life + amount,   // cộng máu
+                0f,                                  // không dưới 0
+                characterController.maxLife          // không vượt quá max thực tế của player
+            );
+            PlayHealEffect(); // chạy hiệu ứng hồi máu (nếu có)
+        }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -76,14 +70,15 @@ public class playerHealth : MonoBehaviour
     {
         if (healEffect == null) return;
 
-        StopAllCoroutines(); 
+        StopAllCoroutines();
         StartCoroutine(HealEffectRoutine());
     }
 
     System.Collections.IEnumerator HealEffectRoutine()
     {
         healEffect.SetActive(true);
-        yield return new WaitForSeconds(1.5f); 
+        yield return new WaitForSeconds(1.5f);
         healEffect.SetActive(false);
     }
+
 }
