@@ -4,6 +4,8 @@ public class Droid02Bullet : MonoBehaviour
 {
     public float speed = 8f;                      // Tốc độ bay
     public float destroyDelay = 0.5f;             // Thời gian chờ animation nổ
+    public float damage = 5f;                    // Sát thương gây ra cho Player
+    
     private Rigidbody2D rb;
     private Animator animator;
     private bool isDestroyed = false;
@@ -34,8 +36,23 @@ public class Droid02Bullet : MonoBehaviour
     {
         if (isDestroyed) return;
 
-        // Đạn gặp bất kỳ collider nào cũng nổ (trừ Enemy hoặc chính nó)
-        if (!collision.CompareTag("Enemy") && !collision.isTrigger)
+        // Kiểm tra nếu đạn trúng Player
+        if (collision.CompareTag("Player"))
+        {
+            // Lấy component CharacterController2D từ Player
+            CharacterController2D playerController = collision.GetComponent<CharacterController2D>();
+            
+            if (playerController != null)
+            {
+                // Gây sát thương cho Player, truyền vị trí của đạn làm điểm gây damage
+                playerController.ApplyDamage(damage, transform.position);
+            }
+            
+            // Nổ đạn sau khi gây sát thương
+            Explode();
+        }
+        // Đạn gặp bất kỳ collider nào khác cũng nổ (trừ Enemy hoặc chính nó)
+        else if (!collision.CompareTag("Enemy") && !collision.isTrigger)
         {
             Explode();
         }

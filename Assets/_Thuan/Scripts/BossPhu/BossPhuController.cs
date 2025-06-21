@@ -29,13 +29,52 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
     [HideInInspector] public float lastAttackTime;
     [HideInInspector] public bool playerDetected = false;
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip runningSound;
+    [SerializeField] private AudioClip shootSound;
+    [SerializeField] private AudioClip meleeAttackSound;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip phaseChangeSound;
+
+    [Header("Audio Settings")]
+    [Range(0f, 1f)] public float soundVolume = 0.7f;
+    [Range(0.5f, 2f)] public float soundPitch = 1f;
+    private bool isRunning = false;
+    private bool runningAudioPlaying = false;
+
     public BossPhuHealthBar healthBar;
     private State currentState = State.Idle;
-    public BossDamageReceiver damageReceiver;
+    public BossPhuDamageReceiver damageReceiver;
 
     void Awake()
     {
-        damageReceiver = GetComponent<BossDamageReceiver>();
+        damageReceiver = GetComponent<BossPhuDamageReceiver>();
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        SetupAudioSource();
+    }
+
+    void SetupAudioSource()
+    {
+        if (audioSource != null)
+        {
+            audioSource.volume = soundVolume;
+            audioSource.pitch = soundPitch;
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 0.7f; // 3D sound
+            audioSource.minDistance = 5f;
+            audioSource.maxDistance = 20f;
+        }
     }
     void Start()
     {
@@ -55,7 +94,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         animator = GetComponent<Animator>();
         behaviorTree = GetComponent<BehaviorTree>();
 
-        damageReceiver = GetComponent<BossDamageReceiver>();
+        damageReceiver = GetComponent<BossPhuDamageReceiver>();
 
         // Find Player immediately when scene starts
         FindPlayer();
@@ -108,9 +147,28 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
             }
         }
 
+        CheckRunningState();
+
         // Check phase change
         CheckPhaseChange();
         CheckDeathState();
+    }
+
+    void CheckRunningState()
+    {
+        // Kiểm tra nếu Boss đang chạy dựa trên velocity
+        bool wasRunning = isRunning;
+        isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && !isAttacking && !isDead;
+
+        // Xử lý âm thanh chạy
+        if (isRunning && !runningAudioPlaying)
+        {
+            PlayRunningSound();
+        }
+        else if (!isRunning && runningAudioPlaying)
+        {
+            StopRunningSound();
+        }
     }
 
     void CheckPhaseChange()
@@ -165,6 +223,8 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
     {
         if (bulletPrefab != null && bulletSpawnPoints.Length > 0 && player != null)
         {
+            PlaySound(shootSound);
+
             foreach (Transform spawnPoint in bulletSpawnPoints)
             {
                 GameObject bullet = Instantiate(bulletPrefab, spawnPoint.position, spawnPoint.rotation);
@@ -177,6 +237,11 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
             }
             Debug.Log("Boss bắn đạn!");
         }
+    }
+
+    public void PlayMeleeAttackSound()
+    {
+        PlaySound(meleeAttackSound);
     }
 
     public float GetDistanceToPlayer()
@@ -241,6 +306,11 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
 
     public void OnDead()
     {
+        StopAllSounds();
+
+        // Phát âm thanh chết
+        PlaySound(deathSound);
+
         animator.SetTrigger("Death");
         currentState = State.Dead;
         rb.linearVelocity = Vector2.zero;
@@ -256,12 +326,73 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
 
         Destroy(gameObject, 2f);
     }
-    
+
     private float GetNormalizedHealth()
     {
         if (damageReceiver != null && damageReceiver.MaxHP > 0)
             return damageReceiver.CurrentHP / (float)damageReceiver.MaxHP;
         else
             return 1f;
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.volume = soundVolume;
+            audioSource.pitch = soundPitch;
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    private void PlayRunningSound()
+    {
+        if (audioSource != null && runningSound != null && !runningAudioPlaying)
+        {
+            audioSource.volume = soundVolume * 0.6f; // Giảm âm lượng cho âm thanh chạy
+            audioSource.pitch = soundPitch;
+            audioSource.clip = runningSound;
+            audioSource.loop = true;
+            audioSource.Play();
+            runningAudioPlaying = true;
+        }
+    }
+
+    private void StopRunningSound()
+    {
+        if (audioSource != null && runningAudioPlaying)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+            runningAudioPlaying = false;
+        }
+    }
+
+    private void StopAllSounds()
+    {
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+            runningAudioPlaying = false;
+        }
+    }
+    
+     public void SetSoundVolume(float volume)
+    {
+        soundVolume = Mathf.Clamp01(volume);
+        if (audioSource != null)
+        {
+            audioSource.volume = soundVolume;
+        }
+    }
+
+    public void SetSoundPitch(float pitch)
+    {
+        soundPitch = Mathf.Clamp(pitch, 0.5f, 2f);
+        if (audioSource != null)
+        {
+            audioSource.pitch = soundPitch;
+        }
     }
 }
