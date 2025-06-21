@@ -48,28 +48,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
             dash = true;
-
-       /* // Bật/tắt tàng hình bằng phím J
-         if (Input.GetKeyDown(KeyCode.J))
-        {
-            isInvisible = !isInvisible;
-
-           // Bật/tắt Spot Light
-           if (invisibilityLight != null)
-           {
-                invisibilityLight.enabled = !isInvisible;
-            }
-
-        //     // Thay đổi độ alpha của nhân vật
-            if (spriteRenderer != null)
-            {
-               Color color = spriteRenderer.color;
-               color.a = isInvisible ? 0.1490196f : 1f;
-               spriteRenderer.color = color;
-          }
-
-            Debug.Log("Tàng hình: " + isInvisible);
-        }*/
     }
 
     void FixedUpdate()
@@ -120,12 +98,35 @@ public class PlayerMovement : MonoBehaviour
             transform.parent = null;
         }
     }
+}
 
 /*    void OnDestroy()
     {
         Debug.LogError($"[OnDestroy] Player bị xóa. Tên: {gameObject.name}, Time: {Time.time}, Scene: {gameObject.scene.name}");
         Debug.LogError(Environment.StackTrace);
-    }*/
+    }
+
+ 
+           /* // Bật/tắt tàng hình bằng phím J
+         if (Input.GetKeyDown(KeyCode.J))
+        {
+            isInvisible = !isInvisible;
+
+           // Bật/tắt Spot Light
+           if (invisibilityLight != null)
+           {
+                invisibilityLight.enabled = !isInvisible;
+            }
+
+        //     // Thay đổi độ alpha của nhân vật
+            if (spriteRenderer != null)
+            {
+               Color color = spriteRenderer.color;
+               color.a = isInvisible ? 0.1490196f : 1f;
+               spriteRenderer.color = color;
+          }
+
+            Debug.Log("Tàng hình: " + isInvisible);
+        }*/
 
 
-}
