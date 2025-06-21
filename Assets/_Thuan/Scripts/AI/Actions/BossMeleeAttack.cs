@@ -32,10 +32,10 @@ public class BossMeleeAttack : Action
         if (animator != null)
         {
             // Bao gồm tất cả 4 loại tấn công cận chiến
-            string[] meleeAttacks = { "Attack1", "Attack2", "Attack3", "Attack4" };
+            string[] meleeAttacks = {"Attack3", "Attack4" };
             string selectedAttack = meleeAttacks[Random.Range(0, meleeAttacks.Length)];
             animator.SetTrigger(selectedAttack);
-            Debug.Log($"Boss thực hiện {selectedAttack}");
+            //Debug.Log($"Boss thực hiện {selectedAttack}");
         }
 
         if (bossAI != null)
