@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile3HitEffect : EffectDamageSender
+public class Projectile3HitEffect : ProjectileDamageSender
 {
     protected override string GetHitEffectName()
     {
