@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectFlyToTarget : MonoBehaviour
+public class EffectFlyToTarget : HauMonoBehaviour
 {
     protected Transform target;
     [SerializeField] protected float speed = 34f;
@@ -20,8 +20,10 @@ public class EffectFlyToTarget : MonoBehaviour
         //transform.parent.Translate(direction.normalized * speed * Time.deltaTime);
         transform.Translate(direction.normalized * speed * Time.deltaTime);
     }
+}
 
 
+/*
     public virtual void SetTarget(Transform target)
     {
         this.target = target;
@@ -45,6 +47,4 @@ public class EffectFlyToTarget : MonoBehaviour
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.parent.rotation = Quaternion.Euler(0f, 0f, angle);
     }
-
-
-}
+*/
