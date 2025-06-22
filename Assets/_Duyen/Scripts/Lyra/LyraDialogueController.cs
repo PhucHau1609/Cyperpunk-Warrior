@@ -58,27 +58,6 @@ public class LyraDialogueController : MonoBehaviour
                 currentIconInstance = null;
             }
         }
-        //if (TagExists("Dialog") && other.CompareTag("Dialog"))
-        //{
-        //    DialogueData dialogue = GetDialogueDataForZone(other);
-        //    if (dialogue == null)
-        //        return;
-
-        //    if (currentIconInstance == null)
-        //    {
-        //        Canvas canvas = Object.FindFirstObjectByType<Canvas>(); // hoặc FindAnyObjectByType
-        //        if (canvas != null)
-        //        {
-        //            currentIconInstance = Instantiate(speechIconPrefab, canvas.transform);
-        //        }
-        //        var follower = currentIconInstance.GetComponent<SpeechIconFollower>();
-        //        follower.targetNPC = this.transform;
-
-        //        var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
-        //        clickHandler.dialogueData = dialogue;
-        //        clickHandler.npcTransform = this.transform;
-        //    }
-        //}
     }
 
     DialogueData GetDialogueDataForZone(Collider2D zone)
