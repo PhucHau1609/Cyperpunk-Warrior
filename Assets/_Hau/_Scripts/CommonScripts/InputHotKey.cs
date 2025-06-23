@@ -17,8 +17,8 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     private void Update()
     {
         this.OpenInventory();
-        this.Weapon_Toogle();
-        this.Weapon_Swap();
+        //this.Weapon_Toogle();
+        //this.Weapon_Swap();
         //this.OpenMusic();
         //this.OpenSetting();
     }

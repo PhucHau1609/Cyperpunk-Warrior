@@ -1,16 +1,15 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(CircleCollider2D))]
 public abstract class EffectDamageSender : DamageSender // E43,E44 create
 {
     [SerializeField] protected EffectCtrl effectCtrl;
-    [SerializeField] protected SphereCollider _collider;
-
+    [SerializeField] protected CircleCollider2D _collider;
     protected override void LoadComponents()
     {
         base.LoadComponents();
-        this.LoadSphereCollider();
+        this.LoadCircleCollider();
         this.LoadEffectCtrl();
     }
 
@@ -24,11 +23,11 @@ public abstract class EffectDamageSender : DamageSender // E43,E44 create
         }
         Debug.LogWarning(transform.name + ": LoadEffectCtrl" + gameObject);
     }
-    protected virtual void LoadSphereCollider()
+    protected virtual void LoadCircleCollider()
     {
         if (this._collider != null) return;
-        this._collider = GetComponent<SphereCollider>();
-        this._collider.radius = 0.05f;
+        this._collider = GetComponent<CircleCollider2D>();
+        this._collider.radius = 0.2f;
         this._collider.isTrigger = true;
 
         Debug.LogWarning(transform.name + ": LoadCollider" + gameObject);
