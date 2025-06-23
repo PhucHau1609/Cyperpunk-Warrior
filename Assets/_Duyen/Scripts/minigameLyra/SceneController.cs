@@ -56,11 +56,15 @@ public class SceneController : MonoBehaviour
     void SwitchToPetControl()
     {
         player.SetCanMove(false);
+        petControl.enabled = true;
         // Tắt script theo dõi Player
         FloatingFollower follow = pet.GetComponent<FloatingFollower>();
         if (follow != null)
             follow.enabled = false;
-        petControl.enabled = true;
+
+        PetShooting petShooting = pet.GetComponent<PetShooting>();
+        if (petShooting != null)
+            petShooting.enabled = true;
     }
 
     public void OnPetTouchedSwitch()
@@ -89,70 +93,8 @@ public class SceneController : MonoBehaviour
         player.SetCanMove(true);
         if (petControl != null)
             petControl.enabled = false;
+        PetShooting petShooting = pet.GetComponent<PetShooting>();
+        if (petShooting != null)
+            petShooting.enabled = false;
     }
 }
-//public DialogueData introDialogue;      // Thoại đầu
-    //public DialogueData deathDialogue;      // Thoại sau khi chạm công tắc
-    //public string sceneToWatch = "mapdemo2";
-
-    //private GameObject player;
-    //private GameObject pet;
-    //private bool controlGivenToPet = false;
-
-    //void Start()
-    //{
-    //    if (SceneManager.GetActiveScene().name == sceneToWatch)
-    //    {
-    //        StartCoroutine(HandleSceneStart());
-    //    }
-    //}
-
-    //IEnumerator HandleSceneStart()
-    //{
-    //    yield return new WaitForSeconds(1f); // Đợi mọi thứ load xong
-
-    //    player = GameObject.FindGameObjectWithTag("Player");
-    //    pet = GameObject.FindGameObjectWithTag("NPC");
-
-    //    if (player != null)
-    //        player.GetComponent<PlayerMovement>().SetCanMove(false);
-
-    //    DialogueManager.Instance.onDialogueEnd = GiveControlToPet;
-    //    DialogueManager.Instance.StartDialogue(introDialogue, pet.transform);
-    //}
-
-    //void GiveControlToPet()
-    //{
-    //    if (pet == null || player == null) return;
-
-    //    player.GetComponent<PlayerMovement>().SetCanMove(false);
-
-    //    pet.GetComponent<FloatingFollower>().enabled = false;
-    //    pet.GetComponent<PetManualControl>().enabled = true;
-
-    //    controlGivenToPet = true;
-    //}
-
-    //// Gọi từ công tắc khi pet chạm vào
-    //public void OnPetTouchedSwitch()
-    //{
-    //    if (!controlGivenToPet) return;
-
-    //    pet.GetComponent<PetManualControl>().enabled = false;
-    //    DialogueManager.Instance.onDialogueEnd = PetDiesAndGiveBackControl;
-    //    DialogueManager.Instance.StartDialogue(deathDialogue, pet.transform);
-    //}
-
-    //void PetDiesAndGiveBackControl()
-    //{
-    //    if (pet != null)
-    //    {
-    //        Animator anim = pet.GetComponent<Animator>();
-    //        if (anim != null) anim.SetTrigger("Die");
-    //    }
-
-    //    if (player != null)
-    //        player.GetComponent<PlayerMovement>().SetCanMove(true);
-
-    //    controlGivenToPet = false;
-    //}
