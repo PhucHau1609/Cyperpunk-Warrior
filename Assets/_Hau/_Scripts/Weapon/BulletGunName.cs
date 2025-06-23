@@ -8,6 +8,10 @@ public enum BulletGunName
     Fire_4,
     Fire_5,
     Fire_6,
+    Fire_7,
+    Fire_8,
+    Fire_9,
+
     // ...
 }
 

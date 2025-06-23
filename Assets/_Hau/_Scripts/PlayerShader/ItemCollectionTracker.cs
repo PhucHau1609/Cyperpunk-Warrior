@@ -5,7 +5,7 @@ public class ItemCollectionTracker : MonoBehaviour
 {
     public static ItemCollectionTracker Instance;
 
-    private HashSet<ItemCode> collectedClothes = new HashSet<ItemCode>();
+    private HashSet<ItemCode> collectedClothes = new();
     private bool hasCollectedArtefact = false;
     private bool conditionMet = false;
 
