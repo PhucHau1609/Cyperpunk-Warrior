@@ -13,5 +13,8 @@ public enum BulletGunName
     Fire_9,
 
     // ...
+
+
+    SpecialSwapBullet,
 }
 
