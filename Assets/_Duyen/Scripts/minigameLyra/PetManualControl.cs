@@ -12,15 +12,11 @@ public class PetManualControl : MonoBehaviour
 
     void Update()
     {
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "mapdemo2")
-            return;
-
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
         rb.linearVelocity = new Vector2(h, v).normalized * moveSpeed;
 
-        // Flip hướng bay nếu cần
         if (h != 0)
         {
             Vector3 scale = transform.localScale;

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
@@ -16,31 +15,26 @@ public class SceneController : MonoBehaviour
 
     void Start()
     {
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "mapdemo2" && !hasStarted)
+        // Setup như cũ
+        if (player == null)
+            player = FindAnyObjectByType<PlayerMovement>();
+
+        if (pet == null)
+            pet = FindAnyObjectByType<FloatingFollower>();
+
+        if (pet != null)
         {
-            hasStarted = true;
+            petControl = pet.GetComponent<PetManualControl>();
+            petAnimator = pet.GetComponent<Animator>();
 
-            // Tự động tìm Player nếu chưa gán
-            if (player == null)
-                player = FindAnyObjectByType<PlayerMovement>();
+            // Khóa điều khiển Pet ban đầu
+            petControl.enabled = false;
 
-            // Tìm NPC Pet nếu chưa gán
-            if (pet == null)
-                pet = FindAnyObjectByType<FloatingFollower>();
-
-            if (pet != null)
-            {
-                petControl = pet.GetComponent<PetManualControl>();
-                petAnimator = pet.GetComponent<Animator>();
-
-                petControl.enabled = false;
-
-                StartInitialDialogue();
-            }
-            else
-            {
-                Debug.LogWarning("Không tìm thấy Pet trong map3!");
-            }
+            // Không gọi StartInitialDialogue() nữa ở đây
+        }
+        else
+        {
+            Debug.LogWarning("Không tìm thấy Pet trong map3!");
         }
     }
 
@@ -48,16 +42,22 @@ public class SceneController : MonoBehaviour
     {
         if (initialDialogue != null)
         {
-            DialogueManager.Instance.onDialogueEnd = SwitchToPetControl;
             DialogueManager.Instance.StartDialogue(initialDialogue.lines);
+            // KHÔNG GỌI SwitchToPetControl Ở ĐÂY
         }
     }
 
-    void SwitchToPetControl()
+    public void TriggerInitialEvent()
+    {
+        StartInitialDialogue();
+    }
+
+    // Gọi hàm này từ TriggerZone
+    public void SwitchToPetControl()
     {
         player.SetCanMove(false);
         petControl.enabled = true;
-        // Tắt script theo dõi Player
+
         FloatingFollower follow = pet.GetComponent<FloatingFollower>();
         if (follow != null)
             follow.enabled = false;
@@ -82,10 +82,10 @@ public class SceneController : MonoBehaviour
     {
         if (petAnimator != null)
         {
-            petAnimator.SetTrigger("Idle"); // Cần có animation "Die" trong Animator
+            petAnimator.SetTrigger("Idle");
         }
 
-        Invoke(nameof(ReturnControlToPlayer), 2f); // Delay nếu muốn chờ animation
+        Invoke(nameof(ReturnControlToPlayer), 2f);
     }
 
     void ReturnControlToPlayer()
@@ -93,6 +93,7 @@ public class SceneController : MonoBehaviour
         player.SetCanMove(true);
         if (petControl != null)
             petControl.enabled = false;
+
         PetShooting petShooting = pet.GetComponent<PetShooting>();
         if (petShooting != null)
             petShooting.enabled = false;
