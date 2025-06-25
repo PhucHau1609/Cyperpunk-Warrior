@@ -20,7 +20,7 @@ public class PlayerShield : PlayerAbility
         if (shieldVisual != null)
             shieldVisual.SetActive(true);
 
-        Debug.Log("Shield activated!");
+        //Debug.Log("Shield activated!");
     }
 
     protected override void OnAbilityEnd()
@@ -28,6 +28,6 @@ public class PlayerShield : PlayerAbility
         if (shieldVisual != null)
             shieldVisual.SetActive(false);
 
-        Debug.Log("Shield deactivated!");
+        //Debug.Log("Shield deactivated!");
     }
 }

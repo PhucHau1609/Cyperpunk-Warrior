@@ -104,6 +104,12 @@ public class WeaponShooter : WeaponAbstract
         {
             damageSender.SetDamage(bulletDamage);
         }
+
+        // NEW: nếu là viên đạn đặc biệt
+        if (bulletName == BulletGunName.SpecialSwapBullet)
+        {
+            SwapTargetManager.Instance.SetSpecialBullet(spawnedBullet.transform);
+        }
     }
 }
 
