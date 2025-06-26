@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Cinemachine;
+using System.Collections.Generic;
 
 public class SceneController : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class SceneController : MonoBehaviour
     private PetManualControl petControl;
     private Animator petAnimator;
     private Animator playerAnimator;
+
+    public List<GameObject> objectsToDisableOnReturn;
 
     private bool hasStarted = false;
 
@@ -113,6 +116,13 @@ public class SceneController : MonoBehaviour
             petShooting.enabled = false;
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.Target = player.transform;
+
+        //
+        foreach (GameObject obj in objectsToDisableOnReturn)
+        {
+            if (obj != null)
+                obj.SetActive(false);
+        }
     }
 
 }
