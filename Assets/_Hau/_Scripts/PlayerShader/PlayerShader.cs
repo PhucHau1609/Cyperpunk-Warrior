@@ -20,6 +20,9 @@ public class PlayerShader : MonoBehaviour
     private bool isEffectActive = false;
     private bool isOnCooldown = false;
 
+    [Header("Attribute Upgrade")]
+    private CharacterController2D characterController;
+
     private static readonly Dictionary<ShaderEffect, string> ShaderEffectKeywords = new Dictionary<ShaderEffect, string>
     {
         { ShaderEffect.Glow, "GLOW_ON" },
@@ -49,6 +52,7 @@ public class PlayerShader : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerShaderComponent = GetComponent<AllIn1Shader>();
+        characterController = GetComponentInParent<CharacterController2D>();
 
         if (spriteRenderer != null)
         {
@@ -100,7 +104,7 @@ public class PlayerShader : MonoBehaviour
             invisibilityLight.enabled = false;
         }
 
-        Debug.Log("🔮 Shader & Tàng hình kích hoạt!");
+        //Debug.Log("🔮 Shader & Tàng hình kích hoạt!");
 
         yield return new WaitForSeconds(effectDuration);
 
@@ -120,7 +124,7 @@ public class PlayerShader : MonoBehaviour
             invisibilityLight.enabled = true;
         }
 
-        Debug.Log("⏱️ Shader & Tàng hình kết thúc.");
+        //Debug.Log("⏱️ Shader & Tàng hình kết thúc.");
         isEffectActive = false;
     }
 
@@ -132,19 +136,21 @@ public class PlayerShader : MonoBehaviour
         string keyword = ShaderEffectKeywords[ShaderEffect.ColorRamp];
         SetKeywordOnSelf(keyword, true);
 
-        Debug.Log("🌈 Biến hình ColorRamp kích hoạt!");
+        characterController.invincible = true;
+        //Debug.Log("🌈 Biến hình ColorRamp kích hoạt!");
 
         yield return new WaitForSeconds(effectDuration);
 
         SetKeywordOnSelf(keyword, false);
+        //Debug.Log("🕒 Biến hình kết thúc. Bắt đầu hồi chiêu.");
+        characterController.invincible = false;
 
-        Debug.Log("🕒 Biến hình kết thúc. Bắt đầu hồi chiêu.");
         isEffectActive = false;
 
         yield return new WaitForSeconds(cooldownTime);
         isOnCooldown = false;
 
-        Debug.Log("✅ Hồi chiêu xong. Có thể biến hình lại.");
+        //Debug.Log("✅ Hồi chiêu xong. Có thể biến hình lại.");
     }
 
     private void SetKeywordOnSelf(string keyword, bool state)

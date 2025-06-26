@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Cinemachine;
 
 public class SceneController : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class SceneController : MonoBehaviour
     private FloatingFollower pet;
     private PetManualControl petControl;
     private Animator petAnimator;
+    private Animator playerAnimator;
 
     private bool hasStarted = false;
 
@@ -36,6 +38,9 @@ public class SceneController : MonoBehaviour
         {
             Debug.LogWarning("Không tìm thấy Pet trong map3!");
         }
+        if (player != null)
+            playerAnimator = player.GetComponentInChildren<Animator>();
+
     }
 
     void StartInitialDialogue()
@@ -55,7 +60,13 @@ public class SceneController : MonoBehaviour
     // Gọi hàm này từ TriggerZone
     public void SwitchToPetControl()
     {
+
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetFloat("Speed", 0f);
+        }
         player.SetCanMove(false);
+
         petControl.enabled = true;
 
         FloatingFollower follow = pet.GetComponent<FloatingFollower>();
@@ -65,6 +76,9 @@ public class SceneController : MonoBehaviour
         PetShooting petShooting = pet.GetComponent<PetShooting>();
         if (petShooting != null)
             petShooting.enabled = true;
+
+        if (CameraFollow.Instance != null)
+            CameraFollow.Instance.Target = pet.transform;
     }
 
     public void OnPetTouchedSwitch()
@@ -97,5 +111,8 @@ public class SceneController : MonoBehaviour
         PetShooting petShooting = pet.GetComponent<PetShooting>();
         if (petShooting != null)
             petShooting.enabled = false;
+        if (CameraFollow.Instance != null)
+            CameraFollow.Instance.Target = player.transform;
     }
+
 }
