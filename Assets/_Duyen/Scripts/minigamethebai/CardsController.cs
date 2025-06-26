@@ -23,6 +23,7 @@ public class CardsController : MonoBehaviour
     [SerializeField] GameObject finishPanel;
     [SerializeField] GameObject buttonPanel;
     [SerializeField] GameObject banPanel;
+    [SerializeField] GameObject thuongPanel;
 
     private List<Card> deckCards = new List<Card>();
     private List<Card> playerHand = new List<Card>();
@@ -38,6 +39,7 @@ public class CardsController : MonoBehaviour
         finishPanel.SetActive(false);
         buttonPanel.SetActive(true);
         banPanel.SetActive(true);
+        thuongPanel.SetActive(false);
     }
 
     public void StartGame()
@@ -46,6 +48,7 @@ public class CardsController : MonoBehaviour
         finishPanel.SetActive(false);
         buttonPanel.SetActive(false);
         banPanel.SetActive(true);
+        thuongPanel.SetActive(false);
 
         ResetGame();
     }
@@ -297,6 +300,7 @@ public class CardsController : MonoBehaviour
             finishPanel.SetActive(true);
             buttonPanel.SetActive(false);
             banPanel.SetActive(false);
+            thuongPanel.SetActive(true);
 
             AudioManager.Instance?.PlayWinGame();
         }
@@ -307,6 +311,7 @@ public class CardsController : MonoBehaviour
             finishPanel.SetActive(false);
             buttonPanel.SetActive(true);
             banPanel.SetActive(true);
+            thuongPanel.SetActive(false);
             AudioManager.Instance?.PlayLoseGame();
         }
     }
