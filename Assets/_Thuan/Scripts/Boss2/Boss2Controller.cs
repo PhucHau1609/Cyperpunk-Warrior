@@ -99,14 +99,9 @@ public class Boss2Controller : MonoBehaviour
 
     private void ExecuteLaserAttack()
     {
-        if (laserPrefab == null || laserPoint == null) return;
+       if (laserPrefab == null || laserPoint == null) return;
 
-        GameObject laser = Instantiate(laserPrefab, laserPoint.position, laserPoint.rotation);
-        Boss2Laser laserScript = laser.GetComponent<Boss2Laser>();
-        if (laserScript != null)
-        {
-            laserScript.SetupLaser(240f, 120f, laserSweepSpeed, laserDuration);
-        }
+        Instantiate(laserPrefab, laserPoint.position, laserPoint.rotation);
     }
 
     private void ExecuteBombAttack()
