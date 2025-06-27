@@ -63,9 +63,9 @@ public class Boss2Controller : MonoBehaviour
         lastAttackTime = Time.time;
 
         // Random giữa Laser và Bomb, ưu tiên Laser
-        int totalWeight = 7 + 3;
+        int totalWeight = 5 + 5;
         int randomValue = Random.Range(0, totalWeight);
-        currentAttackType = (randomValue < 7) ? Boss2AttackType.Laser : Boss2AttackType.Bomb;
+        currentAttackType = (randomValue < 5) ? Boss2AttackType.Laser : Boss2AttackType.Bomb;
 
         if (animator != null)
         {
