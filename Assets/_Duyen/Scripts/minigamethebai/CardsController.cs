@@ -32,6 +32,9 @@ public class CardsController : MonoBehaviour
     private int flipAttempts = 0;
     private List<Card> flippedCards = new List<Card>();
 
+    [SerializeField] Transform cameraFocusPoint;
+    private Transform playerTransform;
+
 
     void Start()
     {
@@ -40,6 +43,7 @@ public class CardsController : MonoBehaviour
         buttonPanel.SetActive(true);
         banPanel.SetActive(true);
         thuongPanel.SetActive(false);
+        playerTransform = GameObject.FindWithTag("Player")?.transform;
     }
 
     public void StartGame()
@@ -49,6 +53,8 @@ public class CardsController : MonoBehaviour
         buttonPanel.SetActive(false);
         banPanel.SetActive(true);
         thuongPanel.SetActive(false);
+
+        CameraFollow.Instance.Target = cameraFocusPoint;
 
         ResetGame();
     }
@@ -303,6 +309,7 @@ public class CardsController : MonoBehaviour
             thuongPanel.SetActive(true);
 
             AudioManager.Instance?.PlayWinGame();
+            CameraFollow.Instance.Target = playerTransform;
         }
         else if (playerHand.Count > 10)
         {
@@ -313,6 +320,7 @@ public class CardsController : MonoBehaviour
             banPanel.SetActive(true);
             thuongPanel.SetActive(false);
             AudioManager.Instance?.PlayLoseGame();
+            CameraFollow.Instance.Target = playerTransform;
         }
     }
 
