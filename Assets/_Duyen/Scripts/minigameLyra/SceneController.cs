@@ -116,21 +116,41 @@ public class SceneController : MonoBehaviour
     public void ReturnControlToPlayer()
     {
         player.SetCanMove(true);
+
+        // Tắt điều khiển thủ công
         if (petControl != null)
             petControl.enabled = false;
 
+        // Tắt bắn
         PetShooting petShooting = pet.GetComponent<PetShooting>();
         if (petShooting != null)
             petShooting.enabled = false;
+
+        // Tắt máu + ẩn UI máu
+        LyraHealth lyraHealth = pet.GetComponent<LyraHealth>();
+        if (lyraHealth != null)
+        {
+            lyraHealth.enabled = false;
+            if (lyraHealth.healthBarUI != null)
+                lyraHealth.healthBarUI.gameObject.SetActive(false);
+        }
+
+        // Bật lại chế độ follow Player
+        FloatingFollower follow = pet.GetComponent<FloatingFollower>();
+        if (follow != null)
+            follow.enabled = true;
+
+        // Camera quay lại Player
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.Target = player.transform;
 
-        //
+        //Tắt các object bẩy
         foreach (GameObject obj in objectsToDisableOnReturn)
         {
             if (obj != null)
                 obj.SetActive(false);
         }
+
         onReturnToPlayer?.Invoke();
     }
 

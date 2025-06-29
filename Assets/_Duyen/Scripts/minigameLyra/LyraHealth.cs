@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class LyraHealth : MonoBehaviour
@@ -11,11 +12,15 @@ public class LyraHealth : MonoBehaviour
     public Image healthBarUI;
 
     private Transform respawnPoint;
-    private float displayedHealth = 1f; // Dùng cho hiệu ứng lerp mượt
+    private float displayedHealth = 1f;
+
+    private Material mat;
+    private static readonly int HitBlendID = Shader.PropertyToID("_HitEffectBlend");
+    private static readonly int HitColorID = Shader.PropertyToID("_HitColor");
 
     void Start()
     {
-        // Nếu không phải map điều khiển NPC thì tắt script
+        // Tắt nếu không phải map điều khiển NPC
         if (FindAnyObjectByType<SceneController>() == null)
         {
             if (healthBarUI != null)
@@ -28,16 +33,29 @@ public class LyraHealth : MonoBehaviour
         if (healthBarUI != null)
             healthBarUI.gameObject.SetActive(true);
 
+        // Gán material từ SpriteRenderer
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+            mat = sr.material;
+
         currentHealth = maxHealth;
         displayedHealth = 1f;
 
         TryFindRespawnPoint();
+
+        // Chớp trắng lúc khởi tạo
+        if (mat != null)
+            StartCoroutine(FlashTwice(Color.white));
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        currentHealth = Mathf.Max(currentHealth, 0); // Không cho âm máu
+        currentHealth = Mathf.Max(currentHealth, 0);
+
+        // Chớp đỏ khi bị thương
+        if (mat != null)
+            StartCoroutine(FlashOnce(Color.red));
 
         if (currentHealth <= 0)
         {
@@ -54,6 +72,10 @@ public class LyraHealth : MonoBehaviour
             currentHealth = maxHealth;
             if (respawnPoint != null)
                 transform.position = respawnPoint.position;
+
+            // Chớp trắng khi hồi sinh
+            if (mat != null)
+                StartCoroutine(FlashTwice(Color.white));
         }
     }
 
@@ -78,11 +100,28 @@ public class LyraHealth : MonoBehaviour
         if (found != null)
         {
             respawnPoint = found.transform;
-            Debug.Log("Đã gán respawn point cho Lyra: " + respawnPoint.name);
         }
-        else
+    }
+
+    IEnumerator FlashOnce(Color flashColor)
+    {
+        float duration = 0.1f;
+        mat.SetColor(HitColorID, flashColor);
+        mat.SetFloat(HitBlendID, 1f);
+        yield return new WaitForSeconds(duration);
+        mat.SetFloat(HitBlendID, 0f);
+    }
+
+    IEnumerator FlashTwice(Color flashColor)
+    {
+        float duration = 0.1f;
+        for (int i = 0; i < 2; i++)
         {
-            Debug.LogWarning("Không tìm thấy GameObject có tag 'LyraRespawn' để làm respawn point!");
+            mat.SetColor(HitColorID, flashColor);
+            mat.SetFloat(HitBlendID, .2f);
+            yield return new WaitForSeconds(duration);
+            mat.SetFloat(HitBlendID, 0f);
+            yield return new WaitForSeconds(duration);
         }
     }
 }
