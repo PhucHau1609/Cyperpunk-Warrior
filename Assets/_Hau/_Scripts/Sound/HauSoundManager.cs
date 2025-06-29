@@ -20,7 +20,7 @@ public class HauSoundManager : HauSingleton<HauSoundManager>
     protected override void Awake()
     {
         base.Awake();
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
     }
 
     protected override void Start()
