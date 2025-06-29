@@ -2,6 +2,7 @@
 using UnityEngine;
 using Cinemachine;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 public class SceneController : MonoBehaviour
 {
@@ -16,7 +17,10 @@ public class SceneController : MonoBehaviour
 
     public List<GameObject> objectsToDisableOnReturn;
 
-    private bool hasStarted = false;
+    //private bool hasStarted = false;
+
+    public UnityEvent onReturnToPlayer;
+
 
     void Start()
     {
@@ -80,6 +84,10 @@ public class SceneController : MonoBehaviour
         if (petShooting != null)
             petShooting.enabled = true;
 
+        LyraHealth lyraHealth = pet.GetComponent<LyraHealth>();
+        if (lyraHealth != null)
+            lyraHealth.enabled = true;
+
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.Target = pet.transform;
     }
@@ -105,7 +113,7 @@ public class SceneController : MonoBehaviour
         Invoke(nameof(ReturnControlToPlayer), 2f);
     }
 
-    void ReturnControlToPlayer()
+    public void ReturnControlToPlayer()
     {
         player.SetCanMove(true);
         if (petControl != null)
@@ -123,6 +131,7 @@ public class SceneController : MonoBehaviour
             if (obj != null)
                 obj.SetActive(false);
         }
+        onReturnToPlayer?.Invoke();
     }
 
 }
