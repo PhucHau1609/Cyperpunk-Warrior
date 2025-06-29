@@ -31,7 +31,7 @@ public class UIKiller : MonoBehaviour
                     if (isLoading && !hiddenObjects.Contains(go))
                         hiddenObjects.Add(go);
 
-                    Debug.Log($"[UIHider] {(isLoading ? "Ẩn" : "Hiện")} UI: {go.name}");
+                    //Debug.Log($"[UIHider] {(isLoading ? "Ẩn" : "Hiện")} UI: {go.name}");
                 }
             }
         }
