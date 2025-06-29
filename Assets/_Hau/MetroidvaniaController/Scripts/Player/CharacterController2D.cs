@@ -111,6 +111,7 @@ public class CharacterController2D : MonoBehaviour
             {
                 if (collidersWall[i].gameObject != null)
                 {
+                    //Debug.Log("Wall sliding hit: " + collidersWall[i].gameObject.name); // 👈 in ra tên vật thể đang chạm
                     isDashing = false;
                     isDashingY = false; // ⚠️ MỚI: reset dash Y khi chạm tường
                     m_IsWall = true;

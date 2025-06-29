@@ -66737,8 +66737,8 @@ GameObject:
   - component: {fileID: 2531539188665769124}
   - component: {fileID: 3163682144830830328}
   - component: {fileID: 3761044364172932649}
-  - component: {fileID: 596260758285896861}
   - component: {fileID: 916179901}
+  - component: {fileID: 3761044364172932650}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -66825,23 +66825,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8858529090543369811}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &596260758285896861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 94012994118983630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59d11666ee1aeff4dbb0ae6b9f495a22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FollowSpeed: 2
-  Target: {fileID: 8858529090543369811}
-  shakeDuration: 0
-  shakeAmount: 0.1
-  decreaseFactor: 1
 --- !u!114 &1030227259645450008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67097,7 +67080,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!82 &1959664590600003739
 AudioSource:
@@ -67848,6 +67831,23 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &3761044364172932650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94012994118983630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98fe2118b6ce9843a0bc7ad7ee16781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FollowSpeed: 2
+  Target: {fileID: 8858529090543369811}
+  shakeDuration: 0
+  shakeAmount: 0.1
+  decreaseFactor: 1
 --- !u!223 &4275729523458028233
 Canvas:
   m_ObjectHideFlags: 0
@@ -78529,7 +78529,7 @@ GameObject:
   - component: {fileID: 2924081614956853018}
   - component: {fileID: 4570945700548154497}
   - component: {fileID: 9147831844407095763}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: DialogueTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
