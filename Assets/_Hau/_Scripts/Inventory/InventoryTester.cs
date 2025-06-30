@@ -2,9 +2,11 @@ using com.cyborgAssets.inspectorButtonPro;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InventoryTester : HauMonoBehaviour //E75 create
 {
+    public float currentIndex = 13;
    /* protected override void Start()
     {
         base.Start();
@@ -34,5 +36,15 @@ public class InventoryTester : HauMonoBehaviour //E75 create
     public virtual void PlaySound()
     {
         HauSoundManager.Instance.SpawnSound(Vector3.zero,SoundName.PickUpItem);
+    }
+
+    [ProButton]
+    public virtual void LoadNextScene()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        SceneManager.LoadScene(nextSceneIndex);
+
     }
 }

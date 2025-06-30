@@ -23,7 +23,8 @@ public class CardsController : MonoBehaviour
     [SerializeField] GameObject finishPanel;
     [SerializeField] GameObject buttonPanel;
     [SerializeField] GameObject banPanel;
-    [SerializeField] GameObject thuongPanel;
+    [SerializeField] GameObject barrierObject;
+
 
     private List<Card> deckCards = new List<Card>();
     private List<Card> playerHand = new List<Card>();
@@ -42,7 +43,6 @@ public class CardsController : MonoBehaviour
         finishPanel.SetActive(false);
         buttonPanel.SetActive(true);
         banPanel.SetActive(true);
-        thuongPanel.SetActive(false);
         playerTransform = GameObject.FindWithTag("Player")?.transform;
     }
 
@@ -52,7 +52,6 @@ public class CardsController : MonoBehaviour
         finishPanel.SetActive(false);
         buttonPanel.SetActive(false);
         banPanel.SetActive(true);
-        thuongPanel.SetActive(false);
 
         CameraFollow.Instance.Target = cameraFocusPoint;
 
@@ -306,10 +305,11 @@ public class CardsController : MonoBehaviour
             finishPanel.SetActive(true);
             buttonPanel.SetActive(false);
             banPanel.SetActive(false);
-            thuongPanel.SetActive(true);
 
             AudioManager.Instance?.PlayWinGame();
             CameraFollow.Instance.Target = playerTransform;
+            if (barrierObject != null)
+                barrierObject.SetActive(false);
         }
         else if (playerHand.Count > 10)
         {
@@ -318,7 +318,6 @@ public class CardsController : MonoBehaviour
             finishPanel.SetActive(false);
             buttonPanel.SetActive(true);
             banPanel.SetActive(true);
-            thuongPanel.SetActive(false);
             AudioManager.Instance?.PlayLoseGame();
             CameraFollow.Instance.Target = playerTransform;
         }
