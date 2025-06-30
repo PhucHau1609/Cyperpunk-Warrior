@@ -19,7 +19,7 @@ public class LaserBullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Bullet hit: " + other.name + " | Tag: " + other.tag);
+       // Debug.Log("Bullet hit: " + other.name + " | Tag: " + other.tag);
 
         if (other.CompareTag("Ground") || other.CompareTag("Player"))
         {
