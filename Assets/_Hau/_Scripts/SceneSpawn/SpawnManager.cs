@@ -79,7 +79,7 @@ public class SpawnManager : MonoBehaviour
 
                 if (rb != null)
                     StartCoroutine(ReenablePhysics(rb));
-                Debug.Log("Player hiện đang ở scene: " + player.scene.name);
+                //Debug.Log("Player hiện đang ở scene: " + player.scene.name);
 
                 return;
             }

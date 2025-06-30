@@ -49,7 +49,7 @@ public class CameraFollow : HauSingleton<CameraFollow>
         TryFindPlayer();
     }
 
-    void TryFindPlayer()
+    public void TryFindPlayer()
     {
         if (Target == null)
         {
