@@ -19,12 +19,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
 
         if (lastCheckpointScene != currentScene)
         {
-            // ⚠️ Scene khác -> load lại scene lưu checkpoint
-            SceneManager.LoadSceneAsync(lastCheckpointScene).completed += (op) =>
-            {
-                player.transform.position = lastCheckpointPosition;
-                FinishRespawn(player);
-            };
+            LoadSceneWithCleanup(lastCheckpointScene, player);
         }
         else
         {
@@ -33,12 +28,43 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         }
     }
 
+
     private void FinishRespawn(GameObject player)
     {
         CharacterController2D controller = player.GetComponent<CharacterController2D>();
         if (controller != null)
         {
             controller.RestoreFullLife();
+        }
+    }
+
+    private void LoadSceneWithCleanup(string sceneName, GameObject player)
+    {
+        // Cleanup các đối tượng không cần giữ lại
+        CleanupScene();
+
+        // Sau khi cleanup xong -> Load lại scene chứa checkpoint
+        SceneManager.LoadSceneAsync(sceneName).completed += (op) =>
+        {
+            player.transform.position = lastCheckpointPosition;
+            FinishRespawn(player);
+        };
+    }
+
+    private void CleanupScene()
+    {
+        var allObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+
+        foreach (var obj in allObjects)
+        {
+            if (obj.CompareTag("PersistentObject")) continue;
+            if (obj == this.gameObject) continue; // Đừng tự xoá chính mình
+
+            // Có thể kiểm tra tên, layer, hoặc component đặc biệt
+            if (obj.name.Contains("Main Camera") || obj.name.Contains("UIRoot") || obj.name.Contains("AudioManager"))
+            {
+                Destroy(obj);
+            }
         }
     }
 }
