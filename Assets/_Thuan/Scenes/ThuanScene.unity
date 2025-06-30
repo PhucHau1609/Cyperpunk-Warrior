@@ -9345,6 +9345,31 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!1 &583255294 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1793466321650372095, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
+  m_PrefabInstance: {fileID: 1691242639}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &583255300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583255294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11e24fa3d2b12e342bbf93af3aee5c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLeftHand: 0
+  moveSpeed: 20
+  attackRange: 12
+  attackCooldown: 2
+  returnSpeed: 8
+  attackDelay: 0.5
+  attackDuration: 1.5
+  currentState: 0
 --- !u!1 &585503625
 GameObject:
   m_ObjectHideFlags: 0
@@ -57041,7 +57066,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1793466321650372095, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_Name
-      value: Hand
+      value: RightHand
       objectReference: {fileID: 0}
     - target: {fileID: 1960173235285517250, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_LocalPosition.x
@@ -57049,7 +57074,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1960173235285517250, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.23
+      value: 7.86
       objectReference: {fileID: 0}
     - target: {fileID: 1960173235285517250, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_LocalPosition.z
@@ -57086,7 +57111,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1793466321650372095, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 583255300}
   m_SourcePrefab: {fileID: 100100000, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
 --- !u!1 &1693777593
 GameObject:
@@ -57120,6 +57148,31 @@ Transform:
   - {fileID: 600383125}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1695114275 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1793466321650372095, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
+  m_PrefabInstance: {fileID: 2861705068329185119}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1695114281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1695114275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11e24fa3d2b12e342bbf93af3aee5c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLeftHand: 1
+  moveSpeed: 20
+  attackRange: 12
+  attackCooldown: 2
+  returnSpeed: 8
+  attackDelay: 0.5
+  attackDuration: 1.5
+  currentState: 0
 --- !u!1 &1721947678
 GameObject:
   m_ObjectHideFlags: 0
@@ -91752,7 +91805,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1793466321650372095, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_Name
-      value: Hand
+      value: LeftHand
       objectReference: {fileID: 0}
     - target: {fileID: 1960173235285517250, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_LocalPosition.x
@@ -91760,7 +91813,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1960173235285517250, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.23
+      value: 7.86
       objectReference: {fileID: 0}
     - target: {fileID: 1960173235285517250, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
       propertyPath: m_LocalPosition.z
@@ -91797,7 +91850,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1793466321650372095, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1695114281}
   m_SourcePrefab: {fileID: 100100000, guid: 0c20808c616f3fc4b81c9d6298e5b019, type: 3}
 --- !u!4 &2943672644862040376
 Transform:
@@ -92579,10 +92635,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1439658216286722343, guid: 1410b22f5b553a8459b364c2a7af4934, type: 3}
-      propertyPath: laserPrefab
-      value: 
-      objectReference: {fileID: 2213035837389677015, guid: 133d846f75924bf4ebef81da403aa387, type: 3}
     - target: {fileID: 2849441641422099208, guid: 1410b22f5b553a8459b364c2a7af4934, type: 3}
       propertyPath: m_Name
       value: Boss2
@@ -92593,7 +92645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3465120711508235240, guid: 1410b22f5b553a8459b364c2a7af4934, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.62
+      value: 9.25
       objectReference: {fileID: 0}
     - target: {fileID: 3465120711508235240, guid: 1410b22f5b553a8459b364c2a7af4934, type: 3}
       propertyPath: m_LocalPosition.z
