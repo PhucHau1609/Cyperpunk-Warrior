@@ -90,6 +90,10 @@ public class SceneController : MonoBehaviour
 
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.Target = pet.transform;
+
+        // Tắt trigger để Pet không đi xuyên tường khi được điều khiển
+        foreach (var col in pet.GetComponents<Collider2D>())
+            col.isTrigger = false; 
     }
 
     public void OnPetTouchedSwitch()
@@ -152,6 +156,12 @@ public class SceneController : MonoBehaviour
         }
 
         onReturnToPlayer?.Invoke();
+
+        // Bật lại trigger để Pet có thể xuyên vật thể khi bay theo Player
+        foreach (var col in pet.GetComponents<Collider2D>())
+            col.isTrigger = true;
+
+
     }
 
 }
