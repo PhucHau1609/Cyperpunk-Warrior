@@ -6,13 +6,8 @@ public class LightDetectorBoss : MonoBehaviour
     private AlarmManager alarmManager;
     private HashSet<GameObject> detectedObjects = new HashSet<GameObject>();
 
-    [Header("Enemy Mini sẽ bay vào nổ")]
-    public List<EnemyMini> enemyMinis; // OK
-
-    [Header("Enemy Shooter sẽ bắn Boss")]
-    public List<EnemyShooter> enemyShooters; // ← CHẮC CHẮN PHẢI CÙNG KIỂU VỚI SCRIPT PREFAB
-    // Hoặc nếu bạn đang dùng EnemyShooterBossTarget thì đổi thành:
-    // public List<EnemyShooterBossTarget> enemyShooters;
+    [Header("Máy bắn đạn sẽ được kích hoạt khi thấy NPC")]
+    public TurretShooter turretShooter; // Gán từ Inspector
 
     private void Start()
     {
@@ -28,16 +23,9 @@ public class LightDetectorBoss : MonoBehaviour
                 detectedObjects.Add(other.gameObject);
                 alarmManager.StartAlarm();
 
-                foreach (var enemy in enemyMinis)
+                if (turretShooter != null)
                 {
-                    if (enemy != null)
-                        enemy.Activate(other.transform);
-                }
-
-                foreach (var shooter in enemyShooters)
-                {
-                    if (shooter != null)
-                        shooter.Activate(other.transform); // ⚠️ Phải khớp kiểu phương thức
+                    turretShooter.Activate(other.transform);
                 }
             }
         }
