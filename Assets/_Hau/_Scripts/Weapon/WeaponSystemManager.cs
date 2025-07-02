@@ -10,10 +10,20 @@ public class WeaponSystemManager : MonoBehaviour
 
     private List<ItemInventory> ownedWeapons = new();
     private Dictionary<int, GameObject> instantiatedWeapons = new(); // key: index
+    private bool wasWeaponActiveBeforeWallSlide = false; // Lưu trạng thái súng trước khi wall slide
+
 
     void Start()
     {
         RefreshOwnedWeapons();
+
+        // Tìm CharacterController2D và đăng ký events
+        var characterController = FindFirstObjectByType<CharacterController2D>();
+        if (characterController != null)
+        {
+            characterController.OnWallSlideStart.AddListener(HideWeaponDuringWallSlide);
+            characterController.OnWallSlideEnd.AddListener(ShowWeaponAfterWallSlide);
+        }
     }
 
     void Update()
@@ -124,6 +134,31 @@ public class WeaponSystemManager : MonoBehaviour
         if (weaponHolder.TryGetComponent<WeaponAimer>(out var aimer))
         {
             aimer.SetCurrentWeapon(currentWeapon.transform);
+        }
+    }
+
+
+    // Phương thức ẩn súng khi wall sliding
+    public void HideWeaponDuringWallSlide()
+    {
+        if (currentWeapon != null && currentWeapon.activeSelf)
+        {
+            wasWeaponActiveBeforeWallSlide = true;
+            currentWeapon.SetActive(false);
+        }
+        else
+        {
+            wasWeaponActiveBeforeWallSlide = false;
+        }
+    }
+
+    // Phương thức hiện súng sau khi kết thúc wall sliding
+    public void ShowWeaponAfterWallSlide()
+    {
+        if (currentWeapon != null && wasWeaponActiveBeforeWallSlide)
+        {
+            currentWeapon.SetActive(true);
+            wasWeaponActiveBeforeWallSlide = false;
         }
     }
 }

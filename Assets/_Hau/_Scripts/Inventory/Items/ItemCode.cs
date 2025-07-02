@@ -10,6 +10,15 @@ public enum ItemCode
     EMP = 2,
     Artefacts_1 = 3,
     Artefacts_2 = 4,
+    Artefacts_3 = 5,
+    Artefacts_4 = 6,
+
+
+    //Upgrade Items
+    UpgradeItem_0 = 21,
+    UpgradeItem_1 = 22,
+    UpgradeItem_2 = 23,
+    UpgradeItem_3 = 24,
     //Melee Weapons
     Knife_1 = 50,
 
