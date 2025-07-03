@@ -86,10 +86,14 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
         Debug.Log(transform.name + ": LoadItemImage", gameObject);
     }
 
-    public virtual void SetItem(ItemInventory itemInventory) //E71 create
-    { 
+    public virtual void SetItem(ItemInventory itemInventory)
+    {
+        if (itemInventory.ItemProfileSO == null)
+            Debug.LogError("❌ BtnItemInventory được SetItem nhưng không có ItemProfileSO!");
+
         this.itemInventory = itemInventory;
     }
+
     private void ItemTextUpdating() //E73 create
     {
         //this.txtItemName.text = this.itemInventory.GetItemName();
@@ -101,6 +105,6 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
 
     protected override void OnClick()
     {
-        Debug.Log("Item CLick");
+        Debug.Log("Item CLick:" + gameObject.name);
     }
 }

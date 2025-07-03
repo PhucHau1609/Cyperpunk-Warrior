@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +17,7 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     private void Update()
     {
         this.OpenInventory();
+        this.OpenCrafting();
         //this.Weapon_Toogle();
         //this.Weapon_Swap();
         //this.OpenMusic();
@@ -34,6 +35,19 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
         }
 
     }
+
+    protected virtual void OpenCrafting()
+    {
+        if (Input.GetKeyUp(KeyCode.C))
+        {
+            // Chỉ cho phép mở crafting nếu inventory đang mở
+            if (NewInventoryUI.Instance != null && NewInventoryUI.Instance.IsShowUI)
+            {
+                CraftingUI.Instance.Toggle();
+            }
+        }
+    }
+
 
     protected virtual void OpenMusic()
     {
