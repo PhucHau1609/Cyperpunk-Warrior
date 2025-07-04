@@ -1,4 +1,5 @@
 ﻿using com.cyborgAssets.inspectorButtonPro;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,9 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
 
     protected bool isShowUI = true;
     public bool IsShowUI => isShowUI;
+
+    [SerializeField] protected Vector3 centerPosition = Vector3.zero; // vị trí trung tâm
+    [SerializeField] protected Vector3 offsetWhenCraftingOpen = new Vector3(-300f, 0, 0); // vị trí khi crafting mở
 
     protected override void OnEnable()
     {
@@ -80,6 +84,12 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
     {
         this.showHide.gameObject.SetActive(false);
         this.isShowUI = false;
+
+        // 👉 Nếu crafting đang mở, thì tắt luôn
+        if (CraftingUI.HasInstance) // để tránh null nếu Crafting chưa được khởi tạo
+        {
+            CraftingUI.Instance.HideUI();
+        }
     }
 
     public virtual void ShowInventoryUI()
@@ -155,5 +165,15 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
         {
             btnItems[i].transform.SetSiblingIndex(i);
         }
+    }
+
+    public void MoveToCenter()
+    {
+        this.showHide.DOLocalMove(centerPosition, 0.3f);
+    }
+
+    public void MoveToSide()
+    {
+        this.showHide.DOLocalMove(offsetWhenCraftingOpen, 0.3f);
     }
 }

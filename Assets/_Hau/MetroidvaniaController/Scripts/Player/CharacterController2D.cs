@@ -31,7 +31,7 @@ public class CharacterController2D : MonoBehaviour
 
 
     private bool m_IsWall = false; //If there is a wall in front of the player
-    private bool isWallSliding = false; //If player is sliding in a wall
+    public bool isWallSliding = false; //If player is sliding in a wall
     private bool oldWallSlidding = false; //If player is sliding in a wall in the previous frame
     private float prevVelocityX = 0f;
     private bool canCheck = false; //For check if player is wallsliding
@@ -60,6 +60,11 @@ public class CharacterController2D : MonoBehaviour
     public UnityEvent OnFallEvent;
     public UnityEvent OnLandEvent;
 
+    // Thêm vào CharacterController2D
+    [Header("Wall Slide Events")]
+    public UnityEvent OnWallSlideStart;
+    public UnityEvent OnWallSlideEnd;
+
     [System.Serializable]
     public class BoolEvent : UnityEvent<bool> { }
 
@@ -74,6 +79,12 @@ public class CharacterController2D : MonoBehaviour
 
         if (OnLandEvent == null)
             OnLandEvent = new UnityEvent();
+
+        if (OnWallSlideStart == null)
+            OnWallSlideStart = new UnityEvent();
+
+        if (OnWallSlideEnd == null)
+            OnWallSlideEnd = new UnityEvent();
     }
 
     private void FixedUpdate()
@@ -227,9 +238,12 @@ public class CharacterController2D : MonoBehaviour
                     StartCoroutine(WaitToCheck(0.1f));
                     canDoubleJump = true;
                     animator.SetBool("IsWallSliding", true);
+                    OnWallSlideStart.Invoke(); // ⚠️ THÊM DÒNG NÀY
+
                 }
                 isDashing = false;
                 isDashingY = false; // ⚠️ MỚI: reset dash Y khi wall sliding
+                OnWallSlideEnd.Invoke(); // ⚠️ THÊM DÒNG NÀY
 
 
                 if (isWallSliding)

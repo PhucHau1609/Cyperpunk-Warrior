@@ -26,14 +26,47 @@ public abstract class InventoryCtrl : HauMonoBehaviour
 
     public virtual bool RemoveItem(ItemInventory item) //E75 create
     {
-        ItemInventory itemExist = this.FindItemNotEmpty(item.ItemProfileSO.itemCode);
-        if (itemExist == null) return false;
-        if (!itemExist.CanDeduct(item.itemCount)) return false;
-        itemExist.Deduct(item.itemCount);
+        //Debug.Log($"[InventoryCtrl] RemoveItem called - Item: {item.ItemProfileSO.itemCode}, Count: {item.itemCount}");
+        //Debug.Log($"[InventoryCtrl] Current inventory items count: {this.itemInventories.Count}");
 
-        if (itemExist.itemCount == 0) this.itemInventories.Remove(itemExist);
+        ItemInventory itemExist = this.FindItemNotEmpty(item.ItemProfileSO.itemCode);
+        if (itemExist == null)
+        {
+            //Debug.LogWarning($"[InventoryCtrl] Item not found or empty: {item.ItemProfileSO.itemCode}");
+            return false;
+        }
+
+        //Debug.Log($"[InventoryCtrl] Found item: {itemExist.ItemProfileSO.itemCode}, Current count: {itemExist.itemCount}");
+
+        if (!itemExist.CanDeduct(item.itemCount))
+        {
+            //Debug.LogWarning($"[InventoryCtrl] Cannot deduct {item.itemCount} from {itemExist.itemCount}");
+            return false;
+        }
+
+        itemExist.Deduct(item.itemCount);
+        //Debug.Log($"[InventoryCtrl] After deduct - Item count: {itemExist.itemCount}");
+
+        if (itemExist.itemCount == 0)
+        {
+            //Debug.Log($"[InventoryCtrl] Item count is 0, removing from inventory: {itemExist.ItemProfileSO.itemCode}");
+            this.itemInventories.Remove(itemExist);
+            //Debug.Log($"[InventoryCtrl] After removal - Inventory items count: {this.itemInventories.Count}");
+        }
+
         return true;
     }
+
+    /*  public virtual bool RemoveItem(ItemInventory item) //E75 create
+      {
+          ItemInventory itemExist = this.FindItemNotEmpty(item.ItemProfileSO.itemCode);
+          if (itemExist == null) return false;
+          if (!itemExist.CanDeduct(item.itemCount)) return false;
+          itemExist.Deduct(item.itemCount);
+
+          if (itemExist.itemCount == 0) this.itemInventories.Remove(itemExist);
+          return true;
+      }*/
 
     public virtual ItemInventory FindItem(ItemCode itemCode)
     {

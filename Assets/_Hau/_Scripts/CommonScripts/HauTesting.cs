@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class HauTesting : MonoBehaviour
 {
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            this.DropManyItemsTesting();
+        }    
+    }
+
     [ProButton]
     public void DropManyItemsTesting()
     {
@@ -14,7 +22,10 @@ public class HauTesting : MonoBehaviour
         ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_4, 1, new Vector3(0, 0, 0));
         ItemsDropManager.Instance.DropManyItems(ItemCode.Artefacts_1, 1, new Vector3(-4, -2, 0));*/
         ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_0, 1, new Vector3(-5, -2, 0));
-        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_1, 1, new Vector3(-6, -2, 0));
+        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_2, 1, new Vector3(-6, -2, 0));
+
+        ItemsDropManager.Instance.DropManyItems(ItemCode.UpgradeItem_0, 1, new Vector3(20, 5, 0));
+
     }
 
     [ProButton]
