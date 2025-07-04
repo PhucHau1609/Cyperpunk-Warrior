@@ -1,0 +1,40 @@
+using UnityEngine;
+
+public class HandDamageReceiver : DamageReceiver
+{
+    private IDamageResponder responder;
+    public float damageReductionPercent = 0.5f;
+
+    [SerializeField] private Boss2DamageReceiver boss2DamageReceiver;
+    protected override void Awake()
+    {
+        base.Awake();
+        responder = GetComponent<IDamageResponder>();
+        if (responder == null)
+            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
+    }
+
+    protected override void OnHurt()
+    {
+        responder?.OnHurt();
+    }
+
+    protected override void OnDead()
+    {
+        responder?.OnDead();
+    }
+
+    public override int Deduct(int damage)
+    {
+        if (boss2DamageReceiver != null)
+        {
+            boss2DamageReceiver.TakeDamage(damage);
+            this.OnHurt();
+        }
+        else
+        {
+
+        }
+        return this.CurrentHP;
+    }
+}
