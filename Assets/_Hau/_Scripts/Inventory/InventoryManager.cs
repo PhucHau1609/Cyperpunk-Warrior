@@ -39,13 +39,38 @@ public class InventoryManager : HauSingleton<InventoryManager>
 
     public virtual void RemoveItem(ItemInventory itemInventory)
     {
+        //Debug.Log($"[InventoryManager] RemoveItem called - Item: {itemInventory.ItemProfileSO.itemCode}, Count: {itemInventory.itemCount}");
+
         InventoryCodeName invCodeName = itemInventory.ItemProfileSO.invCodeName;
         InventoryCtrl inventoryCtrl = InventoryManager.Instance.GetInventoryByName(invCodeName);
-        inventoryCtrl.RemoveItem(itemInventory);
 
-        ObserverManager.Instance?.PostEvent(EventID.InventoryChanged, null); // <- thêm dòng này
+        if (inventoryCtrl == null)
+        {
+            //Debug.LogError($"[InventoryManager] Inventory not found: {invCodeName}");
+            return;
+        }
 
+        //Debug.Log($"[InventoryManager] Found inventory: {invCodeName}, Items count before: {inventoryCtrl.ItemInventories.Count}");
+
+        bool removed = inventoryCtrl.RemoveItem(itemInventory);
+
+        //Debug.Log($"[InventoryManager] Remove result: {removed}, Items count after: {inventoryCtrl.ItemInventories.Count}");
+
+        if (removed)
+        {
+            ObserverManager.Instance?.PostEvent(EventID.InventoryChanged, null);
+        }
     }
+
+    /* public virtual void RemoveItem(ItemInventory itemInventory)
+     {
+         InventoryCodeName invCodeName = itemInventory.ItemProfileSO.invCodeName;
+         InventoryCtrl inventoryCtrl = InventoryManager.Instance.GetInventoryByName(invCodeName);
+         inventoryCtrl.RemoveItem(itemInventory);
+
+         ObserverManager.Instance?.PostEvent(EventID.InventoryChanged, null); // <- thêm dòng này
+
+     }*/
 
     protected virtual void LoadInventoryCtrl()
     {
