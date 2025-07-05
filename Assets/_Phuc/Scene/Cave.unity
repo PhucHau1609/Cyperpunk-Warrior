@@ -51832,13 +51832,10 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "G\u1EE2I \xDD CH\u01A0I MINI GAME:\n\nB\u1EA1n c\u1EA7n s\u1EAFp x\u1EBFp
-    c\xE1c module \u0111i\u1EC1u khi\u1EC3n sao cho c\xE1c  n\u1ED1i kh\xF4ng b\u1ECB
-    d\u01B0 th\u1EEBa.\n\nModule xanh l\xE1: \n\u0110i\u1EC1u khi\u1EC3n di chuy\u1EC3n
-    c\u01A1 b\u1EA3n.\n\nModule cam: \nDi chuy\u1EC3n linh ho\u1EA1t, c\xF3 kh\u1EA3
-    n\u0103ng xoay h\u01B0\u1EDBng.\n\nH\xE3y th\u1EED ho\xE1n \u0111\u1ED5i v\u1ECB
-    tr\xED c\xE1c module \u0111\u1EC3 t\xECm ra c\xE1ch ho\u1EA1t \u0111\u1ED9ng
-    ch\xEDnh x\xE1c!"
+  m_Text: "H\u01AF\u1EDANG D\u1EAAN CH\u01A0I MINI GAME:\n\nS\u1EAFp x\u1EBFp c\xE1c
+    module \u0111i\u1EC1u khi\u1EC3n sao cho c\xE1c k\u1EBFt n\u1ED1i kh\xF4ng b\u1ECB
+    d\u01B0 th\u1EEBa.\n\nBlock xanh l\xE1: C\xF3 th\u1EC3 di chuy\u1EC3n.\n\nBlock
+    cam: C\xF3 th\u1EC3 di chuy\u1EC3n v\xE0 xoay h\u01B0\u1EDBng."
 --- !u!222 &827407811
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -67787,6 +67784,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sphere: {fileID: 8845071916150242119}
+  enableMousePicking: 1
+  mousePickingRange: 3
+  itemLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!114 &3761044364172932649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78256,6 +78258,7 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 25
+  isWallSliding: 0
   life: 10
   maxLife: 100
   invincible: 0
@@ -78291,6 +78294,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnWallSlideStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWallSlideEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!95 &7992599513654883142
 Animator:
   serializedVersion: 7
