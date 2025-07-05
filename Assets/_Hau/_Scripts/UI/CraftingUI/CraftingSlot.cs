@@ -11,7 +11,12 @@ public class CraftingSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDra
     private CanvasGroup canvasGroup;
     private Vector3 originalPosition;
 
+    [Header("Drag Settings")]
     private GameObject draggingVisual;
+    [SerializeField] private Canvas targetCanvas; // <-- thêm dòng này
+    [SerializeField] private float dragSizeScale = 0.8f;
+
+
 
     private void Awake()
     {
@@ -189,7 +194,39 @@ public class CraftingSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDra
     }
 
     // ✅ Tạo visual drag giống BtnItemInventory
+
     private void CreateDraggingVisual()
+    {
+        if (!HasItem()) return;
+
+        draggingVisual = new GameObject("DraggingVisual", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
+
+        // ✅ Gán vào canvas chỉ định thay vì FindFirstObjectByType
+        if (targetCanvas != null)
+        {
+            draggingVisual.transform.SetParent(targetCanvas.transform, false);
+        }
+        else
+        {
+            Debug.LogWarning("CraftingSlot: targetCanvas is not assigned. Falling back to root.");
+            draggingVisual.transform.SetParent(transform.root, false);
+        }
+
+        draggingVisual.transform.SetAsLastSibling();
+
+        RectTransform dragRect = draggingVisual.GetComponent<RectTransform>();
+        dragRect.sizeDelta = icon.rectTransform.sizeDelta * dragSizeScale;
+        dragRect.position = Input.mousePosition;
+
+        Image dragImage = draggingVisual.GetComponent<Image>();
+        dragImage.sprite = icon.sprite;
+        dragImage.raycastTarget = false;
+
+        CanvasGroup cg = draggingVisual.GetComponent<CanvasGroup>();
+        cg.blocksRaycasts = false;
+        cg.alpha = 0.8f;
+    }
+    /*private void CreateDraggingVisual()
     {
         if (!HasItem()) return;
 
@@ -209,7 +246,7 @@ public class CraftingSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDra
         draggingVisual.transform.SetAsLastSibling();
 
         RectTransform dragRect = draggingVisual.GetComponent<RectTransform>();
-        dragRect.sizeDelta = icon.rectTransform.sizeDelta;
+        dragRect.sizeDelta = icon.rectTransform.sizeDelta; // * với dragSizeScale như bên btniteminventory
         dragRect.position = Input.mousePosition;
 
         Image dragImage = draggingVisual.GetComponent<Image>();
@@ -219,7 +256,7 @@ public class CraftingSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDra
         CanvasGroup cg = draggingVisual.GetComponent<CanvasGroup>();
         cg.blocksRaycasts = false;
         cg.alpha = 0.8f;
-    }
+    }*/
 }
 
 /*public class CraftingSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
