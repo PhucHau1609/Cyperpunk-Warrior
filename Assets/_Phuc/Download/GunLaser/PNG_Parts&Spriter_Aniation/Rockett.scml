@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r11" pixel_mode="1">
+    <folder id="0" name="Rockett">
+        <file id="0" name="Rockett/Gates.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="Rockett/Gates/Gates2.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="Rockett/Rockett+Gates/Rockett+Gates2.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="Rockett/Rockett+Gates/Rockett+Gates3.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="Rockett/Gates/Gates3.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="5" name="Rockett/Rockett+Gates/Rockett+Gates4.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="6" name="Rockett/Gates/Gates4.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="7" name="Rockett/Rockett+Gates/Rockett+Gates5.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="8" name="Rockett/Gates/Gates5.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="9" name="Rockett/Rockett+Gates/Rockett+Gates6.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="10" name="Rockett/Gates/Gates6.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="11" name="Rockett/Gates/Gates.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="12" name="Rockett/Gates" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="13" name="Rockett/Rockett+Exhaust/Rockett+Exhaust2.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="14" name="Rockett/Rockett+Exhaust/Rockett+Exhaust.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="15" name="Rockett/Exhaust/Exhaust1.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="16" name="Rockett/Exhaust/Exhaust2.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="17" name="Rockett/Exhaust/Exhaust3.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="18" name="Rockett/Rockett+Exhaust/Rockett+Exhaust3.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="19" name="Rockett/Exhaust/Exhaust4.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="20" name="Rockett/Rockett+Exhaust/Rockett+Exhaust4.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="21" name="Rockett/Rockett+Explosion/Rockett+explosion1.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="22" name="Rockett/Explosion/Explosion1.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="23" name="Rockett/Rockett+Explosion/Rockett+explosion2.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="24" name="Rockett/Explosion/Explosion2.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="25" name="Rockett/Rockett+Explosion/Rockett+explosion3.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="26" name="Rockett/Explosion/Explosion3.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="27" name="Rockett/Rockett+Explosion/Rockett+explosion4.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="28" name="Rockett/Explosion/Explosion4.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="29" name="Rockett/Explosion/Explosion5.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="30" name="Rockett/Rockett+Explosion/Rockett+explosion5.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="31" name="Rockett/Explosion/Explosion6.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="32" name="Rockett/Rockett+Explosion/Rockett+explosion6.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="33" name="Rockett/Explosion/Explosion7.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="34" name="Rockett/Explosion/Explosion8.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="35" name="Rockett/Explosion/Explosion9.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="36" name="Rockett/Explosion/Explosion10.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+        <file id="37" name="Rockett/Explosion/Explosion11.png" width="128" height="128" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <animation id="0" name="NewAnimation" length="1000" interval="100" looping="false">
+            <mainline>
+                <key id="0"/>
+            </mainline>
+        </animation>
+        <animation id="1" name="Explosion+Rockett" length="1100" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="99">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="299">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+                <key id="4" time="402">
+                    <object_ref id="0" timeline="0" key="4" z_index="0"/>
+                </key>
+                <key id="5" time="502">
+                    <object_ref id="0" timeline="0" key="5" z_index="0"/>
+                </key>
+                <key id="6" time="598">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                </key>
+                <key id="7" time="702">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                </key>
+                <key id="8" time="800">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                </key>
+                <key id="9" time="900">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                </key>
+                <key id="10" time="1000">
+                    <object_ref id="0" timeline="1" key="4" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Rockett+explosion1">
+                <key id="0" spin="0">
+                    <object folder="0" file="21" x="-64" y="99"/>
+                </key>
+                <key id="1" time="99" spin="0">
+                    <object folder="0" file="23" x="-64" y="99"/>
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="0" file="25" x="-64" y="99"/>
+                </key>
+                <key id="3" time="299" spin="0">
+                    <object folder="0" file="27" x="-64" y="99"/>
+                </key>
+                <key id="4" time="402" spin="0">
+                    <object folder="0" file="30" x="-64" y="99"/>
+                </key>
+                <key id="5" time="502" spin="0">
+                    <object folder="0" file="32" x="-64" y="99"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="Explosion1">
+                <key id="0" time="598" spin="0">
+                    <object folder="0" file="33" x="-64" y="99"/>
+                </key>
+                <key id="1" time="702" spin="0">
+                    <object folder="0" file="34" x="-64" y="99"/>
+                </key>
+                <key id="2" time="800" spin="0">
+                    <object folder="0" file="35" x="-64" y="99"/>
+                </key>
+                <key id="3" time="900" spin="0">
+                    <object folder="0" file="36" x="-64" y="99"/>
+                </key>
+                <key id="4" time="1000" spin="0">
+                    <object folder="0" file="37" x="-64" y="99"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="Explosion" length="1100" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="99">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="299">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+                <key id="4" time="402">
+                    <object_ref id="0" timeline="0" key="4" z_index="0"/>
+                </key>
+                <key id="5" time="502">
+                    <object_ref id="0" timeline="0" key="5" z_index="0"/>
+                </key>
+                <key id="6" time="598">
+                    <object_ref id="0" timeline="0" key="6" z_index="0"/>
+                </key>
+                <key id="7" time="702">
+                    <object_ref id="0" timeline="0" key="7" z_index="0"/>
+                </key>
+                <key id="8" time="800">
+                    <object_ref id="0" timeline="0" key="8" z_index="0"/>
+                </key>
+                <key id="9" time="900">
+                    <object_ref id="0" timeline="0" key="9" z_index="0"/>
+                </key>
+                <key id="10" time="1000">
+                    <object_ref id="0" timeline="0" key="10" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Explosion1">
+                <key id="0" spin="0">
+                    <object folder="0" file="22" x="-64" y="99"/>
+                </key>
+                <key id="1" time="99" spin="0">
+                    <object folder="0" file="24" x="-64" y="99"/>
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="0" file="26" x="-64" y="99"/>
+                </key>
+                <key id="3" time="299" spin="0">
+                    <object folder="0" file="28" x="-64" y="99"/>
+                </key>
+                <key id="4" time="402" spin="0">
+                    <object folder="0" file="29" x="-64" y="99"/>
+                </key>
+                <key id="5" time="502" spin="0">
+                    <object folder="0" file="31" x="-64" y="99"/>
+                </key>
+                <key id="6" time="598" spin="0">
+                    <object folder="0" file="33" x="-64" y="99"/>
+                </key>
+                <key id="7" time="702" spin="0">
+                    <object folder="0" file="34" x="-64" y="99"/>
+                </key>
+                <key id="8" time="800" spin="0">
+                    <object folder="0" file="35" x="-64" y="99"/>
+                </key>
+                <key id="9" time="900" spin="0">
+                    <object folder="0" file="36" x="-64" y="99"/>
+                </key>
+                <key id="10" time="1000" spin="0">
+                    <object folder="0" file="37" x="-64" y="99"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="Exhaust" length="400" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="99">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="201">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="298">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Exhaust1">
+                <key id="0" spin="0">
+                    <object folder="0" file="15" x="-64" y="99"/>
+                </key>
+                <key id="1" time="99" spin="0">
+                    <object folder="0" file="16" x="-64" y="99"/>
+                </key>
+                <key id="2" time="201" spin="0">
+                    <object folder="0" file="17" x="-64" y="99"/>
+                </key>
+                <key id="3" time="298" spin="0">
+                    <object folder="0" file="19" x="-64" y="99"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="Exhaust+Rockett" length="400" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="99">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="201">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="298">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Rockett+Exhaust2">
+                <key id="0" spin="0">
+                    <object folder="0" file="14" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="1" time="99" spin="0">
+                    <object folder="0" file="13" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="2" time="201" spin="0">
+                    <object folder="0" file="18" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="3" time="298" spin="0">
+                    <object folder="0" file="20" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="Gates+Rockett_open_close" length="1100" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="101">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                </key>
+                <key id="2" time="203">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                </key>
+                <key id="3" time="302">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                </key>
+                <key id="4" time="400">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                </key>
+                <key id="5" time="501">
+                    <object_ref id="0" timeline="1" key="4" z_index="0"/>
+                </key>
+                <key id="6" time="600">
+                    <object_ref id="0" timeline="2" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="3" key="0" z_index="1"/>
+                </key>
+                <key id="7" time="699">
+                    <object_ref id="0" timeline="2" key="1" z_index="0"/>
+                </key>
+                <key id="8" time="803">
+                    <object_ref id="0" timeline="2" key="2" z_index="0"/>
+                </key>
+                <key id="9" time="900">
+                    <object_ref id="0" timeline="2" key="3" z_index="0"/>
+                </key>
+                <key id="10" time="1002">
+                    <object_ref id="0" timeline="2" key="4" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Gates">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="Rockett+Gates2">
+                <key id="0" time="101" spin="0">
+                    <object folder="0" file="2" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="1" time="203" spin="0">
+                    <object folder="0" file="3" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="2" time="302" spin="0">
+                    <object folder="0" file="5" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="3" time="400" spin="0">
+                    <object folder="0" file="7" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="4" time="501" spin="0">
+                    <object folder="0" file="9" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="Gates2">
+                <key id="0" time="600" spin="0">
+                    <object folder="0" file="8" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="1" time="699" spin="0">
+                    <object folder="0" file="6" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="2" time="803" spin="0">
+                    <object folder="0" file="4" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="3" time="900" spin="0">
+                    <object folder="0" file="1" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="4" time="1002" spin="0">
+                    <object folder="0" file="11" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="Rockett+Exhaust2">
+                <key id="0" time="600" spin="0">
+                    <object folder="0" file="13" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="Gates+Rockett_open" length="1000" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="101">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                </key>
+                <key id="2" time="203">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                </key>
+                <key id="3" time="302">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                </key>
+                <key id="4" time="400">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                </key>
+                <key id="5" time="501">
+                    <object_ref id="0" timeline="1" key="4" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Gates">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="Rockett+Gates2">
+                <key id="0" time="101" spin="0">
+                    <object folder="0" file="2" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="1" time="203" spin="0">
+                    <object folder="0" file="3" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="2" time="302" spin="0">
+                    <object folder="0" file="5" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="3" time="400" spin="0">
+                    <object folder="0" file="7" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="4" time="501" spin="0">
+                    <object folder="0" file="9" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="7" name="Gates_open_close" length="1100" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="101">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                </key>
+                <key id="2" time="203">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                </key>
+                <key id="3" time="302">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                </key>
+                <key id="4" time="400">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                </key>
+                <key id="5" time="501">
+                    <object_ref id="0" timeline="1" key="4" z_index="0"/>
+                </key>
+                <key id="6" time="600">
+                    <object_ref id="0" timeline="1" key="5" z_index="0"/>
+                </key>
+                <key id="7" time="699">
+                    <object_ref id="0" timeline="1" key="6" z_index="0"/>
+                </key>
+                <key id="8" time="803">
+                    <object_ref id="0" timeline="1" key="7" z_index="0"/>
+                </key>
+                <key id="9" time="900">
+                    <object_ref id="0" timeline="1" key="8" z_index="0"/>
+                </key>
+                <key id="10" time="1002">
+                    <object_ref id="0" timeline="1" key="9" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Gates">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="Gates2">
+                <key id="0" time="101" spin="0">
+                    <object folder="0" file="1" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="1" time="203" spin="0">
+                    <object folder="0" file="4" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="2" time="302" spin="0">
+                    <object folder="0" file="6" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="3" time="400" spin="0">
+                    <object folder="0" file="8" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="4" time="501" spin="0">
+                    <object folder="0" file="10" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="5" time="600" spin="0">
+                    <object folder="0" file="8" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="6" time="699" spin="0">
+                    <object folder="0" file="6" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="7" time="803" spin="0">
+                    <object folder="0" file="4" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="8" time="900" spin="0">
+                    <object folder="0" file="1" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="9" time="1002" spin="0">
+                    <object folder="0" file="11" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="Gates_open" length="1000" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="101">
+                    <object_ref id="0" timeline="1" key="0" z_index="0"/>
+                </key>
+                <key id="2" time="203">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                </key>
+                <key id="3" time="302">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                </key>
+                <key id="4" time="400">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                </key>
+                <key id="5" time="501">
+                    <object_ref id="0" timeline="1" key="4" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Gates">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="Gates2">
+                <key id="0" time="101" spin="0">
+                    <object folder="0" file="1" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="1" time="203" spin="0">
+                    <object folder="0" file="4" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="2" time="302" spin="0">
+                    <object folder="0" file="6" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="3" time="400" spin="0">
+                    <object folder="0" file="8" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="4" time="501" spin="0">
+                    <object folder="0" file="10" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="9" name="Gates_close" length="600" interval="100" looping="false">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="299">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+                <key id="4" time="399">
+                    <object_ref id="0" timeline="0" key="4" z_index="0"/>
+                </key>
+                <key id="5" time="503">
+                    <object_ref id="0" timeline="0" key="5" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="Gates2">
+                <key id="0" spin="0">
+                    <object folder="0" file="10" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="0" file="8" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="0" file="6" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="3" time="299" spin="0">
+                    <object folder="0" file="4" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="4" time="399" spin="0">
+                    <object folder="0" file="1" x="-64" y="99" angle="0"/>
+                </key>
+                <key id="5" time="503" spin="0">
+                    <object folder="0" file="11" x="-64" y="99" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
