@@ -20,7 +20,7 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
     [Header("Drag Settings")]
     [SerializeField] private float dragSizeScale = 0.8f; 
     private GameObject draggingVisual;
-
+    [SerializeField] private Canvas targetCanvas; // <-- thêm dòng này
 
     protected override void Start()
     {
@@ -81,18 +81,18 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
         // Tạo GameObject tạm để drag
         draggingVisual = new GameObject("DraggingVisual", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
 
-        // Set parent là Canvas root để hiển thị trên tất cả UI
-        Canvas rootCanvas = FindFirstObjectByType<Canvas>();
-        if (rootCanvas != null)
+        // ✅ Gán vào canvas chỉ định thay vì FindFirstObjectByType
+        if (targetCanvas != null)
         {
-            draggingVisual.transform.SetParent(rootCanvas.transform, false);
+            draggingVisual.transform.SetParent(targetCanvas.transform, false);
         }
         else
         {
+            Debug.LogWarning("CraftingSlot: targetCanvas is not assigned. Falling back to root.");
             draggingVisual.transform.SetParent(transform.root, false);
         }
 
-        draggingVisual.transform.SetAsLastSibling(); // Hiển thị trên cùng
+        draggingVisual.transform.SetAsLastSibling();
 
         // Setup RectTransform
         RectTransform dragRect = draggingVisual.GetComponent<RectTransform>();
