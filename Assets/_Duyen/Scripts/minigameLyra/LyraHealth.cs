@@ -14,6 +14,8 @@ public class LyraHealth : MonoBehaviour
     private Transform respawnPoint;
     private float displayedHealth = 1f;
 
+    public Transform healthBarTransform;
+
     private Material mat;
     private static readonly int HitBlendID = Shader.PropertyToID("_HitEffectBlend");
     private static readonly int HitColorID = Shader.PropertyToID("_HitColor");
@@ -82,6 +84,7 @@ public class LyraHealth : MonoBehaviour
     void Update()
     {
         UpdateHealthBarSmooth();
+        UpdateHealthBarDirection();
     }
 
     void UpdateHealthBarSmooth()
@@ -91,6 +94,17 @@ public class LyraHealth : MonoBehaviour
             float targetFill = (float)currentHealth / maxHealth;
             displayedHealth = Mathf.Lerp(displayedHealth, targetFill, Time.deltaTime * 10f);
             healthBarUI.fillAmount = displayedHealth;
+        }
+    }
+
+    void UpdateHealthBarDirection()
+    {
+        if (healthBarUI != null)
+        {
+            RectTransform rect = healthBarUI.GetComponent<RectTransform>();
+            Vector3 scale = rect.localScale;
+            scale.x = Mathf.Sign(transform.localScale.x) * Mathf.Abs(scale.x); // đảo hướng theo NPC
+            rect.localScale = scale;
         }
     }
 

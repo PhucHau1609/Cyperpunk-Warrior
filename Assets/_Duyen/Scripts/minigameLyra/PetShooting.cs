@@ -37,11 +37,8 @@ public class PetShooting : MonoBehaviour
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
+            rb.gravityScale = 0f; // Tắt trọng lực
             rb.linearVelocity = direction * bulletSpeed;
         }
-
-        // Xoay viên đạn theo hướng
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 }
