@@ -223,6 +223,9 @@ public class CraftingSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDra
             returnedToInventory = true;
         }
 
+        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.CraftItemDrag);//Đổi sound craft
+
+
         if (returnedToInventory)
         {
             Clear();

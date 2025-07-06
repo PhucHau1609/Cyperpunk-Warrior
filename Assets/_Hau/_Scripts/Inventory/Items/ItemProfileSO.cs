@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +14,9 @@ public class ItemProfileSO : ScriptableObject
     public bool isStackable = false;
     public GameObject prefabItem;
 
+    [TextArea(2, 5)] public string itemDescription; // <-- THÊM DÒNG NÀY
+
+
     protected virtual void Reset()
     {
         this.ResetValue();
@@ -23,6 +26,7 @@ public class ItemProfileSO : ScriptableObject
     {
         this.AutoLoadItemCode();
         this.AutoLoadItemName();
+        this.itemDescription = "Mô tả mặc định..."; // <-- Có thể thêm mặc định
     }
 
     protected virtual void AutoLoadItemCode()

@@ -69,6 +69,7 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
             return;
         }
 
+        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.CraftItemDrag);//Đổi sound craft
         // ✅ Không cần trả về vị trí ban đầu vì item vẫn ở inventory
         // rectTransform.position = originalPosition; // Removed
     }

@@ -50,7 +50,7 @@ public class ItemTooltipUI : HauSingleton<ItemTooltipUI>
             tooltip2Large.SetActive(true);
             tooltip2Large.transform.localPosition = posTooltip2;
             txtName2.text = itemProfile.itemName;
-            //txtDescription2.text = itemProfile.description;
+            txtDescription2.text = itemProfile.itemDescription; // <-- THÊM DÒNG NÀY
 
             tooltip2Group.alpha = 0;
             tooltip2Group.DOFade(1, fadeDuration);

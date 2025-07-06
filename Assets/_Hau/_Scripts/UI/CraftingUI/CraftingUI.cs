@@ -138,7 +138,7 @@ public class CraftingUI : HauSingleton<CraftingUI>
             slot.Clear();
 
         ObserverManager.Instance?.PostEvent(EventID.InventoryChanged);
-
+        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.CraftItem);//Đổi sound craft
         // Log với recipe name nếu có
         string recipeName = !string.IsNullOrEmpty(recipe.recipeName) ? recipe.recipeName : recipe.outputItemCode.ToString();
         Debug.Log($"✅ Craft thành công: {recipeName} x{recipe.outputItemCount}");
