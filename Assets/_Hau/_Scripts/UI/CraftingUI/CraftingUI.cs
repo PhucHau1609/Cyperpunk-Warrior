@@ -21,7 +21,7 @@ public class CraftingUI : HauSingleton<CraftingUI>
     [SerializeField] private Color normalTextColor = Color.white;
     [SerializeField] private Color validRecipeColor = Color.green;
 
-    protected bool isShowUI = false;
+    public bool isShowUI = false;
 
     protected override void Start()
     {
