@@ -49,6 +49,24 @@ public class Treasure : MonoBehaviour
         }
     }
 
+    /* private void SpawnBombs()
+     {
+         // Spawn bomb 1 bên trái
+         ItemsDropCtrl bomb1 = ItemsDropManager.Instance.DropItemObject(ItemCode.Bomb_0, 1, spawnLeft.position);
+         if (bomb1 != null && bomb1.Rigidbody != null)
+         {
+             bomb1.Rigidbody.AddForce(leftForce, ForceMode2D.Impulse);
+         }
+
+         // Spawn bomb 2 bên phải
+         ItemsDropCtrl bomb2 = ItemsDropManager.Instance.DropItemObject(ItemCode.Bomb_0, 1, spawnRight.position);
+         if (bomb2 != null && bomb2.Rigidbody != null)
+         {
+             bomb2.Rigidbody.AddForce(rightForce, ForceMode2D.Impulse);
+         }
+     }*/
+
+
     private void SpawnBombs()
     {
         GameObject bomb1 = Instantiate(bombPrefab, spawnLeft.position, Quaternion.identity);

@@ -16,13 +16,13 @@ public class InventoryTester : HauMonoBehaviour //E75 create
         this.AddTestItems(ItemCode.MachineGun_0, 1);
         this.AddTestItems(ItemCode.MachineGun_1, 1);
 
-        this.AddTestItems(ItemCode.UpgradeItem_0, 1);
-        this.AddTestItems(ItemCode.UpgradeItem_1, 1);
-        this.AddTestItems(ItemCode.UpgradeItem_2, 1);
-        this.AddTestItems(ItemCode.UpgradeItem_3, 1);
-        this.AddTestItems(ItemCode.UpgradeItem_4, 1);
-        this.AddTestItems(ItemCode.UpgradeItem_5, 1);
-        this.AddTestItems(ItemCode.UpgradeItem_6, 1);
+        this.AddTestItems(ItemCode.UpgradeItem_0, 2);
+        this.AddTestItems(ItemCode.UpgradeItem_1, 2);
+        this.AddTestItems(ItemCode.UpgradeItem_2, 2);
+        this.AddTestItems(ItemCode.UpgradeItem_3, 2);
+        this.AddTestItems(ItemCode.UpgradeItem_4, 2);
+        this.AddTestItems(ItemCode.UpgradeItem_5, 2);
+        this.AddTestItems(ItemCode.UpgradeItem_6, 2);
 
 
 

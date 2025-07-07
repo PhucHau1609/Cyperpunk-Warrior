@@ -13,6 +13,9 @@ public enum ItemCode
     Artefacts_3 = 5,
     Artefacts_4 = 6,
 
+    //Object
+    Bomb_0 = 11,
+
 
     //Upgrade Items
     UpgradeItem_0 = 21,
