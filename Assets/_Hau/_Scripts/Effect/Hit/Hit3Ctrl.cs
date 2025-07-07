@@ -6,6 +6,6 @@ public class Hit3Ctrl : HitAbstract
 {
     public override string GetName()
     {
-        return "Hit_3";
+        return HitName.Hit_3.ToString();
     }
 }

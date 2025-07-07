@@ -90,6 +90,12 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
         {
             CraftingUI.Instance.HideUI();
         }
+
+        // 👉 Tắt tooltip nếu đang hiển thị
+        if (ItemTooltipUI.HasInstance)
+        {
+            ItemTooltipUI.Instance.HideTooltip();
+        }
     }
 
     public virtual void ShowInventoryUI()

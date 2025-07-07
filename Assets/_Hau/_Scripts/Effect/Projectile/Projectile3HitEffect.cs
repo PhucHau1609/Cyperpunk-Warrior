@@ -7,6 +7,6 @@ public class Projectile3HitEffect : ProjectileDamageSender
     protected override string GetHitEffectName()
     {
         //return "Hit_3";
-        return HitName.Hit_3.ToString();
+        return _hitName.ToString();
     }
 }

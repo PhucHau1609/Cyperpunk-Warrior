@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hit2Ctrl : HitAbstract
+public class Hit6Ctrl : HitAbstract
 {
     public override string GetName()
     {
-        return HitName.Hit_2.ToString();
+        return HitName.Hit_6.ToString();
     }
 }

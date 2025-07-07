@@ -1,7 +1,6 @@
 ﻿using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-
 using DG.Tweening;
 
 public class ItemTooltipUI : HauSingleton<ItemTooltipUI>
