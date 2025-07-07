@@ -12,7 +12,9 @@ public class CoreZone : MonoBehaviour
     public UIProgressBar uiBar;
 
     [Header("Visuals")]
-    public Sprite completedSprite;
+    public Sprite sprite30;
+    public Sprite sprite70;
+    public Sprite sprite100;
 
     private float progress = 0f;
     private float stayTime = 0f;
@@ -22,6 +24,9 @@ public class CoreZone : MonoBehaviour
 
     private CoreManager coreManager;
     private SpriteRenderer spriteRenderer;
+
+    // Mốc hiện tại để tránh đổi sprite nhiều lần
+    private int currentStage = 0;
 
     void Start()
     {
@@ -79,7 +84,11 @@ public class CoreZone : MonoBehaviour
         while (lyraInside && progress < chargeTime)
         {
             progress += Time.deltaTime;
-            uiBar.SetProgress(progress / chargeTime);
+            float percent = progress / chargeTime;
+            uiBar.SetProgress(percent);
+
+            UpdateSpriteByProgress(percent * 100f);
+
             yield return null;
         }
 
@@ -102,14 +111,40 @@ public class CoreZone : MonoBehaviour
         while (!lyraInside && progress > 0f)
         {
             progress -= Time.deltaTime * decayRate;
-            uiBar.SetProgress(progress / chargeTime);
+            float percent = Mathf.Clamp01(progress / chargeTime);
+            uiBar.SetProgress(percent);
+
+            UpdateSpriteByProgress(percent * 100f);
+
             yield return null;
         }
 
         if (progress <= 0f)
         {
             progress = 0f;
+            currentStage = 0;
             uiBar?.Show(false);
+        }
+    }
+
+    void UpdateSpriteByProgress(float percent)
+    {
+        if (spriteRenderer == null) return;
+
+        if (percent >= 100 && currentStage < 3)
+        {
+            spriteRenderer.sprite = sprite100;
+            currentStage = 3;
+        }
+        else if (percent >= 70 && currentStage < 2)
+        {
+            spriteRenderer.sprite = sprite70;
+            currentStage = 2;
+        }
+        else if (percent >= 30 && currentStage < 1)
+        {
+            spriteRenderer.sprite = sprite30;
+            currentStage = 1;
         }
     }
 
@@ -126,9 +161,6 @@ public class CoreZone : MonoBehaviour
 
     public void SetAsCompletedVisual()
     {
-        if (spriteRenderer != null && completedSprite != null)
-        {
-            spriteRenderer.sprite = completedSprite;
-        }
+        UpdateSpriteByProgress(100f); // đảm bảo hiển thị sprite 100%
     }
 }
