@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HandDamageReceiver : DamageReceiver
+public class HandDamageReceiver2 : DamageReceiver
 {
     private IDamageResponder responder;
     public float damageReductionPercent = 0.5f;
