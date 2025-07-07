@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8032169142585925306}
   - component: {fileID: 6397469306032707712}
   - component: {fileID: 8401672042949855185}
+  - component: {fileID: 4064778259305539421}
   m_Layer: 0
   m_Name: bullet
   m_TagString: Untagged
@@ -278,3 +279,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4064778259305539421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8391872797773521459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc7062b366010d7479c930ba8b6f2251, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  damageCooldown: 1
