@@ -48,4 +48,22 @@ public class ItemsDropManager : HauSingleton<ItemsDropManager>
         randomDirection.y = Mathf.Abs(randomDirection.y);
         newItem.Rigidbody.AddForce(randomDirection * forceAmount, ForceMode2D.Impulse);
     }
+
+    public virtual ItemsDropCtrl DropItemObject(ItemCode itemCode, int dropCount, Vector3 dropPosition)
+    {
+        Vector3 spawnPosition = dropPosition + new Vector3(0, spawnHeight, 0);
+        ItemsDropCtrl itemPrefab = this.itemsDropSpawner.PoolPrefabs.GetPrefabByName(itemCode.ToString());
+        if (itemPrefab == null) itemPrefab = this.itemsDropSpawner.PoolPrefabs.GetPrefabByName("DefaultDrop");
+
+        ItemsDropCtrl newItem = this.itemsDropSpawner.Spawn(itemPrefab, spawnPosition);
+        newItem.SetValueItemDrop(itemCode, dropCount);
+        newItem.gameObject.SetActive(true);
+
+        Vector3 randomDirection = Random.onUnitSphere;
+        randomDirection.y = Mathf.Abs(randomDirection.y);
+        newItem.Rigidbody.AddForce(randomDirection * forceAmount, ForceMode2D.Impulse);
+
+        return newItem;
+    }
+
 }

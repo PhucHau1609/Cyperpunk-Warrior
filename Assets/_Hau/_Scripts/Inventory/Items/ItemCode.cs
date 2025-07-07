@@ -19,6 +19,9 @@ public enum ItemCode
     UpgradeItem_1 = 22,
     UpgradeItem_2 = 23,
     UpgradeItem_3 = 24,
+    UpgradeItem_4 = 25,
+    UpgradeItem_5 = 26,
+    UpgradeItem_6 = 27,
     //Melee Weapons
     Knife_1 = 50,
 
