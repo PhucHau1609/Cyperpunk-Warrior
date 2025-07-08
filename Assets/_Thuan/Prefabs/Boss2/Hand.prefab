@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5086854277368495585}
   - component: {fileID: 8492935738483599713}
   - component: {fileID: 508698163545551357}
+  - component: {fileID: 641078719548419650}
+  - component: {fileID: 8097962499485707406}
   m_Layer: 0
   m_Name: Hand
   m_TagString: Untagged
@@ -124,10 +126,10 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.0000010728836, y: 1.1335468}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.50000036, y: 0.30456084}
     oldSize: {x: 2.8, y: 5.8}
     newSize: {x: 2.8, y: 5.8}
     adaptiveTilingThreshold: 0.5
@@ -185,3 +187,40 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &641078719548419650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793466321650372095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11e24fa3d2b12e342bbf93af3aee5c7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLeftHand: 1
+  moveSpeed: 20
+  attackRange: 12
+  attackCooldown: 2
+  returnSpeed: 8
+  attackDelay: 0.5
+  attackDuration: 1.5
+  currentState: 0
+--- !u!114 &8097962499485707406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793466321650372095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a07df59901c082e4395c41485ed27b90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
+  damageReductionPercent: 0.5
+  boss2DamageReceiver: {fileID: 0}
