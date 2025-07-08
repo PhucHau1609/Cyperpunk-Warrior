@@ -11,7 +11,7 @@ public class Boss2RangedAttack : Action
     private float startTime;
     private bool hasStartedAttackAnimation = false;
 
-    public override void OnStart()
+   public override void OnStart()
     {
         boss2Controller = GetComponent<Boss2Controller>();
         startTime = Time.time;
@@ -19,8 +19,11 @@ public class Boss2RangedAttack : Action
 
         if (boss2Controller != null)
         {
+            // Debug thêm thông tin về Shield
+            bool shieldActive = boss2Controller.IsShieldActive();
+            Debug.Log($"Boss2RangedAttack: Bắt đầu attack - Shield Active: {shieldActive}");
+            
             boss2Controller.StartAttack();
-            Debug.Log("Boss2RangedAttack: Bắt đầu attack");
         }
         else
         {

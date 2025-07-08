@@ -6,6 +6,7 @@ public abstract class ProjectileDamageSender : DamageSender // E43,E44 create
 {
     [SerializeField] protected EffectCtrl effectCtrl;
     [SerializeField] protected BoxCollider2D _collider;
+    [SerializeField] protected HitName _hitName;
 
     protected override void LoadComponents()
     {

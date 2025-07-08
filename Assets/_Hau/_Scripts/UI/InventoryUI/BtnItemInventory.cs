@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] protected TextMeshProUGUI txtItemName;
     [SerializeField] protected Text txtItemCount;
@@ -69,6 +69,7 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
             return;
         }
 
+        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.CraftItemDrag);//Đổi sound craft
         // ✅ Không cần trả về vị trí ban đầu vì item vẫn ở inventory
         // rectTransform.position = originalPosition; // Removed
     }
@@ -165,6 +166,19 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
     protected override void OnClick()
     {
         Debug.Log("Item CLick:" + gameObject.name);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (itemInventory != null && itemInventory.ItemProfileSO != null)
+        {
+            ItemTooltipUI.Instance.ShowTooltip(itemInventory.ItemProfileSO);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        ItemTooltipUI.Instance.HideTooltip();
     }
 }
 

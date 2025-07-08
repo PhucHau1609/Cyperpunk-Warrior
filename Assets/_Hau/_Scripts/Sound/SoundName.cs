@@ -15,4 +15,6 @@ public enum SoundName
 
     //Pickup,Collect, Something else
     PickUpItem = 200,
+    CraftItem = 201,
+    CraftItemDrag = 202,
 }

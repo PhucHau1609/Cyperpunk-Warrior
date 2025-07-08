@@ -13,12 +13,18 @@ public enum ItemCode
     Artefacts_3 = 5,
     Artefacts_4 = 6,
 
+    //Object
+    Bomb_0 = 11,
+
 
     //Upgrade Items
     UpgradeItem_0 = 21,
     UpgradeItem_1 = 22,
     UpgradeItem_2 = 23,
     UpgradeItem_3 = 24,
+    UpgradeItem_4 = 25,
+    UpgradeItem_5 = 26,
+    UpgradeItem_6 = 27,
     //Melee Weapons
     Knife_1 = 50,
 

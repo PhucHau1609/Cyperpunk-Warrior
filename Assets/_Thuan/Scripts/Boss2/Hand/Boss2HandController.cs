@@ -28,6 +28,17 @@ public class Boss2HandController : MonoBehaviour
     private float lastAttackTime = -999f;
     private float attackStartTime;
     private bool hasExecutedAttack = false;
+    private HandDamageReceiver damageReceiver;
+
+    [Header("Hit Box")]
+    public Boss2HandHitBox hitBox;
+
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public AudioClip handMoveSound;
+    public AudioClip handAttackSound;
+    public AudioClip handHurtSound;
+    public AudioClip handDeathSound;
     
     public enum HandState
     {
@@ -38,13 +49,28 @@ public class Boss2HandController : MonoBehaviour
     }
     
     public HandState currentState = HandState.Idle;
-    
+
     void Awake()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        damageReceiver = GetComponent<HandDamageReceiver>();
         originalPosition = transform.position;
+        
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
+
+    private void PlaySound(AudioClip clip, float volume = 1f)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip, volume);
+        }
     }
     
     void Start()
@@ -92,7 +118,13 @@ public class Boss2HandController : MonoBehaviour
     // Method được gọi từ Boss2Controller
     public void StartHandAttack(Boss2AttackType attackType, Vector3 playerPosition)
     {
-        if (isAttacking) return;
+        if (isAttacking || IsDead() || currentState != HandState.Idle) 
+        {
+            Debug.Log($"{gameObject.name}: Không thể tấn công - isAttacking:{isAttacking}, IsDead:{IsDead()}, State:{currentState}");
+            return;
+        }
+
+        PlaySound(handMoveSound, 0.8f);
         
         isAttacking = true;
         assignedAttackType = attackType;
@@ -150,7 +182,7 @@ public class Boss2HandController : MonoBehaviour
     {
         float elapsedTime = Time.time - attackStartTime;
         
-        // Thực hiện damage sau attackDelay
+        // Thực hiện enable hitbox sau attackDelay
         if (!hasExecutedAttack && elapsedTime >= attackDelay)
         {
             ExecuteAttackDamage();
@@ -160,23 +192,27 @@ public class Boss2HandController : MonoBehaviour
         // Kết thúc tấn công sau attackDuration
         if (elapsedTime >= attackDuration)
         {
+            DisableHitBox(); // Tắt HitBox khi kết thúc attack
             currentState = HandState.Returning;
         }
     }
     
     void ExecuteAttackDamage()
     {
-        // Kiểm tra va chạm với player trong phạm vi nhỏ
-        Collider2D playerCollider = Physics2D.OverlapCircle(transform.position, 1.5f, LayerMask.GetMask("Player"));
-        if (playerCollider != null)
+        if (hitBox != null)
         {
-            // Gây damage cho player
-            var playerDamageReceiver = playerCollider.GetComponent<DamageReceiver>();
-            if (playerDamageReceiver != null)
-            {
-                playerDamageReceiver.TakeDamage(10); // Damage có thể điều chỉnh
-                Debug.Log($"{gameObject.name}: Gây damage cho Player!");
-            }
+            PlaySound(handAttackSound, 0.9f);
+
+            hitBox.EnableHitBox();
+            Debug.Log($"{gameObject.name}: HitBox enabled for attack!");
+        }
+    }
+
+    void DisableHitBox()
+    {
+        if (hitBox != null)
+        {
+            hitBox.DisableHitBox();
         }
     }
     
@@ -228,16 +264,91 @@ public class Boss2HandController : MonoBehaviour
     {
         if (isAttacking)
         {
+            DisableHitBox();
             isAttacking = false;
-            currentState = HandState.Returning;
+            currentState = HandState.Idle; // Reset về Idle thay vì Returning
             rb.linearVelocity = Vector2.zero;
+            
+            // Nếu cánh tay chưa chết, đưa về vị trí ban đầu
+            if (!IsDead())
+            {
+                transform.position = originalPosition;
+            }
+            
+            // Thông báo cho Boss2
+            if (boss2Controller != null)
+            {
+                boss2Controller.OnHandEndAttack(this);
+            }
+            
+            Debug.Log($"{gameObject.name}: Buộc kết thúc tấn công");
         }
     }
 
-    public void OnHurt()
+    public bool CanAttack()
     {
-        boss2Controller.OnHurt();
-        CameraFollow.Instance?.ShakeCamera();
+        return !isAttacking && 
+            !IsDead() && 
+            currentState == HandState.Idle &&
+            Time.time - lastAttackTime >= attackCooldown;
+    }
+
+    public bool IsDead()
+    {
+        return damageReceiver != null && damageReceiver.IsDead();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (damageReceiver != null)
+        {
+            damageReceiver.TakeDamage(damage);
+            OnDamageReceived();
+        }
+    }
+
+    public void OnDamageReceived()
+    {
+        if (damageReceiver != null && !damageReceiver.IsDead())
+        {
+            PlaySound(handHurtSound, 0.7f);
+
+            // Chỉ gọi OnHurt của boss2Controller khi cánh tay bị hurt
+            if (boss2Controller != null)
+            {
+                boss2Controller.OnHurt();
+            }
+        }
+        else if (damageReceiver != null && damageReceiver.IsDead())
+        {
+            PlaySound(handDeathSound, 0.8f);
+
+            Debug.Log($"[{gameObject.name}] Hand is dead!");
+            
+            // Nếu cánh tay đang tấn công thì dừng lại
+            if (isAttacking)
+            {
+                ForceEndAttack();
+            }
+            
+            // Khi cánh tay chết, kiểm tra trạng thái shield
+            if (boss2Controller != null)
+            {
+                boss2Controller.CheckHandsStatus();
+            }
+
+            // Vô hiệu hóa cánh tay
+            OnDead();
+        }
+    }
+
+     public void OnDead()
+    {
+        animator.SetTrigger("Death");
+        GetComponent<Collider2D>().enabled = false;
+        this.enabled = false;
+
+        Destroy(gameObject, 0.5f);
     }
     
     void OnDrawGizmosSelected()

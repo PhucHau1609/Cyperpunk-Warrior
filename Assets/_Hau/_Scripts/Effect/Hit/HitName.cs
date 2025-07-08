@@ -9,4 +9,6 @@ public enum HitName
    Hit_2 = 2,
    Hit_3 = 3,
    Hit_4 = 4,
+   Hit_5 = 5,
+   Hit_6 = 6,
 }
