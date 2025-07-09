@@ -28,7 +28,7 @@ public class Boss2Bomb : MonoBehaviour
         col = GetComponent<Collider2D>();
 
         // Tìm Boss2Controller
-        boss2Controller = FindObjectOfType<Boss2Controller>();
+        boss2Controller = FindFirstObjectByType<Boss2Controller>();
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -67,7 +67,7 @@ public class Boss2Bomb : MonoBehaviour
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
-            rb.isKinematic = true;
+            rb.bodyType = RigidbodyType2D.Kinematic;
         }
 
         // Tắt collider
