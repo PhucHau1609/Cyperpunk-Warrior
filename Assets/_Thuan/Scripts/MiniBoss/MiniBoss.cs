@@ -390,6 +390,7 @@ public class MiniBoss : MonoBehaviour
         // Dừng mọi chuyển động
         rb.linearVelocity = Vector2.zero;
         movement = Vector2.zero;
+        rb.gravityScale = 0;
         
         // Tắt colliders khi invisible
         SetCollidersEnabled(false);
