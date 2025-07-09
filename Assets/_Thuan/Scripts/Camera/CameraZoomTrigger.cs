@@ -89,7 +89,7 @@ public class CameraZoomTrigger : MonoBehaviour
             mainCam.orthographicSize = currentSize;
             
             // Notify CameraBoundaries to update
-            CameraBoundaries boundaries = FindObjectOfType<CameraBoundaries>();
+            CameraBoundaries boundaries = FindFirstObjectByType<CameraBoundaries>();
             if (boundaries != null)
             {
                 boundaries.UpdateCameraSize();

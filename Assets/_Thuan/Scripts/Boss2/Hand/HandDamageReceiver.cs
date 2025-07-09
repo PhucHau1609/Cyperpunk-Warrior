@@ -15,7 +15,7 @@ public class HandDamageReceiver : DamageReceiver
         // Tự động tìm Boss2Controller nếu chưa gán
         if (boss2Controller == null)
         {
-            boss2Controller = FindObjectOfType<Boss2Controller>();
+            boss2Controller = FindFirstObjectByType<Boss2Controller>();
         }
         
         if (responder == null)
