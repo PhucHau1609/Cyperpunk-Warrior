@@ -8,10 +8,6 @@ using TooltipAttribute = BehaviorDesigner.Runtime.Tasks.TooltipAttribute;
 public class Boss2CheckPlayerInRange : Conditional
 {
     [SerializeField]
-    [Tooltip("Khoảng cách tấn công tầm xa")]
-    private float _rangedAttackRange = 10f;
-    
-    [SerializeField]
     [Tooltip("Boss có thể tấn công không")]
     private bool _canAttack = true;
     

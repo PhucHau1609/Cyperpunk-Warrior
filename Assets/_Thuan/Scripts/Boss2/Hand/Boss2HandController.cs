@@ -23,8 +23,6 @@ public class Boss2HandController : MonoBehaviour
     private Vector3 targetPosition; // Vị trí Player khi bắt đầu tấn công
     private Boss2AttackType assignedAttackType;
     private bool isAttacking = false;
-    private bool isMovingToTarget = false;
-    private bool isReturning = false;
     private float lastAttackTime = -999f;
     private float attackStartTime;
     private bool hasExecutedAttack = false;
@@ -76,7 +74,7 @@ public class Boss2HandController : MonoBehaviour
     void Start()
     {
         // Tìm Boss2Controller
-        boss2Controller = FindObjectOfType<Boss2Controller>();
+        boss2Controller = FindFirstObjectByType<Boss2Controller>();
         if (boss2Controller == null)
         {
             Debug.LogError($"{gameObject.name}: Không tìm thấy Boss2Controller!");
