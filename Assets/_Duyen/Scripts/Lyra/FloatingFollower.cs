@@ -1,14 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.AI;
 
 public class FloatingFollower : MonoBehaviour
 {
-    public float followHeight = 1.5f;
-    public float sideOffset = 1f;
-    public float xFollowSpeed = 2f;
-    public float yFollowSpeed = 5f;
+    [Header("Follow Settings")]
+    //public float followHeight = 1.5f;
+    //public float sideOffset = 1f;
+    public float xFollowSpeed = 5f;
+    //public float yFollowSpeed = 5f;
+    public float minDistance = 0.2f;
 
+    [Header("Obstacle Avoidance")]
+    public LayerMask obstacleMask;
+    public float avoidForce = 5f;
+
+    [Header("Dash Settings")]
     public bool isDashing = false;
     public float dashFollowMultiplier = 2f;
 
@@ -16,6 +24,11 @@ public class FloatingFollower : MonoBehaviour
     private Vector3 targetPos;
     private Rigidbody2D rb;
     private Animator anim;
+
+    private NavMeshAgent agent;
+    private bool isUsingPathfinding = false;
+
+
 
     private enum PetState { Sleepwell, Awaken, Following, Disappear }
     private PetState state = PetState.Sleepwell;
@@ -28,6 +41,14 @@ public class FloatingFollower : MonoBehaviour
 
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.updateRotation = false;
+            agent.updateUpAxis = false;
+            agent.isStopped = true;
+        }
+
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         FindPlayer();
@@ -43,32 +64,117 @@ public class FloatingFollower : MonoBehaviour
             {
                 state = PetState.Awaken;
                 anim.SetTrigger("Awaken");
-                StartCoroutine(StartFollowAfterDelay(1.5f)); // thời gian animation awaken
+                StartCoroutine(StartFollowAfterDelay(1.5f));
             }
             return;
         }
 
         if (state != PetState.Following) return;
 
-        // Pet follow logic
         float direction = player.localScale.x > 0 ? -1 : 1;
-        targetPos = player.position + new Vector3(sideOffset * direction, followHeight, 0);
 
-        float heightDiff = player.position.y - rb.position.y;
-        float ySpeed = yFollowSpeed;
+        Vector2 playerPos = player.position;
+        Vector2 currentPos = rb.position;
 
-        if (heightDiff < -1f) ySpeed *= 4f;
-        else if (heightDiff > 1f) ySpeed *= 1.5f;
+        float minDist = 2f;
+        float maxDist = 7f;
+        float dist = Vector2.Distance(currentPos, playerPos);
 
-        float speedMultiplier = isDashing ? dashFollowMultiplier : 1f;
+        if (dist > maxDist)
+        {
+            if (!isUsingPathfinding && agent != null)
+            {
+                isUsingPathfinding = true;
+                agent.isStopped = false;
+                //agent.SetDestination(playerPos);
+            }
+            // Tính vận tốc tăng dần theo khoảng cách
+            float speedScale = Mathf.Clamp(dist / maxDist, 1f, 3f); // Cách 14f thì tốc độ gấp ~2x
+            float baseSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
+            agent.speed = baseSpeed * speedScale;
 
-        float newX = Mathf.Lerp(rb.position.x, targetPos.x, xFollowSpeed * speedMultiplier * Time.fixedDeltaTime);
-        float newY = Mathf.Lerp(rb.position.y, targetPos.y, ySpeed * speedMultiplier * Time.fixedDeltaTime);
+            // Điểm đến: cao hơn player 2f và giữ khoảng cách 0.2f
+            Vector2 toPlayer = (playerPos - currentPos).normalized;
+            Vector2 targetPos = (Vector2)playerPos - toPlayer * minDist + Vector2.up * 4f;
 
-        rb.MovePosition(new Vector2(newX, newY));
+            agent.SetDestination(targetPos);
+        }
+        else if (dist > minDist && isUsingPathfinding)
+        {
+            // Đang di chuyển, vẫn dùng nav để tiến gần đến 0.2f
+            Vector2 toPlayer = (playerPos - currentPos).normalized;
+            Vector2 desiredPos = playerPos - toPlayer * minDist;
+            agent.SetDestination(desiredPos);
+        }
+        else if (dist <= minDist && isUsingPathfinding)
+        {
+            // Đến gần rồi, dừng nav
+            agent.isStopped = true;
+            isUsingPathfinding = false;
+        }
 
-        transform.localScale = direction > 0 ? new Vector3(-2, 2, 2) : new Vector3(2, 2, 2);
+        if (agent.desiredVelocity.sqrMagnitude > 0.01f)
+        {
+            float moveX = agent.desiredVelocity.x;
+            if (Mathf.Abs(moveX) > 0.05f)
+            {
+                float facing = moveX > 0 ? 1f : -1f;
+                transform.localScale = new Vector3(2f * facing, 2f, 2f);
+            }
+        }
     }
+
+    //void FixedUpdate()
+    //{
+    //    if (player == null) return;
+
+    //    if (state == PetState.Sleepwell)
+    //    {
+    //        if (CodeLock.PetUnlocked)
+    //        {
+    //            state = PetState.Awaken;
+    //            anim.SetTrigger("Awaken");
+    //            StartCoroutine(StartFollowAfterDelay(1.5f));
+    //        }
+    //        return;
+    //    }
+
+    //    if (state != PetState.Following) return;
+
+    //    float direction = player.localScale.x > 0 ? -1 : 1;
+    //    targetPos = player.position + new Vector3(sideOffset * direction, followHeight, 0);
+
+    //    Vector2 currentPos = rb.position;
+    //    float distanceToTarget = Vector2.Distance(currentPos, targetPos);
+
+    //    if (distanceToTarget < minDistance)
+    //        return;
+
+    //    Vector2 dirToTarget = ((Vector2)targetPos - currentPos).normalized;
+
+    //    // Kiểm tra vật cản trên đường bay
+    //    RaycastHit2D hit = Physics2D.Raycast(currentPos, dirToTarget, 1.2f, obstacleMask);
+    //    if (hit.collider != null)
+    //    {
+    //        targetPos += new Vector3(0, avoidForce, 0);
+    //        dirToTarget = ((Vector2)targetPos - currentPos).normalized;
+    //    }
+
+    //    float yDiff = targetPos.y - currentPos.y;
+    //    float ySpeed = yFollowSpeed;
+
+    //    if (yDiff > 1f) ySpeed *= 1.2f;
+    //    else if (yDiff < -1f) ySpeed *= 2f;
+
+    //    float speedMultiplier = isDashing ? dashFollowMultiplier : 1f;
+
+    //    // Bay từ từ: không dùng Lerp nữa, mà Move theo velocity ổn định
+    //    Vector2 velocity = new Vector2(dirToTarget.x * xFollowSpeed, dirToTarget.y * ySpeed) * speedMultiplier;
+    //    rb.MovePosition(currentPos + velocity * Time.fixedDeltaTime);
+
+    //    // Lật mặt theo hướng bay
+    //    transform.localScale = direction > 0 ? new Vector3(-2, 2, 2) : new Vector3(2, 2, 2);
+    //}
 
     IEnumerator StartFollowAfterDelay(float delay)
     {
@@ -94,7 +200,6 @@ public class FloatingFollower : MonoBehaviour
     {
         FindPlayer();
 
-        // Reset lại pet về trạng thái Following và Idle nếu vừa Disappear
         if (state == PetState.Disappear || state == PetState.Awaken)
         {
             StartCoroutine(ForceIdleAfterSceneLoad());
@@ -103,8 +208,8 @@ public class FloatingFollower : MonoBehaviour
 
     private IEnumerator ForceIdleAfterSceneLoad()
     {
-        yield return null; // Đợi 1 frame
-        yield return null; // Đợi thêm để animator kịp reset
+        yield return null;
+        yield return null;
 
         state = PetState.Following;
 
