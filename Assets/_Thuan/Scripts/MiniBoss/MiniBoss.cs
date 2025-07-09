@@ -1,0 +1,649 @@
+using UnityEngine;
+
+public class MiniBoss : MonoBehaviour
+{
+    [Header("Boss Settings")]
+    public float moveSpeed = 2f;
+    public float detectionRange = 10f;
+    public float attackRange = 5f;
+    public float attackCooldown = 2f;
+    public float stopDistance = 2f;
+
+    [Header("Attack Settings")]
+    [Range(0f, 1f)]
+    public float attack1Chance = 0.33f;     // Tỷ lệ Attack 1
+    [Range(0f, 1f)]
+    public float attack2Chance = 0.33f;     // Tỷ lệ Attack 2
+    [Range(0f, 1f)]
+    public float attack3Chance = 0.34f;     // Tỷ lệ Attack 3
+
+    [Header("Bullet Attack Settings")]
+    public GameObject bulletPrefab;
+    public Transform firePoint;             // Điểm bắn đạn
+    public float bulletSpeed = 8f;
+    public int bulletsPerShot = 1;          // Số đạn bắn mỗi lần
+    public float bulletSpread = 0f;         // Độ tản của đạn
+
+    [Header("Bomb Attack Settings")]
+    public GameObject bombPrefab;
+    public float bombSpawnHeight = 3f;      // Độ cao spawn bomb so với Player
+    public float bombSpawnOffset = 0.5f;    // Offset ngẫu nhiên vị trí spawn
+
+    private Transform player;
+    private Rigidbody2D rb;
+    private Animator animator;
+    private Collider2D col;
+    
+    private float lastAttackTime;
+    private bool isAttacking = false;
+    private bool isDead = false;
+    private bool isHurt = false;
+    private bool facingRight = true;
+    
+    private Vector2 movement;
+    private float distanceToPlayer;
+    private float initialFirePointX; // Lưu vị trí X ban đầu của FirePoint
+
+    private enum State { Patrolling, Chasing, Returning, Dead }
+    private State currentState = State.Patrolling;
+    public HealthBarEnemy healthBarEnemy;
+    private MiniBossDamageReceiver damageReceiver;
+
+    [Header("Teleport Skill Settings")]
+    public float teleportRange = 8f;            // Khoảng cách dịch chuyển tối đa
+    public float teleportFadeTime = 1f;         // Thời gian fade out/in
+    public float teleportCooldown = 5f;         // Thời gian hồi skill
+    public GameObject teleportBombPrefab;       // Prefab bomb để lại sau khi dịch chuyển
+
+    private bool isTeleporting = false;
+    private bool canTeleport = true;
+    private float lastTeleportTime;
+    private SpriteRenderer spriteRenderer;
+    private Collider2D[] allColliders;
+
+    [Header("Audio Settings")]
+    public AudioClip attackSound;
+    public AudioClip teleportSound;
+    public AudioClip hurtSound;
+    public AudioClip deathSound;
+    public AudioClip moveSound;
+    [Range(0f, 1f)]
+    public float audioVolume = 0.7f;
+
+    private AudioSource audioSource;
+
+    void Awake()
+    {
+        damageReceiver = GetComponent<MiniBossDamageReceiver>();
+    }
+    void Start()
+    {
+        // Tự động tham chiếu các component
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        col = GetComponent<Collider2D>();
+        
+        // Tìm Player trong scene
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+        }
+        
+        float normalizedHealth = GetNormalizedHealth();
+        if (healthBarEnemy != null)
+        {
+            if (normalizedHealth < 1f)
+                healthBarEnemy.ShowHealthBar(normalizedHealth);
+            else
+                healthBarEnemy.HideHealthBar();
+        }
+        
+        // Kiểm tra firePoint, nếu không có thì tạo một cái mới
+        if (firePoint == null)
+        {
+            GameObject firePointObj = new GameObject("FirePoint");
+            firePointObj.transform.SetParent(transform);
+            firePointObj.transform.localPosition = new Vector3(1f, 0f, 0f);
+            firePoint = firePointObj.transform;
+        }
+        
+        // Lưu vị trí FirePoint ban đầu
+        initialFirePointX = firePoint.localPosition.x;
+        
+        // Validate tỷ lệ attack
+        ValidateAttackChances();
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        allColliders = GetComponents<Collider2D>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.volume = audioVolume;
+        audioSource.playOnAwake = false;
+        
+        Debug.Log("MiniBoss initialized successfully!");
+    }
+
+    void Update()
+    {
+        if (isDead || player == null) return;
+
+        // Tính khoảng cách đến Player
+        distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        
+        // Luôn luôn di chuyển theo Player (không cần khoảng cách)
+        if (!isAttacking && !isHurt&& !isTeleporting)
+        {
+            MoveTowardsPlayer();
+        }
+
+        // Kiểm tra tấn công
+        if (CanAttack() && !isTeleporting) 
+        {
+            PerformRandomAttack();
+        }
+        
+        // Cập nhật animation
+        UpdateAnimation();
+    }
+
+    void FixedUpdate()
+    {
+        if (isDead || isAttacking || isHurt) return;
+        
+        // Di chuyển
+        rb.linearVelocity = new Vector2(movement.x * moveSpeed, rb.linearVelocity.y);
+    }
+
+    void MoveTowardsPlayer()
+    {
+        // Chỉ di chuyển khi khoảng cách lớn hơn stopDistance
+        if (distanceToPlayer > stopDistance)
+        {
+            // Tính hướng đến Player
+            Vector2 direction = (player.position - transform.position).normalized;
+            movement.x = direction.x;
+
+            // Flip sprite theo hướng di chuyển
+            if (direction.x > 0 && !facingRight)
+            {
+                Flip();
+            }
+            else if (direction.x < 0 && facingRight)
+            {
+                Flip();
+            }
+        }
+        else
+        {
+            // Dừng lại khi quá gần Player
+            movement.x = 0f;
+
+            // Vẫn quay mặt về phía Player
+            Vector2 direction = (player.position - transform.position).normalized;
+            if (direction.x > 0 && !facingRight)
+            {
+                Flip();
+            }
+            else if (direction.x < 0 && facingRight)
+            {
+                Flip();
+            }
+        }
+        
+        if (distanceToPlayer > stopDistance && moveSound != null && audioSource != null)
+        {
+            if (!audioSource.isPlaying || audioSource.clip != moveSound)
+            {
+                audioSource.clip = moveSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            // Stop move sound when not moving
+            if (audioSource != null && audioSource.clip == moveSound && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+        }
+    }
+
+    void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
+        
+        // Không cần di chuyển FirePoint vì nó đã tự động flip theo Boss
+        // FirePoint sẽ luôn ở đúng vị trí phía trước Boss
+    }
+
+    bool CanAttack()
+    {
+        return !isAttacking && !isHurt && 
+               Time.time - lastAttackTime >= attackCooldown &&
+               distanceToPlayer <= attackRange;
+    }
+
+    void PerformRandomAttack()
+    {
+        float randomValue = Random.Range(0f, 1f);
+        
+        if (randomValue <= attack1Chance)
+        {
+            StartAttack1();
+        }
+        else if (randomValue <= attack1Chance + attack2Chance)
+        {
+            StartAttack2();
+        }
+        else
+        {
+            StartAttack3();
+        }
+        
+        lastAttackTime = Time.time;
+    }
+
+    void StartAttack1()
+    {
+        isAttacking = true;
+        movement = Vector2.zero;
+        animator.SetTrigger("Attack1");
+
+        if (attackSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
+
+        Debug.Log("MiniBoss performing Attack 1");
+    }
+
+    void StartAttack2()
+    {
+        isAttacking = true;
+        movement = Vector2.zero;
+        animator.SetTrigger("Attack2");
+
+        if (attackSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
+
+        Debug.Log("MiniBoss performing Attack 2");
+    }
+
+    void StartAttack3()
+    {
+        isAttacking = true;
+        movement = Vector2.zero;
+        animator.SetTrigger("Attack3");
+
+        if (attackSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(attackSound);
+        }
+
+        Debug.Log("MiniBoss performing Attack 3");
+    }
+
+    // Được gọi từ Animation Event trong Attack1
+    public void FireBulletAttack1()
+    {
+        FireBullets();
+    }
+
+    // Được gọi từ Animation Event trong Attack2
+    public void FireBulletAttack2()
+    {
+        FireBullets();
+    }
+
+    // Được gọi từ Animation Event trong Attack3
+    public void SpawnBomb()
+    {
+        if (bombPrefab != null && player != null)
+        {
+            // Tính vị trí spawn bomb phía trên Player
+            Vector3 spawnPosition = player.position + Vector3.up * bombSpawnHeight;
+            
+            // Thêm offset ngẫu nhiên
+            spawnPosition.x += Random.Range(-bombSpawnOffset, bombSpawnOffset);
+            
+            // Spawn bomb
+            GameObject bomb = Instantiate(bombPrefab, spawnPosition, Quaternion.identity);
+            Debug.Log("Bomb spawned at: " + spawnPosition);
+        }
+        else
+        {
+            Debug.LogWarning("Bomb prefab or player is null!");
+        }
+    }
+
+    void FireBullets()
+    {
+        if (bulletPrefab == null || firePoint == null || player == null) return;
+        
+        // Tính hướng bắn đến Player
+        Vector2 directionToPlayer = (player.position - firePoint.position).normalized;
+        
+        for (int i = 0; i < bulletsPerShot; i++)
+        {
+            // Tính góc tản
+            float spreadAngle = 0f;
+            if (bulletsPerShot > 1)
+            {
+                spreadAngle = bulletSpread * (i - (bulletsPerShot - 1) / 2f);
+            }
+            
+            // Xoay hướng theo góc tản
+            float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) + spreadAngle * Mathf.Deg2Rad;
+            Vector2 bulletDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+            
+            // Tạo đạn
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            MiniBossBullet bulletScript = bullet.GetComponent<MiniBossBullet>();
+            
+            if (bulletScript != null)
+            {
+                bulletScript.Initialize(bulletDirection, bulletSpeed);
+            }
+        }
+        
+        Debug.Log($"Fired {bulletsPerShot} bullets towards player");
+    }
+
+    // Được gọi từ Animation Event khi kết thúc attack
+    public void OnAttackComplete()
+    {
+        isAttacking = false;
+        Debug.Log("Attack completed");
+    }
+
+    private System.Collections.IEnumerator TeleportSkill()
+    {
+        // Kiểm tra lại trạng thái trước khi thực hiện
+        if (isDead || currentState == State.Dead || GetNormalizedHealth() <= 0.05f)
+        {
+            yield break;
+        }
+        
+        isTeleporting = true;
+        canTeleport = false;
+        lastTeleportTime = Time.time;
+
+        if (teleportSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(teleportSound);
+        }
+        
+        // Lưu vị trí hiện tại để spawn bomb
+        Vector3 originalPosition = transform.position;
+        
+        // Dừng mọi chuyển động
+        rb.linearVelocity = Vector2.zero;
+        movement = Vector2.zero;
+        
+        // Tắt colliders khi invisible
+        SetCollidersEnabled(false);
+
+        // Fade out (giảm opacity từ 100% về 0%)
+        yield return StartCoroutine(FadeOut());
+        
+        // Kiểm tra lại trạng thái sau khi fade out
+        if (isDead || currentState == State.Dead)
+        {
+            yield break;
+        }
+        
+        // Spawn bomb tại vị trí cũ
+        if (teleportBombPrefab != null)
+        {
+            GameObject bomb = Instantiate(teleportBombPrefab, originalPosition, Quaternion.identity);
+            
+            // Kích hoạt nổ sau 2 giây
+            StartCoroutine(ExplodeBombAfterDelay(bomb, 1f));
+        }
+        
+        // Tính toán vị trí mới
+        Vector3 newPosition = CalculateNewTeleportPosition();
+        
+        // Dịch chuyển đến vị trí mới
+        transform.position = newPosition;
+        
+        // Fade in (tăng opacity từ 0% về 100%)
+        yield return StartCoroutine(FadeIn());
+        
+        // Bật lại colliders
+        SetCollidersEnabled(true);
+        
+        isTeleporting = false;
+        
+        // Bắt đầu cooldown
+        StartCoroutine(TeleportCooldown());
+    }
+
+    private System.Collections.IEnumerator FadeOut()
+    {
+        float elapsedTime = 0f;
+        Color originalColor = spriteRenderer.color;
+        
+        while (elapsedTime < teleportFadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / teleportFadeTime);
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            yield return null;
+        }
+        
+        // Đảm bảo alpha = 0
+        spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+    }
+
+    private System.Collections.IEnumerator FadeIn()
+    {
+        float elapsedTime = 0f;
+        Color originalColor = spriteRenderer.color;
+        
+        while (elapsedTime < teleportFadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, elapsedTime / teleportFadeTime);
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            yield return null;
+        }
+        
+        // Đảm bảo alpha = 1
+        spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
+    }
+
+    private Vector3 CalculateNewTeleportPosition()
+    {
+        Vector3 currentPos = transform.position;
+        Vector3 newPos = currentPos;
+        
+        // Thử tìm vị trí mới trong vòng 20 lần
+        for (int i = 0; i < 20; i++)
+        {
+            // Random vị trí theo trục X
+            float randomX = Random.Range(-teleportRange, teleportRange);
+            newPos = new Vector3(currentPos.x + randomX, currentPos.y, currentPos.z);
+            
+            // Kiểm tra khoảng cách đến Player (tối thiểu 3f)
+            float distanceToPlayer = Vector2.Distance(newPos, player.position);
+            if (distanceToPlayer < 8f)
+            {
+                continue; // Thử lại nếu quá gần Player
+            }
+            
+            // Kiểm tra vị trí có hợp lệ không (không va chạm với wall/ground)
+            Collider2D hit = Physics2D.OverlapCircle(newPos, 0.5f, LayerMask.GetMask("Ground", "Wall"));
+            if (hit == null)
+            {
+                return newPos;
+            }
+        }
+        
+        // Nếu không tìm được vị trí hợp lệ, dịch chuyển về phía đối diện Player
+        Vector2 directionFromPlayer = (currentPos - player.position).normalized;
+        newPos = player.position + (Vector3)(directionFromPlayer * 8f); // 5f là khoảng cách tối thiểu
+        
+        return newPos;
+    }
+
+    private void SetCollidersEnabled(bool enabled)
+    {
+        foreach (Collider2D col in allColliders)
+        {
+            if (col != null)
+            {
+                col.enabled = enabled;
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator ExplodeBombAfterDelay(GameObject bomb, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        if (bomb != null)
+        {
+            // Kích hoạt animation nổ
+            Animator bombAnimator = bomb.GetComponent<Animator>();
+            if (bombAnimator != null)
+            {
+                bombAnimator.SetTrigger("Explode");
+            }
+            
+            // Gây damage cho Player nếu trong vùng nổ
+            float explosionRadius = 3f; // Bán kính nổ
+            Collider2D playerCollider = Physics2D.OverlapCircle(bomb.transform.position, explosionRadius, LayerMask.GetMask("TransparentFX"));
+            
+            if (playerCollider != null && playerCollider.CompareTag("Player"))
+            {
+                CharacterController2D playerController = playerCollider.GetComponent<CharacterController2D>();
+                if (playerController != null)
+                {
+                    playerController.ApplyDamage(5f, bomb.transform.position); // 20 damage
+                    Debug.Log("Player nhận damage từ teleport bomb!");
+                }
+            }
+            
+            // Hủy bomb sau khi nổ
+            Destroy(bomb, 1f);
+        }
+    }
+
+    private System.Collections.IEnumerator TeleportCooldown()
+    {
+        yield return new WaitForSeconds(teleportCooldown);
+        canTeleport = true;
+    }
+
+    public void OnHurt()
+    {
+        if (currentState == State.Dead) return;
+
+        if (hurtSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(hurtSound);
+        }
+
+        animator.SetTrigger("Hurt");
+        CameraFollow.Instance?.ShakeCamera();
+
+        if (healthBarEnemy != null)
+        {
+            healthBarEnemy.ShowHealthBar(GetNormalizedHealth());
+        }
+
+        if (canTeleport && !isTeleporting && GetNormalizedHealth() > 0.05f)
+        {
+            StartCoroutine(TeleportSkill());
+        }
+    }
+
+    public void OnDead()
+    {
+        if (deathSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(deathSound);
+        }
+
+        animator.SetTrigger("Death");
+        currentState = State.Dead;
+        rb.linearVelocity = Vector2.zero;
+        GetComponent<Collider2D>().enabled = false;
+        this.enabled = false;
+
+        healthBarEnemy?.HideHealthBar();
+
+        Destroy(gameObject, 2f);
+    }
+
+    private float GetNormalizedHealth()
+    {
+        if (damageReceiver != null && damageReceiver.MaxHP > 0)
+            return damageReceiver.CurrentHP / (float)damageReceiver.MaxHP;
+        else
+            return 1f;
+    }
+
+    // Được gọi từ Animation Event khi kết thúc Death animation
+    public void OnDeathComplete()
+    {
+        Destroy(gameObject);
+    }
+
+    void UpdateAnimation()
+    {
+        if (isDead || isAttacking || isHurt) return;
+        
+        // Set animation parameters
+        animator.SetBool("IsRunning", Mathf.Abs(movement.x) > 0.1f);
+    }
+
+    void ValidateAttackChances()
+    {
+        float total = attack1Chance + attack2Chance + attack3Chance;
+        if (Mathf.Abs(total - 1f) > 0.01f)
+        {
+            Debug.LogWarning($"Attack chances don't sum to 1.0! Current sum: {total}");
+            // Tự động normalize
+            attack1Chance /= total;
+            attack2Chance /= total;
+            attack3Chance /= total;
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        // Vẽ phạm vi dừng lại
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, stopDistance);
+
+        // Vẽ phạm vi phát hiện
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+        // Vẽ firePoint
+        if (firePoint != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(firePoint.position, Vector3.one * 0.2f);
+        }
+        
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireCube(transform.position, new Vector3(teleportRange * 2f, 1f, 1f));
+    }
+}
