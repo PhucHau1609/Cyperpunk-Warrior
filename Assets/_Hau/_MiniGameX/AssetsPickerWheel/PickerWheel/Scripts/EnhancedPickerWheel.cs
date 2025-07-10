@@ -30,7 +30,7 @@ public class EnhancedPickerWheel : PickerWheel
     public override void Spin()
     {
         if (IsSpinning) return;
-        playerMovement.canMove = false;
+       // playerMovement.canMove = false;
         // Reset skill system
         completedLevels = 0;
         currentBonusMultiplier = 1f;
