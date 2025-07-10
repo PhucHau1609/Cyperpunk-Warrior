@@ -1871,7 +1871,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 1000
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
@@ -39019,7 +39019,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 1000
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
@@ -72724,6 +72724,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sphere: {fileID: 5968659607839405957}
+  enableMousePicking: 1
+  mousePickingRange: 3
+  itemLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!224 &1973388462942488094
 RectTransform:
   m_ObjectHideFlags: 0
@@ -73598,9 +73603,10 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 25
+  isWallSliding: 0
   life: 10
   maxLife: 100
-  invincible: 0
+  invincible: 1
   particleJumpUp: {fileID: 9101589680978681013}
   particleJumpDown: {fileID: 9144825979451186631}
   OnFallEvent:
@@ -73633,6 +73639,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnWallSlideStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWallSlideEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5369325721571851640
 GameObject:
   m_ObjectHideFlags: 0

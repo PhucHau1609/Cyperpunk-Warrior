@@ -87,7 +87,7 @@ public class Bomb : MonoBehaviour
             {
                 audioSource.Stop();
             }
-            
+
             // Play explosion sound
             if (explosionSound != null && audioSource != null)
             {
@@ -102,6 +102,26 @@ public class Bomb : MonoBehaviour
             }
 
             CheckExplosionDamage();
+            anim.SetTrigger("Explode");
+        }
+
+        if (!hasExploded && collision.CompareTag("Ground"))
+        {
+            hasExploded = true;
+            rb.linearVelocity = Vector2.zero;
+            rb.gravityScale = 0f;
+            
+            if (audioSource != null && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
+            // Play explosion sound
+            if (explosionSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(explosionSound);
+            }
+
             anim.SetTrigger("Explode");
         }
     }
