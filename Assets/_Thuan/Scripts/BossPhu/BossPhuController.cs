@@ -47,6 +47,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
     public BossPhuHealthBar healthBar;
     private State currentState = State.Idle;
     public BossPhuDamageReceiver damageReceiver;
+    public GameObject Laser;
 
     void Awake()
     {
@@ -329,6 +330,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         if (behavior != null) behavior.DisableBehavior();
 
         Destroy(gameObject, 2f);
+        Laser.SetActive(false);
     }
 
     private float GetNormalizedHealth()
