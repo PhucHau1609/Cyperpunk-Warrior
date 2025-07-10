@@ -15,8 +15,6 @@ public class CraftingUI : HauSingleton<CraftingUI>
     [Header("Crafting Logic")]
     [SerializeField] protected CraftingSlot[] craftingSlots;
     [SerializeField] protected Button btnCraft;
-    [SerializeField] protected CraftingResultSlot resultSlot; // ✅ THÊM RESULT SLOT
-
 
     [Header("Button Color Settings")]
     [SerializeField] private TextMeshProUGUI craftButtonText;
@@ -117,13 +115,6 @@ public class CraftingUI : HauSingleton<CraftingUI>
             return;
         }
 
-        // ✅ KIỂM TRA RESULT SLOT ĐÃ CÓ ITEM CHƯA
-        if (resultSlot != null && resultSlot.HasItem())
-        {
-            Debug.LogWarning("❌ Result slot đã có item, hãy lấy item ra trước!");
-            return;
-        }
-
         ItemCode[] inputCodes = craftingSlots
             .Where(slot => slot.currentItem != null && slot.currentItem.ItemProfileSO != null)
             .Select(slot => slot.currentItem.ItemProfileSO.itemCode)
@@ -136,68 +127,20 @@ public class CraftingUI : HauSingleton<CraftingUI>
             return;
         }
 
-        // ✅ ĐẶT ITEM VÀO RESULT SLOT THAY VÌ INVENTORY
-        if (recipe.outputItemCode != ItemCode.NoName && resultSlot != null)
+        // ✅ Sử dụng outputItemCode và outputItemCount
+        if (recipe.outputItemCode != ItemCode.NoName)
         {
-            // ✅ SỬ DỤNG GetProfileByCode TỪ INVENTORYMANAGER
-            var itemProfile = InventoryManager.Instance.GetProfileByCode(recipe.outputItemCode);
-            if (itemProfile != null)
-            {
-                ItemInventory resultItem = new ItemInventory(itemProfile, recipe.outputItemCount);
-                resultSlot.SetItem(resultItem);
-            }
-            else
-            {
-                Debug.LogError($"❌ Không tìm thấy ItemProfile cho {recipe.outputItemCode}");
-                return;
-            }
+            InventoryManager.Instance.AddItem(recipe.outputItemCode, recipe.outputItemCount);
         }
 
-        // Xóa UI Slot input
+        // Xóa UI Slot
         foreach (var slot in craftingSlots)
             slot.Clear();
 
-        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.CraftItem);
-
+        ObserverManager.Instance?.PostEvent(EventID.InventoryChanged);
+        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.CraftItem);//Đổi sound craft
+        // Log với recipe name nếu có
         string recipeName = !string.IsNullOrEmpty(recipe.recipeName) ? recipe.recipeName : recipe.outputItemCode.ToString();
-        Debug.Log($"✅ Craft thành công: {recipeName} x{recipe.outputItemCount} - Đã đặt vào result slot");
+        Debug.Log($"✅ Craft thành công: {recipeName} x{recipe.outputItemCount}");
     }
 }
-
-/*   protected virtual void OnClickCraft()
-     {
-         if (!IsCurrentRecipeValid())
-         {
-             Debug.LogWarning("❌ Sai công thức hoặc thiếu nguyên liệu.");
-             return;
-         }
-
-         ItemCode[] inputCodes = craftingSlots
-             .Where(slot => slot.currentItem != null && slot.currentItem.ItemProfileSO != null)
-             .Select(slot => slot.currentItem.ItemProfileSO.itemCode)
-             .ToArray();
-
-         var recipe = CraftingManager.Instance.FindMatchingRecipe(inputCodes);
-         if (recipe == null)
-         {
-             Debug.LogWarning("❌ Sai công thức hoặc thiếu nguyên liệu.");
-             return;
-         }
-
-         // ✅ Sử dụng outputItemCode và outputItemCount
-
-         if (recipe.outputItemCode != ItemCode.NoName)
-         {
-             InventoryManager.Instance.AddItem(recipe.outputItemCode, recipe.outputItemCount);
-         }
-
-         // Xóa UI Slot
-         foreach (var slot in craftingSlots)
-             slot.Clear();
-
-         ObserverManager.Instance?.PostEvent(EventID.InventoryChanged);
-         HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.CraftItem);//Đổi sound craft
-         // Log với recipe name nếu có
-         string recipeName = !string.IsNullOrEmpty(recipe.recipeName) ? recipe.recipeName : recipe.outputItemCode.ToString();
-         Debug.Log($"✅ Craft thành công: {recipeName} x{recipe.outputItemCount}");
-     }*/
