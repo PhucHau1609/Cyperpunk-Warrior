@@ -2,8 +2,8 @@
 
 public class MovingTrap : MonoBehaviour
 {
-    [SerializeField] private float minX = -0.53f;
-    [SerializeField] private float maxX = 10.17f;
+    [SerializeField] private float minX = 1f;
+    [SerializeField] private float maxX = 1f;
     [SerializeField] private float speed = 2f;
 
     private bool movingRight = true;
