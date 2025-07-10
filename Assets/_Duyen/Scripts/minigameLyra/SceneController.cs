@@ -3,6 +3,7 @@ using UnityEngine;
 using Cinemachine;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using UnityEngine.AI;
 
 public class SceneController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class SceneController : MonoBehaviour
     private PetManualControl petControl;
     private Animator petAnimator;
     private Animator playerAnimator;
+    private NavMeshAgent petAgent;
+
 
     public List<GameObject> objectsToDisableOnReturn;
 
@@ -38,6 +41,7 @@ public class SceneController : MonoBehaviour
 
             // Khóa điều khiển Pet ban đầu
             petControl.enabled = false;
+            petAgent = pet.GetComponent<NavMeshAgent>();
 
             // Không gọi StartInitialDialogue() nữa ở đây
         }
@@ -67,6 +71,8 @@ public class SceneController : MonoBehaviour
     // Gọi hàm này từ TriggerZone
     public void SwitchToPetControl()
     {
+        if (petAgent != null)
+            petAgent.enabled = false;
 
         if (playerAnimator != null)
         {
@@ -120,6 +126,9 @@ public class SceneController : MonoBehaviour
     public void ReturnControlToPlayer()
     {
         player.SetCanMove(true);
+
+        if (petAgent != null)
+            petAgent.enabled = true;
 
         // Tắt điều khiển thủ công
         if (petControl != null)
