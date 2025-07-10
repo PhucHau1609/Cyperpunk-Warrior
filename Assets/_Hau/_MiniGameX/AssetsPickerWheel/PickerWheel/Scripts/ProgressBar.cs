@@ -84,16 +84,39 @@ public class ProgressBar : MonoBehaviour
         }
     }
 
+    // Thay đổi method ContinueProgress:
     public void ContinueProgress()
     {
         currentCheckpoint++;
-        isMoving = true;
+
+        // Nếu chưa hết checkpoint thì tiếp tục
+        if (currentCheckpoint < checkpoints.Length)
+        {
+            isMoving = true;
+        }
+        else
+        {
+            // Đã hết checkpoint - hoàn thành
+            CompleteProgress();
+        }
     }
+
+    /* public void ContinueProgress()
+     {
+         currentCheckpoint++;
+         isMoving = true;
+     }*/
 
     private void CompleteProgress()
     {
         // Animation ẩn progress bar
         progressBarPanel.transform.DOScale(0f, 0.3f)
             .OnComplete(() => progressBarPanel.SetActive(false));
+    }
+
+    // Thêm method để kiểm tra đã hoàn thành chưa:
+    public bool IsCompleted()
+    {
+        return currentCheckpoint >= checkpoints.Length;
     }
 }

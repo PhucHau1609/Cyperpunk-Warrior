@@ -27,6 +27,15 @@ public class SkillChallenge : MonoBehaviour
     [SerializeField] private int[] sequenceLengths = { 3, 4, 5 }; // Length cho từng level
     [SerializeField] private float[] timeLimits = { 5f, 4f, 3f }; // Time limit cho từng level
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip inputSoundClip;
+    [SerializeField] private AudioClip successSoundClip;
+    [SerializeField] private AudioClip failSoundClip;
+    [SerializeField] private AudioClip level1CompleteClip;
+    [SerializeField] private AudioClip level2CompleteClip;
+    [SerializeField] private AudioClip level3CompleteClip;
+
     // Events
     public System.Action<bool> OnChallengeComplete;
 
@@ -36,6 +45,8 @@ public class SkillChallenge : MonoBehaviour
     private bool isActive = false;
     private List<GameObject> arrowObjects = new List<GameObject>();
     private int currentLevel = 0;
+    private bool[] levelResults = new bool[3]; // Track kết quả 3 level
+
 
     private void Start()
     {
@@ -56,6 +67,12 @@ public class SkillChallenge : MonoBehaviour
     {
         currentLevel = level;
         currentInputIndex = 0;
+
+        // Reset kết quả level hiện tại
+        if (level < levelResults.Length)
+        {
+            levelResults[level] = false;
+        }
 
         // Tạo sequence dựa trên level
         int sequenceLength = sequenceLengths[Mathf.Min(level, sequenceLengths.Length - 1)];
@@ -156,8 +173,12 @@ public class SkillChallenge : MonoBehaviour
         }
     }
 
+    // Thay đổi method ProcessInput:
     private void ProcessInput(ArrowDirection inputDirection)
     {
+        // Phát âm thanh khi ấn phím
+        PlaySound(inputSoundClip);
+
         // Kiểm tra input có đúng không
         if (inputDirection == currentSequence.arrows[currentInputIndex])
         {
@@ -179,6 +200,30 @@ public class SkillChallenge : MonoBehaviour
             CompleteChallenge(false);
         }
     }
+
+    /*private void ProcessInput(ArrowDirection inputDirection)
+    {
+        // Kiểm tra input có đúng không
+        if (inputDirection == currentSequence.arrows[currentInputIndex])
+        {
+            // Đúng - highlight arrow
+            HighlightArrow(currentInputIndex, true);
+            currentInputIndex++;
+
+            // Kiểm tra đã hoàn thành sequence chưa
+            if (currentInputIndex >= currentSequence.arrows.Length)
+            {
+                CompleteChallenge(true);
+                return;
+            }
+        }
+        else
+        {
+            // Sai - highlight arrow sai và kết thúc
+            HighlightArrow(currentInputIndex, false);
+            CompleteChallenge(false);
+        }
+    }*/
 
     private void HighlightArrow(int index, bool isCorrect)
     {
@@ -209,9 +254,41 @@ public class SkillChallenge : MonoBehaviour
         }
     }
 
+    // Thay đổi method CompleteChallenge:
     private void CompleteChallenge(bool success)
     {
         isActive = false;
+
+        // Lưu kết quả level
+        if (currentLevel < levelResults.Length)
+        {
+            levelResults[currentLevel] = success;
+        }
+
+        // Phát âm thanh dựa trên kết quả
+        if (success)
+        {
+            // Phát âm thanh hoàn thành level
+            switch (currentLevel)
+            {
+                case 0:
+                    PlaySound(level1CompleteClip);
+                    break;
+                case 1:
+                    PlaySound(level2CompleteClip);
+                    break;
+                case 2:
+                    PlaySound(level3CompleteClip);
+                    break;
+                default:
+                    PlaySound(successSoundClip);
+                    break;
+            }
+        }
+        else
+        {
+            PlaySound(failSoundClip);
+        }
 
         // Animation ẩn panel
         skillChallengePanel.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack)
@@ -221,8 +298,46 @@ public class SkillChallenge : MonoBehaviour
         OnChallengeComplete?.Invoke(success);
     }
 
+    // Thêm method PlaySound:
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    /*  private void CompleteChallenge(bool success)
+      {
+          isActive = false;
+
+          // Animation ẩn panel
+          skillChallengePanel.transform.DOScale(0f, 0.3f).SetEase(Ease.InBack)
+              .OnComplete(() => skillChallengePanel.SetActive(false));
+
+          // Gọi event
+          OnChallengeComplete?.Invoke(success);
+      }*/
+
     private void SkipChallenge()
     {
         CompleteChallenge(false);
+    }
+
+    // Thêm method để lấy số level đã hoàn thành:
+    public int GetCompletedLevels()
+    {
+        int completed = 0;
+        for (int i = 0; i < levelResults.Length; i++)
+        {
+            if (levelResults[i]) completed++;
+        }
+        return completed;
+    }
+
+    // Thêm method để trả về kết quả chi tiết của từng level:
+    public bool[] GetLevelResults()
+    {
+        return levelResults;
     }
 }
