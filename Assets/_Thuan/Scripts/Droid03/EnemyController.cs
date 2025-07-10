@@ -31,7 +31,7 @@ public class EnemyController : MonoBehaviour, IDamageResponder
 
         damageReceiver = GetComponent<EnemyDamageReceiver>();
         rb = GetComponent<Rigidbody2D>();
-        itemDropTable = GetComponent<ItemDropTable>();
+        itemDropTable = GetComponent<ItemDropTable>();;
     }
 
     void Start()

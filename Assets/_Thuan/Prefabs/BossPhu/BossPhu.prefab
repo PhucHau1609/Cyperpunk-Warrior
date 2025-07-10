@@ -528,8 +528,8 @@ GameObject:
   - component: {fileID: 481828350330230682}
   - component: {fileID: 7970567247141929895}
   - component: {fileID: 610146040451212164}
-  - component: {fileID: 6128067827828275973}
   - component: {fileID: 5112868518072613}
+  - component: {fileID: 6128067827828275973}
   - component: {fileID: 8673994875547998331}
   - component: {fileID: 9064247290567675591}
   - component: {fileID: 2292263234058492358}
@@ -658,7 +658,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.4090909, y: 2.2272727}
+  m_Size: {x: 1.51, y: 2.2272727}
   m_EdgeRadius: 0
 --- !u!50 &7970567247141929895
 Rigidbody2D:
@@ -672,7 +672,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 100
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -686,7 +686,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 6
+  m_Constraints: 4
 --- !u!95 &610146040451212164
 Animator:
   serializedVersion: 7
@@ -709,6 +709,46 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5112868518072613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7753768733455907881}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40a2045174b60994cb6b6d2d044f5620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  rangedAttackRange: 15
+  meleeAttackRange: 10
+  detectionRange: 20
+  bulletSpawnPoints:
+  - {fileID: 3508364232569780695}
+  bulletPrefab: {fileID: 2993164238301052031, guid: 3024ab5f579459143858b420f4513d28, type: 3}
+  bulletSpeed: 10
+  attackCooldown: 2
+  player: {fileID: 0}
+  isPhase2: 0
+  isAttacking: 0
+  isDead: 0
+  hasChangedPhase: 0
+  lastAttackTime: 0
+  playerDetected: 0
+  audioSource: {fileID: 9064247290567675591}
+  runningSound: {fileID: 8300000, guid: 7747db0381c1c244f83845766a626fae, type: 3}
+  shootSound: {fileID: 8300000, guid: f6f716780bc9e5c43ba8bfdc47d68873, type: 3}
+  meleeAttackSound: {fileID: 8300000, guid: 4bcbb51f1228be34e8524fe3e9db5302, type: 3}
+  deathSound: {fileID: 8300000, guid: 22ab5792f9298b547b87b8658b2d556d, type: 3}
+  hurtSound: {fileID: 8300000, guid: 976247fd964e48c43a3d48242c20395d, type: 3}
+  phaseChangeSound: {fileID: 8300000, guid: 3bb20a1999b850542b1fa4f57d4722fe, type: 3}
+  soundVolume: 0.7
+  soundPitch: 1
+  healthBar: {fileID: 319815588104526075}
+  damageReceiver: {fileID: 8673994875547998331}
+  Laser: {fileID: 0}
 --- !u!114 &6128067827828275973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -716,7 +756,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7753768733455907881}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
   m_Name: 
@@ -764,45 +804,6 @@ MonoBehaviour:
       Version: 1.7.7
   gizmoViewMode: 2
   showBehaviorDesignerGizmo: 1
---- !u!114 &5112868518072613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7753768733455907881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40a2045174b60994cb6b6d2d044f5620, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 3
-  rangedAttackRange: 15
-  meleeAttackRange: 10
-  detectionRange: 20
-  bulletSpawnPoints:
-  - {fileID: 3508364232569780695}
-  bulletPrefab: {fileID: 2993164238301052031, guid: 3024ab5f579459143858b420f4513d28, type: 3}
-  bulletSpeed: 10
-  attackCooldown: 2
-  player: {fileID: 0}
-  isPhase2: 0
-  isAttacking: 0
-  isDead: 0
-  hasChangedPhase: 0
-  lastAttackTime: 0
-  playerDetected: 0
-  audioSource: {fileID: 9064247290567675591}
-  runningSound: {fileID: 8300000, guid: 7747db0381c1c244f83845766a626fae, type: 3}
-  shootSound: {fileID: 8300000, guid: f6f716780bc9e5c43ba8bfdc47d68873, type: 3}
-  meleeAttackSound: {fileID: 8300000, guid: 4bcbb51f1228be34e8524fe3e9db5302, type: 3}
-  deathSound: {fileID: 8300000, guid: 22ab5792f9298b547b87b8658b2d556d, type: 3}
-  hurtSound: {fileID: 0}
-  phaseChangeSound: {fileID: 0}
-  soundVolume: 0.7
-  soundPitch: 1
-  healthBar: {fileID: 319815588104526075}
-  damageReceiver: {fileID: 8673994875547998331}
 --- !u!114 &8673994875547998331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -930,9 +931,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerLayer:
     serializedVersion: 2
-    m_Bits: 258
+    m_Bits: 4294967295
   damage: 5
   punchHitBox: {fileID: 1990405217442085384}
   slamHitBox: {fileID: 5765457943625600257}
-  punchHitSize: {x: 2.88, y: 1.02}
-  slamHitSize: {x: 2.9, y: 1.72}
+  punchHitSize: {x: 3, y: 2}
+  slamHitSize: {x: 3, y: 2}

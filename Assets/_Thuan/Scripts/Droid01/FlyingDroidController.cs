@@ -34,7 +34,6 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
         rb = GetComponent<Rigidbody2D>();
         damageReceiver = GetComponent<EnemyDamageReceiver>();
         itemDropTable = GetComponent<ItemDropTable>();
-
     }
 
     void Start()

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using BehaviorDesigner.Runtime;
 
 public class CameraZoomTrigger : MonoBehaviour
 {
@@ -17,6 +18,11 @@ public class CameraZoomTrigger : MonoBehaviour
     private float originalZoomSize;
     private bool hasTriggered = false;
     private AudioSource audioSource;
+
+    [Header("Boss Control")]
+    public MonoBehaviour bossController; // Kéo Boss2Controller vào đây
+    public bool disableBossOnTrigger = true;
+    public BehaviorTree behaviorTree;
     
     void Start()
     {
@@ -42,6 +48,13 @@ public class CameraZoomTrigger : MonoBehaviour
         if (other.CompareTag("Player") && zoomOnEnter && !hasTriggered)
         {
             hasTriggered = true;
+
+            // Disable boss controller trước khi zoom
+            if (disableBossOnTrigger && bossController != null && behaviorTree != null)
+            {
+                bossController.enabled = false;
+                behaviorTree.enabled = false;
+            }
             
             // Play zoom sound
             if (zoomSound != null && audioSource != null)
@@ -100,6 +113,14 @@ public class CameraZoomTrigger : MonoBehaviour
         
         // Ensure final size is exact
         mainCam.orthographicSize = targetSize;
+        
+        // Kích hoạt boss controller SAU KHI zoom xong
+        if (bossController != null && behaviorTree != null)
+        {
+            bossController.enabled = true;
+            behaviorTree.enabled = true;
+            Debug.Log("Boss activated!");
+        }
     }
     
     // Method để reset trigger từ bên ngoài
