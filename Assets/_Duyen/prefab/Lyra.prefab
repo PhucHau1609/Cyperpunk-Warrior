@@ -478,6 +478,7 @@ GameObject:
   - component: {fileID: 3240349622464444932}
   - component: {fileID: 7429732627388855703}
   - component: {fileID: 6164682472274407560}
+  - component: {fileID: 6696049852527247659}
   m_Layer: 10
   m_Name: Lyra
   m_TagString: NPC
@@ -594,10 +595,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423414baa40fd154eaed5e5af4f4b62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followHeight: 1
-  sideOffset: 1
-  xFollowSpeed: 50
-  yFollowSpeed: 50
+  xFollowSpeed: 5
+  minDistance: 2
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 192
+  avoidForce: 5
   isDashing: 0
   dashFollowMultiplier: 2
 --- !u!61 &2270218561219984153
@@ -730,6 +733,28 @@ MonoBehaviour:
   gameOverPanel: {fileID: 0}
   healthBarUI: {fileID: 7131425744837335787}
   healthBarTransform: {fileID: 0}
+--- !u!195 &6696049852527247659
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8076589499098797892}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.24
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.48
+  m_BaseOffset: 0.24
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &8606644308903919315
 GameObject:
   m_ObjectHideFlags: 0

@@ -123,59 +123,6 @@ public class FloatingFollower : MonoBehaviour
             }
         }
     }
-
-    //void FixedUpdate()
-    //{
-    //    if (player == null) return;
-
-    //    if (state == PetState.Sleepwell)
-    //    {
-    //        if (CodeLock.PetUnlocked)
-    //        {
-    //            state = PetState.Awaken;
-    //            anim.SetTrigger("Awaken");
-    //            StartCoroutine(StartFollowAfterDelay(1.5f));
-    //        }
-    //        return;
-    //    }
-
-    //    if (state != PetState.Following) return;
-
-    //    float direction = player.localScale.x > 0 ? -1 : 1;
-    //    targetPos = player.position + new Vector3(sideOffset * direction, followHeight, 0);
-
-    //    Vector2 currentPos = rb.position;
-    //    float distanceToTarget = Vector2.Distance(currentPos, targetPos);
-
-    //    if (distanceToTarget < minDistance)
-    //        return;
-
-    //    Vector2 dirToTarget = ((Vector2)targetPos - currentPos).normalized;
-
-    //    // Kiểm tra vật cản trên đường bay
-    //    RaycastHit2D hit = Physics2D.Raycast(currentPos, dirToTarget, 1.2f, obstacleMask);
-    //    if (hit.collider != null)
-    //    {
-    //        targetPos += new Vector3(0, avoidForce, 0);
-    //        dirToTarget = ((Vector2)targetPos - currentPos).normalized;
-    //    }
-
-    //    float yDiff = targetPos.y - currentPos.y;
-    //    float ySpeed = yFollowSpeed;
-
-    //    if (yDiff > 1f) ySpeed *= 1.2f;
-    //    else if (yDiff < -1f) ySpeed *= 2f;
-
-    //    float speedMultiplier = isDashing ? dashFollowMultiplier : 1f;
-
-    //    // Bay từ từ: không dùng Lerp nữa, mà Move theo velocity ổn định
-    //    Vector2 velocity = new Vector2(dirToTarget.x * xFollowSpeed, dirToTarget.y * ySpeed) * speedMultiplier;
-    //    rb.MovePosition(currentPos + velocity * Time.fixedDeltaTime);
-
-    //    // Lật mặt theo hướng bay
-    //    transform.localScale = direction > 0 ? new Vector3(-2, 2, 2) : new Vector3(2, 2, 2);
-    //}
-
     IEnumerator StartFollowAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
