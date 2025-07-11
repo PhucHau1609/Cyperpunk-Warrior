@@ -28,6 +28,7 @@ public class FloatingFollower : MonoBehaviour
     private NavMeshAgent agent;
     private bool isUsingPathfinding = false;
 
+    public bool IsReadyForDialogue => state == PetState.Following;
 
 
     private enum PetState { Sleepwell, Awaken, Following, Disappear }
