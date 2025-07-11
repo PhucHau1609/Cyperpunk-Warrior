@@ -13,6 +13,7 @@ public class EnhancedPickerWheel : PickerWheel
     [Header("Player Setting")]
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private GameObject panelMiniGameX;
+    [SerializeField] private Animator playerAnimator;
 
 
     [Header("Reward System")]
@@ -29,12 +30,45 @@ public class EnhancedPickerWheel : PickerWheel
     [SerializeField] private DG.Tweening.Ease coreMoveEase = DG.Tweening.Ease.OutBack;
 
 
+
+
+    private float[] originalChances; // Lưu trữ chance ban đầu của từng wheel piece
     private int completedLevels = 0;
     private float currentBonusMultiplier = 1f;
+
+    // 2. Thêm method để backup và restore chances
+    private void BackupOriginalChances()
+    {
+        if (originalChances == null || originalChances.Length != wheelPieces.Length)
+        {
+            originalChances = new float[wheelPieces.Length];
+        }
+
+        for (int i = 0; i < wheelPieces.Length; i++)
+        {
+            originalChances[i] = wheelPieces[i].Chance;
+        }
+    }
+
+    private void RestoreOriginalChances()
+    {
+        if (originalChances != null && originalChances.Length == wheelPieces.Length)
+        {
+            for (int i = 0; i < wheelPieces.Length; i++)
+            {
+                wheelPieces[i].Chance = originalChances[i];
+            }
+            RecalculateWeights();
+        }
+    }
+
 
     protected override void Start()
     {
         base.Start();
+
+        BackupOriginalChances();
+
 
         // Setup events
         if (skillChallenge != null)
@@ -43,11 +77,16 @@ public class EnhancedPickerWheel : PickerWheel
         if (progressBar != null)
             progressBar.OnReachCheckpoint += OnReachCheckpoint;
     }
-
     // Thêm method override cho Spin để đăng ký event:
+
+    // 4. Cập nhật method Spin để reset trước mỗi lần quay
     public override void Spin()
     {
         if (IsSpinning) return;
+
+        // Reset về trạng thái ban đầu trước mỗi lần quay
+        RestoreOriginalChances();
+
         playerMovement.canMove = false;
 
         // Đăng ký event trước khi spin
@@ -68,27 +107,30 @@ public class EnhancedPickerWheel : PickerWheel
             base.Spin();
         }
     }
-/*
+    /*  public override void Spin()
+      {
+          if (IsSpinning) return;
+          playerMovement.canMove = false;
 
-    public override void Spin()
-    {
-        if (IsSpinning) return;
-        playerMovement.canMove = false;
-        // Reset skill system
-        completedLevels = 0;
-        currentBonusMultiplier = 1f;
+          // Đăng ký event trước khi spin
+          OnSpinEnd(OnWheelSpinComplete);
 
-        // Bắt đầu progress bar thay vì spin ngay
-        if (progressBar != null)
-        {
-            progressBar.StartProgress();
-        }
-        else
-        {
-            // Fallback to normal spin
-            base.Spin();
-        }
-    }*/
+          // Reset skill system
+          completedLevels = 0;
+          currentBonusMultiplier = 1f;
+
+          // Bắt đầu progress bar thay vì spin ngay
+          if (progressBar != null)
+          {
+              progressBar.StartProgress();
+          }
+          else
+          {
+              // Fallback to normal spin
+              base.Spin();
+          }
+      }*/
+
 
     private void OnReachCheckpoint(int checkpointIndex)
     {
@@ -284,6 +326,28 @@ public class EnhancedPickerWheel : PickerWheel
 
     // Thêm method override cho OnSpinEnd:
     // Method xử lý khi bánh xe dừng lại:
+    /*   private void OnWheelSpinComplete(WheelPiece piece)
+       {
+           // Xác định loại phần thưởng dựa trên index
+           WheelPieceType pieceType = GetWheelPieceTypeByIndex(piece.Index);
+
+           // Spawn phần thưởng tương ứng
+           switch (pieceType)
+           {
+               case WheelPieceType.Artefact:
+                   SpawnEnergyCore();
+                   break;
+               case WheelPieceType.Bomb:
+                   SpawnBombs();
+                   break;
+           }
+
+           // Cho phép player di chuyển lại
+           if (playerMovement != null)
+               playerMovement.canMove = true;
+       }*/
+
+    // 5. Cập nhật method OnWheelSpinComplete để cho phép quay lại
     private void OnWheelSpinComplete(WheelPiece piece)
     {
         // Xác định loại phần thưởng dựa trên index
@@ -303,11 +367,23 @@ public class EnhancedPickerWheel : PickerWheel
         // Cho phép player di chuyển lại
         if (playerMovement != null)
             playerMovement.canMove = true;
+
+        // Reset về trạng thái ban đầu để sẵn sàng cho lần quay tiếp theo
+        RestoreOriginalChances();
+    }
+
+    // 6. Thêm method public để reset thủ công (nếu cần)
+    public void ResetToOriginalState()
+    {
+        RestoreOriginalChances();
+        completedLevels = 0;
+        currentBonusMultiplier = 1f;
     }
 
     private void SpawnBombs()
     {
         this.TurnOffMiniGame();
+        playerAnimator.Play("Player_ANGRY_N");
         if (bombPrefab != null && spawnLeft != null && spawnRight != null)
         {
             for (int i = 0; i < bombCount; i++)
@@ -372,6 +448,7 @@ public class EnhancedPickerWheel : PickerWheel
     private void SpawnEnergyCore()
     {
         this.TurnOffMiniGame();
+        playerAnimator.Play("Player_HAPPY_N");
         if (spawnCenter != null)
         {
             ItemsDropCtrl coreItem = ItemsDropManager.Instance.DropItemObject(ItemCode.UpgradeItem_0, 1, spawnCenter.position);
@@ -390,6 +467,9 @@ public class EnhancedPickerWheel : PickerWheel
     public void TurnOffMiniGame()
     {
         panelMiniGameX.SetActive(false);
+
+        RestoreOriginalChances();
+
     }
 }
 

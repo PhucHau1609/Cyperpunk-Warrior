@@ -297,6 +297,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 21604350}
   effectCtrl: {fileID: 2003578299}
   _collider: {fileID: 21604351}
+  _hitName: 0
 --- !u!50 &21604350
 Rigidbody2D:
   serializedVersion: 5
@@ -39172,6 +39173,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 504792526}
   effectCtrl: {fileID: 504792523}
   _collider: {fileID: 504792527}
+  _hitName: 0
 --- !u!50 &504792526
 Rigidbody2D:
   serializedVersion: 5
@@ -39850,6 +39852,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 570727017}
   effectCtrl: {fileID: 2081159700}
   _collider: {fileID: 570727018}
+  _hitName: 0
 --- !u!50 &570727017
 Rigidbody2D:
   serializedVersion: 5
@@ -40953,6 +40956,8 @@ MonoBehaviour:
   itemInventory:
     itemName: 
     itemCount: 0
+  dragSizeScale: 0.8
+  targetCanvas: {fileID: 0}
 --- !u!114 &654214559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41279,6 +41284,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showHide: {fileID: 848413206}
   defaultItemInventoryUI: {fileID: 654214558}
+  centerPosition: {x: 0, y: 0, z: 0}
+  offsetWhenCraftingOpen: {x: -300, y: 0, z: 0}
 --- !u!1 &687869709
 GameObject:
   m_ObjectHideFlags: 0
@@ -41541,6 +41548,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showHide: {fileID: 1270948294}
   defaultItemInventoryUI: {fileID: 1127385568}
+  centerPosition: {x: 0, y: 0, z: 0}
+  offsetWhenCraftingOpen: {x: -300, y: 0, z: 0}
 --- !u!1 &705505984
 GameObject:
   m_ObjectHideFlags: 0
@@ -52625,6 +52634,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 805146204}
   effectCtrl: {fileID: 805146201}
   _collider: {fileID: 805146205}
+  _hitName: 0
 --- !u!50 &805146204
 Rigidbody2D:
   serializedVersion: 5
@@ -53786,6 +53796,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 892998260}
   effectCtrl: {fileID: 0}
   _collider: {fileID: 892998261}
+  _hitName: 0
 --- !u!50 &892998260
 Rigidbody2D:
   serializedVersion: 5
@@ -53926,6 +53937,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 893205592}
   effectCtrl: {fileID: 893205589}
   _collider: {fileID: 893205593}
+  _hitName: 0
 --- !u!50 &893205592
 Rigidbody2D:
   serializedVersion: 5
@@ -54073,6 +54085,63 @@ Transform:
   - {fileID: 687869710}
   m_Father: {fileID: 1927974376}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &912669650
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3059601009824068123, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_Name
+      value: GameObjectMiniGameX
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -7.2358093
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.9012094
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8700263313387556874, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4cbf3e2fd7b02dd4fb6150e07b63b59e, type: 3}
 --- !u!1 &913805481
 GameObject:
   m_ObjectHideFlags: 0
@@ -54277,6 +54346,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 913805485}
   effectCtrl: {fileID: 913805490}
   _collider: {fileID: 913805489}
+  _hitName: 0
 --- !u!1 &915807935
 GameObject:
   m_ObjectHideFlags: 0
@@ -70300,6 +70370,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1081578523}
   effectCtrl: {fileID: 1081578528}
   _collider: {fileID: 1081578524}
+  _hitName: 0
 --- !u!114 &1081578528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70365,6 +70436,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1092988367}
   effectCtrl: {fileID: 1996381620}
   _collider: {fileID: 1092988368}
+  _hitName: 0
 --- !u!50 &1092988367
 Rigidbody2D:
   serializedVersion: 5
@@ -70796,6 +70868,8 @@ MonoBehaviour:
   itemInventory:
     itemName: 
     itemCount: 0
+  dragSizeScale: 0.8
+  targetCanvas: {fileID: 0}
 --- !u!114 &1127385569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71781,6 +71855,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1153373230}
   effectCtrl: {fileID: 1153373227}
   _collider: {fileID: 1153373231}
+  _hitName: 0
 --- !u!50 &1153373230
 Rigidbody2D:
   serializedVersion: 5
@@ -72053,6 +72128,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1159248595}
   effectCtrl: {fileID: 927662572}
   _collider: {fileID: 1159248596}
+  _hitName: 0
 --- !u!50 &1159248595
 Rigidbody2D:
   serializedVersion: 5
@@ -77369,6 +77445,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1231451282}
   effectCtrl: {fileID: 805146201}
   _collider: {fileID: 1231451283}
+  _hitName: 0
 --- !u!50 &1231451282
 Rigidbody2D:
   serializedVersion: 5
@@ -86576,6 +86653,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1439202847}
   effectCtrl: {fileID: 0}
   _collider: {fileID: 1439202848}
+  _hitName: 0
 --- !u!50 &1439202847
 Rigidbody2D:
   serializedVersion: 5
@@ -87220,6 +87298,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1472755010}
   effectCtrl: {fileID: 0}
   _collider: {fileID: 1472755011}
+  _hitName: 0
 --- !u!50 &1472755010
 Rigidbody2D:
   serializedVersion: 5
@@ -87569,6 +87648,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1493073609}
   effectCtrl: {fileID: 893205589}
   _collider: {fileID: 1493073610}
+  _hitName: 0
 --- !u!50 &1493073609
 Rigidbody2D:
   serializedVersion: 5
@@ -94986,6 +95066,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1694225345}
   effectCtrl: {fileID: 1963192335}
   _collider: {fileID: 1694225346}
+  _hitName: 0
 --- !u!50 &1694225345
 Rigidbody2D:
   serializedVersion: 5
@@ -95109,6 +95190,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1709365965}
   effectCtrl: {fileID: 1153373227}
   _collider: {fileID: 1709365966}
+  _hitName: 0
 --- !u!50 &1709365965
 Rigidbody2D:
   serializedVersion: 5
@@ -97673,6 +97755,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1877802165}
   effectCtrl: {fileID: 0}
   _collider: {fileID: 1877802166}
+  _hitName: 0
 --- !u!50 &1877802165
 Rigidbody2D:
   serializedVersion: 5
@@ -109723,6 +109806,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 1996381623}
   effectCtrl: {fileID: 1996381620}
   _collider: {fileID: 1996381624}
+  _hitName: 0
 --- !u!50 &1996381623
 Rigidbody2D:
   serializedVersion: 5
@@ -109968,6 +110052,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 2003578302}
   effectCtrl: {fileID: 2003578299}
   _collider: {fileID: 2003578303}
+  _hitName: 0
 --- !u!50 &2003578302
 Rigidbody2D:
   serializedVersion: 5
@@ -111137,6 +111222,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 2108738617}
   effectCtrl: {fileID: 2108738623}
   _collider: {fileID: 2108738618}
+  _hitName: 0
 --- !u!114 &2108738622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118779,6 +118865,8 @@ MonoBehaviour:
   itemInventory:
     itemName: 
     itemCount: 0
+  dragSizeScale: 0.8
+  targetCanvas: {fileID: 0}
 --- !u!114 &2101163095416788096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119382,6 +119470,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sphere: {fileID: 8028517550587152968}
+  enableMousePicking: 1
+  mousePickingRange: 3
+  itemLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!198 &2637359012142502085
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -139253,6 +139346,7 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 25
+  isWallSliding: 0
   life: 10
   maxLife: 100
   invincible: 0
@@ -139288,6 +139382,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnWallSlideStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWallSlideEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8299052012271084381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140471,3 +140571,4 @@ SceneRoots:
   - {fileID: 937071466}
   - {fileID: 429034353}
   - {fileID: 1288066859}
+  - {fileID: 912669650}

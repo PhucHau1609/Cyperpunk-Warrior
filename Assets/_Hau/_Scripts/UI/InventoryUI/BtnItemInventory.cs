@@ -61,6 +61,18 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
             draggingVisual = null;
         }
 
+        // 👇 Thêm đoạn kiểm tra Portal dưới chuột
+        Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
+        if (hit.collider != null)
+        {
+            PortalReceiver portal = hit.collider.GetComponent<PortalReceiver>();
+            if (portal != null)
+            {
+                portal.ReceiveItem(itemInventory);
+            }
+        }
+
         // Kiểm tra nếu thả vào Delete Zone
         if (DeleteItemZone.IsPointerOverDeleteZone(eventData))
         {
@@ -168,7 +180,7 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
         Debug.Log("Item CLick:" + gameObject.name);
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public virtual void OnPointerEnter(PointerEventData eventData)
     {
         if (itemInventory != null && itemInventory.ItemProfileSO != null)
         {
@@ -176,7 +188,7 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
         }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public virtual void OnPointerExit(PointerEventData eventData)
     {
         ItemTooltipUI.Instance.HideTooltip();
     }
