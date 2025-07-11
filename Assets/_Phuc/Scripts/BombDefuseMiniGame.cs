@@ -18,25 +18,28 @@ public class BombDefuseMiniGame : MonoBehaviour
     public TextMeshProUGUI txtResult;
     public GameObject imgMask;
 
+    [Header("Wall Controller")]
+    public WallShrinker wallShrinker;
+
     private float timer = 0f;
     private int targetTime;
     private bool isRunning = false;
     private bool hasStopped = false;
     private float stoppedTime = 0f;
+    private bool gameInProgress = false;
+    private bool gameWon = false;
 
     void Start()
     {
-        // Gắn sự kiện nút mở/đóng mini game
         btnOpenMiniGame.onClick.AddListener(OpenMiniGame);
         btnCloseMiniGame.onClick.AddListener(CloseMiniGame);
 
-        // Gắn sự kiện nút trong game
         btnStartGame.onClick.AddListener(StartGame);
         btnStopTime.onClick.AddListener(StopTimer);
         btnConfirm.onClick.AddListener(CheckResult);
 
-        // Ban đầu mini game sẽ ẩn
         miniGamePanel.SetActive(false);
+        btnOpenMiniGame.gameObject.SetActive(false);
     }
 
     void Update()
@@ -47,23 +50,49 @@ public class BombDefuseMiniGame : MonoBehaviour
 
             if (timer >= 3f && !imgMask.activeSelf)
             {
-                imgMask.SetActive(true); // Che timer sau 3 giây
+                imgMask.SetActive(true);
             }
 
             UpdateTimerDisplay(timer);
         }
     }
 
+    public void OpenMiniGame()
+    {
+        if (gameWon) return;
+
+        miniGamePanel.SetActive(true);
+        gameInProgress = false;
+        ResetGame();
+        wallShrinker.PauseShrinking();
+    }
+
+    public void CloseMiniGame()
+    {
+        miniGamePanel.SetActive(false);
+        // Luôn resume lại nếu chưa thắng để tránh lỗi không di chuyển
+        if (!gameWon)
+        {
+            wallShrinker.ResumeShrinking();
+        }
+        ResetGame();
+    }
+
     void StartGame()
     {
+        if (gameInProgress) return;
+
         ResetGame();
 
-        targetTime = Random.Range(5, 11); // Ngẫu nhiên từ 5 đến 10
+        targetTime = Random.Range(5, 11);
         txtTargetTime.text = "Defuse Time: " + targetTime.ToString("00") + ":00";
 
         timer = 0f;
         isRunning = true;
+        gameInProgress = true;
         imgMask.SetActive(false);
+
+        wallShrinker.ResumeShrinking();
     }
 
     void StopTimer()
@@ -74,7 +103,7 @@ public class BombDefuseMiniGame : MonoBehaviour
         isRunning = false;
         stoppedTime = timer;
 
-        imgMask.SetActive(false); // Hiện lại timer
+        imgMask.SetActive(false);
         UpdateTimerDisplay(stoppedTime);
     }
 
@@ -89,12 +118,18 @@ public class BombDefuseMiniGame : MonoBehaviour
         {
             txtResult.text = "Task Complete!";
             txtResult.color = Color.green;
+
+            wallShrinker.StopShrinking();
+            gameWon = true;
+            Invoke(nameof(CloseMiniGame), 1.5f);
         }
         else
         {
             txtResult.text = "Failed!";
             txtResult.color = Color.red;
         }
+
+        gameInProgress = false;
     }
 
     void UpdateTimerDisplay(float time)
@@ -114,17 +149,5 @@ public class BombDefuseMiniGame : MonoBehaviour
         txtResult.text = "";
         txtResult.color = Color.white;
         imgMask.SetActive(false);
-    }
-
-    public void OpenMiniGame()
-    {
-        miniGamePanel.SetActive(true);
-        ResetGame();
-    }
-
-    public void CloseMiniGame()
-    {
-        miniGamePanel.SetActive(false);
-        ResetGame();
     }
 }
