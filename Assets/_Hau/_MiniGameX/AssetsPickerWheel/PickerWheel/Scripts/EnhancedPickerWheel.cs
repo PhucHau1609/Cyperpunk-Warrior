@@ -1,4 +1,6 @@
-﻿using EasyUI.PickerWheelUI;
+﻿using DG.Tweening;
+using EasyUI.PickerWheelUI;
+using System.Collections;
 using UnityEngine;
 
 public class EnhancedPickerWheel : PickerWheel
@@ -10,6 +12,21 @@ public class EnhancedPickerWheel : PickerWheel
 
     [Header("Player Setting")]
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private GameObject panelMiniGameX;
+
+
+    [Header("Reward System")]
+    [SerializeField] private GameObject bombPrefab;
+    [SerializeField] private int bombCount = 4; // Số lượng bomb muốn spawn
+    [SerializeField] private float spawnDelay = 0.1f; // Delay giữa các lần spawn (tùy chọn)
+    [SerializeField] private Transform spawnLeft;
+    [SerializeField] private Transform spawnRight;
+    [SerializeField] private Transform spawnCenter;
+    [SerializeField] private Vector2 leftForce = new Vector2(-5f, 8f);
+    [SerializeField] private Vector2 rightForce = new Vector2(5f, 8f);
+    [SerializeField] private float coreMoveDistance = 2f;
+    [SerializeField] private float coreMoveDuration = 1f;
+    [SerializeField] private DG.Tweening.Ease coreMoveEase = DG.Tweening.Ease.OutBack;
 
 
     private int completedLevels = 0;
@@ -27,10 +44,15 @@ public class EnhancedPickerWheel : PickerWheel
             progressBar.OnReachCheckpoint += OnReachCheckpoint;
     }
 
+    // Thêm method override cho Spin để đăng ký event:
     public override void Spin()
     {
         if (IsSpinning) return;
-       // playerMovement.canMove = false;
+        playerMovement.canMove = false;
+
+        // Đăng ký event trước khi spin
+        OnSpinEnd(OnWheelSpinComplete);
+
         // Reset skill system
         completedLevels = 0;
         currentBonusMultiplier = 1f;
@@ -46,6 +68,27 @@ public class EnhancedPickerWheel : PickerWheel
             base.Spin();
         }
     }
+/*
+
+    public override void Spin()
+    {
+        if (IsSpinning) return;
+        playerMovement.canMove = false;
+        // Reset skill system
+        completedLevels = 0;
+        currentBonusMultiplier = 1f;
+
+        // Bắt đầu progress bar thay vì spin ngay
+        if (progressBar != null)
+        {
+            progressBar.StartProgress();
+        }
+        else
+        {
+            // Fallback to normal spin
+            base.Spin();
+        }
+    }*/
 
     private void OnReachCheckpoint(int checkpointIndex)
     {
@@ -237,6 +280,116 @@ public class EnhancedPickerWheel : PickerWheel
             return WheelPieceType.Artefact;
         else
             return WheelPieceType.Bomb;
+    }
+
+    // Thêm method override cho OnSpinEnd:
+    // Method xử lý khi bánh xe dừng lại:
+    private void OnWheelSpinComplete(WheelPiece piece)
+    {
+        // Xác định loại phần thưởng dựa trên index
+        WheelPieceType pieceType = GetWheelPieceTypeByIndex(piece.Index);
+
+        // Spawn phần thưởng tương ứng
+        switch (pieceType)
+        {
+            case WheelPieceType.Artefact:
+                SpawnEnergyCore();
+                break;
+            case WheelPieceType.Bomb:
+                SpawnBombs();
+                break;
+        }
+
+        // Cho phép player di chuyển lại
+        if (playerMovement != null)
+            playerMovement.canMove = true;
+    }
+
+    private void SpawnBombs()
+    {
+        this.TurnOffMiniGame();
+        if (bombPrefab != null && spawnLeft != null && spawnRight != null)
+        {
+            for (int i = 0; i < bombCount; i++)
+            {
+                // Chọn vị trí spawn (trái hoặc phải)
+                Transform spawnPosition = (i % 2 == 0) ? spawnLeft : spawnRight;
+                Vector2 force = (i % 2 == 0) ? leftForce : rightForce;
+
+                // Spawn bomb
+                GameObject bomb = Instantiate(bombPrefab, spawnPosition.position, Quaternion.identity);
+                Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
+
+                if (rb != null)
+                {
+                    // Thêm random variation để bomb không bay cùng quỹ đạo
+                    Vector2 randomizedForce = new Vector2(
+                        force.x + Random.Range(-1f, 1f),
+                        force.y + Random.Range(-0.5f, 0.5f)
+                    );
+                    rb.AddForce(randomizedForce, ForceMode2D.Impulse);
+                }
+            }
+        }
+    }
+
+    // Hoặc nếu muốn spawn với delay:
+    private void SpawnBombsWithDelay()
+    {
+        if (bombPrefab != null && spawnLeft != null && spawnRight != null)
+        {
+            StartCoroutine(SpawnBombsCoroutine());
+        }
+    }
+
+    private IEnumerator SpawnBombsCoroutine()
+    {
+        for (int i = 0; i < bombCount; i++)
+        {
+            // Chọn vị trí spawn (trái hoặc phải)
+            Transform spawnPosition = (i % 2 == 0) ? spawnLeft : spawnRight;
+            Vector2 force = (i % 2 == 0) ? leftForce : rightForce;
+
+            // Spawn bomb
+            GameObject bomb = Instantiate(bombPrefab, spawnPosition.position, Quaternion.identity);
+            Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
+
+            if (rb != null)
+            {
+                // Thêm random variation để bomb không bay cùng quỹ đạo
+                Vector2 randomizedForce = new Vector2(
+                    force.x + Random.Range(-1f, 1f),
+                    force.y + Random.Range(-0.5f, 0.5f)
+                );
+                rb.AddForce(randomizedForce, ForceMode2D.Impulse);
+            }
+
+            // Delay trước khi spawn bomb tiếp theo
+            yield return new WaitForSeconds(spawnDelay);
+        }
+    }
+
+    private void SpawnEnergyCore()
+    {
+        this.TurnOffMiniGame();
+        if (spawnCenter != null)
+        {
+            ItemsDropCtrl coreItem = ItemsDropManager.Instance.DropItemObject(ItemCode.UpgradeItem_0, 1, spawnCenter.position);
+            if (coreItem == null) return;
+
+            // Di chuyển bằng DOTween
+            Vector3 targetPos = coreItem.transform.position + Vector3.up * coreMoveDistance;
+            coreItem.transform.DOMove(targetPos, coreMoveDuration)
+                .SetEase(coreMoveEase)
+                .SetUpdate(true); // vẫn hoạt động khi timescale = 0
+        }
+
+
+    }
+
+    public void TurnOffMiniGame()
+    {
+        panelMiniGameX.SetActive(false);
     }
 }
 
