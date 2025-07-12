@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Linq;
+using UnityEngine.Playables; // Thêm để sử dụng Timeline
 
 public class MinigameManager : MonoBehaviour
 {
@@ -18,10 +19,14 @@ public class MinigameManager : MonoBehaviour
 
     public GridSlot[] gridSlots;
 
+    // Timeline references
+    public PlayableDirector cutsceneDirector; // ⚠️ GÁN TRONG INSPECTOR
+    
     private bool isCompleted = false;
     private AudioClip previousBGM;
     public int nextSceneIndex;
     public Player playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+    public GameObject DialogueTrigger;
 
 
     private void Awake()
@@ -44,6 +49,21 @@ public class MinigameManager : MonoBehaviour
             AudioManager.Instance.PlayClickSFX();
             CloseMinigame();
         });
+
+        // Subscribe to Timeline completion event
+        if (cutsceneDirector != null)
+        {
+            cutsceneDirector.stopped += OnCutsceneFinished;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe from Timeline events
+        if (cutsceneDirector != null)
+        {
+            cutsceneDirector.stopped -= OnCutsceneFinished;
+        }
     }
 
     private void Update()
@@ -144,6 +164,7 @@ public class MinigameManager : MonoBehaviour
         winImage.SetActive(false);
 
         CloseMinigame();
+        DialogueTrigger.SetActive(false);
 
         openMinigameButton.interactable = false;
 
@@ -152,8 +173,31 @@ public class MinigameManager : MonoBehaviour
         {
             doorAnimator.SetTrigger("Open");  // animation phải có trigger "Open"
         }
+        
+        // Chờ animation mở cửa hoàn thành
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(nextSceneIndex);
+        
+        // Chạy Timeline cutscene
+        if (cutsceneDirector != null)
+        {
+            cutsceneDirector.Play();
+            // Timeline sẽ tự động trigger OnCutsceneFinished() khi hoàn thành
+        }
+        else
+        {
+            // Nếu không có Timeline, chuyển scene ngay lập tức
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+    }
+
+    // Callback khi Timeline hoàn thành
+    private void OnCutsceneFinished(PlayableDirector director)
+    {
+        if (director == cutsceneDirector)
+        {
+            // Chuyển scene sau khi Timeline hoàn thành
+            SceneManager.LoadScene(nextSceneIndex);
+        }
     }
 
     private void ResetMinigame()
