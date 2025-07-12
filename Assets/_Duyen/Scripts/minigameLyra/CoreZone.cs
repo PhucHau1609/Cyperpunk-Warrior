@@ -16,6 +16,10 @@ public class CoreZone : MonoBehaviour
     public Sprite sprite70;
     public Sprite sprite100;
 
+    [Header("Reward")]
+    [SerializeField] protected ItemCode rewardCore;
+
+
     private float progress = 0f;
     private float stayTime = 0f;
     private bool isCharging = false;
@@ -135,6 +139,8 @@ public class CoreZone : MonoBehaviour
         {
             spriteRenderer.sprite = sprite100;
             currentStage = 3;
+            //Rơi ra cục energy
+            ItemsDropManager.Instance.DropItem(rewardCore,1,this.transform.position);
         }
         else if (percent >= 70 && currentStage < 2)
         {
