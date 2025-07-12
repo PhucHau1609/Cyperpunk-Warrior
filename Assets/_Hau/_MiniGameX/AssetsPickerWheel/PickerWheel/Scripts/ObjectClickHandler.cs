@@ -4,6 +4,15 @@ public class ObjectClickHandler : MonoBehaviour
 {
     [SerializeField] private GameObject uiToShow; // Gán UI cần bật trong Inspector
 
+    private void Start()
+    {
+        if (uiToShow == null && UIManager.Instance != null)
+        {
+            uiToShow = UIManager.Instance.miniGameUI;
+        }
+    }
+
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0)) // Chuột trái
