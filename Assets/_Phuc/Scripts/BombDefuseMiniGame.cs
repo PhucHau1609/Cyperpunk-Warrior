@@ -21,6 +21,9 @@ public class BombDefuseMiniGame : MonoBehaviour
     [Header("Wall Controller")]
     public WallShrinker wallShrinker;
 
+    [Header("Reveal Object After Success")]
+    public GameObject objectToShowAfterWin;
+
     private float timer = 0f;
     private int targetTime;
     private bool isRunning = false;
@@ -40,6 +43,11 @@ public class BombDefuseMiniGame : MonoBehaviour
 
         miniGamePanel.SetActive(false);
         btnOpenMiniGame.gameObject.SetActive(false);
+
+        if (objectToShowAfterWin != null)
+        {
+            objectToShowAfterWin.SetActive(false);
+        }
     }
 
     void Update()
@@ -70,10 +78,13 @@ public class BombDefuseMiniGame : MonoBehaviour
     public void CloseMiniGame()
     {
         miniGamePanel.SetActive(false);
-        // Luôn resume lại nếu chưa thắng để tránh lỗi không di chuyển
         if (!gameWon)
         {
             wallShrinker.ResumeShrinking();
+        }
+        else if (objectToShowAfterWin != null)
+        {
+            objectToShowAfterWin.SetActive(true);
         }
         ResetGame();
     }
