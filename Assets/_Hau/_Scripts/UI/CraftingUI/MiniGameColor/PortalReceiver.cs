@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
@@ -7,6 +8,9 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
     public Animator animator;
 
     public EnergyType currentEnergy;
+
+    public event Action<PortalReceiver, EnergyType> OnEnergySet;
+
 
     void Update()
     {
@@ -67,22 +71,21 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     public void SetEnergy(EnergyType energy)
     {
+        if (currentEnergy != energy) return;
+
         currentEnergy = energy;
 
-        // 👉 Đổi màu hoặc trigger animation
+        // Trigger animation
         switch (energy)
         {
-            case EnergyType.Orange:
-                animator?.SetTrigger("Orange");
-                break;
-            case EnergyType.Blue:
-                animator?.SetTrigger("Blue");
-                break;
-            case EnergyType.Purple:
-                animator?.SetTrigger("Purple");
-                break;
+            case EnergyType.Orange: animator?.SetTrigger("Orange"); break;
+            case EnergyType.Blue: animator?.SetTrigger("Blue"); break;
+            case EnergyType.Purple: animator?.SetTrigger("Purple"); break;
         }
+
+        OnEnergySet?.Invoke(this, energy); // ✅ Thông báo cho tracker
     }
+
 
     private void CycleEnergyType()
     {
@@ -97,5 +100,12 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
 
 }
 
-public enum EnergyType { Orange, Blue, Purple }
+public enum EnergyType
+{
+    None,    // ✅ THÊM GIÁ TRỊ NÀY
+    Orange,
+    Blue,
+    Purple
+}
+
 
