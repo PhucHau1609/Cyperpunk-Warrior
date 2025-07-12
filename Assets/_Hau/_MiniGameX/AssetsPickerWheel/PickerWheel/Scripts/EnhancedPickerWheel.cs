@@ -451,7 +451,7 @@ public class EnhancedPickerWheel : PickerWheel
         playerAnimator.Play("Player_HAPPY_N");
         if (spawnCenter != null)
         {
-            ItemsDropCtrl coreItem = ItemsDropManager.Instance.DropItemObject(ItemCode.UpgradeItem_0, 1, spawnCenter.position);
+            ItemsDropCtrl coreItem = ItemsDropManager.Instance.DropItemObject(ItemCode.UpgradeItem_2, 1, spawnCenter.position);
             if (coreItem == null) return;
 
             // Di chuyển bằng DOTween
