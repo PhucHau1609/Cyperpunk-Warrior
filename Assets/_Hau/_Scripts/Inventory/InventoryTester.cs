@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class InventoryTester : HauMonoBehaviour //E75 create
 {
     public float currentIndex = 13;
-    protected override void Start()
+ /*   protected override void Start()
     {
         base.Start();
         this.AddTestItems(ItemCode.Clothes_1, 1);
@@ -26,7 +26,7 @@ public class InventoryTester : HauMonoBehaviour //E75 create
 
 
 
-    }
+    }*/
 
     [ProButton]
     public virtual void AddTestItems(ItemCode itemCode, int count)

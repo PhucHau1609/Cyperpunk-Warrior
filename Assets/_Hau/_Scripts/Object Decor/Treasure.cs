@@ -12,6 +12,9 @@ public class Treasure : MonoBehaviour
     [SerializeField] private Transform spawnRight;
     [SerializeField] private Transform spawnCenter;
 
+    [Header("Reward")]
+    [SerializeField] protected ItemCode rewardEnergy;
+
     [Header("Bomb Arc Force")]
     [SerializeField] private Vector2 leftForce = new Vector2(-3, 5);
     [SerializeField] private Vector2 rightForce = new Vector2(3, 5);
@@ -81,7 +84,7 @@ public class Treasure : MonoBehaviour
 
     private void SpawnEnergyCore()
     {
-        ItemsDropCtrl coreItem = ItemsDropManager.Instance.DropItemObject(ItemCode.UpgradeItem_0, 1, spawnCenter.position);
+        ItemsDropCtrl coreItem = ItemsDropManager.Instance.DropItemObject(rewardEnergy, 1, spawnCenter.position);
 
         if (coreItem == null) return;
 
