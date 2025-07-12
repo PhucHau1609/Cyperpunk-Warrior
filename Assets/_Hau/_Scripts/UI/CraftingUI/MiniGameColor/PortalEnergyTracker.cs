@@ -5,7 +5,7 @@ using UnityEngine;
 public class PortalEnergyTracker : MonoBehaviour
 {
     [SerializeField] private List<PortalReceiver> portals;
-
+    [SerializeField] protected GameObject laze;
     private Dictionary<PortalReceiver, EnergyType> portalStates = new();
 
     private bool allPortalsActivated = false;
@@ -55,6 +55,7 @@ public class PortalEnergyTracker : MonoBehaviour
     private void OnAllPortalsEnergized()
     {
         // TODO: Thêm logic bạn muốn tại đây
+        laze.SetActive(false);
         Debug.Log("🔥 BẮT ĐẦU nhiệm vụ chính hoặc mở cổng chính!");
     }
 }
