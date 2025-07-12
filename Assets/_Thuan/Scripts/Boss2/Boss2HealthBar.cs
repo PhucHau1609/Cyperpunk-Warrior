@@ -19,7 +19,7 @@ public class Boss2HealthBar : MonoBehaviour
         // Ẩn canvas khi bắt đầu
         if (healthBarCanvas != null)
         {
-            healthBarCanvas.enabled = true;
+            healthBarCanvas.enabled = false;
         }
     }
 
