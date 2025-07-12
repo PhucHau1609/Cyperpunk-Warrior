@@ -20,9 +20,12 @@ public class CameraZoomTrigger : MonoBehaviour
     private AudioSource audioSource;
 
     [Header("Boss Control")]
-    public MonoBehaviour bossController; // Kéo Boss2Controller vào đây
+    public MonoBehaviour bossController; 
     public bool disableBossOnTrigger = true;
     public BehaviorTree behaviorTree;
+
+    [Header("Dialogue")]
+    public GameObject dialogueHolder;
     
     void Start()
     {
@@ -62,9 +65,41 @@ public class CameraZoomTrigger : MonoBehaviour
                 audioSource.PlayOneShot(zoomSound);
             }
             
-            // Zoom camera
-            StartCoroutine(ZoomCamera(targetZoomSize));
+            // Zoom camera và kích hoạt dialogue
+            StartCoroutine(ZoomThenDialogue());
         }
+    }
+
+    IEnumerator ZoomThenDialogue()
+    {
+        // Zoom camera trước
+        yield return StartCoroutine(ZoomCamera(targetZoomSize));
+        
+        // Pause game
+        Time.timeScale = 0f;
+        
+        // Kích hoạt dialogue
+        if (dialogueHolder != null)
+        {
+            dialogueHolder.SetActive(true);
+            
+            // Đợi dialogue kết thúc
+            yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
+        }
+        
+        // Resume game
+        Time.timeScale = 1f;
+        
+        // Kích hoạt boss controller SAU KHI dialogue xong
+        if (bossController != null && behaviorTree != null)
+        {
+            bossController.enabled = true;
+            behaviorTree.enabled = true;
+            Debug.Log("Boss activated!");
+        }
+        
+        // Tắt trigger này
+        gameObject.SetActive(false);
     }
     
     void OnTriggerExit2D(Collider2D other)
@@ -94,7 +129,7 @@ public class CameraZoomTrigger : MonoBehaviour
         
         while (elapsedTime < zoomDuration)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime; // Dùng unscaledDeltaTime để không bị ảnh hưởng bởi timeScale
             float progress = elapsedTime / zoomDuration;
             
             // Smooth zoom transition
@@ -113,14 +148,6 @@ public class CameraZoomTrigger : MonoBehaviour
         
         // Ensure final size is exact
         mainCam.orthographicSize = targetSize;
-        
-        // Kích hoạt boss controller SAU KHI zoom xong
-        if (bossController != null && behaviorTree != null)
-        {
-            bossController.enabled = true;
-            behaviorTree.enabled = true;
-            Debug.Log("Boss activated!");
-        }
     }
     
     // Method để reset trigger từ bên ngoài

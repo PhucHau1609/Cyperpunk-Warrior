@@ -22,7 +22,7 @@ namespace DialogueSystem
 
             for (int i = 0; i < input.Length; i++)
             {
-                 // Nếu skip thì hiện toàn bộ text luôn
+                // Nếu skip thì hiện toàn bộ text luôn
                 if (Input.GetMouseButtonDown(0))
                 {
                     isSkipping = true;
@@ -36,15 +36,15 @@ namespace DialogueSystem
                 
                 textHolder.text += input[i];
                 SoundManager.instance.PlaySound(sound);
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSecondsRealtime(delay); // Dùng WaitForSecondsRealtime để không bị ảnh hưởng bởi timeScale
             }
 
             // Hiện "Click to Continue" sau khi text chạy xong
             if (continueHint != null)
                 continueHint.SetActive(true);
 
-            //yield return new WaitForSeconds(delayBetweenLines);
-            yield return new WaitUntil(() => Input.GetMouseButton(0));
+            // Đợi click chuột để tiếp tục
+            yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
 
             // Ẩn "Click to Continue"
             if (continueHint != null)
