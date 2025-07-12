@@ -11,7 +11,7 @@ public class ItemsPicker : HauMonoBehaviour
     [SerializeField] protected float mousePickingRange = 3f;
     [SerializeField] protected LayerMask itemLayerMask = -1;
 
-    protected Camera mainCamera;
+    public Camera mainCamera;
 
     protected override void LoadComponents()
     {
@@ -124,7 +124,15 @@ public class ItemsPicker : HauMonoBehaviour
         this.PickupItem(itemsDropCtrl);
     }
 
-   
+    public void RefreshCamera()
+    {
+        this.mainCamera = Camera.main;
+        if (this.mainCamera == null)
+            this.mainCamera = FindFirstObjectByType<Camera>();
+    }
+
+
+
 }
 
 /*[RequireComponent(typeof(CircleCollider2D))]
