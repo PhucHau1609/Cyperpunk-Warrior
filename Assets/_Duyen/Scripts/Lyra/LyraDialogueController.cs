@@ -2,67 +2,40 @@
 
 public class LyraDialogueController : MonoBehaviour
 {
-    public GameObject speechIconPrefab;
-    private GameObject currentIconInstance;
+    private FloatingFollower follower;
+
+    private void Awake()
+    {
+        follower = GetComponent<FloatingFollower>();
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Dialog")
-        {
-            DialogueData dialogue = GetDialogueDataForZone(other);
-            if (dialogue == null) return;
+        if (!other.CompareTag("Dialog")) return;
 
-            if (currentIconInstance != null)
-            {
-                Destroy(currentIconInstance);
-            }
+        if (follower != null && !follower.IsReadyForDialogue) return;
 
-            Canvas canvas = Object.FindFirstObjectByType<Canvas>();
-            if (canvas != null)
-            {
-                currentIconInstance = Instantiate(speechIconPrefab, canvas.transform);
-                var follower = currentIconInstance.GetComponent<SpeechIconFollower>();
-                follower.targetNPC = this.transform;
+        DialogueData dialogue = GetDialogueDataForZone(other);
+        if (dialogue == null) return;
 
-                var clickHandler = currentIconInstance.GetComponent<SpeechIconClickHandler>();
-                clickHandler.dialogueData = dialogue;
-                clickHandler.npcTransform = this.transform;
-            
-            }
-        }
+        // Gọi hiển thị thoại trực tiếp, không cần icon
+        DialogueManager.Instance?.StartDialogue(dialogue, this.transform);
     }
 
-    private bool TagExists(string tag)
+    private DialogueData GetDialogueDataForZone(Collider2D zone)
     {
-        try
-        {
-            GameObject temp = new GameObject();
-            temp.tag = tag;
-            Destroy(temp);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        DialogueDataComponent component = zone.GetComponent<DialogueDataComponent>();
+        return component != null ? component.dialogueData : null;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Dialog"))
         {
-            // Khi thoát khỏi vùng thoại -> xóa icon nếu đang hiện
-            if (currentIconInstance != null)
+            if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
             {
-                Destroy(currentIconInstance);
-                currentIconInstance = null;
+                DialogueManager.Instance.CloseDialogue();
             }
         }
-    }
-
-    DialogueData GetDialogueDataForZone(Collider2D zone)
-    {
-        DialogueDataComponent component = zone.GetComponent<DialogueDataComponent>();
-        return component != null ? component.dialogueData : null;
     }
 }
