@@ -254,7 +254,7 @@ namespace NavMeshPlus.Extensions
 
         public static void CollectSources(List<NavMeshBuildSource> sources, Collider2D collider, int area, NavMeshBuilder2dState builder)
         { 
-            if (collider.compositeOperation != Collider2D.CompositeOperation.None)
+            if (collider.usedByComposite)
             {
                 collider = collider.GetComponent<CompositeCollider2D>();
             }

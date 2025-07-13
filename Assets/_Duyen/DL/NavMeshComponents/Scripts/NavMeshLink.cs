@@ -53,19 +53,19 @@ namespace NavMeshPlus.Components
         void OnEnable()
         {
             AddLink();
-            if (m_AutoUpdatePosition && NavMesh.IsLinkValid(m_LinkInstance))
+            if (m_AutoUpdatePosition && m_LinkInstance.valid)
                 AddTracking(this);
         }
 
         void OnDisable()
         {
             RemoveTracking(this);
-            NavMesh.RemoveLink(m_LinkInstance);
+            m_LinkInstance.Remove();
         }
 
         public void UpdateLink()
         {
-            NavMesh.RemoveLink(m_LinkInstance);
+            m_LinkInstance.Remove();
             AddLink();
         }
 
@@ -107,7 +107,7 @@ namespace NavMeshPlus.Components
         void AddLink()
         {
 #if UNITY_EDITOR
-            if (NavMesh.IsLinkValid(m_LinkInstance))
+            if (m_LinkInstance.valid)
             {
                 Debug.LogError("Link is already added: " + this);
                 return;
@@ -123,8 +123,8 @@ namespace NavMeshPlus.Components
             link.area = m_Area;
             link.agentTypeID = m_AgentTypeID;
             m_LinkInstance = NavMesh.AddLink(link, transform.position, transform.rotation);
-            if (NavMesh.IsLinkValid(m_LinkInstance))
-                NavMesh.SetLinkOwner(m_LinkInstance, this);
+            if (m_LinkInstance.valid)
+                m_LinkInstance.owner = this;
 
             m_LastPosition = transform.position;
             m_LastRotation = transform.rotation;
@@ -156,7 +156,7 @@ namespace NavMeshPlus.Components
         {
             m_Width = Mathf.Max(0.0f, m_Width);
 
-            if (!NavMesh.IsLinkValid(m_LinkInstance))
+            if (!m_LinkInstance.valid)
                 return;
 
             UpdateLink();
