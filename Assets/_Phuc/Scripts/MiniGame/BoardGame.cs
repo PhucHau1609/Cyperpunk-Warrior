@@ -55,7 +55,7 @@ public class BoardGame : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log("Đã hoàn thành mini game bằng phím P (debug)");
+            //Debug.Log("Đã hoàn thành mini game bằng phím P (debug)");
             StartCoroutine(WaitAndCloseMiniGame());
         }
 
