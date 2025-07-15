@@ -83,6 +83,11 @@ public class TeleportPortal : MonoBehaviour
         {
             Debug.Log("⚠ Không còn scene tiếp theo trong Build Settings!");
         }
+
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        {
+            DialogueManager.Instance.CloseDialogue();
+        }
     }
 
     public void UnlockPortal()
