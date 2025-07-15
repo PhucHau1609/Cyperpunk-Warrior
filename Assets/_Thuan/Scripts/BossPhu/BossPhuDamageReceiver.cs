@@ -28,7 +28,7 @@ public class BossPhuDamageReceiver : DamageReceiver
         if (this.CurrentHP < this.MaxHP / 2)
         {
             damage = Mathf.RoundToInt(damage * (1 - damageReductionPercent));
-            Debug.Log($"[Turnet] Armor reduced damage to {damage}");
+            //Debug.Log($"[Turnet] Armor reduced damage to {damage}");
         }
 
         // Trừ máu như bình thường

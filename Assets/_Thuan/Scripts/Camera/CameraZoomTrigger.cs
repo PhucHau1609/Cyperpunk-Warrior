@@ -188,7 +188,7 @@ public class CameraZoomTrigger : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Dynamic;
         }
         
-        Debug.Log("Boss activated!");
+        //Debug.Log("Boss activated!");
     }
     
     // Methods để quản lý colliders
@@ -201,7 +201,7 @@ public class CameraZoomTrigger : MonoBehaviour
                 col.enabled = false;
             }
         }
-        Debug.Log($"Disabled {collidersToControl.Count} colliders");
+        //Debug.Log($"Disabled {collidersToControl.Count} colliders");
     }
     
     private void EnableColliders()
@@ -213,7 +213,7 @@ public class CameraZoomTrigger : MonoBehaviour
                 col.enabled = true;
             }
         }
-        Debug.Log($"Enabled {collidersToControl.Count} colliders");
+        //Debug.Log($"Enabled {collidersToControl.Count} colliders");
     }
     
     // Public methods để sử dụng từ bên ngoài

@@ -266,8 +266,8 @@ public class EnhancedPickerWheel : PickerWheel
         RecalculateWeights();
 
         // Debug để kiểm tra
-        Debug.Log($"Success: {successCount}, Fail: {failCount}");
-        Debug.Log($"Artefact Bonus: {artefactBonus:F2}, Bomb Bonus: {bombBonus:F2}");
+        //Debug.Log($"Success: {successCount}, Fail: {failCount}");
+       // Debug.Log($"Artefact Bonus: {artefactBonus:F2}, Bomb Bonus: {bombBonus:F2}");
     }
 
     /*   private void ApplyBonusMultiplier()

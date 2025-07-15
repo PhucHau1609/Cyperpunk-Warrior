@@ -60,7 +60,7 @@ public class SpawnManager : MonoBehaviour
             if (itemPicker.mainCamera == null)
             {
                 itemPicker.RefreshCamera();
-                Debug.Log("Camera refreshed from SpawnManager");
+                //Debug.Log("Camera refreshed from SpawnManager");
 
             }
         }

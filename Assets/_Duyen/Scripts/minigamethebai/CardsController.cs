@@ -300,7 +300,7 @@ public class CardsController : MonoBehaviour
     {
         if (playerHand.Count == 0)
         {
-            Debug.Log("WIN");
+            //Debug.Log("WIN");
             gamePanel.SetActive(false);
             finishPanel.SetActive(true);
             buttonPanel.SetActive(false);

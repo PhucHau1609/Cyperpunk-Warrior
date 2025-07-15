@@ -96,7 +96,7 @@ public class BoardGame : MonoBehaviour
             PlayerMovement movementScript = player.GetComponent<PlayerMovement>();
             if (movementScript != null)
             {
-                Debug.Log("Di chuyen di");
+                //Debug.Log("Di chuyen di");
                 movementScript.enabled = true;
             }
         }
