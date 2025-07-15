@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class HauTesting : MonoBehaviour
 {
-    private void Update()
+   /* private void Update()
     {
         if(Input.GetKeyDown(KeyCode.R))
         {
             this.DropManyItemsTesting();
         }    
-    }
+    }*/
 
     [ProButton]
     public void DropManyItemsTesting()

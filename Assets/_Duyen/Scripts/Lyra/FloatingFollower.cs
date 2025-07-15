@@ -151,7 +151,7 @@ public class FloatingFollower : MonoBehaviour
                 float newY = Mathf.MoveTowards(currentY, desiredHeight, moveSpeed * Time.fixedDeltaTime);
                 transform.position = new Vector3(transform.position.x, newY, transform.position.z);
 
-                Debug.Log($"[FloatUp] Moving from Y={currentY:F2} → {newY:F2}, Target: {desiredHeight:F2}");
+                //Debug.Log($"[FloatUp] Moving from Y={currentY:F2} → {newY:F2}, Target: {desiredHeight:F2}");
             }
         }
 
