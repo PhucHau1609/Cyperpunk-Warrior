@@ -6,10 +6,7 @@ using UnityEngine.AI;
 public class FloatingFollower : MonoBehaviour
 {
     [Header("Follow Settings")]
-    //public float followHeight = 1.5f;
-    //public float sideOffset = 1f;
     public float xFollowSpeed = 5f;
-    //public float yFollowSpeed = 5f;
     public float minDistance = 0.2f;
 
     [Header("Obstacle Avoidance")]
@@ -21,7 +18,6 @@ public class FloatingFollower : MonoBehaviour
     public float dashFollowMultiplier = 2f;
 
     private Transform player;
-    private Vector3 targetPos;
     private Rigidbody2D rb;
     private Animator anim;
 
@@ -29,7 +25,6 @@ public class FloatingFollower : MonoBehaviour
     private bool isUsingPathfinding = false;
 
     public bool IsReadyForDialogue => state == PetState.Following;
-
 
     private enum PetState { Sleepwell, Awaken, Following, Disappear }
     private PetState state = PetState.Sleepwell;
@@ -47,7 +42,7 @@ public class FloatingFollower : MonoBehaviour
         {
             agent.updateRotation = false;
             agent.updateUpAxis = false;
-            agent.isStopped = true;
+            agent.enabled = false; // tắt ban đầu, sẽ bật sau nếu cần
         }
 
         rb = GetComponent<Rigidbody2D>();
@@ -83,54 +78,51 @@ public class FloatingFollower : MonoBehaviour
 
         if (dist > maxDist)
         {
-            if (!isUsingPathfinding && agent != null)
+            if (!isUsingPathfinding && agent != null && IsOnValidNavMesh())
             {
                 agent.enabled = true;
                 isUsingPathfinding = true;
                 agent.isStopped = false;
-                //agent.SetDestination(playerPos);
             }
-            // Tính vận tốc tăng dần theo khoảng cách
-            float speedScale = Mathf.Clamp(dist / maxDist, 1f, 3f); // Cách 14f thì tốc độ gấp ~2x
-            float baseSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
-            agent.speed = baseSpeed * speedScale;
 
-            // Điểm đến: cao hơn player 2f và giữ khoảng cách 0.2f
-            Vector2 toPlayer = (playerPos - currentPos).normalized;
-            Vector2 targetPos = (Vector2)playerPos - toPlayer * minDist + Vector2.up * 4f;
+            if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
+            {
+                float speedScale = Mathf.Clamp(dist / maxDist, 1f, 3f);
+                float baseSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
+                agent.speed = baseSpeed * speedScale;
 
-            agent.SetDestination(targetPos);
+                Vector2 toPlayer = (playerPos - currentPos).normalized;
+                Vector2 targetPos = (Vector2)playerPos - toPlayer * minDist + Vector2.up * 4f;
+
+                agent.SetDestination(targetPos);
+            }
         }
         else if (dist > minDist && isUsingPathfinding)
         {
-            // Đang di chuyển, vẫn dùng nav để tiến gần đến 0.2f
-            Vector2 toPlayer = (playerPos - currentPos).normalized;
-            Vector2 desiredPos = playerPos - toPlayer * minDist;
-            agent.SetDestination(desiredPos);
+            if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
+            {
+                Vector2 toPlayer = (playerPos - currentPos).normalized;
+                Vector2 desiredPos = playerPos - toPlayer * minDist;
+                agent.SetDestination(desiredPos);
+            }
         }
         else if (dist <= minDist && isUsingPathfinding)
         {
-            agent.isStopped = true;
-            agent.ResetPath();
-            agent.enabled = false; // ← QUAN TRỌNG: Tắt NavMeshAgent để không ghi đè vị trí
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.ResetPath();
+            }
+
+            if (agent != null)
+            {
+                agent.enabled = false;
+            }
+
             isUsingPathfinding = false;
-
-            //float desiredHeight = Mathf.Clamp(player.position.y + 2.5f, player.position.y + 2.5f, player.position.y + 5f); // bạn có thể tăng nếu muốn
-
-            //Vector3 correctedPos = transform.position;
-            //if (transform.position.y < desiredHeight)
-            //{
-            //    Debug.Log($"[FloatUp] Y: {transform.position.y:F2}, Desired: {desiredHeight:F2}");
-
-            //    float moveSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
-            //    float newY = Mathf.MoveTowards(transform.position.y, desiredHeight, moveSpeed * Time.fixedDeltaTime);
-            //    transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-            //}
-
         }
 
-
-        if (agent.desiredVelocity.sqrMagnitude > 0.01f)
+        if (agent != null && agent.isActiveAndEnabled && agent.desiredVelocity.sqrMagnitude > 0.01f)
         {
             float moveX = agent.desiredVelocity.x;
             if (Mathf.Abs(moveX) > 0.05f)
@@ -139,7 +131,7 @@ public class FloatingFollower : MonoBehaviour
                 transform.localScale = new Vector3(2f * facing, 2f, 2f);
             }
         }
-        // Luôn bay lên nếu thấp hơn player + khoảng mong muốn
+
         if (!isUsingPathfinding && state == PetState.Following)
         {
             float desiredHeight = Mathf.Clamp(player.position.y + 2.5f, player.position.y + 2.5f, player.position.y + 5f);
@@ -150,12 +142,10 @@ public class FloatingFollower : MonoBehaviour
                 float moveSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
                 float newY = Mathf.MoveTowards(currentY, desiredHeight, moveSpeed * Time.fixedDeltaTime);
                 transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-
-                //Debug.Log($"[FloatUp] Moving from Y={currentY:F2} → {newY:F2}, Target: {desiredHeight:F2}");
             }
         }
-
     }
+
     IEnumerator StartFollowAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -171,7 +161,6 @@ public class FloatingFollower : MonoBehaviour
 
         if (anim != null)
         {
-            Debug.Log("Pet disappearing...");
             anim.SetTrigger("Disappear");
         }
     }
@@ -196,7 +185,6 @@ public class FloatingFollower : MonoBehaviour
         if (anim != null)
         {
             anim.SetTrigger("Idle");
-            Debug.Log("Pet forced to Idle after scene load.");
         }
     }
 
@@ -212,5 +200,11 @@ public class FloatingFollower : MonoBehaviour
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private bool IsOnValidNavMesh()
+    {
+        NavMeshHit hit;
+        return NavMesh.SamplePosition(transform.position, out hit, 1f, NavMesh.AllAreas);
     }
 }
