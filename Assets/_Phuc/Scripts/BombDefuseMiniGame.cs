@@ -78,16 +78,19 @@ public class BombDefuseMiniGame : MonoBehaviour
     public void CloseMiniGame()
     {
         miniGamePanel.SetActive(false);
+
         if (!gameWon)
         {
             wallShrinker.ResumeShrinking();
         }
         else if (objectToShowAfterWin != null)
         {
-            objectToShowAfterWin.SetActive(true);
+            Invoke(nameof(ShowWinObject), 2f); // Mở sau 2 giây
         }
+
         ResetGame();
     }
+
 
     void StartGame()
     {
@@ -161,4 +164,10 @@ public class BombDefuseMiniGame : MonoBehaviour
         txtResult.color = Color.white;
         imgMask.SetActive(false);
     }
+
+    void ShowWinObject()
+    {
+        objectToShowAfterWin.SetActive(true);
+    }
+
 }
