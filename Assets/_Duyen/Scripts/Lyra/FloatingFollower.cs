@@ -85,6 +85,7 @@ public class FloatingFollower : MonoBehaviour
         {
             if (!isUsingPathfinding && agent != null)
             {
+                agent.enabled = true;
                 isUsingPathfinding = true;
                 agent.isStopped = false;
                 //agent.SetDestination(playerPos);
@@ -109,10 +110,25 @@ public class FloatingFollower : MonoBehaviour
         }
         else if (dist <= minDist && isUsingPathfinding)
         {
-            // Đến gần rồi, dừng nav
             agent.isStopped = true;
+            agent.ResetPath();
+            agent.enabled = false; // ← QUAN TRỌNG: Tắt NavMeshAgent để không ghi đè vị trí
             isUsingPathfinding = false;
+
+            //float desiredHeight = Mathf.Clamp(player.position.y + 2.5f, player.position.y + 2.5f, player.position.y + 5f); // bạn có thể tăng nếu muốn
+
+            //Vector3 correctedPos = transform.position;
+            //if (transform.position.y < desiredHeight)
+            //{
+            //    Debug.Log($"[FloatUp] Y: {transform.position.y:F2}, Desired: {desiredHeight:F2}");
+
+            //    float moveSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
+            //    float newY = Mathf.MoveTowards(transform.position.y, desiredHeight, moveSpeed * Time.fixedDeltaTime);
+            //    transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+            //}
+
         }
+
 
         if (agent.desiredVelocity.sqrMagnitude > 0.01f)
         {
@@ -123,6 +139,22 @@ public class FloatingFollower : MonoBehaviour
                 transform.localScale = new Vector3(2f * facing, 2f, 2f);
             }
         }
+        // Luôn bay lên nếu thấp hơn player + khoảng mong muốn
+        if (!isUsingPathfinding && state == PetState.Following)
+        {
+            float desiredHeight = Mathf.Clamp(player.position.y + 2.5f, player.position.y + 2.5f, player.position.y + 5f);
+            float currentY = transform.position.y;
+
+            if (currentY < desiredHeight)
+            {
+                float moveSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
+                float newY = Mathf.MoveTowards(currentY, desiredHeight, moveSpeed * Time.fixedDeltaTime);
+                transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+
+                Debug.Log($"[FloatUp] Moving from Y={currentY:F2} → {newY:F2}, Target: {desiredHeight:F2}");
+            }
+        }
+
     }
     IEnumerator StartFollowAfterDelay(float delay)
     {
