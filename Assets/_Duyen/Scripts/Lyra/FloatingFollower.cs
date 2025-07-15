@@ -28,10 +28,18 @@ public class FloatingFollower : MonoBehaviour
 
     private enum PetState { Sleepwell, Awaken, Following, Disappear }
     private PetState state = PetState.Sleepwell;
+    private static FloatingFollower instance;
 
     private void Awake()
     {
-        DontDestroyOnLoad(this);
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(this.gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -43,6 +51,7 @@ public class FloatingFollower : MonoBehaviour
             agent.updateRotation = false;
             agent.updateUpAxis = false;
             agent.enabled = false; // tắt ban đầu, sẽ bật sau nếu cần
+            //MoveToSPWAndEnableNav();
         }
 
         rb = GetComponent<Rigidbody2D>();
@@ -78,7 +87,7 @@ public class FloatingFollower : MonoBehaviour
 
         if (dist > maxDist)
         {
-            if (!isUsingPathfinding && agent != null && IsOnValidNavMesh())
+            if (!isUsingPathfinding && agent != null && IsOnValidNavMesh(transform.position))
             {
                 agent.enabled = true;
                 isUsingPathfinding = true;
@@ -132,16 +141,26 @@ public class FloatingFollower : MonoBehaviour
             }
         }
 
+        // Custom bay cao hơn player khi gần
         if (!isUsingPathfinding && state == PetState.Following)
         {
-            float desiredHeight = Mathf.Clamp(player.position.y + 2.5f, player.position.y + 2.5f, player.position.y + 5f);
-            float currentY = transform.position.y;
+            float distToPlayer = Vector2.Distance(transform.position, player.position);
+            float heightAbovePlayer = transform.position.y - player.position.y;
 
-            if (currentY < desiredHeight)
+            bool isNearPlayer = distToPlayer < 3f;
+            bool notHighEnough = heightAbovePlayer < 3f;
+
+            if (isNearPlayer && notHighEnough)
             {
-                float moveSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
-                float newY = Mathf.MoveTowards(currentY, desiredHeight, moveSpeed * Time.fixedDeltaTime);
-                transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+                // Kiểm tra có vật cản phía trên không
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, 0.2f, obstacleMask);
+                if (!hit.collider)
+                {
+                    float moveSpeed = xFollowSpeed * (isDashing ? dashFollowMultiplier : 1f);
+                    float newY = Mathf.MoveTowards(transform.position.y, player.position.y + 3f, moveSpeed * Time.fixedDeltaTime);
+                    transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+                }
+                // nếu bị cản thì không bay lên, giữ nguyên y
             }
         }
     }
@@ -168,6 +187,7 @@ public class FloatingFollower : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         FindPlayer();
+        MoveToSPWAndEnableNav();
 
         if (state == PetState.Disappear || state == PetState.Awaken)
         {
@@ -202,9 +222,180 @@ public class FloatingFollower : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private bool IsOnValidNavMesh()
+    private bool IsOnValidNavMesh(Vector3 position)
     {
         NavMeshHit hit;
-        return NavMesh.SamplePosition(transform.position, out hit, 1f, NavMesh.AllAreas);
+        return NavMesh.SamplePosition(position, out hit, 1f, NavMesh.AllAreas);
+    }
+
+    private void MoveToSPWAndEnableNav()
+    {
+        GameObject spwObj = GameObject.FindGameObjectWithTag("spw");
+        if (spwObj != null)
+        {
+            transform.position = spwObj.transform.position;
+
+            if (agent != null && IsOnValidNavMesh(transform.position))
+            {
+                agent.enabled = true;
+                agent.Warp(transform.position); // Sync vào NavMesh
+                isUsingPathfinding = true;
+            }
+            else
+            {
+                //Debug.LogWarning("NPC không đứng trên NavMesh sau khi dịch chuyển đến 'spw'.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Không tìm thấy đối tượng có tag 'spw'.");
+        }
+    }
+
+}
+
+//ko dung nav
+/* 
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
+
+public class FloatingFollower : MonoBehaviour
+{
+    [Header("Follow Settings")]
+    public float moveSpeed = 3f;
+    public float xTolerance = 1f;
+    public float yMinHeight = 2f;
+    public float yMaxHeight = 4f;
+    public float checkInterval = 3f;
+
+    [Header("Dash Settings")]
+    public bool isDashing = false;
+    public float dashFollowMultiplier = 2f;
+
+    private Transform player;
+    private Rigidbody2D rb;
+    private Animator anim;
+
+    private Vector2 targetOffset;
+    private float checkTimer;
+
+    public bool IsReadyForDialogue => state == PetState.Following;
+
+    private enum PetState { Sleepwell, Awaken, Following, Disappear }
+    private PetState state = PetState.Sleepwell;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        FindPlayer();
+        checkTimer = checkInterval;
+    }
+
+    void FixedUpdate()
+    {
+        if (player == null) return;
+
+        if (state == PetState.Sleepwell)
+        {
+            if (CodeLock.PetUnlocked)
+            {
+                state = PetState.Awaken;
+                anim.SetTrigger("Awaken");
+                StartCoroutine(StartFollowAfterDelay(1.5f));
+            }
+            return;
+        }
+
+        if (state != PetState.Following) return;
+
+        checkTimer -= Time.fixedDeltaTime;
+        if (checkTimer <= 0f)
+        {
+            checkTimer = checkInterval;
+            UpdateTargetOffset();
+        }
+
+        // Di chuyển mượt về phía target position
+        Vector2 targetPos = (Vector2)player.position + targetOffset;
+        Vector2 newPos = Vector2.MoveTowards(rb.position, targetPos, moveSpeed * (isDashing ? dashFollowMultiplier : 1f) * Time.fixedDeltaTime);
+        rb.MovePosition(newPos);
+
+        // Xoay hướng nhìn
+        float dx = targetPos.x - rb.position.x;
+        if (Mathf.Abs(dx) > 0.05f)
+        {
+            float facing = dx > 0 ? 1f : -1f;
+            transform.localScale = new Vector3(2f * facing, 2f, 2f);
+        }
+    }
+
+    private void UpdateTargetOffset()
+    {
+        Vector2 toPet = (Vector2)transform.position - (Vector2)player.position;
+
+        float targetX = Mathf.Clamp(toPet.x, -5f, 5f); // không cách quá xa
+        float targetY = Mathf.Clamp(toPet.y, yMinHeight, yMaxHeight);
+
+        if (Mathf.Abs(toPet.x) < xTolerance)
+            targetX = toPet.x > 0 ? 1.5f : -1.5f;
+
+        if (toPet.y < yMinHeight)
+            targetY = yMinHeight + Random.Range(0.5f, 1.5f); // bay lên nhẹ
+
+        targetOffset = new Vector2(targetX, targetY);
+    }
+
+    IEnumerator StartFollowAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        state = PetState.Following;
+        anim.SetTrigger("Idle");
+    }
+
+    public void Disappear()
+    {
+        if (state != PetState.Following) return;
+
+        state = PetState.Disappear;
+        if (anim != null)
+            anim.SetTrigger("Disappear");
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindPlayer();
+        if (state == PetState.Disappear || state == PetState.Awaken)
+            StartCoroutine(ForceIdleAfterSceneLoad());
+    }
+
+    private IEnumerator ForceIdleAfterSceneLoad()
+    {
+        yield return null;
+        yield return null;
+
+        state = PetState.Following;
+        if (anim != null)
+            anim.SetTrigger("Idle");
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+            player = playerObj.transform;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
+*/

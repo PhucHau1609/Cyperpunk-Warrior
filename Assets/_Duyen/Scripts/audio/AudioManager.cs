@@ -91,11 +91,14 @@ public class AudioManager : MonoBehaviour
 
     public void PlayTypingSFX()
     {
-        if (typingSource != null && typingSFX != null && !typingSource.isPlaying)
+        PlaySFX(typingSFX);
+    }
+    public void StopBGM()
+    {
+        if (bgmSource.isPlaying)
         {
-            typingSource.clip = typingSFX;
-            typingSource.loop = true;
-            typingSource.Play();
+            bgmSource.Stop();
+            bgmSource.clip = null;
         }
     }
 
@@ -107,14 +110,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopBGM()
-    {
-        if (bgmSource.isPlaying)
-        {
-            bgmSource.Stop();
-            bgmSource.clip = null;
-        }
-    }
     public void PlayBlockInteractSFX()
     {
         PlaySFX(blockInteractSFX);
