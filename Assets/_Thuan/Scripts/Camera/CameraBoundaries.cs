@@ -29,6 +29,13 @@ public class CameraBoundaries : MonoBehaviour
     {
         UpdateCameraSize();
     }
+    
+    // Thêm method này vào cuối class
+    void Update()
+    {
+        // Cập nhật camera size liên tục để theo dõi thay đổi zoom
+        UpdateCameraSize();
+    }
 
     private void OnDestroy()
     {
@@ -41,7 +48,7 @@ public class CameraBoundaries : MonoBehaviour
         UpdateCameraSize();
     }
 
-    void UpdateCameraSize()
+    public void UpdateCameraSize()
     {
         if (cam == null) return;
 

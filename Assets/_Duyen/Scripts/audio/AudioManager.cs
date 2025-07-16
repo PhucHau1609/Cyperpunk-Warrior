@@ -7,6 +7,8 @@ public class AudioManager : MonoBehaviour
 
     public AudioSource bgmSource;
     public AudioSource sfxSource;
+    public AudioSource typingSource;
+
 
     public AudioClip loginMusic;
     public AudioClip menuMusic;
@@ -99,6 +101,15 @@ public class AudioManager : MonoBehaviour
             bgmSource.clip = null;
         }
     }
+
+    public void StopTypingSFX()
+    {
+        if (typingSource != null && typingSource.isPlaying)
+        {
+            typingSource.Stop();
+        }
+    }
+
     public void PlayBlockInteractSFX()
     {
         PlaySFX(blockInteractSFX);

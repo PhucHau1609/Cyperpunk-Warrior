@@ -300,12 +300,13 @@ public class CardsController : MonoBehaviour
     {
         if (playerHand.Count == 0)
         {
-            Debug.Log("WIN");
+            //Debug.Log("WIN");
             gamePanel.SetActive(false);
             finishPanel.SetActive(true);
             buttonPanel.SetActive(false);
             banPanel.SetActive(false);
 
+            ItemsDropManager.Instance.DropItem(ItemCode.Artefacts_1, 1, new Vector3(484.61f, 40.59f,0));
             AudioManager.Instance?.PlayWinGame();
             CameraFollow.Instance.Target = playerTransform;
             if (barrierObject != null)

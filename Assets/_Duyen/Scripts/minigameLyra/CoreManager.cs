@@ -32,7 +32,7 @@ public class CoreManager : MonoBehaviour
         else
         {
             // Gỡ xong tất cả
-            Debug.Log("Gỡ xong tất cả lõi!");
+            //Debug.Log("Gỡ xong tất cả lõi!");
             sceneController?.ReturnControlToPlayer();
         }
     }

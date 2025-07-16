@@ -105,7 +105,7 @@ public class EnemyMini_01 : MonoBehaviour
             if (distanceToNPC <= attackDistance)
             {
                 // Phun lửa
-                Debug.Log("🔥 Enemy phun lửa vào NPC!");
+                //Debug.Log("🔥 Enemy phun lửa vào NPC!");
                 // TODO: Thêm ParticleSystem hoặc animation trigger tại đây
             }
             else
@@ -118,7 +118,7 @@ public class EnemyMini_01 : MonoBehaviour
                 if (bulletScript != null)
                     bulletScript.SetDirection(dir);
 
-                Debug.Log("🔫 Enemy bắn NPC");
+                //Debug.Log("🔫 Enemy bắn NPC");
             }
 
             nextFireTime = Time.time + 1f / fireRate;

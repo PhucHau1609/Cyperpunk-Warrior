@@ -50,6 +50,20 @@ public class SpawnManager : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
         MovePlayerToSpawnPoint();
+
+
+        // ✅ Gọi RefreshCamera sau khi move xong
+        yield return new WaitForSeconds(0.5f); // delay 1 chút nếu cần
+        var itemPicker = player.GetComponentInChildren<ItemsPicker>();
+        if (itemPicker != null)
+        {
+            if (itemPicker.mainCamera == null)
+            {
+                itemPicker.RefreshCamera();
+                //Debug.Log("Camera refreshed from SpawnManager");
+
+            }
+        }
     }
 
 

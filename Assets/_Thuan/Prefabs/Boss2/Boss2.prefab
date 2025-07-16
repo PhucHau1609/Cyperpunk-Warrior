@@ -439,7 +439,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 4723107735738678597, guid: ecb6abbc3bbb90242bd6a6814fa3cbc8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -609,9 +609,7 @@ MonoBehaviour:
   isPhase2: 0
   spawnPoints:
   - {fileID: 665519132521068303}
-  - {fileID: 4287199608758154683}
-  - {fileID: 7559474853189046808}
-  minionPrefab: {fileID: 9043564743836457590, guid: dc7f5df6f1ef914448a34735db24050b, type: 3}
+  minionPrefab: {fileID: 5692528477751050980, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
   maxMinions: 1
   minionSpawnInterval: 5
   phase2LaserPoints:
@@ -620,14 +618,14 @@ MonoBehaviour:
   - {fileID: 8022707875598967883}
   laserSequenceDelay: 0
   audioSource: {fileID: 2386431437780394509}
-  laserChargeSound: {fileID: 0}
-  laserFireSound: {fileID: 0}
+  laserChargeSound: {fileID: 8300000, guid: 28d9e13ab8d9a5a4480c25fd14b3159c, type: 3}
+  laserFireSound: {fileID: 8300000, guid: 28d9e13ab8d9a5a4480c25fd14b3159c, type: 3}
   bombThrowSound: {fileID: 0}
-  handAttackSound: {fileID: 0}
-  hurtSound: {fileID: 0}
-  deathSound: {fileID: 0}
-  shieldActivateSound: {fileID: 0}
-  phase2TransitionSound: {fileID: 0}
+  handAttackSound: {fileID: 8300000, guid: 2ca69ecada1634742806dff587920ea3, type: 3}
+  hurtSound: {fileID: 8300000, guid: 561a59b2658c5cd4a9730bb946599a22, type: 3}
+  deathSound: {fileID: 8300000, guid: 4d8a3f599e612c446af5ae8a1d0659a6, type: 3}
+  shieldActivateSound: {fileID: 8300000, guid: c4e62810616d608498fd3e4ddb9b8524, type: 3}
+  phase2TransitionSound: {fileID: 8300000, guid: c4e62810616d608498fd3e4ddb9b8524, type: 3}
 --- !u!114 &5911993027510171260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1075,7 +1073,7 @@ Transform:
   m_GameObject: {fileID: 6706069153224342247}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.76, y: 13.3, z: 0}
+  m_LocalPosition: {x: 6.14, y: 6.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

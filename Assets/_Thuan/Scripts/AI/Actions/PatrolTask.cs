@@ -79,7 +79,7 @@ public class PatrolTask : Action
         }
         else
         {
-            Debug.Log($"[{enemyName}] Tự động tìm thấy patrol points: {pointAName}, {pointBName}");
+            //Debug.Log($"[{enemyName}] Tự động tìm thấy patrol points: {pointAName}, {pointBName}");
         }
     }
     

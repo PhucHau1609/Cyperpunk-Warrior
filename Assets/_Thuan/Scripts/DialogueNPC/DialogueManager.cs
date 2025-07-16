@@ -17,7 +17,6 @@ public class DialogueManager : MonoBehaviour
     public float typeSpeed = 0.05f;
 
     public DialogueFollowNPC followScript;
-
     public System.Action onDialogueEnd;
 
     public bool IsDialogueActive => dialogueBox.activeSelf;
@@ -50,8 +49,25 @@ public class DialogueManager : MonoBehaviour
         lines = dialogueLines;
         currentLine = 0;
         dialogueBox.SetActive(true);
+        StartTypingCurrentLine();
+    }
+
+    public void StartDialogue(DialogueData data, Transform npcTransform)
+    {
+        lines = data.lines;
+        currentLine = 0;
+
+        followScript.targetNPC = npcTransform;
+        dialogueBox.SetActive(true);
+        StartTypingCurrentLine();
+    }
+
+    void StartTypingCurrentLine()
+    {
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         typingCoroutine = StartCoroutine(TypeLine(lines[currentLine]));
     }
+
 
     IEnumerator TypeLine(string line)
     {
@@ -66,6 +82,8 @@ public class DialogueManager : MonoBehaviour
         }
 
         isTyping = false;
+        AudioManager.Instance?.StopTypingSFX();
+
         if (currentLine >= lines.Length - 1)
         {
             yield return new WaitForSeconds(.5f); // tuỳ chỉnh thời gian đợi
@@ -75,9 +93,10 @@ public class DialogueManager : MonoBehaviour
 
     void ShowFullLine()
     {
-        StopCoroutine(typingCoroutine);
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         dialogueText.text = lines[currentLine];
         isTyping = false;
+        AudioManager.Instance?.StopTypingSFX();
     }
 
     void NextLine()
@@ -95,21 +114,12 @@ public class DialogueManager : MonoBehaviour
 
     public void CloseDialogue()
     {
-        dialogueBox.SetActive(false);
-        onDialogueEnd?.Invoke(); // Gọi callback sau khi thoại kết thúc
-        onDialogueEnd = null;    // Xóa callback để tránh bị gọi lại lần sau
-    }
-
-    public void StartDialogue(DialogueData data, Transform npcTransform)
-    {
-        lines = data.lines;
-        currentLine = 0;
-
-        followScript.targetNPC = npcTransform;
-        dialogueBox.SetActive(true);
-
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-        typingCoroutine = StartCoroutine(TypeLine(lines[currentLine]));
+        AudioManager.Instance?.StopTypingSFX();
+        dialogueBox.SetActive(false);
+
+        onDialogueEnd?.Invoke();
+        onDialogueEnd = null;
     }
 
 }

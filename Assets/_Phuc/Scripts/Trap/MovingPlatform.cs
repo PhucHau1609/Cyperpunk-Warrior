@@ -9,39 +9,29 @@ public class MovingPlatform : MonoBehaviour
     [Header("Tốc độ")]
     public float speed = 2f;
 
+    [HideInInspector] public Vector3 platformVelocity;
     private Vector3 target;
+    private Vector3 lastPosition;
 
     void Start()
     {
-        // Platform bắt đầu đi tới B
         target = positionB;
+        lastPosition = transform.position;
     }
 
     void Update()
     {
+        // Di chuyển platform
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
 
+        // Tính vận tốc platform
+        platformVelocity = (transform.position - lastPosition) / Time.deltaTime;
+        lastPosition = transform.position;
+
+        // Đổi hướng
         if (Vector3.Distance(transform.position, target) < 0.1f)
         {
-            // Đảo hướng
             target = (target == positionA) ? positionB : positionA;
-        }
-    }
-
-    // Đảm bảo player đi theo platform
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.SetParent(transform);
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.SetParent(null);
         }
     }
 }

@@ -17,17 +17,17 @@ public class EnemyDeathManager : MonoBehaviour
     void Start()
     {
         totalEnemies = GameObject.FindGameObjectsWithTag("Enemy").Length;
-        Debug.Log($"[EnemyDeathManager] Found {totalEnemies} enemies.");
+        //Debug.Log($"[EnemyDeathManager] Found {totalEnemies} enemies.");
     }
 
     public void OnEnemyDied()
     {
         deadEnemies++;
-        Debug.Log($"[EnemyDeathManager] Enemy died. Remaining: {totalEnemies - deadEnemies}");
+        //Debug.Log($"[EnemyDeathManager] Enemy died. Remaining: {totalEnemies - deadEnemies}");
 
         if (deadEnemies >= totalEnemies)
         {
-            Debug.Log("[EnemyDeathManager] All enemies defeated! Opening door...");
+            //Debug.Log("[EnemyDeathManager] All enemies defeated! Opening door...");
             doorAnimator?.SetTrigger("Open");
         }
     }

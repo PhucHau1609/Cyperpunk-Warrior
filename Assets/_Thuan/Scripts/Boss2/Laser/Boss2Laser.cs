@@ -23,7 +23,7 @@ public class Boss2Laser : MonoBehaviour
     private void Start()
     {
         // Tìm Boss2Controller để kiểm tra Phase
-        boss2Controller = FindObjectOfType<Boss2Controller>();
+        boss2Controller = FindFirstObjectByType<Boss2Controller>();
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)

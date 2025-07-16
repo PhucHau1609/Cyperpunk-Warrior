@@ -55,7 +55,7 @@ public class BoardGame : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log("Đã hoàn thành mini game bằng phím P (debug)");
+            //Debug.Log("Đã hoàn thành mini game bằng phím P (debug)");
             StartCoroutine(WaitAndCloseMiniGame());
         }
 
@@ -96,7 +96,7 @@ public class BoardGame : MonoBehaviour
             PlayerMovement movementScript = player.GetComponent<PlayerMovement>();
             if (movementScript != null)
             {
-                Debug.Log("Di chuyen di");
+                //Debug.Log("Di chuyen di");
                 movementScript.enabled = true;
             }
         }

@@ -31,7 +31,6 @@ public class BomberController : MonoBehaviour, IDamageResponder
         animator = GetComponent<Animator>();
         damageReceiver = GetComponent<EnemyDamageReceiver>();
         itemDropTable = GetComponent<ItemDropTable>();
-
     }
 
     void Start()

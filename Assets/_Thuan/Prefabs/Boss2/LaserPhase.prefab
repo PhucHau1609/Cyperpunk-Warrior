@@ -4917,7 +4917,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 11
   m_Positions:
   - {x: 0, y: -1.1, z: 0}
   - {x: 0, y: 0, z: 0}
@@ -5038,8 +5038,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4e42845b45912e479821b6fe80b27a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPhase2Laser: 0
   phase2Duration: 2
+  laserDamage: 5
+  damageInterval: 0.5
+  audioSource: {fileID: 0}
+  laserBeamSound: {fileID: 0}
+  laserHitSound: {fileID: 0}
 --- !u!1 &2969984413434982223
 GameObject:
   m_ObjectHideFlags: 0
