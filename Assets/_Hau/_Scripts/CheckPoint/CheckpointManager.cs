@@ -61,10 +61,14 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             if (obj == this.gameObject) continue; // Đừng tự xoá chính mình
 
             // Có thể kiểm tra tên, layer, hoặc component đặc biệt
-            if (obj.name.Contains("Main Camera") || obj.name.Contains("UIRoot") || obj.name.Contains("AudioManager"))
+            if (obj.name.Contains("UIRoot") || obj.name.Contains("AudioManager"))
             {
                 Destroy(obj);
             }
+            /* if (obj.name.Contains("Main Camera") || obj.name.Contains("UIRoot") || obj.name.Contains("AudioManager"))
+             {
+                 Destroy(obj);
+             }*/
         }
     }
 }
