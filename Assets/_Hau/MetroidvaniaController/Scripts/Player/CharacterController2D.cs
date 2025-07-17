@@ -24,7 +24,7 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private float m_DashForce = 25f;
     [SerializeField] private float m_DashForceY = 25f; // ⚠️ MỚI: Lực dash theo Y
 
-    private bool canDash = true;
+    public bool canDash = true;
     private bool isDashing = false; //If player is dashing
     private bool isDashingY = false; // ⚠️ MỚI: If player is dashing Y
 
@@ -362,7 +362,7 @@ public class CharacterController2D : MonoBehaviour
         canDash = false;
         yield return new WaitForSeconds(0.1f);
         isDashing = false;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         canDash = true;
     }
 
