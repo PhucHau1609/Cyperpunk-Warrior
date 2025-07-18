@@ -19,11 +19,13 @@ public class SwapTargetManager : MonoBehaviour
 
     // NEW: reference đạn đặc biệt
     private Transform specialBullet;
+    private CharacterController2D controller;
 
     void Awake()
     {
         Instance = this;
         if (player != null) playerAnimator = player.GetComponentInChildren<Animator>();
+        if (controller == null) controller = player.GetComponent<CharacterController2D>();
     }
 
     void Update()
@@ -76,6 +78,7 @@ public class SwapTargetManager : MonoBehaviour
         if (targetTransform == null || player == null) return;
 
         isSwapping = true;
+        controller.invincible = true;
 
         Vector3 playerStartPos = player.position;
         Vector3 targetStartPos = targetTransform.position;
@@ -125,12 +128,13 @@ public class SwapTargetManager : MonoBehaviour
             player.localScale = targetTransform.localScale;
             targetTransform.localScale = tempScale;
 
-            var controller = player.GetComponent<CharacterController2D>();
+            //var controller = player.GetComponent<CharacterController2D>();
             if (controller != null)
                 controller.SyncFacingDirection();
 
             if (playerAnimator != null) playerAnimator.speed = 1f;
             isSwapping = false;
+            controller.invincible = false;
 
             // NEW: Destroy đạn sau swap nếu cần
             if (destroyAfterSwap)
