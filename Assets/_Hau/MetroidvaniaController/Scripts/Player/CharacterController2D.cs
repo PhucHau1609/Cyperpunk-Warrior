@@ -24,7 +24,7 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private float m_DashForce = 25f;
     [SerializeField] private float m_DashForceY = 25f; // ⚠️ MỚI: Lực dash theo Y
 
-    private bool canDash = true;
+    public bool canDash = true;
     private bool isDashing = false; //If player is dashing
     private bool isDashingY = false; // ⚠️ MỚI: If player is dashing Y
 
@@ -37,8 +37,7 @@ public class CharacterController2D : MonoBehaviour
     private bool canCheck = false; //For check if player is wallsliding
 
     private PlayerGravityController gravityController; //Gravity Intervered
-    //public enum DashDirection { None, Horizontal, Down }
-    //private DashDirection dashDirection = DashDirection.None;
+  
 
 
     public float life = 100f; //Life of the player
@@ -133,8 +132,13 @@ public class CharacterController2D : MonoBehaviour
 
         if (limitVelOnWallJump)
         {
-            if (m_Rigidbody2D.linearVelocity.y < -0.5f)
+            // ⚠️ THAY ĐỔI: Kiểm tra velocity theo hướng gravity
+            float jumpDirection = gravityController != null && gravityController.IsGravityInverted() ? -1f : 1f;
+            bool isMovingAwayFromJump = jumpDirection > 0 ? m_Rigidbody2D.linearVelocity.y < -0.5f : m_Rigidbody2D.linearVelocity.y > 0.5f;
+
+            if (isMovingAwayFromJump)
                 limitVelOnWallJump = false;
+
             jumpWallDistX = (jumpWallStartX - transform.position.x) * transform.localScale.x;
             if (jumpWallDistX < -0.5f && jumpWallDistX > -1f)
             {
@@ -148,11 +152,13 @@ public class CharacterController2D : MonoBehaviour
             else if (jumpWallDistX < -2f)
             {
                 limitVelOnWallJump = false;
+                canMove = true; // ⚠️ THÊM: Đảm bảo có thể di chuyển
                 m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
             }
             else if (jumpWallDistX > 0)
             {
                 limitVelOnWallJump = false;
+                canMove = true; // ⚠️ THÊM: Đảm bảo có thể di chuyển
                 m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
             }
         }
@@ -230,7 +236,9 @@ public class CharacterController2D : MonoBehaviour
 
             else if (m_IsWall && !m_Grounded)
             {
-                if (!oldWallSlidding && m_Rigidbody2D.linearVelocity.y < 0 || isDashing)
+                // Thay đổi điều kiện này:
+                if (!oldWallSlidding && ((jumpDirection > 0 && m_Rigidbody2D.linearVelocity.y < 0) ||
+                                        (jumpDirection < 0 && m_Rigidbody2D.linearVelocity.y > 0)) || isDashing)
                 {
                     isWallSliding = true;
                     m_WallCheck.localPosition = new Vector3(-m_WallCheck.localPosition.x, m_WallCheck.localPosition.y, 0);
@@ -238,12 +246,12 @@ public class CharacterController2D : MonoBehaviour
                     StartCoroutine(WaitToCheck(0.1f));
                     canDoubleJump = true;
                     animator.SetBool("IsWallSliding", true);
-                    OnWallSlideStart.Invoke(); // ⚠️ THÊM DÒNG NÀY
-
+                    OnWallSlideStart.Invoke();
                 }
+
                 isDashing = false;
                 isDashingY = false; // ⚠️ MỚI: reset dash Y khi wall sliding
-                OnWallSlideEnd.Invoke(); // ⚠️ THÊM DÒNG NÀY
+                //OnWallSlideEnd.Invoke(); // ⚠️ THÊM DÒNG NÀY
 
 
                 if (isWallSliding)
@@ -255,7 +263,12 @@ public class CharacterController2D : MonoBehaviour
                     else
                     {
                         oldWallSlidding = true;
-                        m_Rigidbody2D.linearVelocity = new Vector2(-transform.localScale.x * 2, -5);
+
+                        // ⚠️ THAY ĐỔI: Tính toán velocity theo hướng gravity
+                        float wallSlideVelocityY = jumpDirection > 0 ? -5f : 5f; // Nếu gravity bình thường thì -5, nếu đảo thì +5
+                        m_Rigidbody2D.linearVelocity = new Vector2(-transform.localScale.x * 2, wallSlideVelocityY);
+
+                        //m_Rigidbody2D.linearVelocity = new Vector2(-transform.localScale.x * 2, -5);
                     }
                 }
 
@@ -273,6 +286,7 @@ public class CharacterController2D : MonoBehaviour
                     oldWallSlidding = false;
                     m_WallCheck.localPosition = new Vector3(Mathf.Abs(m_WallCheck.localPosition.x), m_WallCheck.localPosition.y, 0);
                     canMove = false;
+                    OnWallSlideEnd.Invoke(); // ⚠️ THÊM VÀO ĐÂY
                 }
 
                 else if (dashX && canDash)
@@ -302,6 +316,7 @@ public class CharacterController2D : MonoBehaviour
                 oldWallSlidding = false;
                 m_WallCheck.localPosition = new Vector3(Mathf.Abs(m_WallCheck.localPosition.x), m_WallCheck.localPosition.y, 0);
                 canDoubleJump = true;
+                OnWallSlideEnd.Invoke(); // ⚠️ THÊM VÀO ĐÂY
             }
         }
     }
@@ -347,7 +362,7 @@ public class CharacterController2D : MonoBehaviour
         canDash = false;
         yield return new WaitForSeconds(0.1f);
         isDashing = false;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         canDash = true;
     }
 
@@ -396,6 +411,9 @@ public class CharacterController2D : MonoBehaviour
         animator.SetBool("IsWallSliding", false);
         oldWallSlidding = false;
         m_WallCheck.localPosition = new Vector3(Mathf.Abs(m_WallCheck.localPosition.x), m_WallCheck.localPosition.y, 0);
+
+        OnWallSlideEnd.Invoke(); // ⚠️ THÊM VÀO ĐÂY
+
     }
 
     IEnumerator WaitToDead()

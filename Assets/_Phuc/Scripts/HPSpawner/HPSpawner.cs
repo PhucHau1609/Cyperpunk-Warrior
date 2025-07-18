@@ -2,8 +2,8 @@
 
 public class HPSpawner : MonoBehaviour
 {
-    [Header("Prefab Item HP")]
-    public GameObject hpItemPrefab;
+    //[Header("Prefab Item HP")]
+    //public GameObject hpItemPrefab;
 
     [Header("Các điểm spawn")]
     public Transform[] spawnPoints;
@@ -19,7 +19,7 @@ public class HPSpawner : MonoBehaviour
     void SpawnHPItems()
     {
         // Bảo vệ giới hạn
-        if (spawnPoints.Length == 0 || hpItemPrefab == null)
+        if (spawnPoints.Length == 0)
         {
             Debug.LogWarning("Thiếu prefab hoặc điểm spawn!");
             return;
@@ -39,7 +39,8 @@ public class HPSpawner : MonoBehaviour
         // Spawn theo số lượng yêu cầu
         for (int i = 0; i < itemCount && i < shuffledPoints.Length; i++)
         {
-            Instantiate(hpItemPrefab, shuffledPoints[i].position, Quaternion.identity);
+            //Instantiate(hpItemPrefab, shuffledPoints[i].position, Quaternion.identity);
+            ItemsDropManager.Instance.DropItem(ItemCode.HP,1, shuffledPoints[i].position);
         }
     }
 }

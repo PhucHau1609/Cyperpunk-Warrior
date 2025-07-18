@@ -5,6 +5,7 @@ public class HealOnPickup : MonoBehaviour
     [Header("Cấu hình hồi máu")]
     public float healAmount = 1f;
     public AudioClip healSound;
+    public ItemsDropDespawn itemsDropDespawn;
 
     private bool collected = false;
 
@@ -12,26 +13,34 @@ public class HealOnPickup : MonoBehaviour
     {
         if (collected) return;
 
-        // Tìm các component cần thiết
         playerHealth player = other.GetComponent<playerHealth>();
         CharacterController2D controller = other.GetComponent<CharacterController2D>();
+        if (player == null || controller == null) return;
 
-        // Đảm bảo đúng đối tượng và chưa đủ máu
-        if (player != null && controller != null && controller.life < controller.maxLife)
+        Debug.Log($"[HealOnPickup] OnTriggerEnter by: {other.name}");
+
+
+        collected = true;
+
+        if (controller.life < controller.maxLife)
         {
-            collected = true;
-
             // Hồi máu
             player.Heal(healAmount);
 
-            // Âm thanh hồi máu
+            // Âm thanh
             if (healSound != null)
-            {
                 AudioSource.PlayClipAtPoint(healSound, transform.position);
-            }
 
-            // Huỷ vật phẩm
-            Destroy(gameObject);
+            Destroy(gameObject); // Item biến mất sau khi hồi máu
+        }
+        else
+        {
+            // Thêm vào inventory nếu máu đầy
+            if (itemsDropDespawn != null)
+            {
+                itemsDropDespawn.DoDespawn(); // Gọi hệ thống object pool để despawn + add inventory
+            }
         }
     }
+
 }

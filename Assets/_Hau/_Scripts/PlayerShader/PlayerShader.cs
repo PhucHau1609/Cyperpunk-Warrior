@@ -69,8 +69,10 @@ public class PlayerShader : MonoBehaviour
     void Update()
     {
         // Nhấn J để bật shader + tàng hình trong effectDuration giây
-        if (Input.GetKeyDown(KeyCode.J) && !isEffectActive)
+        if (Input.GetKeyDown(KeyCode.J) && !isEffectActive &&
+            PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
         {
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.qImage);
             StartCoroutine(ActivateEffectWithInvisibility());
         }
 

@@ -28,8 +28,10 @@ public class SwapTargetManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping)
+        if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
+            PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
         {
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
             if (currentTarget != null)
             {
                 // Swap với object bình thường
