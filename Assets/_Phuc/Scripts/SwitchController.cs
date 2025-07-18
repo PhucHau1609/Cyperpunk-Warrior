@@ -27,11 +27,12 @@ public class SwitchController : MonoBehaviour
 
     void Update()
     {
-        if (isPlayerInRange && !isSwitchOn && Input.GetKeyDown(KeyCode.Return))
+        if (isPlayerInRange && !isSwitchOn && Input.GetMouseButtonDown(0))
         {
             TurnOnSwitch();
         }
     }
+
 
     void TurnOnSwitch()
     {
