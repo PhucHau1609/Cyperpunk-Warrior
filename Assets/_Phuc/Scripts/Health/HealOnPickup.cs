@@ -7,11 +7,9 @@ public class HealOnPickup : MonoBehaviour
     public AudioClip healSound;
     public ItemsDropDespawn itemsDropDespawn;
 
-    private bool collected = false;
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (collected) return;
 
         playerHealth player = other.GetComponent<playerHealth>();
         CharacterController2D controller = other.GetComponent<CharacterController2D>();
@@ -20,7 +18,6 @@ public class HealOnPickup : MonoBehaviour
         Debug.Log($"[HealOnPickup] OnTriggerEnter by: {other.name}");
 
 
-        collected = true;
 
         if (controller.life < controller.maxLife)
         {

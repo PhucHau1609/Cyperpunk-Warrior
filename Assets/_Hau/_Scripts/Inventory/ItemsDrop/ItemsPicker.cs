@@ -10,6 +10,7 @@ public class ItemsPicker : HauMonoBehaviour
     [SerializeField] protected bool enableMousePicking = true;
     [SerializeField] protected float mousePickingRange = 3f;
     [SerializeField] protected LayerMask itemLayerMask = -1;
+    [SerializeField] protected CharacterController2D controller;
 
     public Camera mainCamera;
 
@@ -18,6 +19,7 @@ public class ItemsPicker : HauMonoBehaviour
         base.LoadComponents();
         this.LoadSphereCollider();
         this.LoadCamera();
+        this.LoadController();
     }
 
     protected virtual void LoadSphereCollider()
@@ -35,6 +37,13 @@ public class ItemsPicker : HauMonoBehaviour
         this.mainCamera = Camera.main;
         if (this.mainCamera == null)
             this.mainCamera = FindFirstObjectByType<Camera>();
+    }
+
+    protected virtual void LoadController()
+    {
+        if (this.controller != null) return;
+        this.controller = transform.GetComponentInParent<CharacterController2D>();
+    
     }
 
     protected virtual void Update()
@@ -109,8 +118,6 @@ public class ItemsPicker : HauMonoBehaviour
     {
         if (itemsDropCtrl == null) return;
 
-        // Nếu item là HP và máu chưa đầy thì KHÔNG nhặt bằng chuột
-        CharacterController2D controller = FindFirstObjectByType<CharacterController2D>();
         if (itemsDropCtrl.ItemCode == ItemCode.HP && controller != null && controller.life < controller.maxLife)
         {
             Debug.Log("HP chưa đầy, không thêm vào inventory, hãy tự động nhặt bằng va chạm.");

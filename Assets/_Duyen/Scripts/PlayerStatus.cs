@@ -30,6 +30,11 @@ public class PlayerStatus : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        this.Start();
+    }
+
     private void Start()
     {
         StartCoroutine(RegenerateEnergy());
