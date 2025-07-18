@@ -177,7 +177,10 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
 
     protected override void OnClick()
     {
-        Debug.Log("Item CLick:" + gameObject.name);
+        if(itemInventory.ItemProfileSO.itemCode == ItemCode.HP)
+        {
+            Debug.Log("Heal");
+        }    
     }
 
     public virtual void OnPointerEnter(PointerEventData eventData)

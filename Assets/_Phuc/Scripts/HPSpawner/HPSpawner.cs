@@ -2,8 +2,6 @@
 
 public class HPSpawner : MonoBehaviour
 {
-    //[Header("Prefab Item HP")]
-    //public GameObject hpItemPrefab;
 
     [Header("Các điểm spawn")]
     public Transform[] spawnPoints;
