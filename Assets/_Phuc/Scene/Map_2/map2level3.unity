@@ -91486,6 +91486,7 @@ Transform:
   m_Children:
   - {fileID: 2134711399}
   - {fileID: 1660862065}
+  - {fileID: 1267937620}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1267937618
@@ -91504,7 +91505,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!61 &1267937619
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -91559,12 +91560,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1267937618}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 344.02, y: 26.83, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 342.24, y: 26.83, z: 0}
   m_LocalScale: {x: 1, y: 1.0047, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1260728310}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1268312148
 GameObject:
@@ -111289,6 +111290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb88fbdf4b22be64ab6b427f389da9dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hpItemPrefab: {fileID: 0}
   spawnPoints:
   - {fileID: 837864913}
   - {fileID: 2012155787}
@@ -121447,7 +121449,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.5219312, y: 1.4186158}
+  m_Offset: {x: -2.1952324, y: 1.4186158}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -121457,7 +121459,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 10.043543, y: 4.1173086}
+  m_Size: {x: 2.6092148, y: 4.1173086}
   m_EdgeRadius: 0
 --- !u!114 &1697418398
 MonoBehaviour:
@@ -121708,8 +121710,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserObject: {fileID: 1456573332}
-  laserObject_02: {fileID: 4596910152468886078}
-  laserObject_03: {fileID: 1097430189}
   switchSound: {fileID: 8300000, guid: f4c717fee89008f43bf10f69a4e455d9, type: 3}
 --- !u!95 &1731720716
 Animator:
@@ -129471,7 +129471,7 @@ Transform:
   m_GameObject: {fileID: 2134711397}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 346.55997, y: 24.7969, z: 0}
+  m_LocalPosition: {x: 342.26, y: 24.7969, z: 0}
   m_LocalScale: {x: 1, y: 1.0047, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -144956,7 +144956,6 @@ MonoBehaviour:
   itemLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  controller: {fileID: 0}
   mainCamera: {fileID: 0}
 --- !u!114 &3736396947465026314
 MonoBehaviour:
@@ -160953,7 +160952,6 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 25
-  canDash: 1
   isWallSliding: 0
   life: 10
   maxLife: 100
@@ -161615,7 +161613,6 @@ SceneRoots:
   - {fileID: 1784940218}
   - {fileID: 757109815}
   - {fileID: 1660192180}
-  - {fileID: 1267937620}
   - {fileID: 262863984}
   - {fileID: 887403908}
   - {fileID: 609248878}
