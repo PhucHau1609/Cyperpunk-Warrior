@@ -25,8 +25,7 @@ public class HealOnPickup : MonoBehaviour
             player.Heal(healAmount);
 
             // Âm thanh
-            if (healSound != null)
-                AudioSource.PlayClipAtPoint(healSound, transform.position);
+            if (healSound != null) PlayHealSound();
 
             Destroy(gameObject); // Item biến mất sau khi hồi máu
         }
@@ -40,4 +39,9 @@ public class HealOnPickup : MonoBehaviour
         }
     }
 
+    public void PlayHealSound()
+    {
+        AudioSource.PlayClipAtPoint(healSound, transform.position);
+
+    }
 }
