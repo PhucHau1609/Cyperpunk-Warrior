@@ -44,7 +44,7 @@ public class ConstantLaserController : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(firePoint.position, firePoint.right, maxLaserDistance, groundLayer);
 
-        if (hit.collider != null && hit.collider.CompareTag("Ground"))
+        if (hit.collider != null && hit.collider.CompareTag("Ground") || hit.collider != null && hit.collider.CompareTag("square"))
         {
             DrawLaser(firePoint.position, hit.point);
             ShowHitEffect(hit.point);
