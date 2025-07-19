@@ -89,6 +89,7 @@ public class playerHealth : MonoBehaviour
 
     public void ShowDamageOverlay()
     {
+        if (characterController.invincible) return;
         if (damageOverlay == null) return;
 
         StopCoroutine(nameof(DamageOverlayRoutine));
