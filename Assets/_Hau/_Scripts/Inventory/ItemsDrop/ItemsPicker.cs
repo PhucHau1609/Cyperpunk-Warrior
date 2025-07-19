@@ -120,7 +120,7 @@ public class ItemsPicker : HauMonoBehaviour
 
         if (itemsDropCtrl.ItemCode == ItemCode.HP && controller != null && controller.life < controller.maxLife)
         {
-            Debug.Log("HP chưa đầy, không thêm vào inventory, hãy tự động nhặt bằng va chạm.");
+            //Debug.Log("HP chưa đầy, không thêm vào inventory, hãy tự động nhặt bằng va chạm.");
             return;
         }
 
