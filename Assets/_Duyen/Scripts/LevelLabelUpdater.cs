@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
 using System.Text.RegularExpressions;
+using UnityEngine.UI;
 
 public class LevelLabelUpdater : MonoBehaviour
 {
-    public TMP_Text levelText;
+    public Text levelText;
     private static LevelLabelUpdater instance;
 
     void Awake()
@@ -36,12 +36,12 @@ public class LevelLabelUpdater : MonoBehaviour
         // Nếu mất reference, thử tìm lại TMP_Text trong children
         if (levelText == null)
         {
-            levelText = GetComponentInChildren<TMP_Text>();
+            levelText = GetComponentInChildren<Text>();
         }
 
         if (levelText != null)
         {
-            levelText.text = "LEVEL " + ConvertSceneNameToLevel(sceneName);
+            levelText.text = "MÀN " + ConvertSceneNameToLevel(sceneName);
             DisableRaycastOnText();
         }
     }

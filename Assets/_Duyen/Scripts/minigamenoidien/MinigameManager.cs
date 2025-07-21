@@ -18,7 +18,7 @@ public class MinigameManager : MonoBehaviour
     public Animator doorAnimator;
 
     public GridSlot[] gridSlots;
-
+     
     // Timeline references
     public PlayableDirector cutsceneDirector; // ⚠️ GÁN TRONG INSPECTOR
     
