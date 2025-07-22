@@ -15,7 +15,7 @@ public class HealOnPickup : MonoBehaviour
         CharacterController2D controller = other.GetComponent<CharacterController2D>();
         if (player == null || controller == null) return;
 
-        Debug.Log($"[HealOnPickup] OnTriggerEnter by: {other.name}");
+        //Debug.Log($"[HealOnPickup] OnTriggerEnter by: {other.name}");
 
 
 
