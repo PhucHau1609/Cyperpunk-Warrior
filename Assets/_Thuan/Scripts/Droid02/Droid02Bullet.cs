@@ -4,7 +4,7 @@ public class Droid02Bullet : MonoBehaviour
 {
     public float speed = 8f;                      // Tốc độ bay
     public float destroyDelay = 0.5f;             // Thời gian chờ animation nổ
-    public float damage = 5f;                    // Sát thương gây ra cho Player
+    public float damage = 2f;                    // Sát thương gây ra cho Player
     
     private Rigidbody2D rb;
     private Animator animator;

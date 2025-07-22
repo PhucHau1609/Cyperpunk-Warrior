@@ -17,4 +17,5 @@ public enum SoundName
     PickUpItem = 200,
     CraftItem = 201,
     CraftItemDrag = 202,
+    HealSound = 203,
 }

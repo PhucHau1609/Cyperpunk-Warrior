@@ -10,6 +10,7 @@ public class ItemsPicker : HauMonoBehaviour
     [SerializeField] protected bool enableMousePicking = true;
     [SerializeField] protected float mousePickingRange = 3f;
     [SerializeField] protected LayerMask itemLayerMask = -1;
+    [SerializeField] protected CharacterController2D controller;
 
     public Camera mainCamera;
 
@@ -18,6 +19,7 @@ public class ItemsPicker : HauMonoBehaviour
         base.LoadComponents();
         this.LoadSphereCollider();
         this.LoadCamera();
+        this.LoadController();
     }
 
     protected virtual void LoadSphereCollider()
@@ -35,6 +37,13 @@ public class ItemsPicker : HauMonoBehaviour
         this.mainCamera = Camera.main;
         if (this.mainCamera == null)
             this.mainCamera = FindFirstObjectByType<Camera>();
+    }
+
+    protected virtual void LoadController()
+    {
+        if (this.controller != null) return;
+        this.controller = transform.GetComponentInParent<CharacterController2D>();
+    
     }
 
     protected virtual void Update()
@@ -109,6 +118,12 @@ public class ItemsPicker : HauMonoBehaviour
     {
         if (itemsDropCtrl == null) return;
 
+        if (itemsDropCtrl.ItemCode == ItemCode.HP && controller != null && controller.life < controller.maxLife)
+        {
+            //Debug.Log("HP chưa đầy, không thêm vào inventory, hãy tự động nhặt bằng va chạm.");
+            return;
+        }
+
         ItemCollectionTracker.Instance.OnItemCollected(itemsDropCtrl.ItemCode);
         HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.PickUpItem);
         itemsDropCtrl.Despawn.DoDespawn();
@@ -131,45 +146,4 @@ public class ItemsPicker : HauMonoBehaviour
             this.mainCamera = FindFirstObjectByType<Camera>();
     }
 
-
-
 }
-
-/*[RequireComponent(typeof(CircleCollider2D))]
-public class ItemsPicker : HauMonoBehaviour
-{
-    [SerializeField] protected CircleCollider2D sphere;
-
-    protected override void LoadComponents()
-    {
-        base.LoadComponents();
-        this.LoadSphereCollider();
-    }
-
-    protected virtual void LoadSphereCollider()
-    {
-        if (this.sphere != null) return;
-        this.sphere = GetComponent<CircleCollider2D>();
-        this.sphere.radius = 0.6f;
-        this.sphere.isTrigger = true;
-
-        Debug.LogWarning(transform.name + ": LoadSphereCollider" + gameObject);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        this.TryPickItem(other);
-    }
-
-    public void TryPickItem(Collider2D other)
-    {
-        if (other == null || other.transform.parent == null) return;
-
-        ItemsDropCtrl itemsDropCtrl = other.transform.parent.GetComponent<ItemsDropCtrl>();
-        if (itemsDropCtrl == null) return;
-
-        ItemCollectionTracker.Instance.OnItemCollected(itemsDropCtrl.ItemCode);
-        HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.PickUpItem);
-        itemsDropCtrl.Despawn.DoDespawn();
-    }
-}*/

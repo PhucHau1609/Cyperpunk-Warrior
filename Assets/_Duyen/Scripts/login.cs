@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class login : MonoBehaviour
 {
-    private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
-    private TMP_InputField currentInputField;
+    private Dictionary<InputField, string> inputHistory = new Dictionary<InputField, string>();
+    private InputField currentInputField;
+    private float typingTimer = 0f;
 
     public float typeSoundCooldown = 0.08f;
 
     [Header("Sign_in")]
-    public TMP_InputField loginUsername;
-    public TMP_InputField loginPassword;
+    public InputField loginUsername;
+    public InputField loginPassword;
 
     [Header("Sign_up")]
-    public TMP_InputField registerEmail;
-    public TMP_InputField registerUsername;
-    public TMP_InputField registerPassword;
+    public InputField registerEmail;
+    public InputField registerUsername;
+    public InputField registerPassword;
 
     [Header("Message")]
     public Text messageText;
@@ -38,19 +40,35 @@ public class login : MonoBehaviour
 
     void Start()
     {
-        TMP_InputField[] inputs = {
+        InputField[] inputs = {
             loginUsername, loginPassword,
             registerEmail, registerUsername, registerPassword
         };
 
         foreach (var input in inputs)
         {
-            input.onSelect.AddListener(delegate { OnInputSelected(input); });
-            input.onValueChanged.AddListener(delegate { OnInputTyping(); });
+            //input.onSelect.AddListener((_) => OnInputSelected(input));
+            input.onValueChanged.AddListener((_) => OnInputTyping());
             inputHistory[input] = input.text;
         }
 
     }
+
+    void Update()
+    {
+        if (EventSystem.current.currentSelectedGameObject != null)
+        {
+            var selected = EventSystem.current.currentSelectedGameObject.GetComponent<InputField>();
+            if (selected != null && selected != currentInputField)
+            {
+                currentInputField = selected;
+            }
+        }
+
+        if (typingTimer > 0f)
+            typingTimer -= Time.deltaTime;
+    }
+
     void OnInputTyping()
     {
         if (currentInputField == null) return;
@@ -67,7 +85,7 @@ public class login : MonoBehaviour
         inputHistory[currentInputField] = currentText;
     }
 
-    void OnInputSelected(TMP_InputField input)
+    void OnInputSelected(InputField input)
     {
         currentInputField = input;
     }

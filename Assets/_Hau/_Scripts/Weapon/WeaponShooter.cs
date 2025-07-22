@@ -6,6 +6,8 @@ public class WeaponShooter : WeaponAbstract
     [SerializeField] private Transform firePoint;
     [SerializeField] private BulletGunName bulletName;
     [SerializeField] private int bulletDamage = 1;
+    [SerializeField] private float energyCostPerShot = 10f;
+
 
 
     [Header("Multi-Shot Settings")]
@@ -17,6 +19,17 @@ public class WeaponShooter : WeaponAbstract
     [SerializeField] private ParticleSystem shellParticle;
     [SerializeField] private ParticleSystem flameParticle;
 
+    private PlayerStatus playerStatus;
+
+    protected override void Awake()
+    {
+        playerStatus = FindFirstObjectByType<PlayerStatus>();
+        if (playerStatus == null)
+        {
+            Debug.LogError("Không tìm thấy PlayerStatus trong scene.");
+        }
+    }
+
     private void Update()
     {
         if (!this.gameObject.activeInHierarchy)
@@ -27,7 +40,14 @@ public class WeaponShooter : WeaponAbstract
 
         if (Input.GetMouseButtonDown(0))
         {
-            Shoot();
+            if (playerStatus != null && playerStatus.UseEnergy(energyCostPerShot))
+            {
+                Shoot();
+            }
+            else
+            {
+                Debug.Log("Không đủ energy để bắn!");
+            }
         }
     }
 

@@ -248,7 +248,7 @@ public class FloatingFollower : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Không tìm thấy đối tượng có tag 'spw'.");
+            //Debug.LogWarning("Không tìm thấy đối tượng có tag 'spw'.");
         }
     }
 
