@@ -23,6 +23,11 @@ public class PlayerShader : MonoBehaviour
     [Header("Attribute Upgrade")]
     private CharacterController2D characterController;
 
+    [Header("SkillDownUI")]
+    [SerializeField] private SkillCooldownUI cooldownUI;
+
+
+
     private static readonly Dictionary<ShaderEffect, string> ShaderEffectKeywords = new Dictionary<ShaderEffect, string>
     {
         { ShaderEffect.Glow, "GLOW_ON" },
@@ -53,6 +58,7 @@ public class PlayerShader : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerShaderComponent = GetComponent<AllIn1Shader>();
         characterController = GetComponentInParent<CharacterController2D>();
+        cooldownUI = FindFirstObjectByType<SkillCooldownUI>();
 
         if (spriteRenderer != null)
         {
@@ -68,13 +74,14 @@ public class PlayerShader : MonoBehaviour
 
     void Update()
     {
-        // Nhấn J để bật shader + tàng hình trong effectDuration giây
-        if (Input.GetKeyDown(KeyCode.J) && !isEffectActive &&
-            PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+        if (Input.GetKeyDown(KeyCode.J) && !isEffectActive && !isOnCooldown &&
+            PlayerStatus.Instance != null)
         {
+            PlayerStatus.Instance.UseEnergy(10f);
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.qImage);
             StartCoroutine(ActivateEffectWithInvisibility());
         }
+
 
         // Nhấn phím 1 để biến hình ColorRamp (có cooldown)
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -90,9 +97,16 @@ public class PlayerShader : MonoBehaviour
     {
         isEffectActive = true;
         isInvisible = true;
+        isOnCooldown = true;
 
         string keyword = ShaderEffectKeywords[effectToEnable];
         SetKeywordOnSelf(keyword, true);
+
+        // Bắt đầu cooldown UI ngay từ đầu (không chờ effectDuration)
+        if (cooldownUI != null)
+        {
+            cooldownUI.StartCooldown(cooldownTime);
+        }
 
         if (spriteRenderer != null)
         {
@@ -106,12 +120,11 @@ public class PlayerShader : MonoBehaviour
             invisibilityLight.enabled = false;
         }
 
-        //Debug.Log("🔮 Shader & Tàng hình kích hoạt!");
-
+        // Chờ thời gian hiệu ứng (tàng hình)
         yield return new WaitForSeconds(effectDuration);
 
+        // Kết thúc hiệu ứng
         SetKeywordOnSelf(keyword, false);
-
         isInvisible = false;
 
         if (spriteRenderer != null)
@@ -126,9 +139,67 @@ public class PlayerShader : MonoBehaviour
             invisibilityLight.enabled = true;
         }
 
-        //Debug.Log("⏱️ Shader & Tàng hình kết thúc.");
         isEffectActive = false;
+
+        // Đợi phần còn lại của cooldown (nếu cooldown dài hơn effect)
+        float remainingCooldown = Mathf.Max(0, cooldownTime - effectDuration);
+        yield return new WaitForSeconds(remainingCooldown);
+
+        isOnCooldown = false;
     }
+
+
+
+    /* IEnumerator ActivateEffectWithInvisibility()
+     {
+         isEffectActive = true;
+         isInvisible = true;
+         isOnCooldown = true;
+
+         string keyword = ShaderEffectKeywords[effectToEnable];
+         SetKeywordOnSelf(keyword, true);
+
+         if (spriteRenderer != null)
+         {
+             Color color = spriteRenderer.color;
+             color.a = 0.149f;
+             spriteRenderer.color = color;
+         }
+
+         if (invisibilityLight != null)
+         {
+             invisibilityLight.enabled = false;
+         }
+
+         if (cooldownUI != null)
+         {
+             cooldownUI.StartCooldown(cooldownTime);
+         }
+
+         yield return new WaitForSeconds(effectDuration);
+
+         SetKeywordOnSelf(keyword, false);
+
+         isInvisible = false;
+
+         if (spriteRenderer != null)
+         {
+             Color color = spriteRenderer.color;
+             color.a = 1f;
+             spriteRenderer.color = color;
+         }
+
+         if (invisibilityLight != null)
+         {
+             invisibilityLight.enabled = true;
+         }
+
+         //Debug.Log("⏱️ Shader & Tàng hình kết thúc.");
+         isEffectActive = false;
+
+         yield return new WaitForSeconds(cooldownTime);
+         isOnCooldown = false;
+     }*/
 
     IEnumerator ActivateColorRampEffect()
     {
@@ -166,6 +237,57 @@ public class PlayerShader : MonoBehaviour
     }
 }
 
+
+/* IEnumerator ActivateEffectWithInvisibility()
+    {
+        isEffectActive = true;
+        isInvisible = true;
+        isOnCooldown = true;
+
+        string keyword = ShaderEffectKeywords[effectToEnable];
+        SetKeywordOnSelf(keyword, true);
+
+        if (spriteRenderer != null)
+        {
+            Color color = spriteRenderer.color;
+            color.a = 0.149f;
+            spriteRenderer.color = color;
+        }
+
+        if (invisibilityLight != null)
+        {
+            invisibilityLight.enabled = false;
+        }
+
+        if (cooldownUI != null)
+        {
+            cooldownUI.StartCooldown(effectDuration, cooldownTime);
+        }
+
+        yield return new WaitForSeconds(effectDuration);
+
+        SetKeywordOnSelf(keyword, false);
+
+        isInvisible = false;
+
+        if (spriteRenderer != null)
+        {
+            Color color = spriteRenderer.color;
+            color.a = 1f;
+            spriteRenderer.color = color;
+        }
+
+        if (invisibilityLight != null)
+        {
+            invisibilityLight.enabled = true;
+        }
+
+        //Debug.Log("⏱️ Shader & Tàng hình kết thúc.");
+        isEffectActive = false;
+
+        yield return new WaitForSeconds(cooldownTime);
+        isOnCooldown = false;
+    }*/
 
 /*  private void SetKeywordOnSelf(string keyword, bool state)
   {
