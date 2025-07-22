@@ -7,7 +7,6 @@ public class SimplePanelController : MonoBehaviour
     public RectTransform panel;
     public float tweenDuration = 0.3f;
 
-    private Image[] panelImages;
     public float imageHoverScaleAmount = 0.3f;
     public float imageHoverDuration = 0.2f;
 

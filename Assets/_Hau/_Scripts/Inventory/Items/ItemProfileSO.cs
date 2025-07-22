@@ -16,6 +16,10 @@ public class ItemProfileSO : ScriptableObject
 
     [TextArea(2, 5)] public string itemDescription; // <-- THÊM DÒNG NÀY
 
+    // ✅ THÊM DÒNG NÀY
+    public ItemUseType useType = ItemUseType.None;
+    public float healAmount = 10f;
+
 
     protected virtual void Reset()
     {

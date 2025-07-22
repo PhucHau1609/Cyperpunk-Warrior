@@ -4,74 +4,101 @@ using System.Collections;
 
 public class PlayerStatus : MonoBehaviour
 {
+    public static PlayerStatus Instance { get; private set; } // ✅ Singleton
+
+    [Header("UI Components")]
     public Image energyBar;
-
-    public float maxEnergy = 100f;
-    public float currentEnergy = 100f;
-
     public Image qImage;
     public Image eImage;
     public Image rImage;
 
-    void Awake()
+    [Header("Energy Settings")]
+    public float maxEnergy = 100f;
+    public float currentEnergy = 100f;
+    public float energyRegenAmount = 1f;
+    public float energyRegenInterval = 2f;
+
+    private void Awake()
     {
-        if (Object.FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None).Length > 1)
+        // ✅ Singleton setup
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
-
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
+    private void OnEnable()
+    {
+        this.Start();
+    }
+
+    private void Start()
     {
         StartCoroutine(RegenerateEnergy());
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (UseEnergy(10f))
-                StartCoroutine(BlinkImage(qImage));
-        }
-
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            if (UseEnergy(10f))
-                StartCoroutine(BlinkImage(eImage));
-        }
-
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            if (UseEnergy(10f))
-                StartCoroutine(BlinkImage(rImage));
-        }
-
-        UpdateBars();
+        UpdateBars(); // ✅ Chỉ cập nhật UI, không xử lý input
     }
 
-    bool UseEnergy(float amount)
+    /// <summary>
+    /// Dùng năng lượng nếu đủ. Trả về true nếu dùng thành công.
+    /// </summary>
+    public bool UseEnergy(float amount)
     {
         if (currentEnergy >= amount)
         {
             currentEnergy -= amount;
+            UpdateBars();
             return true;
         }
         return false;
     }
 
-    void UpdateBars()
+    /// <summary>
+    /// Gọi hiệu ứng nhấp nháy lên UI cụ thể
+    /// </summary>
+    public void TriggerBlink(Image target)
+    {
+        if (target != null)
+            StartCoroutine(BlinkImage(target));
+    }
+
+    /// <summary>
+    /// Phục hồi năng lượng nếu chưa đầy
+    /// </summary>
+    private IEnumerator RegenerateEnergy()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(energyRegenInterval);
+
+            if (currentEnergy < maxEnergy)
+            {
+                currentEnergy = Mathf.Clamp(currentEnergy + energyRegenAmount, 0f, maxEnergy);
+                UpdateBars();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật thanh năng lượng
+    /// </summary>
+    private void UpdateBars()
     {
         if (energyBar != null)
             energyBar.fillAmount = currentEnergy / maxEnergy;
     }
 
-    IEnumerator BlinkImage(Image img)
+    /// <summary>
+    /// Hiệu ứng nhấp nháy UI
+    /// </summary>
+    private IEnumerator BlinkImage(Image img)
     {
-        if (img == null) yield break;
-
         Color originalColor = img.color;
 
         for (int i = 0; i < 3; i++)
@@ -80,16 +107,6 @@ public class PlayerStatus : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             img.color = originalColor;
             yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    IEnumerator RegenerateEnergy()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(2f);
-            currentEnergy = Mathf.Clamp(currentEnergy + 1f, 0f, maxEnergy);
-            UpdateBars();
         }
     }
 }

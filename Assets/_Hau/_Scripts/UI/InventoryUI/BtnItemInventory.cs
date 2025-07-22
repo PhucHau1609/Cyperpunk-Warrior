@@ -177,8 +177,39 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
 
     protected override void OnClick()
     {
-        Debug.Log("Item CLick:" + gameObject.name);
+        if (itemInventory == null || itemInventory.ItemProfileSO == null) return;
+
+        var profile = itemInventory.ItemProfileSO;
+        if (profile.useType == ItemUseType.Heal)
+        {
+            CharacterController2D controller = FindFirstObjectByType<CharacterController2D>();
+            playerHealth player = FindFirstObjectByType<playerHealth>();
+
+            if (controller == null || player == null)
+            {
+                Debug.LogWarning("Không tìm thấy player để hồi máu");
+                return;
+            }
+
+            if (controller.life >= controller.maxLife)
+            {
+                Debug.Log("🔋 Máu đã đầy, không thể dùng bình máu.");
+                return;
+            }
+
+            // Hồi máu
+            player.Heal(profile.healAmount);
+            HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.HealSound);
+
+            // Trừ item
+            InventoryManager.Instance.RemoveItem(ItemCode.HP,1);
+        }
+        else
+        {
+            Debug.Log($"📦 Item {profile.itemCode} không có tác dụng khi click.");
+        }
     }
+
 
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
