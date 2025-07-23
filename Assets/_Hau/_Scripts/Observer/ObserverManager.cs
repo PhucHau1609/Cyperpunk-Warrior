@@ -19,6 +19,14 @@ public enum EventID
     Weapon_Toggle,
     Weapon_Swap,
 
+    //Skill UnLock
+    UnlockSkill_Invisibility,
+    UnlockSkill_ColorRamp,
+    UnlockSkill_Swap,
+    UnlockSkill_Dash,
+
+
+
 
 }
 
