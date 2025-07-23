@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             jump = true;
 
-        if (Input.GetKeyDown(KeyCode.E) && PlayerStatus.Instance != null && controller.canDash)
+     /*   if (Input.GetKeyDown(KeyCode.E) && PlayerStatus.Instance != null && controller.canDash)
         {
             PlayerStatus.Instance.UseEnergy(10f);
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.eImage);
@@ -56,7 +56,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.S))
-            dashY = true; // ⚠️ MỚI: dash dọc
+            dashY = true; // ⚠️ MỚI: dash dọc*/
+    }
+
+    public bool TriggerDashX()
+    {
+        if (controller.canDash && PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+        {
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.eImage);
+            dashX = true;
+            return true;
+        }
+        return false;
     }
 
     void FixedUpdate()
