@@ -13,6 +13,7 @@ public class CardsController : MonoBehaviour
     [SerializeField] Transform playerHandTransform;
     [SerializeField] Transform playedCardSlot;
     [SerializeField] Transform deckPileTransform;
+    [SerializeField] Transform npcHandTransform;
 
     [Header("Sprites")]
     [SerializeField] Sprite[] sprites;
@@ -24,17 +25,29 @@ public class CardsController : MonoBehaviour
     [SerializeField] GameObject buttonPanel;
     [SerializeField] GameObject banPanel;
     [SerializeField] GameObject barrierObject;
-
+    [SerializeField] TMPro.TextMeshProUGUI playerTimerText;
+    [SerializeField] TMPro.TextMeshProUGUI npcTimerText;
 
     private List<Card> deckCards = new List<Card>();
     private List<Card> playerHand = new List<Card>();
+    private List<Card> npcHand = new List<Card>();
     private Card playedCard;
 
-    private int flipAttempts = 0;
+    private float playerTimeRemaining = 60f;
+    private float npcTimeRemaining = 60f;
+    private bool isTimerRunning = false;
+
     private List<Card> flippedCards = new List<Card>();
 
     [SerializeField] Transform cameraFocusPoint;
     private Transform playerTransform;
+
+    private enum Turn { Player, NPC }
+    private Turn currentTurn = Turn.Player;
+
+    private int playerFlipAttempts = 0;
+    private int npcFlipAttempts = 0;
+    private bool isPlayerInputEnabled = true;
 
 
     void Start()
@@ -55,7 +68,18 @@ public class CardsController : MonoBehaviour
 
         CameraFollow.Instance.Target = cameraFocusPoint;
 
+        playerTimeRemaining = 60f;
+        npcTimeRemaining = 60f;
+        isTimerRunning = false;
+
         ResetGame();
+
+        Invoke(nameof(StartTimerAfterDeal), 2f);
+    }
+
+    void StartTimerAfterDeal()
+    {
+        isTimerRunning = true;
     }
 
     void ResetGame()
@@ -67,7 +91,11 @@ public class CardsController : MonoBehaviour
         deckCards.Clear();
         playerHand.Clear();
         flippedCards.Clear();
-        flipAttempts = 0;
+        playedCard = null;
+
+        playerFlipAttempts = 0;
+        npcFlipAttempts = 0;
+        currentTurn = Turn.Player;
 
         List<Sprite> deckSprites = new List<Sprite>();
         for (int i = 0; i < sprites.Length; i++) deckSprites.Add(sprites[i]);
@@ -76,8 +104,38 @@ public class CardsController : MonoBehaviour
         StartCoroutine(FillDeckCards(deckSprites));
     }
 
+    void Update()
+    {
+        if (!isTimerRunning) return;
+
+        float delta = Time.deltaTime;
+
+        if (currentTurn == Turn.Player)
+        {
+            playerTimeRemaining -= delta;
+            if (playerTimeRemaining <= 0)
+            {
+                playerTimeRemaining = 0;
+                if (playerHand.Count > 0) GameOverPanel.Instance.ShowGameOver();  // Player thua
+            }
+        }
+        else if (currentTurn == Turn.NPC)
+        {
+            npcTimeRemaining -= delta;
+            if (npcTimeRemaining <= 0)
+            {
+                npcTimeRemaining = 0;
+                if (npcHand.Count > 0) EndGame(true); // NPC thua
+            }
+        }
+
+        UpdateTimerUI();
+    }
+
     public void OnCardClicked(Card card)
     {
+        if (!isPlayerInputEnabled || currentTurn != Turn.Player) return;
+
         if (playerHand.Contains(card) && playedCard == null)
         {
             playedCard = card;
@@ -89,24 +147,46 @@ public class CardsController : MonoBehaviour
             AudioManager.Instance?.PlayPlayCard();
             ArrangeHand();
         }
-        else if (deckCards.Contains(card) && playedCard != null && flipAttempts < 5 && !flippedCards.Contains(card))
+        else if (deckCards.Contains(card) && playedCard != null && playerFlipAttempts < 5 && !flippedCards.Contains(card))
         {
             card.Show();
             AudioManager.Instance?.PlayFlipCard();
             flippedCards.Add(card);
-            flipAttempts++;
+            playerFlipAttempts++;
 
             if (card.iconSprite == playedCard.iconSprite)
             {
-                StartCoroutine(HandleMatched(card));
+                StartCoroutine(HandleMatched(card, true));
             }
-            else if (flipAttempts >= 5)
+            else if (playerFlipAttempts >= 5)
             {
-                StartCoroutine(HandleMismatch());
+                StartCoroutine(HandleMismatch(true));
             }
         }
     }
-    
+
+    Card GetNPCPlayedCard()
+    {
+        if (npcHand.Count == 0) return null;
+
+        Card npcCard = npcHand[0];
+        npcHand.RemoveAt(0);
+
+        npcCard.gameObject.SetActive(true);
+        npcCard.transform.SetParent(playedCardSlot);
+        npcCard.transform.localPosition = Vector3.zero;
+        npcCard.transform.localRotation = Quaternion.identity;
+        npcCard.transform.localScale = Vector3.one * 1.2f;
+
+        npcCard.iconImage.sprite = npcCard.iconSprite;
+
+        AudioManager.Instance?.PlayPlayCard();
+        Debug.Log($"NPC đánh lá: {npcCard.iconSprite.name}, còn {npcHand.Count} lá");
+
+        playedCard = npcCard;
+        return npcCard;
+    }
+
     IEnumerator FillDeckCards(List<Sprite> deckSprites)
     {
         for (int i = 0; i < 16 && i < deckSprites.Count; i++)
@@ -136,7 +216,31 @@ public class CardsController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(FillPlayerHand(deckSprites));
+        yield return StartCoroutine(FillPlayerHand(deckSprites));
+        yield return StartCoroutine(FillNPCHand(deckSprites));
+    }
+
+    IEnumerator FillNPCHand(List<Sprite> deckSprites)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            Sprite sp = deckSprites[Random.Range(0, deckSprites.Count)];
+
+            Card c = Instantiate(cardPrefab, deckPileTransform);
+            c.SetIconSprite(sp, false); // cho dễ debug
+            c.hiddenIconSprite = hiddenCardSprite;
+            c.controller = this;
+
+            // Không set parent => không hiển thị
+            c.transform.SetParent(npcHandTransform, false);
+            c.iconImage.sprite = hiddenCardSprite;
+            //c.gameObject.SetActive(false); // Ẩn hẳn đi nếu muốn
+
+            npcHand.Add(c);
+        }
+
+        Debug.Log($"NPC có {npcHand.Count} lá bài.");
+        yield return null;
     }
 
     IEnumerator FillPlayerHand(List<Sprite> deckSprites)
@@ -144,7 +248,6 @@ public class CardsController : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             Sprite sp = deckSprites[Random.Range(0, deckSprites.Count)];
-
             Card c = Instantiate(cardPrefab, deckPileTransform);
             c.SetIconSprite(sp, true);
             c.hiddenIconSprite = hiddenCardSprite;
@@ -154,7 +257,7 @@ public class CardsController : MonoBehaviour
 
             c.transform.SetParent(playerHandTransform);
             Canvas.ForceUpdateCanvases();
-            ArrangeHand(); // cần gọi để layout xong mới lấy đúng vị trí
+            ArrangeHand();
             Vector3 toPos = c.transform.position;
 
             c.transform.position = fromPos;
@@ -169,35 +272,26 @@ public class CardsController : MonoBehaviour
         }
 
         ArrangeHand();
+        //StartCoroutine(FillNPCHand(deckSprites));
+
     }
 
-    IEnumerator HandleMatched(Card matchCard)
+    IEnumerator HandleMatched(Card matchCard, bool isPlayer)
     {
         yield return new WaitForSeconds(0.2f);
         AudioManager.Instance?.PlayCorrect();
 
-        // ✅ Lưu local tránh lỗi NullReference khi callback chạy sau
         Card tempCard = playedCard;
-
-        // Lắc và mờ dần
         if (tempCard != null)
         {
-            CanvasGroup cg = tempCard.GetComponent<CanvasGroup>();
-            if (cg == null) cg = tempCard.gameObject.AddComponent<CanvasGroup>();
+            CanvasGroup cg = tempCard.GetComponent<CanvasGroup>() ?? tempCard.gameObject.AddComponent<CanvasGroup>();
 
             Sequence seq1 = DOTween.Sequence();
-            //seq1.Append(tempCard.transform.DOShakeRotation(0.2f, 1.2f, 1));
             seq1.Append(tempCard.transform.DOShakeRotation(0.25f, new Vector3(0, 0, 5f), 10, 45f));
-
             seq1.Append(cg.DOFade(0, 0.3f));
-            seq1.OnComplete(() =>
-            {
-                if (tempCard != null)
-                    Destroy(tempCard.gameObject);
-            });
+            seq1.OnComplete(() => Destroy(tempCard.gameObject));
         }
 
-        // Phóng to – thu nhỏ lá trùng
         if (matchCard != null)
         {
             Sequence seq2 = DOTween.Sequence();
@@ -207,26 +301,36 @@ public class CardsController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        foreach (Card c in flippedCards)
-        {
-            if (c != null) c.Hide();
-        }
-
+        foreach (Card c in flippedCards) c?.Hide();
         flippedCards.Clear();
         playedCard = null;
-        flipAttempts = 0;
+
+        if (isPlayer)
+        {
+            playerFlipAttempts = 0;
+            AddCardToOpponent(); // Player thắng thì NPC bị cộng thêm
+        }
+        else
+        {
+            npcFlipAttempts = 0;
+            AddRandomCardToHand(); // NPC thắng thì Player bị cộng thêm
+        }
 
         CheckWinLose();
+
+        if (!isPlayer)
+        {
+            StartCoroutine(NPCTurn()); // NPC tiếp tục lật
+        }
     }
 
-    IEnumerator HandleMismatch()
+    IEnumerator HandleMismatch(bool isPlayer)
     {
         yield return new WaitForSeconds(0.5f);
         AudioManager.Instance?.PlayWrong();
 
         foreach (Card c in flippedCards)
         {
-            // Lắc nhẹ rồi ẩn
             Sequence seq = DOTween.Sequence();
             seq.Append(c.transform.DOShakePosition(0.25f, new Vector3(0.15f, 0f, 0f), 8, 90, false));
             seq.AppendCallback(() => c.Hide());
@@ -234,21 +338,105 @@ public class CardsController : MonoBehaviour
 
         yield return new WaitForSeconds(0.4f);
 
-        // Trả lá bài về tay
-        playedCard.transform.SetParent(playerHandTransform);
-        playedCard.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutQuad);
-        playedCard.iconImage.sprite = playedCard.iconSprite;
-        playerHand.Add(playedCard);
-        AudioManager.Instance?.PlayReturnCard();
+        if (playedCard != null)
+        {
+            if (isPlayer)
+            {
+                playedCard.transform.SetParent(playerHandTransform);
+                playedCard.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutQuad);
+                playedCard.iconImage.sprite = playedCard.iconSprite;
+                playerHand.Add(playedCard);
+                AudioManager.Instance?.PlayReturnCard();
+
+                currentTurn = Turn.NPC;
+                isPlayerInputEnabled = false;
+                StartCoroutine(NPCTurn());
+            }
+            else
+            {
+                playedCard.transform.SetParent(npcHandTransform);
+                Canvas.ForceUpdateCanvases();
+                ArrangeHand(); // Để lấy vị trí đúng của lá bài trong tay NPC (nếu có)
+                Vector3 toPos = playedCard.transform.position;
+
+                // Di chuyển từ chỗ đánh về vị trí mới
+                playedCard.transform.localScale = Vector3.one * 1.2f;
+                playedCard.transform.DOScale(1f, 0.3f).SetEase(Ease.OutQuad);
+                playedCard.transform.DOMove(toPos, 0.3f).SetEase(Ease.OutQuad);
+                playedCard.transform.DOLocalRotate(Vector3.zero, 0.3f).SetEase(Ease.OutQuad);
+
+                // Ẩn icon lại nếu cần
+                playedCard.iconImage.sprite = hiddenCardSprite;
+
+                npcHand.Add(playedCard);
+                AudioManager.Instance?.PlayReturnCard();
+
+                currentTurn = Turn.Player;
+                isPlayerInputEnabled = true;
+                playerFlipAttempts = 0;
+            }
+        }
+
         playedCard = null;
-
-        AddRandomCardToHand();
-
         flippedCards.Clear();
-        flipAttempts = 0;
+
+        //if (isPlayer)
+        //{
+        //    playerFlipAttempts = 0;
+        //    //AddRandomCardToHand();
+        //    currentTurn = Turn.NPC;
+        //    isPlayerInputEnabled = false;
+        //    StartCoroutine(NPCTurn());
+        //}
+        //else
+        //{
+        //    npcFlipAttempts = 0;
+        //    currentTurn = Turn.Player;
+        //    isPlayerInputEnabled = true;
+
+        //}
+
 
         ArrangeHand();
         CheckWinLose();
+    }
+
+    IEnumerator NPCTurn()
+    {
+        yield return new WaitForSeconds(1f);
+
+        Card npcPlayedCard = GetNPCPlayedCard();
+        if (npcPlayedCard == null)
+        {
+            currentTurn = Turn.Player;
+            isPlayerInputEnabled = true;
+            yield break;
+        }
+
+        npcFlipAttempts = 0;
+        //bool foundMatch = false;
+
+        while (npcFlipAttempts < 5)
+        {
+            Card randomCard = GetRandomUnflippedCard();
+            if (randomCard == null) break;
+
+            randomCard.Show();
+            AudioManager.Instance?.PlayFlipCard();
+            flippedCards.Add(randomCard);
+            npcFlipAttempts++;
+
+            yield return new WaitForSeconds(0.6f);
+
+            if (randomCard.iconSprite == npcPlayedCard.iconSprite)
+            {
+                //foundMatch = true;
+                yield return StartCoroutine(HandleMatched(randomCard, false));
+                yield break;
+            }
+        }
+
+        yield return StartCoroutine(HandleMismatch(false));
     }
 
     void AddRandomCardToHand()
@@ -266,6 +454,26 @@ public class CardsController : MonoBehaviour
         playerHand.Add(newCard);
         AudioManager.Instance?.PlayDealCard();
         ArrangeHand();
+    }
+
+    void AddCardToOpponent()
+    {
+        Sprite sp = sprites[Random.Range(0, sprites.Length)];
+        Card c = Instantiate(cardPrefab, npcHandTransform);
+        c.SetIconSprite(sp, false);
+        c.hiddenIconSprite = hiddenCardSprite;
+        c.controller = this;
+        c.gameObject.SetActive(true); // ẩn
+
+        npcHand.Add(c);
+        Debug.Log($"NPC bị cộng thêm 1 lá. Hiện có {npcHand.Count} lá.");
+    }
+
+    Card GetRandomUnflippedCard()
+    {
+        List<Card> available = deckCards.FindAll(c => !flippedCards.Contains(c));
+        if (available.Count == 0) return null;
+        return available[Random.Range(0, available.Count)];
     }
 
     void ArrangeHand()
@@ -294,49 +502,45 @@ public class CardsController : MonoBehaviour
             card.transform.DOLocalRotate(rot, 0.3f);
             card.transform.SetSiblingIndex(i);
         }
+
     }
 
     void CheckWinLose()
     {
-        if (playerHand.Count == 0)
+        if (playerHand.Count == 0 && npcHand.Count > 0) //player thang
         {
-            //Debug.Log("WIN");
-            gamePanel.SetActive(false);
-            finishPanel.SetActive(true);
-            buttonPanel.SetActive(false);
-            banPanel.SetActive(false);
-
-            ItemsDropManager.Instance.DropItem(ItemCode.Artefacts_1, 1, new Vector3(484.61f, 40.59f,0));
-            AudioManager.Instance?.PlayWinGame();
-            CameraFollow.Instance.Target = playerTransform;
-            if (barrierObject != null)
-                barrierObject.SetActive(false);
+            EndGame(true);
+            //GameOverPanel.Instance.ShowGameOver();
         }
-        else if (playerHand.Count > 10)
+        else if (npcHand.Count == 0 && playerHand.Count > 0) // player thua
         {
-            Debug.Log("LOSE");
-            gamePanel.SetActive(false);
-            finishPanel.SetActive(false);
-            buttonPanel.SetActive(true);
-            banPanel.SetActive(true);
-            AudioManager.Instance?.PlayLoseGame();
-            CameraFollow.Instance.Target = playerTransform;
+            GameOverPanel.Instance.ShowGameOver(); //EndGame(true); 
         }
     }
 
-    void ShuffleDeck()
+    void UpdateTimerUI()
     {
-        List<Sprite> currentSprites = new List<Sprite>();
-        foreach (Card c in deckCards)
+        playerTimerText.text = Mathf.CeilToInt(playerTimeRemaining).ToString() + "s";
+        npcTimerText.text = Mathf.CeilToInt(npcTimeRemaining).ToString() + "s";
+    }
+
+    void EndGame(bool playerWin)
+    {
+        isTimerRunning = false;
+        gamePanel.SetActive(false);
+        finishPanel.SetActive(true);
+        buttonPanel.SetActive(playerWin);
+        banPanel.SetActive(!playerWin);
+        CameraFollow.Instance.Target = playerTransform;
+
+        if (playerWin)
         {
-            currentSprites.Add(c.iconSprite);
+            AudioManager.Instance?.PlayWinGame();
+            if (barrierObject != null) barrierObject.SetActive(false);
         }
-
-        Shuffle(currentSprites);
-
-        for (int i = 0; i < deckCards.Count; i++)
+        else
         {
-            deckCards[i].SetIconSprite(currentSprites[i]);
+            AudioManager.Instance?.PlayLoseGame();
         }
     }
 
@@ -345,9 +549,7 @@ public class CardsController : MonoBehaviour
         for (int i = list.Count - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
-            T temp = list[i];
-            list[i] = list[j];
-            list[j] = temp;
+            (list[i], list[j]) = (list[j], list[i]);
         }
     }
 }
