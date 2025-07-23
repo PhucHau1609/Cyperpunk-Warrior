@@ -30347,6 +30347,111 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437850761}
   m_CullTransparentMesh: 1
+--- !u!1 &439471327
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 439471328}
+  - component: {fileID: 439471330}
+  - component: {fileID: 439471329}
+  m_Layer: 5
+  m_Name: Skill_Group_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &439471328
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439471327}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 880906311}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -347, y: 16}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &439471329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439471327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84fa2ead2a4696347a2d6479c16e5b5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillContainer: {fileID: 439471328}
+  skillSlotPrefab: {fileID: 6506062218355963614, guid: fe9ef4fc26c9bf841898447db54cfcbf, type: 3}
+  skills:
+  - skillID: 1
+    skillName: Invisibility
+    icon: {fileID: 3635378570788257410, guid: 559700b887abb734d8a346dd8491e0e3, type: 3}
+    triggerKey: 106
+    effectDuration: 5
+    cooldownTime: 10
+  - skillID: 2
+    skillName: ColorRamp
+    icon: {fileID: -5813120681818029273, guid: d44799a987436a642a3e5d57ab7354b8, type: 3}
+    triggerKey: 49
+    effectDuration: 10
+    cooldownTime: 20
+  - skillID: 4
+    skillName: Swap
+    icon: {fileID: 74671254771631460, guid: f169b847e4936ec4cae4780231f4bea2, type: 3}
+    triggerKey: 9
+    effectDuration: 5
+    cooldownTime: 10
+  - skillID: 3
+    skillName: Dash
+    icon: {fileID: 1746656750441003446, guid: afc9cd1c3cc0f86489619d0d4d6ba4b3, type: 3}
+    triggerKey: 101
+    effectDuration: 2
+    cooldownTime: 3
+  playerShader: {fileID: 634544012}
+  swapTargetManager: {fileID: 634544011}
+  playerMovement: {fileID: 634544008}
+--- !u!114 &439471330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439471327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: -150
+    m_Right: 0
+    m_Top: -55
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 15
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 1
 --- !u!1 &439936514
 GameObject:
   m_ObjectHideFlags: 0
@@ -41603,6 +41708,28 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5921707828305383333, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
   m_PrefabInstance: {fileID: 634544007}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &634544011 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7261934776679248696, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+  m_PrefabInstance: {fileID: 634544007}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820779986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 718f2cb35bc24f645a391ce63729ed32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &634544012 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2469902169573832227, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+  m_PrefabInstance: {fileID: 634544007}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 599f8865b213ff742930df68786d2d30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &636662189
 GameObject:
   m_ObjectHideFlags: 0
@@ -67574,6 +67701,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 737516545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &880906310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 880906311}
+  m_Layer: 5
+  m_Name: BottomRight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &880906311
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880906310}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 439471328}
+  m_Father: {fileID: 1434224832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0.00024414062, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &889344963
 GameObject:
   m_ObjectHideFlags: 0
@@ -76551,6 +76714,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3944393627676328734, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2115099488}
+    - targetCorrespondingSourceObject: {fileID: 3944393627676328734, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 880906311}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4618465904409218892, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
       insertIndex: -1
@@ -80327,7 +80493,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1106290698
 RectTransform:
   m_ObjectHideFlags: 0

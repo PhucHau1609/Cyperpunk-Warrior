@@ -111971,22 +111971,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7307607406679590861, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
       propertyPath: m_Size.y
-      value: 2.6439352
+      value: 3.7942467
       objectReference: {fileID: 0}
     - target: {fileID: 7307607406679590861, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
       propertyPath: m_Offset.y
-      value: 0.120746136
+      value: 0.6959019
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6600569092310070862, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1660862067}
   m_SourcePrefab: {fileID: 100100000, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
 --- !u!4 &1660862065 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
   m_PrefabInstance: {fileID: 1660862064}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1660862066 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6600569092310070862, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+  m_PrefabInstance: {fileID: 1660862064}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1660862067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660862066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eb61872781a884a972b0cecb4fac3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventID: 11
+  skillID: 4
 --- !u!1 &1665683230
 GameObject:
   m_ObjectHideFlags: 0
@@ -130236,7 +130258,7 @@ Transform:
   m_GameObject: {fileID: 2134711397}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 342.26, y: 24.7969, z: 0}
+  m_LocalPosition: {x: 343.39, y: 24.7969, z: 0}
   m_LocalScale: {x: 1, y: 1.0047, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -161660,8 +161682,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 1.7.7
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!114 &7847187969098950361
 MonoBehaviour:
   m_ObjectHideFlags: 0
