@@ -47,7 +47,7 @@ public class SceneController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Không tìm thấy Pet trong map3!");
+            //Debug.LogWarning("Không tìm thấy Pet trong map3!");
         }
         if (player != null)
             playerAnimator = player.GetComponentInChildren<Animator>();
