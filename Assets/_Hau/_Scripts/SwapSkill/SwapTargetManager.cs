@@ -28,7 +28,7 @@ public class SwapTargetManager : MonoBehaviour
         if (controller == null) controller = player.GetComponent<CharacterController2D>();
     }
 
-    void Update()
+ /*   void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
             PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
@@ -46,7 +46,31 @@ public class SwapTargetManager : MonoBehaviour
                 specialBullet = null;
             }
         }
-    }
+    }*/
+
+    public bool ActiveSwapSkill()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
+           PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+        {
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
+            if (currentTarget != null)
+            {
+                // Swap với object bình thường
+                SwapWithEffect(currentTarget.transform, swapDuration);
+                return true;
+            }
+            else if (specialBullet != null)
+            {
+                // Swap với viên đạn đặc biệt
+                SwapWithEffect(specialBullet, 0.1f, true); // swapDuration = 0.1f, destroyAfterSwap = true
+                specialBullet = null;
+                return true;
+            }
+        }
+
+        return false;
+    }    
 
     public void SetSpecialBullet(Transform bullet)
     {
