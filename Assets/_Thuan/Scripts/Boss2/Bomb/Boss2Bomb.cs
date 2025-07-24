@@ -126,7 +126,7 @@ public class Boss2Bomb : MonoBehaviour
                 // Tạo vùng lửa tại vị trí bomb nổ
                 Vector3 firePosition = transform.position;
                 // Có thể điều chỉnh vị trí Y để vùng lửa nằm sát mặt đất
-                firePosition.y -= 0.5f; // Điều chỉnh theo nhu cầu
+                firePosition.y -= 0f; // Điều chỉnh theo nhu cầu
 
                 GameObject fireArea = Instantiate(fireAreaPrefab, firePosition, Quaternion.identity);
                 Debug.Log("[Boss2Bomb] Created fire area at explosion site!");
