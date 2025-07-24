@@ -35,6 +35,8 @@ public class DialogueTrigger : MonoBehaviour
             playerTransform = collision.transform;
             speechIcon.SetActive(true);
             playerInRange = true;
+
+            //DialogueManager.Instance.StartDialogue();
         }
     }
 
