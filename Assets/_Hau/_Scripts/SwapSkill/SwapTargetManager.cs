@@ -50,10 +50,10 @@ public class SwapTargetManager : MonoBehaviour
 
     public bool ActiveSwapSkill()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
-           PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+        if (!isSwapping && PlayerStatus.Instance != null)
         {
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
+             PlayerStatus.Instance.UseEnergy(10f);
             if (currentTarget != null)
             {
                 // Swap với object bình thường
@@ -87,6 +87,7 @@ public class SwapTargetManager : MonoBehaviour
                 currentTarget.GetComponent<SpriteRenderer>().color = Color.white;
             }
             currentTarget = target;
+            Debug.Log("Click Target");
         }
         else
         {
