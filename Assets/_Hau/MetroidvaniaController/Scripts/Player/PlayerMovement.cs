@@ -35,10 +35,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!canMove) return; // ⚠️ MỚI: Nếu bị khóa thì không làm gì
-
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        if (!canMove || (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive))
+        {
+            horizontalMove = 0f;
+            animator.SetFloat("Speed", 0f); // ⚠️ RESET animation chạy
             return;
+        }
 
         // Di chuyển
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;

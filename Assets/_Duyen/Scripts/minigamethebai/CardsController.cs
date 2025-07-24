@@ -116,7 +116,8 @@ public class CardsController : MonoBehaviour
             if (playerTimeRemaining <= 0)
             {
                 playerTimeRemaining = 0;
-                if (playerHand.Count > 0) GameOverPanel.Instance.ShowGameOver();  // Player thua
+                isTimerRunning = false;
+                GameOverPanel.Instance.ShowGameOver();  // Player thua
             }
         }
         else if (currentTurn == Turn.NPC)
@@ -124,8 +125,8 @@ public class CardsController : MonoBehaviour
             npcTimeRemaining -= delta;
             if (npcTimeRemaining <= 0)
             {
-                npcTimeRemaining = 0;
-                if (npcHand.Count > 0) EndGame(true); // NPC thua
+                isTimerRunning = false;
+                EndGame(true); // player thang
             }
         }
 
