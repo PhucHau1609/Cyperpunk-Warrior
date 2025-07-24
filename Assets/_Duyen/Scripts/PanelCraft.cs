@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PanelCraft : MonoBehaviour
+public class PanelCraft : HauSingleton<PanelCraft>
 {
     public GameObject panel;  // Kéo panel cần mở vào đây trong Inspector
 
