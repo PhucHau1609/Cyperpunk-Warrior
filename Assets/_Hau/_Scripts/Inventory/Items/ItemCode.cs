@@ -15,6 +15,7 @@ public enum ItemCode
 
     //Object
     Bomb_0 = 11,
+    CraftingRecipe = 12,
 
 
     //Upgrade Items
