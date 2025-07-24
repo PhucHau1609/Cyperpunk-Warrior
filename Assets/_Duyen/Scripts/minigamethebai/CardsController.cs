@@ -530,7 +530,7 @@ public class CardsController : MonoBehaviour
         isTimerRunning = false;
         gamePanel.SetActive(false);
         finishPanel.SetActive(true);
-        buttonPanel.SetActive(playerWin);
+        buttonPanel.SetActive(!playerWin);
         banPanel.SetActive(!playerWin);
         CameraFollow.Instance.Target = playerTransform;
 
