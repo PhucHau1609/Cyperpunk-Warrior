@@ -325,7 +325,7 @@ public class Boss2Controller : MonoBehaviour
         if (shieldActive)
         {
             // Ưu tiên tấn công Hand 70%, Boss attack 30%
-            int[] weights = {10, 10, 40, 40}; // Laser(10%), Bomb(10%), Attack3(40%), Attack4(40%)
+            int[] weights = {40, 20, 20, 20}; // Laser(10%), Bomb(10%), Attack3(40%), Attack4(40%)
             int totalWeight = 100;
             int randomValue = Random.Range(0, totalWeight);
             
