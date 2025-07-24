@@ -204,6 +204,11 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
             // Trừ item
             InventoryManager.Instance.RemoveItem(ItemCode.HP,1);
         }
+
+        else if(profile.useType == ItemUseType.Info)
+        {
+            Debug.Log($"📦 Item {profile.itemCode} hiển thị bảng công thức chế tạo.");
+        }
         else
         {
             Debug.Log($"📦 Item {profile.itemCode} không có tác dụng khi click.");
