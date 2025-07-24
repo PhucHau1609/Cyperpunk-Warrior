@@ -79,24 +79,30 @@ public class SwapTargetManager : MonoBehaviour
 
     public void SetTarget(SwapableObject target, bool selected)
     {
+        Debug.Log($"[SetTarget] target: {target.name}, selected: {selected}");
+
         if (selected)
         {
             if (currentTarget != null && currentTarget != target)
             {
+                Debug.Log($"[SetTarget] Deselect old target: {currentTarget.name}");
                 currentTarget.isSelected = false;
                 currentTarget.GetComponent<SpriteRenderer>().color = Color.white;
             }
+
             currentTarget = target;
-            Debug.Log("Click Target");
+            Debug.Log($"[SetTarget] New current target: {currentTarget.name}");
         }
         else
         {
             if (currentTarget == target)
             {
+                Debug.Log($"[SetTarget] Unselect current target: {currentTarget.name}");
                 currentTarget = null;
             }
         }
     }
+
 
     void SwapWithEffect(Transform targetTransform, float swapDurationOverride, bool destroyAfterSwap = false)
     {
