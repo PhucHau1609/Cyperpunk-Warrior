@@ -95,13 +95,18 @@ public class PlayerShader : MonoBehaviour
 
     public bool ActivateInvisibility()
     {
-        if (Input.GetKeyDown(KeyCode.J) && !isEffectActive && !isOnCooldown &&
+        if (!isEffectActive && !isOnCooldown &&
             PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
         {
+            Debug.Log("✅ Kích hoạt Invisibility Skill");
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.qImage);
             StartCoroutine(ActivateEffectWithInvisibility());
             return true;
         }
+
+        Debug.Log("❌ Không kích hoạt được: isEffectActive=" + isEffectActive +
+                  ", isOnCooldown=" + isOnCooldown +
+                  ", PlayerStatus.Instance=" + (PlayerStatus.Instance != null));
         return false;
     }
 
@@ -171,6 +176,7 @@ public class PlayerShader : MonoBehaviour
         float remainingCooldown = Mathf.Max(0, cooldownTime - effectDuration);
         yield return new WaitForSeconds(remainingCooldown);
 
+        Debug.Log("🟢 Đã hoàn thành cooldown invisibility");
         isOnCooldown = false;
     }
 
