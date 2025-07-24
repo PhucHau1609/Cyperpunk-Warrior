@@ -31,31 +31,47 @@ public class TeleportPortal : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!isUnlocked || isTeleporting || !other.CompareTag("Player"))
+       
+
+        if (!isUnlocked || isTeleporting)
+        {
+           
             return;
+        }
+
+        // Lấy transform gốc của object va chạm (ví dụ từ check_dialog -> Eren)
+        Transform root = other.transform.root;
+
+        // So sánh Tag với gốc (Eren)
+        if (!root.CompareTag("Player"))
+        {
+            
+            return;
+        }
 
         isTeleporting = true;
 
-        Animator playerAnim = other.GetComponentInChildren<Animator>();
+        // Tìm Animator đúng (nằm trong PlayerVisual)
+        Animator playerAnim = root.GetComponentInChildren<Animator>();
+    
+
         if (playerAnim != null && !hasTriggeredDisappear)
         {
-            playerAnim.ResetTrigger("PlayDisappear"); // tránh trùng trigger
+            playerAnim.ResetTrigger("PlayDisappear");
             playerAnim.SetTrigger("PlayDisappear");
             hasTriggeredDisappear = true;
         }
 
-        // ✅ Gọi pet Disappear nếu có
+        // Pet
         FloatingFollower pet = FindFirstObjectByType<FloatingFollower>();
-        if (pet != null)
-        {
-            pet.Disappear();
-        }
+        if (pet != null) pet.Disappear();
 
         if (teleportSound != null)
             audioSource.PlayOneShot(teleportSound);
 
         StartCoroutine(WaitForDisappearAnimation(playerAnim));
     }
+
 
     private IEnumerator WaitForDisappearAnimation(Animator playerAnim)
     {
