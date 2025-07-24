@@ -28,7 +28,6 @@ public class CodeLock_1 : MonoBehaviour
     public Button closeButton;
     public Button reopenButton;
     public GameObject canvas;
-    public Sprite image2;
     public SplitDoorController doorController;
     public Animator doorAnimator;
 
@@ -222,7 +221,7 @@ public class CodeLock_1 : MonoBehaviour
             PetUnlocked = true;
 
             // Đổi ảnh và vô hiệu hóa nút
-            reopenButton.image.sprite = image2;
+            //reopenButton.image.sprite = image2;
             reopenButton.onClick.RemoveAllListeners();
             reopenButton.interactable = false;
 

@@ -516,6 +516,7 @@ public class CardsController : MonoBehaviour
         else if (npcHand.Count == 0 && playerHand.Count > 0) // player thua
         {
             GameOverPanel.Instance.ShowGameOver(); //EndGame(true); 
+            EndGame(false);
         }
     }
 
@@ -529,7 +530,7 @@ public class CardsController : MonoBehaviour
     {
         isTimerRunning = false;
         gamePanel.SetActive(false);
-        finishPanel.SetActive(true);
+        finishPanel.SetActive(false);
         buttonPanel.SetActive(!playerWin);
         banPanel.SetActive(!playerWin);
         CameraFollow.Instance.Target = playerTransform;
