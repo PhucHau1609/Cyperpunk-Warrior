@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class SkillManagerUI : MonoBehaviour
+public class SkillManagerUI : HauSingleton<SkillManagerUI>
 {
     public Transform skillContainer;
     public GameObject skillSlotPrefab;
@@ -17,7 +17,7 @@ public class SkillManagerUI : MonoBehaviour
     public PlayerMovement playerMovement;
 
 
-    void Start()
+    protected override void Start()
     {
         ObserverManager.Instance.AddListener(EventID.UnlockSkill_Invisibility, OnUnlockSkill);
         ObserverManager.Instance.AddListener(EventID.UnlockSkill_ColorRamp, OnUnlockSkill);

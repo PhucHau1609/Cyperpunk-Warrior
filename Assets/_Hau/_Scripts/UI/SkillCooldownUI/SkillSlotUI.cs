@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
 using TMPro;
+using System.Threading.Tasks;
 
 public class SkillSlotUI : MonoBehaviour
 {
@@ -28,27 +29,26 @@ public class SkillSlotUI : MonoBehaviour
         }
     }
 
-    public void TryActivate()
+    public async void TryActivate()
     {
         if (isCoolingDown) return;
 
-        // Nếu có callback và skill được kích hoạt thành công
         if (skill.onActivateCallback != null && skill.onActivateCallback.Invoke())
         {
-            StartCoroutine(HandleCooldown());
+            await HandleCooldownAsync(); // dùng Task thay cho coroutine
         }
     }
 
-    private IEnumerator HandleCooldown()
+    private async Task HandleCooldownAsync()
     {
         isCoolingDown = true;
         cooldownOverlay.fillAmount = 1f;
-
         cooldownOverlay.DOFillAmount(0f, skill.cooldownTime).SetEase(Ease.Linear);
 
-        yield return new WaitForSeconds(skill.cooldownTime);
+        await Task.Delay((int)(skill.cooldownTime * 1000));
         isCoolingDown = false;
     }
+
 
     private string FormatKeyCode(KeyCode key)
     {
@@ -74,3 +74,15 @@ public class SkillSlotUI : MonoBehaviour
     }
 
 }
+
+
+/*   public void TryActivate()
+       {
+           if (isCoolingDown) return;
+
+           // Nếu có callback và skill được kích hoạt thành công
+           if (skill.onActivateCallback != null && skill.onActivateCallback.Invoke())
+           {
+               StartCoroutine(HandleCooldown());
+           }
+       }*/
