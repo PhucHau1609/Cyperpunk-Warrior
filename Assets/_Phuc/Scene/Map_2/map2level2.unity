@@ -147421,6 +147421,7 @@ GameObject:
   - component: {fileID: 5541434287258717425}
   - component: {fileID: 6665560269237940682}
   - component: {fileID: 8736611639948626975}
+  - component: {fileID: 8736611639948626976}
   m_Layer: 0
   m_Name: LaserShot_01
   m_TagString: Untagged
@@ -148367,6 +148368,7 @@ GameObject:
   - component: {fileID: 2004791653463028612}
   - component: {fileID: 843723179780165311}
   - component: {fileID: 3318026491627008874}
+  - component: {fileID: 6115176704916651138}
   m_Layer: 0
   m_Name: LaserShot_01
   m_TagString: Untagged
@@ -148374,6 +148376,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &6115176704916651138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6115176704916651137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a53a766132b4cf74bbf370ae6af17d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 5
+  maxHP: 5
+  IsImmotal: 0
+  explosionPrefab: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
 --- !u!4 &6664935048232876215
 Transform:
   m_ObjectHideFlags: 0
@@ -148817,6 +148835,22 @@ MonoBehaviour:
   firePoint: {fileID: 6942810512883209138}
   fireIntervalMin: 1
   fireIntervalMax: 3
+--- !u!114 &8736611639948626976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281521897284420596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a53a766132b4cf74bbf370ae6af17d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 5
+  maxHP: 5
+  IsImmotal: 0
+  explosionPrefab: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
 --- !u!224 &8817428587322422380
 RectTransform:
   m_ObjectHideFlags: 0
