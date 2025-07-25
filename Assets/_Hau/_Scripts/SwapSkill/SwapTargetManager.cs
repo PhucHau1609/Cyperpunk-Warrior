@@ -24,29 +24,56 @@ public class SwapTargetManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        //Debug.Log($"[SwapTargetManager] Set Instance from: {gameObject.name}");
+
         if (player != null) playerAnimator = player.GetComponentInChildren<Animator>();
         if (controller == null) controller = player.GetComponent<CharacterController2D>();
     }
 
-    void Update()
+
+    /*   void Update()
+       {
+           if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
+               PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+           {
+               PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
+               if (currentTarget != null)
+               {
+                   // Swap với object bình thường
+                   SwapWithEffect(currentTarget.transform, swapDuration);
+               }
+               else if (specialBullet != null)
+               {
+                   // Swap với viên đạn đặc biệt
+                   SwapWithEffect(specialBullet, 0.1f, true); // swapDuration = 0.1f, destroyAfterSwap = true
+                   specialBullet = null;
+               }
+           }
+       }*/
+
+    public bool ActiveSwapSkill()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
-            PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+        if (!isSwapping && PlayerStatus.Instance != null)
         {
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
+             PlayerStatus.Instance.UseEnergy(10f);
             if (currentTarget != null)
             {
                 // Swap với object bình thường
                 SwapWithEffect(currentTarget.transform, swapDuration);
+                return true;
             }
             else if (specialBullet != null)
             {
                 // Swap với viên đạn đặc biệt
                 SwapWithEffect(specialBullet, 0.1f, true); // swapDuration = 0.1f, destroyAfterSwap = true
                 specialBullet = null;
+                return true;
             }
         }
-    }
+
+        return false;
+    }    
 
     public void SetSpecialBullet(Transform bullet)
     {
@@ -55,23 +82,30 @@ public class SwapTargetManager : MonoBehaviour
 
     public void SetTarget(SwapableObject target, bool selected)
     {
+        Debug.Log($"[SetTarget] target: {target.name}, selected: {selected}");
+
         if (selected)
         {
             if (currentTarget != null && currentTarget != target)
             {
+                Debug.Log($"[SetTarget] Deselect old target: {currentTarget.name}");
                 currentTarget.isSelected = false;
                 currentTarget.GetComponent<SpriteRenderer>().color = Color.white;
             }
+
             currentTarget = target;
+            Debug.Log($"[SetTarget] New current target: {currentTarget.name}");
         }
         else
         {
             if (currentTarget == target)
             {
+                Debug.Log($"[SetTarget] Unselect current target: {currentTarget.name}");
                 currentTarget = null;
             }
         }
     }
+
 
     void SwapWithEffect(Transform targetTransform, float swapDurationOverride, bool destroyAfterSwap = false)
     {

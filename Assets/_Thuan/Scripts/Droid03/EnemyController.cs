@@ -92,6 +92,8 @@ public class EnemyController : MonoBehaviour, IDamageResponder
         animator.SetTrigger("Death");
         currentState = State.Dead;
         rb.linearVelocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Static;
+        rb.angularVelocity = 0f;
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
 

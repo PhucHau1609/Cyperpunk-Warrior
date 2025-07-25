@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5915370653608414182}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BombPoint_2
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 6025558248010003425}
   - component: {fileID: 729947403479574992}
   - component: {fileID: 7061706629605953497}
-  m_Layer: 5
+  m_Layer: 21
   m_Name: CanvasHealthBarBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,7 +187,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5841535277511117961}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BombPoint
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -218,7 +218,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8888332013275048882}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: LaserPoint
   m_TagString: Untagged
   m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 3610067252542486174}
   - component: {fileID: 8314116537697909065}
   - component: {fileID: 2017803740084063383}
-  m_Layer: 5
+  m_Layer: 21
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,6 +315,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2276323793242733265
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6264339443393804493}
+  m_Layer: 21
+  m_Name: SpawnPoint_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6264339443393804493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2276323793242733265}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.83, y: 6.11, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3465120711508235240}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2674677072338201062
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,7 +355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4287199608758154683}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: SpawnPoint_1
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -340,7 +371,38 @@ Transform:
   m_GameObject: {fileID: 2674677072338201062}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.03, y: 13.299999, z: 0}
+  m_LocalPosition: {x: -0.03, y: 7.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3465120711508235240}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2703148011640560445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6651535798069586859}
+  m_Layer: 21
+  m_Name: SpawnPoint_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6651535798069586859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2703148011640560445}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.18, y: 7.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -363,7 +425,7 @@ GameObject:
   - component: {fileID: 1439658216286722343}
   - component: {fileID: 5911993027510171260}
   - component: {fileID: 2386431437780394509}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Boss2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -392,6 +454,8 @@ Transform:
   - {fileID: 665519132521068303}
   - {fileID: 4287199608758154683}
   - {fileID: 7559474853189046808}
+  - {fileID: 6651535798069586859}
+  - {fileID: 6264339443393804493}
   - {fileID: 4103284583912090978}
   - {fileID: 4888652813379667636}
   m_Father: {fileID: 0}
@@ -458,7 +522,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2849441641422099208}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -543,7 +607,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2849441641422099208}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
   m_Name: 
@@ -583,7 +647,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2849441641422099208}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc42169df12294b4aa3142aff764d16c, type: 3}
   m_Name: 
@@ -609,8 +673,12 @@ MonoBehaviour:
   isPhase2: 0
   spawnPoints:
   - {fileID: 665519132521068303}
-  minionPrefab: {fileID: 5692528477751050980, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
-  maxMinions: 1
+  - {fileID: 4287199608758154683}
+  - {fileID: 7559474853189046808}
+  - {fileID: 6651535798069586859}
+  - {fileID: 6264339443393804493}
+  minionPrefab: {fileID: 2620423797659080977, guid: 1c3254c6cde12dc44ad545fdcdbdb4e8, type: 3}
+  maxMinions: 5
   minionSpawnInterval: 5
   phase2LaserPoints:
   - {fileID: 8888332013275048882}
@@ -749,7 +817,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5950227726456793224}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BombPoint_1
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -783,7 +851,7 @@ GameObject:
   - component: {fileID: 3662729391065216022}
   - component: {fileID: 6532042769230841740}
   - component: {fileID: 4786612444990638455}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -848,7 +916,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 11
   m_Sprite: {fileID: 6229401350509173553, guid: 662cdf6ae9aec2d48920cc0a80e40c53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -920,7 +988,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7559474853189046808}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: SpawnPoint_2
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -936,7 +1004,7 @@ Transform:
   m_GameObject: {fileID: 3897195188424001501}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.69, y: 13.299999, z: 0}
+  m_LocalPosition: {x: 3.12, y: 7.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -951,7 +1019,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 409174867128654150}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: LaserPoint_1
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
@@ -984,7 +1052,7 @@ GameObject:
   - component: {fileID: 8476912578886047979}
   - component: {fileID: 6999714866702613842}
   - component: {fileID: 1980751540966200524}
-  m_Layer: 5
+  m_Layer: 21
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1057,7 +1125,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 665519132521068303}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -1089,7 +1157,7 @@ GameObject:
   m_Component:
   - component: {fileID: 331899282756940334}
   - component: {fileID: 6891862010200259038}
-  m_Layer: 5
+  m_Layer: 21
   m_Name: HealthBarBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1177,7 +1245,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8022707875598967883}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: LaserPoint_2
   m_TagString: Untagged
   m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
@@ -1208,7 +1276,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7952169826646323195}
-  m_Layer: 5
+  m_Layer: 21
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}

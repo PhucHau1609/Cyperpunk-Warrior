@@ -19,6 +19,7 @@ public class SceneController : MonoBehaviour
 
 
     public List<GameObject> objectsToDisableOnReturn;
+    public List<GameObject> animatorObjectsToDisable;
 
     //private bool hasStarted = false;
 
@@ -47,7 +48,7 @@ public class SceneController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Không tìm thấy Pet trong map3!");
+            //Debug.LogWarning("Không tìm thấy Pet trong map3!");
         }
         if (player != null)
             playerAnimator = player.GetComponentInChildren<Animator>();
@@ -170,6 +171,15 @@ public class SceneController : MonoBehaviour
         foreach (var col in pet.GetComponents<Collider2D>())
             col.isTrigger = true;
 
+        foreach (GameObject obj in animatorObjectsToDisable)
+        {
+            if (obj != null)
+            {
+                Animator anim = obj.GetComponent<Animator>();
+                if (anim != null)
+                    anim.enabled = false;
+            }
+        }
 
     }
 

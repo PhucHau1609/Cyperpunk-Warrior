@@ -78,9 +78,18 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
         // Trigger animation
         switch (energy)
         {
-            case EnergyType.Orange: animator?.SetTrigger("Orange"); break;
-            case EnergyType.Blue: animator?.SetTrigger("Blue"); break;
-            case EnergyType.Purple: animator?.SetTrigger("Purple"); break;
+            case EnergyType.Orange: 
+                animator?.SetTrigger("Orange");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_3,1);
+                break;
+            case EnergyType.Blue: 
+                animator?.SetTrigger("Blue");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_1, 1);
+                break;
+            case EnergyType.Purple: 
+                animator?.SetTrigger("Purple");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_5, 1);
+                break;
         }
 
         OnEnergySet?.Invoke(this, energy); // ✅ Thông báo cho tracker

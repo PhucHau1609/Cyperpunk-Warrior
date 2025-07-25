@@ -3,5 +3,6 @@ public enum ItemUseType
     None,
     Heal,
     Buff,
-    Quest
+    Quest,
+    Info,
 }

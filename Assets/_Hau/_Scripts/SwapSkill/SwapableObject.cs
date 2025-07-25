@@ -17,8 +17,18 @@ public class SwapableObject : MonoBehaviour
     {
         isSelected = !isSelected;
         UpdateVisual();
-        SwapTargetManager.Instance.SetTarget(this, isSelected);
+
+        if (SwapTargetManager.Instance == null)
+        {
+            //Debug.LogError("[SwapableObject] SwapTargetManager.Instance is NULL!");
+        }
+        else
+        {
+            //Debug.Log($"[SwapableObject] Calling SetTarget on {SwapTargetManager.Instance.name}");
+            SwapTargetManager.Instance.SetTarget(this, isSelected);
+        }
     }
+
 
     void UpdateVisual()
     {

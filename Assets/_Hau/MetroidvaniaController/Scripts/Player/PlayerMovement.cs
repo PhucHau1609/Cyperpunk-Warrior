@@ -35,10 +35,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!canMove) return; // ⚠️ MỚI: Nếu bị khóa thì không làm gì
-
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        if (!canMove || (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive))
+        {
+            horizontalMove = 0f;
+            animator.SetFloat("Speed", 0f); // ⚠️ RESET animation chạy
             return;
+        }
 
         // Di chuyển
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
@@ -47,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             jump = true;
 
-        if (Input.GetKeyDown(KeyCode.E) && PlayerStatus.Instance != null && controller.canDash)
+     /*   if (Input.GetKeyDown(KeyCode.E) && PlayerStatus.Instance != null && controller.canDash)
         {
             PlayerStatus.Instance.UseEnergy(10f);
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.eImage);
@@ -56,7 +58,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.S))
-            dashY = true; // ⚠️ MỚI: dash dọc
+            dashY = true; // ⚠️ MỚI: dash dọc*/
+    }
+
+    public bool TriggerDashX()
+    {
+        if (controller.canDash && PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+        {
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.eImage);
+            dashX = true;
+            return true;
+        }
+        return false;
     }
 
     void FixedUpdate()

@@ -18,7 +18,7 @@ public class MinigameManager : MonoBehaviour
     public Animator doorAnimator;
 
     public GridSlot[] gridSlots;
-
+     
     // Timeline references
     public PlayableDirector cutsceneDirector; // ⚠️ GÁN TRONG INSPECTOR
     
@@ -177,6 +177,12 @@ public class MinigameManager : MonoBehaviour
         // Chờ animation mở cửa hoàn thành
         yield return new WaitForSeconds(3f);
         
+        // DISABLE PLAYER MOVEMENT TRƯỚC KHI CHẠY TIMELINE
+        if (playerMovement != null)
+        {
+            playerMovement.SetCanMove(false);
+        }
+        
         // Chạy Timeline cutscene
         if (cutsceneDirector != null)
         {
@@ -195,6 +201,12 @@ public class MinigameManager : MonoBehaviour
     {
         if (director == cutsceneDirector)
         {
+            // Có thể enable lại player movement ở đây nếu cần (tùy game design)
+            // if (playerMovement != null)
+            // {
+            //     playerMovement.SetCanMove(true);
+            // }
+            
             // Chuyển scene sau khi Timeline hoàn thành
             SceneManager.LoadScene(nextSceneIndex);
         }
