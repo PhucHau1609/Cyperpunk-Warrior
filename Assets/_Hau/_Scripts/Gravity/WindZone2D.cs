@@ -22,6 +22,7 @@ public class WindZone2D : MonoBehaviour
 
     [Header("Target Filter")]
     public string targetTag = "Player";
+    //public string targetTag2 = "NPC";
 
     private void Reset()
     {
@@ -30,12 +31,12 @@ public class WindZone2D : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!applyContinuously && other.CompareTag(targetTag))
+        if (!applyContinuously && other.CompareTag(targetTag) /*&& other.CompareTag(targetTag2)*/)
         {
             ApplyWindEffect(other);
         }
 
-        if (windMode == WindMode.GravityModifier && other.CompareTag(targetTag))
+        if (windMode == WindMode.GravityModifier && other.CompareTag(targetTag) /*&& other.CompareTag(targetTag2)*/)
         {
             var rb = other.attachedRigidbody;
             if (rb != null)
@@ -47,7 +48,7 @@ public class WindZone2D : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (applyContinuously && other.CompareTag(targetTag))
+        if (applyContinuously && other.CompareTag(targetTag) /*&& other.CompareTag(targetTag2)*/)
         {
             ApplyWindEffect(other);
         }
@@ -56,7 +57,7 @@ public class WindZone2D : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         // Khôi phục gravity mặc định nếu cần
-        if (windMode == WindMode.GravityModifier && other.CompareTag(targetTag))
+        if (windMode == WindMode.GravityModifier && other.CompareTag(targetTag) /*&& other.CompareTag(targetTag2)*/)
         {
             var rb = other.attachedRigidbody;
             if (rb != null)
