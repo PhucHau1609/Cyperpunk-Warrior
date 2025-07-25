@@ -175,7 +175,7 @@ public class MinigameManager : MonoBehaviour
         }
         
         // Chờ animation mở cửa hoàn thành
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(0f);
         
         // DISABLE PLAYER MOVEMENT TRƯỚC KHI CHẠY TIMELINE
         if (playerMovement != null)
