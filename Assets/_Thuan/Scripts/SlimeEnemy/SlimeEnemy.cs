@@ -7,6 +7,17 @@ public class SlimeEnemy : MonoBehaviour
     [SerializeField] private float attackRange = 5f;
     [SerializeField] private float attackCooldown = 2f;
     [SerializeField] private int splitLevel = 0; // 0 = Large, 1 = Medium, 2 = Small
+
+    [Header("Patrol Settings")]
+    [SerializeField] private Transform pointA;
+    [SerializeField] private Transform pointB; 
+    [SerializeField] private float patrolSpeed = 2f;
+    [SerializeField] private float waitTime = 1f; // Thời gian đợi tại mỗi điểm
+
+    // Private patrol variables
+    private Transform currentTarget;
+    private bool isWaiting = false;
+    private float waitTimer = 0f;
     
     [Header("Melee Combat")]
     [SerializeField] private Transform attackPoint;
@@ -25,6 +36,9 @@ public class SlimeEnemy : MonoBehaviour
     
     [Header("Detection")]
     [SerializeField] private float detectionRange = 10f; // Phạm vi phát hiện player
+
+    [Header("Parent Reference (Auto-assigned)")]
+    private SlimeEnemy parentSlime;
     
     // Private variables
     private float currentHealth;
@@ -40,19 +54,17 @@ public class SlimeEnemy : MonoBehaviour
     
     private enum EnemyState
     {
-        Idle,
-        Chase,
+        Patrol,
         Attack,
-        Exploding, // State mới cho Small slime
+        Exploding,
         Hurt,
         Dead
     }
     
-    private EnemyState currentState = EnemyState.Idle;
+    private EnemyState currentState = EnemyState.Patrol;
     
     void Start()
     {
-        // Get components
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         
@@ -67,6 +79,9 @@ public class SlimeEnemy : MonoBehaviour
         // Disable splitting for small slimes
         if (splitLevel >= 2)
             canSplit = false;
+        
+        // ===== THÊM: Setup patrol =====
+        SetupPatrol();
     }
     
     void Update()
@@ -83,37 +98,83 @@ public class SlimeEnemy : MonoBehaviour
         HandleMovement();
     }
     
+    private void SetupPatrol()
+    {
+        if (splitLevel <= 1 && pointA != null && pointB != null)
+        {
+            // Chọn điểm gần nhất làm target đầu tiên
+            float distanceToA = Vector2.Distance(transform.position, pointA.position);
+            float distanceToB = Vector2.Distance(transform.position, pointB.position);
+            
+            currentTarget = distanceToA < distanceToB ? pointA : pointB;
+        }
+        else if (splitLevel <= 1)
+        {
+            Debug.LogWarning($"Patrol points not set for slime (level {splitLevel}): {gameObject.name}");
+        }
+    }
+    
     private void HandleState()
     {
         if (currentState == EnemyState.Hurt) return;
-        
+
         float distanceToPlayer = player != null ? Vector2.Distance(transform.position, player.position) : float.MaxValue;
         
         switch (currentState)
         {
-            case EnemyState.Idle:
-                if (distanceToPlayer <= detectionRange)
-                    currentState = EnemyState.Chase;
-                break;
-                
-            case EnemyState.Chase:
-                // Small slime explodes when close to player
+            case EnemyState.Patrol:
+                // ===== THÊM: Logic riêng cho Small slime (splitLevel = 2) =====
                 if (splitLevel >= 2)
                 {
-                    if (distanceToPlayer <= explosionRadius * 0.5f)
-                        StartExplosion();
+                    // Small slime: Chase player và explode khi gần
+                    if (player != null && distanceToPlayer <= detectionRange)
+                    {
+                        // Quay mặt về phía Player
+                        float directionToPlayer = player.position.x > transform.position.x ? 1 : -1;
+                        if ((directionToPlayer > 0 && !facingRight) || (directionToPlayer < 0 && facingRight))
+                            Flip();
+                        
+                        // Explode khi đủ gần
+                        if (distanceToPlayer <= explosionRadius * 0.5f)
+                            StartExplosion();
+                    }
+                    return; // Small slime không patrol
+                }
+                
+                // ===== Logic cho Large (0) và Medium (1) slimes =====
+                if (distanceToPlayer <= attackRange)
+                {
+                    // Quay mặt về phía Player khi vào vùng tấn công
+                    if (player != null)
+                    {
+                        float directionToPlayer = player.position.x > transform.position.x ? 1 : -1;
+                        if ((directionToPlayer > 0 && !facingRight) || (directionToPlayer < 0 && facingRight))
+                            Flip();
+                    }
+                    
+                    // Large/Medium slime attacks
+                    if (Time.time >= lastAttackTime + attackCooldown)
+                        currentState = EnemyState.Attack;
                 }
                 else
                 {
-                    // Large and Medium slimes attack normally
-                    if (distanceToPlayer <= attackRange && Time.time >= lastAttackTime + attackCooldown)
-                        currentState = EnemyState.Attack;
-                    else if (distanceToPlayer > detectionRange * 1.5f)
-                        currentState = EnemyState.Idle;
+                    // ===== SỬA: Cả Large và Medium đều patrol =====
+                    if (splitLevel <= 1) // Large (0) và Medium (1) đều patrol
+                    {
+                        HandlePatrolLogic();
+                    }
                 }
                 break;
                 
             case EnemyState.Attack:
+                // Đảm bảo vẫn quay mặt về Player trong lúc tấn công
+                if (player != null)
+                {
+                    float directionToPlayer = player.position.x > transform.position.x ? 1 : -1;
+                    if ((directionToPlayer > 0 && !facingRight) || (directionToPlayer < 0 && facingRight))
+                        Flip();
+                }
+                
                 if (Time.time >= lastAttackTime + attackCooldown)
                 {
                     PerformMeleeAttack();
@@ -123,20 +184,88 @@ public class SlimeEnemy : MonoBehaviour
         }
     }
     
+    private void HandlePatrolLogic()
+    {
+       if (pointA == null || pointB == null || currentTarget == null) return;
+
+        if (isWaiting)
+        {
+            waitTimer += Time.deltaTime;
+            if (waitTimer >= waitTime)
+            {
+                isWaiting = false;
+                waitTimer = 0f;
+            }
+            return;
+        }
+        
+        // ===== SỬA: Chỉ kiểm tra khoảng cách theo trục X =====
+        float distanceToTargetX = Mathf.Abs(transform.position.x - currentTarget.position.x);
+        
+        // ===== SỬA: Điều chỉnh threshold dựa trên splitLevel =====
+        float threshold = splitLevel == 0 ? 0.5f : 1f; // Medium slime có threshold lớn hơn
+        
+        if (distanceToTargetX <= threshold)
+        {
+            // Đổi target và bắt đầu wait
+            currentTarget = currentTarget == pointA ? pointB : pointA;
+            isWaiting = true;
+            
+            // Flip để quay mặt về hướng target mới
+            float direction = currentTarget.position.x > transform.position.x ? 1 : -1;
+            if ((direction > 0 && !facingRight) || (direction < 0 && facingRight))
+                Flip();
+        }
+    }
+    
+    private Vector2 GetAdjustedPatrolPosition(Transform patrolPoint)
+    {
+        if (patrolPoint == null) return Vector2.zero;
+        
+        // Giữ Y của slime hiện tại, chỉ lấy X của patrol point
+        return new Vector2(patrolPoint.position.x, transform.position.y);
+    }
+    
     private void HandleMovement()
     {
         Vector2 velocity = rb.linearVelocity;
-        
+        float distanceToPlayer = player != null ? Vector2.Distance(transform.position, player.position) : float.MaxValue;
+
         switch (currentState)
         {
-            case EnemyState.Chase:
-                if (player != null)
+            case EnemyState.Patrol:
+                if (splitLevel >= 2)
                 {
-                    float direction = player.position.x > transform.position.x ? 1 : -1;
+                    // Small slime chase player
+                    if (player != null && distanceToPlayer <= detectionRange)
+                    {
+                        float direction = player.position.x > transform.position.x ? 1 : -1;
+                        velocity.x = direction * moveSpeed;
+                    }
+                    else
+                    {
+                        velocity.x = 0;
+                    }
+                }
+                else if (distanceToPlayer <= attackRange)
+                {
+                    // Dừng di chuyển khi player trong tầm tấn công
+                    velocity.x = 0;
+                }
+                else if (splitLevel <= 1 && !isWaiting && currentTarget != null)
+                {
+                    // ===== SỬA: Sử dụng vị trí X của patrol point =====
+                    Vector2 adjustedTargetPos = GetAdjustedPatrolPosition(currentTarget);
+                    float direction = adjustedTargetPos.x > transform.position.x ? 1 : -1;
+                    
                     if ((direction > 0 && !facingRight) || (direction < 0 && facingRight))
                         Flip();
                     
-                    velocity.x = direction * moveSpeed;
+                    velocity.x = direction * patrolSpeed;
+                }
+                else
+                {
+                    velocity.x = 0;
                 }
                 break;
                 
@@ -255,13 +384,13 @@ public class SlimeEnemy : MonoBehaviour
     private void RecoverFromHurt()
     {
         if (currentState == EnemyState.Hurt)
-            currentState = EnemyState.Chase;
+            currentState = EnemyState.Patrol;
     }
     
     private void SplitSlime()
     {
         if (slimePrefab == null) return;
-        
+    
         for (int i = 0; i < 2; i++)
         {
             Vector3 spawnPosition = transform.position + new Vector3(
@@ -276,6 +405,21 @@ public class SlimeEnemy : MonoBehaviour
             if (newSlimeScript != null)
             {
                 newSlimeScript.splitLevel = splitLevel + 1;
+                
+                // ===== THÊM: Truyền patrol points từ Large xuống Medium =====
+                if (splitLevel == 0) // Large slime split thành Medium
+                {
+                    newSlimeScript.pointA = this.pointA; // Truyền patrol points
+                    newSlimeScript.pointB = this.pointB;
+                    newSlimeScript.parentSlime = this; // Lưu reference
+                }
+                else if (splitLevel == 1) // Medium slime split thành Small
+                {
+                    // Small slime không cần patrol points
+                    newSlimeScript.pointA = null;
+                    newSlimeScript.pointB = null;
+                    newSlimeScript.parentSlime = this.parentSlime; // Truyền reference của Large gốc
+                }
                 
                 Rigidbody2D newRb = newSlime.GetComponent<Rigidbody2D>();
                 if (newRb != null)
@@ -351,14 +495,25 @@ public class SlimeEnemy : MonoBehaviour
     public void OnAttackEnd()
     {
         if (currentState == EnemyState.Attack)
-            currentState = EnemyState.Chase;
+            currentState = EnemyState.Patrol;
     }
     
     private void OnDrawGizmosSelected()
     {
-        // Draw detection range
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        if (pointA != null && pointB != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(pointA.position, 0.3f);
+            Gizmos.DrawWireSphere(pointB.position, 0.3f);
+            Gizmos.DrawLine(pointA.position, pointB.position);
+            
+            // Hiển thị current target
+            if (currentTarget != null)
+            {
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawLine(transform.position, currentTarget.position);
+            }
+        }
         
         // Draw attack range for Large/Medium slimes
         if (splitLevel < 2)
