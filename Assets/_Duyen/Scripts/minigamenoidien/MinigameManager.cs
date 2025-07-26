@@ -124,10 +124,19 @@ public class MinigameManager : MonoBehaviour
     {
         foreach (var slot in gridSlots)
         {
-            BlockController block = slot.transform.childCount > 0
-                ? slot.transform.GetChild(0).GetComponent<BlockController>()
-                : null;
-            slot.SetBlock(block);
+            if (slot.currentBlock == null)
+            {
+                var block = slot.transform.GetComponentInChildren<BaseBlockController>();
+                if (block != null)
+                {
+                    slot.SetBlock(block);
+                    Debug.Log($"Gán lại block cho slot {slot.name}: {block.name}");
+                }
+            }
+            //BlockController block = slot.transform.childCount > 0
+            //    ? slot.transform.GetChild(0).GetComponent<BlockController>()
+            //    : null;
+            //slot.SetBlock(block);
         }
     }
 
@@ -175,7 +184,7 @@ public class MinigameManager : MonoBehaviour
         }
         
         // Chờ animation mở cửa hoàn thành
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(0f);
         
         // DISABLE PLAYER MOVEMENT TRƯỚC KHI CHẠY TIMELINE
         if (playerMovement != null)

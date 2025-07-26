@@ -182,7 +182,7 @@ public class CardsController : MonoBehaviour
         npcCard.iconImage.sprite = npcCard.iconSprite;
 
         AudioManager.Instance?.PlayPlayCard();
-        Debug.Log($"NPC đánh lá: {npcCard.iconSprite.name}, còn {npcHand.Count} lá");
+        //Debug.Log($"NPC đánh lá: {npcCard.iconSprite.name}, còn {npcHand.Count} lá");
 
         playedCard = npcCard;
         return npcCard;
@@ -240,7 +240,7 @@ public class CardsController : MonoBehaviour
             npcHand.Add(c);
         }
 
-        Debug.Log($"NPC có {npcHand.Count} lá bài.");
+        //Debug.Log($"NPC có {npcHand.Count} lá bài.");
         yield return null;
     }
 
@@ -467,7 +467,7 @@ public class CardsController : MonoBehaviour
         c.gameObject.SetActive(true); // ẩn
 
         npcHand.Add(c);
-        Debug.Log($"NPC bị cộng thêm 1 lá. Hiện có {npcHand.Count} lá.");
+        //Debug.Log($"NPC bị cộng thêm 1 lá. Hiện có {npcHand.Count} lá.");
     }
 
     Card GetRandomUnflippedCard()

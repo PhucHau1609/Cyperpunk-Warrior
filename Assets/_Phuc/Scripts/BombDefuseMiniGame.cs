@@ -24,6 +24,9 @@ public class BombDefuseMiniGame : MonoBehaviour
     [Header("Reveal Object After Success")]
     public GameObject objectToShowAfterWin;
 
+    [Header("Player Reference")]
+    public PlayerMovement player;
+
     private float timer = 0f;
     private int targetTime;
     private bool isRunning = false;
@@ -47,6 +50,12 @@ public class BombDefuseMiniGame : MonoBehaviour
         if (objectToShowAfterWin != null)
         {
             objectToShowAfterWin.SetActive(false);
+        }
+
+        // Tự động tìm player nếu chưa gán
+        if (player == null)
+        {
+            player = Object.FindFirstObjectByType<PlayerMovement>();
         }
     }
 
@@ -73,6 +82,12 @@ public class BombDefuseMiniGame : MonoBehaviour
         gameInProgress = false;
         ResetGame();
         wallShrinker.PauseShrinking();
+
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
+
+        if (player != null)
+            player.SetCanMove(false);
     }
 
     public void CloseMiniGame()
@@ -88,9 +103,14 @@ public class BombDefuseMiniGame : MonoBehaviour
             Invoke(nameof(ShowWinObject), 2f); // Mở sau 2 giây
         }
 
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
+
+        if (player != null)
+            player.SetCanMove(true);
+
         ResetGame();
     }
-
 
     void StartGame()
     {
@@ -169,5 +189,4 @@ public class BombDefuseMiniGame : MonoBehaviour
     {
         objectToShowAfterWin.SetActive(true);
     }
-
 }

@@ -49107,10 +49107,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 810387241}
     m_Modifications:
-    - target: {fileID: 3346112575922188063, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
-      propertyPath: blockType
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6042325696353157976, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -49195,14 +49191,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fixel
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3346112575922188063, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6505215665297173813, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1027527763}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
 --- !u!224 &422067151 stripped
 RectTransform:
@@ -53206,35 +53198,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 950229128}
   m_CullTransparentMesh: 1
---- !u!1 &1027527760 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6505215665297173813, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
+--- !u!114 &1027527763 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6721544282666659015, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
   m_PrefabInstance: {fileID: 422067150}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1027527762 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1775162667215632141, guid: 4c98d0ef014e4c845bab5ad15594d7fb, type: 3}
-  m_PrefabInstance: {fileID: 422067150}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1027527760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfa20fc9868e38944bf20625ece3a644, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1027527763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1027527760}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e1616f7ff99b7244852aa52578a2fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  block: {fileID: 1027527762}
 --- !u!1 &1039677168
 GameObject:
   m_ObjectHideFlags: 0
@@ -68475,6 +68449,7 @@ MonoBehaviour:
   itemLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  controller: {fileID: 0}
   mainCamera: {fileID: 0}
 --- !u!114 &3761044364172932649
 MonoBehaviour:
@@ -78946,6 +78921,7 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 25
+  canDash: 1
   isWallSliding: 0
   life: 10
   maxLife: 100
