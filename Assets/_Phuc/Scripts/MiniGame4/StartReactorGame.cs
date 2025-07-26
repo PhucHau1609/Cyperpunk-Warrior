@@ -29,9 +29,16 @@ public class StartReactorGame : MonoBehaviour
     private int inputIndex = 0;
     private int currentLevel = 1;
 
+    private bool canStartGame = true;
+
+    public PlayerMovement player;
+
     void Start()
     {
         panel.SetActive(false);
+
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
 
         for (int i = 0; i < inputButtons.Length; i++)
         {
@@ -43,15 +50,31 @@ public class StartReactorGame : MonoBehaviour
     public void OpenMiniGame()
     {
         panel.SetActive(true);
+
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
+
+        if (player != null)
+            player.SetCanMove(false);
+
+        canStartGame = true; // Cho phép bấm Start 1 lần khi mở panel
     }
 
     public void CloseMiniGame()
     {
+        if (!panel.activeSelf) return;
+
         panel.SetActive(false);
+
+        if (player != null)
+            player.SetCanMove(true);
     }
 
     public void StartGame()
     {
+        if (!canStartGame) return;
+
+        canStartGame = false; // Ngăn bấm lại
         ResetAll();
         StartCoroutine(ShowPattern());
     }
@@ -78,7 +101,7 @@ public class StartReactorGame : MonoBehaviour
 
         for (int i = 0; i < patternLength; i++)
         {
-            int randomIndex = Random.Range(0, 9);
+            int randomIndex = Random.Range(0, displayPattern.Length);
             pattern.Add(randomIndex);
             displayPattern[randomIndex].color = highlightColor;
             SoundMiniGame4.Instance?.PlayPatternSound();
@@ -124,7 +147,8 @@ public class StartReactorGame : MonoBehaviour
             failedText.gameObject.SetActive(false);
             SoundMiniGame4.Instance?.PlayWinSound();
             yield return new WaitForSeconds(1.5f);
-            panel.SetActive(false);
+
+            CloseMiniGame();
 
             if (laserBlock != null)
                 laserBlock.SetActive(false);
@@ -132,6 +156,7 @@ public class StartReactorGame : MonoBehaviour
             if (openMiniGameButton != null)
                 openMiniGameButton.interactable = false;
 
+            canStartGame = false; // Không được chơi lại sau khi thắng
             yield break;
         }
 
@@ -154,8 +179,8 @@ public class StartReactorGame : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
-        ResetAll();
-        StartCoroutine(ShowPattern());
+        ResetAll(); // ✅ Reset trạng thái nhưng KHÔNG gán lại `canStartGame = true`
+        StartCoroutine(ShowPattern()); // Tự động chơi lại
     }
 
     void EnableInput(bool enable)
