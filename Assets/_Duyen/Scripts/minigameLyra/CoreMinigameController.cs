@@ -1,0 +1,154 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+
+public class CoreMinigameController : MonoBehaviour
+{
+    [Header("UI References")]
+    public RectTransform targetZone;
+    public RectTransform lyra;
+    public RectTransform movementBounds;
+    public Image fillBar;
+
+    [Header("Lyra Movement")]
+    public float lyraSpeed = 200f;
+
+    [Header("Progress Settings")]
+    public float chargeTime = 5f;
+    public float decayRate = 1f;
+
+    [Header("Target Movement Randomization")]
+    public float minSpeed = 50f;
+    public float maxSpeed = 200f;
+    public float randomizeInterval = 1.5f;
+
+    public System.Action onComplete;
+
+    private float progress = 0f;
+    private bool isPlaying = false;
+    private Vector2 targetDirection = Vector2.right;
+    [HideInInspector] public float targetSpeed;
+    private float randomizeTimer = 0f;
+
+    public GameObject lyraObject; // ← Lyra thật bên ngoài
+    private PetManualControl manualControl;
+    private PetShooting petShooting;
+
+    public void StartMinigame()
+    {
+        progress = 0f;
+        fillBar.fillAmount = 0f;
+        isPlaying = true;
+        gameObject.SetActive(true);
+
+        if (lyraObject != null)
+        {
+            manualControl = lyraObject.GetComponent<PetManualControl>();
+            petShooting = lyraObject.GetComponent<PetShooting>();
+
+            if (manualControl != null) manualControl.enabled = false;
+            if (petShooting != null) petShooting.enabled = false;
+        }
+
+        RandomizeTargetMovement();
+        randomizeTimer = 0f;
+    }
+
+    public void StopMinigame()
+    {
+        isPlaying = false;
+        gameObject.SetActive(false);
+
+        if (manualControl != null) manualControl.enabled = true;
+        if (petShooting != null) petShooting.enabled = true;
+    }
+
+    void Update()
+    {
+        if (!isPlaying) return;
+
+        randomizeTimer += Time.deltaTime;
+        if (randomizeTimer >= randomizeInterval)
+        {
+            randomizeTimer = 0f;
+            RandomizeTargetMovement();
+        }
+
+        MoveTarget();
+        MoveLyra();
+        UpdateProgress();
+    }
+
+    void RandomizeTargetMovement()
+    {
+        targetDirection = Random.value > 0.5f ? Vector2.right : Vector2.left;
+        targetSpeed = Random.Range(minSpeed, maxSpeed);
+    }
+
+    void MoveTarget()
+    {
+        Vector2 pos = targetZone.anchoredPosition;
+        pos += targetDirection * targetSpeed * Time.deltaTime;
+
+        float halfWidth = targetZone.rect.width / 2f;
+        float minX = movementBounds.rect.xMin + halfWidth;
+        float maxX = movementBounds.rect.xMax - halfWidth;
+
+        // Clamp nếu vượt biên và đổi hướng
+        if (pos.x < minX)
+        {
+            pos.x = minX;
+            targetDirection = Vector2.right;
+        }
+        else if (pos.x > maxX)
+        {
+            pos.x = maxX;
+            targetDirection = Vector2.left;
+        }
+
+        targetZone.anchoredPosition = pos;
+    }
+
+    void MoveLyra()
+    {
+        float move = Input.GetAxis("Horizontal");
+        Vector2 pos = lyra.anchoredPosition;
+        pos.x += move * lyraSpeed * Time.deltaTime;
+        pos.x = Mathf.Clamp(pos.x, movementBounds.rect.xMin, movementBounds.rect.xMax);
+        lyra.anchoredPosition = pos;
+    }
+
+    void UpdateProgress()
+    {
+        if (RectOverlaps(lyra, targetZone))
+        {
+            progress += Time.deltaTime;
+        }
+        else
+        {
+            progress -= Time.deltaTime * decayRate;
+        }
+
+        progress = Mathf.Clamp(progress, 0f, chargeTime);
+        fillBar.fillAmount = progress / chargeTime;
+
+        if (progress >= chargeTime)
+        {
+            StopMinigame();
+            onComplete?.Invoke();
+        }
+    }
+
+    bool RectOverlaps(RectTransform a, RectTransform b)
+    {
+        Rect ra = GetWorldRect(a);
+        Rect rb = GetWorldRect(b);
+        return ra.Overlaps(rb);
+    }
+
+    Rect GetWorldRect(RectTransform rt)
+    {
+        Vector3[] corners = new Vector3[4];
+        rt.GetWorldCorners(corners);
+        return new Rect(corners[0], corners[2] - corners[0]);
+    }
+}

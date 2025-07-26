@@ -31,6 +31,8 @@ public class CodeLock_1 : MonoBehaviour
     public SplitDoorController doorController;
     public Animator doorAnimator;
 
+    public PlayerMovement playerMovement;
+
     [Header("Hint Sprites for 0–9")]
     public SpriteList[] hintImagesPerNumber = new SpriteList[10];
 
@@ -89,6 +91,16 @@ public class CodeLock_1 : MonoBehaviour
         canvas.SetActive(false);
         canvasGroup.DOFade(1, 0.4f);
         canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
+
+        if (playerMovement == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+                playerMovement = playerObj.GetComponent<PlayerMovement>();
+        }
+
+        //if (playerMovement != null)
+        //    playerMovement.SetCanMove(false); // ⚠️ Khóa di chuyển khi mở minigame
     }
 
     void AddNumber(int number)
@@ -247,6 +259,8 @@ public class CodeLock_1 : MonoBehaviour
         canvas.transform.DOScale(0, 0.4f).SetEase(Ease.InBack).OnComplete(() =>
         {
             canvas.SetActive(false);
+            if (playerMovement != null)
+                playerMovement.SetCanMove(true); // ⚠️ Mở lại di chuyển sau khi tắt minigame
         });
     }
 
@@ -257,6 +271,9 @@ public class CodeLock_1 : MonoBehaviour
         canvas.transform.localScale = Vector3.zero;
         canvasGroup.DOFade(1, 0.4f);
         canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
+
+        if (playerMovement != null)
+            playerMovement.SetCanMove(false); // ⚠️ Khóa lại nếu mở lại minigame
     }
 
     IEnumerator CloseCanvasAfterDelay(float delay)

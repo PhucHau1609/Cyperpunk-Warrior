@@ -28,7 +28,7 @@ public class NPCDisableTrigger2D : MonoBehaviour
                 anim.enabled = false;
             }
 
-            Debug.Log("Đã vô hiệu hóa FloatingFollower + NavMeshAgent.");
+            //Debug.Log("Đã vô hiệu hóa FloatingFollower + NavMeshAgent.");
         }
     }
 }
