@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1480033784437689677}
   - component: {fileID: 7204510204681297673}
   - component: {fileID: 8028851124623674122}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4457853631151390366}
   - component: {fileID: 5715838481438965947}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: GunPoint
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
@@ -130,7 +130,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3805166554358116249}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7709288480316725765}
   - component: {fileID: 1241648663205878958}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,8 @@ GameObject:
   - component: {fileID: 491781296168327313}
   - component: {fileID: 7807031554999659362}
   - component: {fileID: 7280724834678867785}
-  m_Layer: 12
+  - component: {fileID: 2648136117677191676}
+  m_Layer: 13
   m_Name: Droid03
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -328,7 +329,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 5
   m_Sprite: {fileID: 7061381820421830191, guid: b95215b3529dadf47956d2d86855b9ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -498,7 +499,22 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  healthBarEnemy: {fileID: 0}
+  healthBarEnemy: {fileID: 619392337330614814}
+--- !u!114 &2648136117677191676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7642006444411904898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!1 &8211453441084629896
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,7 +528,7 @@ GameObject:
   - component: {fileID: 7792558148866489863}
   - component: {fileID: 8644505277185858067}
   - component: {fileID: 619392337330614814}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -614,8 +630,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 873c037ef5a5ab64c8997a61f0090ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarCanvas: {fileID: 0}
-  healthSlider: {fileID: 0}
+  healthBarCanvas: {fileID: 4802804213344897347}
+  healthSlider: {fileID: 1241648663205878958}
   healthBarGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -657,7 +673,7 @@ GameObject:
   - component: {fileID: 1973388463537439092}
   - component: {fileID: 6774257909020834080}
   - component: {fileID: 3525611292805365954}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

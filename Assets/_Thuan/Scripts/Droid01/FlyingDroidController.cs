@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 public class FlyingDroidController : MonoBehaviour, IDamageResponder
 {
     [Header("Movement")]
@@ -9,22 +10,24 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
     [Header("Combat")]
     public Transform gunPoint;
     public Transform player;
+    public GameObject bulletPrefab; // Thêm bulletPrefab
 
     [Header("Animation")]
     public Animator animator;
+
+    [HideInInspector] public bool canShoot = true; // Flag để kiểm soát việc bắn
 
     private Vector3 target;
     private Rigidbody2D rb;
     private bool isMoving = true;
 
-    private enum State { Patrolling, Chasing, Returning, Dead }
+    private enum State { Patrolling, Shooting, Returning, Dead }
     private State currentState = State.Patrolling;
 
     [Header("Health")]
     public HealthBarEnemy healthBarEnemy;
     private EnemyDamageReceiver damageReceiver;
     private ItemDropTable itemDropTable;
-
 
     void Awake()
     {
@@ -52,7 +55,7 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
 
     void FixedUpdate()
     {
-        if (isMoving && currentState != State.Dead)
+        if (isMoving && currentState != State.Dead && currentState != State.Shooting)
         {
             MoveToTarget();
         }
@@ -68,28 +71,47 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
         Vector2 dir = (target - transform.position).normalized;
         rb.linearVelocity = dir * moveSpeed;
 
-        // Flip mặt
+        // Flip mặt khi di chuyển
         if (dir.x != 0)
         {
             Vector3 scale = transform.localScale;
-            scale.x = Mathf.Sign(dir.x);
+            scale.x = Mathf.Sign(dir.x) * Mathf.Abs(scale.x);
             transform.localScale = scale;
         }
 
-        // animator?.SetBool("Fly", true);
+        // Set animation cho patrol
+        if (animator != null)
+        {
+            animator.SetBool("Run", true);
+            animator.SetBool("Fly", true); // Uncomment nếu có Fly animation
+        }
     }
 
     public void Stop()
     {
         isMoving = false;
+        currentState = State.Shooting;
         rb.linearVelocity = Vector2.zero;
-        // animator?.SetBool("Fly", false);
+        
+        // Set animation khi dừng
+        if (animator != null)
+        {
+            animator.SetBool("Run", false);
+            animator.SetBool("Fly", false);
+        }
     }
 
     public void Resume()
     {
         isMoving = true;
-        // animator?.SetBool("Fly", true);
+        currentState = State.Patrolling;
+        
+        // Set animation khi tiếp tục di chuyển
+        if (animator != null)
+        {
+            animator.SetBool("Run", true);
+            animator.SetBool("Fly", true);
+        }
     }
 
     public void FacePlayer()
@@ -97,15 +119,65 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
         if (player == null) return;
 
         Vector3 scale = transform.localScale;
-        scale.x = (player.position.x < transform.position.x) ? -1 : 1;
+        // Quay mặt về phía Player
+        scale.x = (player.position.x < transform.position.x) ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
         transform.localScale = scale;
+    }
+
+    /// </summary>
+    public void OnShootAnimationEvent()
+    {
+        if (currentState == State.Dead || player == null || bulletPrefab == null || gunPoint == null)
+            return;
+
+        // Bắn theo hướng Player (có thể bắn theo đường chéo)
+        Vector2 shootDir = (player.position - gunPoint.position).normalized;
+
+        // Tạo viên đạn
+        GameObject bullet = GameObject.Instantiate(
+            bulletPrefab,
+            gunPoint.position,
+            Quaternion.identity
+        );
+
+        // Gán hướng cho đạn (có thể dùng Droid01Bullet hoặc script tương tự)
+        var bulletScript = bullet.GetComponent<Droid01Bullet>();
+        if (bulletScript != null)
+        {
+            bulletScript.SetDirection(shootDir);
+        }
+        else
+        {
+            // Fallback nếu dùng loại bullet khác
+            var droid02BulletScript = bullet.GetComponent<Droid02Bullet>();
+            if (droid02BulletScript != null)
+            {
+                droid02BulletScript.SetDirection(shootDir);
+            }
+        }
+
+        Debug.Log($"[{gameObject.name}] Flying Droid fired bullet at {Time.time}");
+        Debug.DrawLine(gunPoint.position, player.position, Color.red, 1f);
+    }
+
+    /// </summary>
+    public void OnShootAnimationComplete()
+    {
+        canShoot = true;
+        Debug.Log($"[{gameObject.name}] Flying Droid shoot animation completed");
+    }
+
+    public void OnShootAnimationStart()
+    {
+        canShoot = false;
+        Debug.Log($"[{gameObject.name}] Flying Droid shoot animation started");
     }
 
     public void OnHurt()
     {
         if (currentState == State.Dead) return;
 
-        animator.SetTrigger("Hurt");
+        animator?.SetTrigger("Hurt");
         CameraFollow.Instance?.ShakeCamera();
 
         float normalizedHealth = GetNormalizedHealth();
@@ -114,11 +186,10 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
 
     public void OnDead()
     {
-        animator.SetTrigger("Death");
+        animator?.SetTrigger("Death");
         currentState = State.Dead;
 
-        rb.linearVelocity = Vector2.zero;
-        GetComponent<Collider2D>().enabled = false;
+        rb.gravityScale = 1f;
         this.enabled = false;
 
         healthBarEnemy?.HideHealthBar();
@@ -137,123 +208,13 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
         else
             return 1f;
     }
+
+    void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
+
+    // Getter để behavior tree có thể kiểm tra trạng thái
+    public bool IsShooting => currentState == State.Shooting;
+    public bool IsPatrolling => currentState == State.Patrolling;
 }
-
-
-/*public class FlyingDroidController : MonoBehaviour
-{
-    [Header("Movement")]
-    public float moveSpeed = 2f;
-    public Transform pointA;
-    public Transform pointB;
-
-    [Header("Combat")]
-    public Transform gunPoint;
-    public Transform player;
-
-    [Header("Animation")]
-    public Animator animator;
-
-    private Vector3 target;
-    private Rigidbody2D rb;
-    private bool isMoving = true;
-
-    public float maxHealth = 10;
-    private float currentHealth;
-
-    private enum State { Patrolling, Chasing, Returning, Dead }
-    private State currentState = State.Patrolling;
-
-     public HealthBarEnemy healthBarEnemy;
-
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        target = pointB.position;
-        currentHealth = maxHealth;
-
-        // float normalizedHealth = currentHealth / (float)maxHealth;
-        // if (normalizedHealth < 1f && normalizedHealth > 0f)
-        // {
-        //     healthBarEnemy?.ShowHealthBar(normalizedHealth);
-        // }
-    }
-
-    void FixedUpdate()
-    {
-        if (isMoving)
-            MoveToTarget();
-    }
-
-    void MoveToTarget()
-    {
-        if (Vector2.Distance(transform.position, target) < 0.2f)
-        {
-            target = (target == pointA.position) ? pointB.position : pointA.position;
-        }
-
-        Vector2 dir = (target - transform.position).normalized;
-        rb.linearVelocity = dir * moveSpeed;
-
-        // Flip mặt
-        if (dir.x != 0)
-        {
-            Vector3 scale = transform.localScale;
-            scale.x = Mathf.Sign(dir.x);
-            transform.localScale = scale;
-        }
-
-        //animator?.SetBool("Fly", true);
-    }
-
-    public void Stop()
-    {
-        isMoving = false;
-        rb.linearVelocity = Vector2.zero;
-        //animator?.SetBool("Fly", false);
-    }
-
-    public void Resume()
-    {
-        isMoving = true;
-        //animator?.SetBool("Fly", true);
-    }
-
-    public void FacePlayer()
-    {
-        if (player == null) return;
-
-        Vector3 scale = transform.localScale;
-        scale.x = (player.position.x < transform.position.x) ? -1 : 1;
-        transform.localScale = scale;
-    }
-
-     public void TakeDamage(int damage)
-    {
-        if (currentState == State.Dead) return;
-
-        currentHealth -= damage;
-        animator.SetTrigger("Hurt");
-
-        // Hiển thị thanh máu của Enemy này
-        healthBarEnemy?.ShowHealthBar(currentHealth / (float)maxHealth);
-
-        if (currentHealth <= 0)
-        {
-            animator.SetTrigger("Death");
-            currentState = State.Dead;
-            rb.linearVelocity = Vector2.zero;
-            GetComponent<Collider2D>().enabled = false;
-            this.enabled = false;
-            
-            // Ẩn thanh máu của Enemy này
-            healthBarEnemy?.HideHealthBar();
-
-            var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
-            if (behavior != null) behavior.DisableBehavior();
-            Destroy(gameObject, 2f);
-        }
-
-        CameraFollow.Instance?.ShakeCamera();
-    }
-}*/

@@ -13,39 +13,30 @@ public class ShootPlayer : Action
     {
         enemy = GetComponent<EnemyController>();
         lastShootTime = Time.time - shootInterval;
+        
+        // Đồng bộ bulletPrefab với EnemyController nếu chưa có
+        if (enemy != null && enemy.bulletPrefab == null && bulletPrefab != null)
+        {
+            enemy.bulletPrefab = bulletPrefab;
+        }
     }
 
     public override TaskStatus OnUpdate()
     {
-        if (enemy == null || enemy.player == null || bulletPrefab == null)
+        if (enemy == null || enemy.player == null)
             return TaskStatus.Failure;
 
         // Xoay mặt Enemy đúng hướng
         enemy.FacePlayer();
 
-        if (Time.time >= lastShootTime + shootInterval)
+        // Chỉ trigger animation khi đủ thời gian và có thể bắn
+        if (Time.time >= lastShootTime + shootInterval && enemy.canShoot)
         {
+            // Trigger animation - việc bắn thực sự sẽ được thực hiện trong Animation Event
             enemy.animator.SetTrigger("Shoot");
-
-            // Bắn chỉ theo trục X (trái hoặc phải)
-            float xDir = (enemy.player.position.x < enemy.transform.position.x) ? -1f : 1f;
-            Vector2 shootDir = new Vector2(xDir, 0f);
-
-            // Tạo viên đạn
-            GameObject bullet = GameObject.Instantiate(
-                bulletPrefab,
-                enemy.gunPoint.position,
-                Quaternion.identity
-            );
-
-            // Gán hướng cho đạn
-            Droid02Bullet bulletScript = bullet.GetComponent<Droid02Bullet>();
-            if (bulletScript != null)
-            {
-                bulletScript.SetDirection(shootDir);
-            }
-
             lastShootTime = Time.time;
+            
+            Debug.Log($"[{gameObject.name}] Triggered Shoot animation at {Time.time}");
         }
 
         return TaskStatus.Running;
