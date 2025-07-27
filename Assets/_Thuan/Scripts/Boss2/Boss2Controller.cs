@@ -95,6 +95,9 @@ public class Boss2Controller : MonoBehaviour
 
         // Cho phép attack ngay khi scene load
         lastAttackTime = -attackCooldown;
+        SpawnMinion();
+        SpawnMinion();
+        SpawnMinion();
     }
 
     private void Update()
