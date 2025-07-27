@@ -46,8 +46,8 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             jump = true;
 
-        if (Input.GetKeyDown(KeyCode.E))
-            dashX = true; // ⚠️ THAY ĐỔI: dash ngang
+        // if (Input.GetKeyDown(KeyCode.E))
+        //     dashX = true; // ⚠️ THAY ĐỔI: dash ngang
 
         if (Input.GetKeyDown(KeyCode.S))
             dashY = true; // ⚠️ MỚI: dash dọc
