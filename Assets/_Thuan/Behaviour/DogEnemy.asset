@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23f08d2ae4cba14087c1ed36193d82b, type: 3}
+  m_Name: DogEnemy
+  m_EditorClassIdentifier: 
+  mBehaviorSource:
+    behaviorName: Behavior
+    behaviorDescription: 
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(76.32886,-97.34543)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-4.50469971,102.654572)"},"ID":1,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-233.108536,102.892448)","Comment":"Shoot"},"ID":2,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"CheckPlayerInShootRange","NodeData":{"Offset":"(-231.035034,103.938263)"},"ID":3,"Name":"Check
+        Player In Shoot Range","Instant":true,"SingleshootRange":5,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null}},{"Type":"StopMoving","NodeData":{"Offset":"(-57.43506,103.138275)"},"ID":4,"Name":"Stop
+        Moving","Instant":true},{"Type":"FacePlayer","NodeData":{"Offset":"(56.56494,100.738251)"},"ID":5,"Name":"Face
+        Player","Instant":true,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null}},{"Type":"ShootPlayer","NodeData":{"Offset":"(181.364929,98.73828)"},"ID":6,"Name":"Shoot
+        Player","Instant":true,"GameObjectbulletPrefab":0,"SingleshootInterval":1}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(152.98497,102.892441)","Comment":"Patrol"},"ID":7,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"PatrolTask","NodeData":{"Offset":"(1.03686523,98.49402)"},"ID":8,"Name":"Patrol
+        Task","Instant":true,"MoveModemovementType":"TransformPosition","StringpointPrefix":"Point","SharedTransformpointA":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedTransformpointB":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedFloatmoveSpeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":3},"SharedAnimatoranimator":{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":null}}]}]}}'
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects:
+        - {fileID: 3880578523389902671, guid: dcdd4893b95641c4ab648e68c8cb1cd8, type: 3}
+        byteData: 
+        byteDataArray: 
+      Version: 1.7.7

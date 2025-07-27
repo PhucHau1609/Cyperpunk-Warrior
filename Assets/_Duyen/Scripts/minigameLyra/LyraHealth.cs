@@ -110,7 +110,7 @@ public class LyraHealth : MonoBehaviour
 
     void TryFindRespawnPoint()
     {
-        GameObject found = GameObject.FindWithTag("LyraRespawn");
+        GameObject found = GameObject.FindWithTag("spw");
         if (found != null)
         {
             respawnPoint = found.transform;

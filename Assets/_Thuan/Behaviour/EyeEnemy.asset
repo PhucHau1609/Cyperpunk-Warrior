@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23f08d2ae4cba14087c1ed36193d82b, type: 3}
+  m_Name: EyeEnemy
+  m_EditorClassIdentifier: 
+  mBehaviorSource:
+    behaviorName: Behavior
+    behaviorDescription: 
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(464.143,60.90477)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-0.8569946,99.16565)"},"ID":1,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-207.857117,99.4047241)"},"ID":2,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"CheckPlayerInShootRange","NodeData":{"Offset":"(-160.571777,102.730011)"},"ID":3,"Name":"Check
+        Player In Shoot Range","Instant":true,"SingleshootRange":8,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null}},{"Type":"StopMoving","NodeData":{"Offset":"(2.60662651,100.330017)"},"ID":4,"Name":"Stop
+        Moving","Instant":true},{"Type":"FacePlayer","NodeData":{"Offset":"(113.485573,97.30392)"},"ID":5,"Name":"Face
+        Player","Instant":true,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null}},{"Type":"ShootPlayerDirection2D","NodeData":{"Offset":"(260.525146,102.55603)"},"ID":6,"Name":"Shoot
+        Player Direction 2 D","Instant":true,"SharedTransformplayer":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedTransformgunPoint":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedAnimatoranimator":{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":null},"GameObjectbulletPrefab":0,"SingleshootInterval":1}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(227.679138,96.8566)"},"ID":7,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"PatrolTask","NodeData":{"Offset":"(-0.886901855,102.960785)"},"ID":8,"Name":"Patrol
+        Task","Instant":true,"MoveModemovementType":"RigidbodyVelocity","StringpointPrefix":"Point","SharedTransformpointA":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedTransformpointB":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedFloatmoveSpeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":2},"SharedAnimatoranimator":{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":null}}]}]}}'
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects:
+        - {fileID: 3721999730941707475, guid: 12403eeae8fffdc4e803e5db102db305, type: 3}
+        byteData: 
+        byteDataArray: 
+      Version: 1.7.7

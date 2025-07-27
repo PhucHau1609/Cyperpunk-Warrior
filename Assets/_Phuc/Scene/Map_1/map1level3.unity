@@ -2242,7 +2242,9 @@ MonoBehaviour:
   animator: {fileID: 587990484}
   healthSlider: {fileID: 0}
   player: {fileID: 0}
+  bulletPrefab: {fileID: 0}
   initialPosition: {x: 0, y: 0, z: 0}
+  canShoot: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -2285,8 +2287,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 1.7.7
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!50 &587990483
 Rigidbody2D:
   serializedVersion: 5
@@ -2857,11 +2859,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7307607406679590861, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
       propertyPath: m_Size.y
-      value: 2.9214125
+      value: 4.9483757
       objectReference: {fileID: 0}
     - target: {fileID: 7307607406679590861, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
       propertyPath: m_Offset.y
-      value: 0.96070623
+      value: 1.9741879
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3395,6 +3397,10 @@ PrefabInstance:
     - target: {fileID: 94012994137017495, guid: 3fb78141b12b27c49b547088c4b9689a, type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 94012994137017495, guid: 3fb78141b12b27c49b547088c4b9689a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -40091,7 +40097,9 @@ MonoBehaviour:
   animator: {fileID: 1464869557}
   healthSlider: {fileID: 0}
   player: {fileID: 0}
+  bulletPrefab: {fileID: 0}
   initialPosition: {x: 0, y: 0, z: 0}
+  canShoot: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -40134,8 +40142,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 1.7.7
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!50 &1464869556
 Rigidbody2D:
   serializedVersion: 5
@@ -73004,7 +73012,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.83444023, y: 4.7051425}
+  m_Offset: {x: -0.88892365, y: 5.5767922}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -73014,7 +73022,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3.3580284, y: 6.8883295}
+  m_Size: {x: 2.8132477, y: 10.302291}
   m_EdgeRadius: 0
 --- !u!114 &1986093861
 MonoBehaviour:

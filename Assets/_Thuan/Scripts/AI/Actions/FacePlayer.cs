@@ -57,16 +57,6 @@ public class FacePlayer : Action
             playerObject = GameObject.Find("Player");
         }
 
-        // // Phương thức 3: Tìm theo component (nếu Player có script riêng)
-        // if (playerObject == null)
-        // {
-        //     var playerComponent = FindObjectOfType<PlayerController>();
-        //     if (playerComponent != null)
-        //     {
-        //         playerObject = playerComponent.gameObject;
-        //     }
-        // }
-
         return playerObject?.transform;
     }
 

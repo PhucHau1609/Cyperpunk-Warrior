@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23f08d2ae4cba14087c1ed36193d82b, type: 3}
+  m_Name: BombDropper 1
+  m_EditorClassIdentifier: 
+  mBehaviorSource:
+    behaviorName: Behavior
+    behaviorDescription: 
+    mTaskData:
+      types: []
+      parentIndex: 
+      startIndex: 
+      variableStartIndex: 
+      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(723.752563,-36.02539)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(3.75256348,103.974609)"},"ID":1,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-211.0102,99.8964844)"},"ID":2,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"IsBombDropperPlayerUnderneath","NodeData":{"Offset":"(-178.149292,102.724335)"},"ID":3,"Name":"Is
+        Bomb Dropper Player Underneath","Instant":true},{"Type":"StopAndIdle","NodeData":{"Offset":"(-4.94928,99.52432)"},"ID":4,"Name":"Stop
+        And Idle","Instant":true,"SharedAnimatoranimator":{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":null}},{"Type":"DropSingleBomb","NodeData":{"Offset":"(130.907623,98.58124)"},"ID":5,"Name":"Drop
+        Single Bomb","Instant":true,"SharedAnimatoranimator":{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":null},"SharedFloatdropInterval":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":1}}]},{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(119.389893,101.007629)"},"ID":6,"Name":"Sequence","Instant":true,"AbortTypeabortType":"Both","Children":[{"Type":"PatrolTask","NodeData":{"Offset":"(-2.54925537,103.924347)"},"ID":7,"Name":"Patrol
+        Task","Instant":true,"MoveModemovementType":"TransformPosition","StringpointPrefix":"Point","SharedTransformpointA":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedTransformpointB":{"Type":"BehaviorDesigner.Runtime.SharedTransform","Name":null},"SharedFloatmoveSpeed":{"Type":"BehaviorDesigner.Runtime.SharedFloat","Name":null,"SinglemValue":2},"SharedAnimatoranimator":{"Type":"BehaviorDesigner.Runtime.SharedAnimator","Name":null}}]}]}}'
+      fieldSerializationData:
+        typeName: []
+        fieldNameHash: 
+        startIndex: 
+        dataPosition: 
+        unityObjects: []
+        byteData: 
+        byteDataArray: 
+      Version: 1.7.7

@@ -8,8 +8,8 @@ public class HiddenTurretDamageReceiver : DamageReceiver
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
+        //if (responder == null)
+        //    Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
     }
 
     protected override void OnHurt()

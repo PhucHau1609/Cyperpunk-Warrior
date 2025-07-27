@@ -16,11 +16,28 @@ public class ShootPlayerDirection2D : Action
     private float lastShootTime;
     private Transform cachedPlayerTransform;
     private Transform cachedGunPointTransform;
+    private FlyingDroidController droidController; // Thêm reference
 
     public override void OnStart()
     {
         // Đặt thời gian bắn ban đầu
         lastShootTime = Time.time - shootInterval;
+
+        // Lấy reference đến FlyingDroidController
+        droidController = GetComponent<FlyingDroidController>();
+
+        // Dừng di chuyển và quay mặt về Player
+        if (droidController != null)
+        {
+            droidController.Stop();
+            droidController.FacePlayer();
+            
+            // Đồng bộ bulletPrefab với FlyingDroidController nếu chưa có
+            if (droidController.bulletPrefab == null && bulletPrefab != null)
+            {
+                droidController.bulletPrefab = bulletPrefab;
+            }
+        }
 
         // Tự động gán giá trị nếu chưa được gán
         AutoAssignReferences();
@@ -92,36 +109,40 @@ public class ShootPlayerDirection2D : Action
     {
         // Kiểm tra các tham chiếu
         if (player == null || player.Value == null || 
-            gunPoint == null || gunPoint.Value == null || 
-            bulletPrefab == null)
+            gunPoint == null || gunPoint.Value == null)
         {
             // Thử gán lại nếu thiếu
             AutoAssignReferences();
             return TaskStatus.Failure;
         }
 
-        // Logic bắn đạn như cũ
-        if (Time.time >= lastShootTime + shootInterval)
+        // Luôn quay mặt về Player khi đang bắn
+        if (droidController != null)
         {
+            droidController.FacePlayer();
+        }
+
+        // Logic bắn đạn - chỉ trigger animation khi đủ thời gian và có thể bắn
+        if (Time.time >= lastShootTime + shootInterval && 
+            droidController != null && droidController.canShoot)
+        {
+            // Trigger animation - việc bắn thực sự sẽ được thực hiện trong Animation Event
             animator?.Value?.SetTrigger("Shoot");
-
-            Vector2 shootDir = (player.Value.position - gunPoint.Value.position).normalized;
-
-            GameObject bullet = GameObject.Instantiate(
-                bulletPrefab,
-                gunPoint.Value.position,
-                Quaternion.identity
-            );
-
-            var bulletScript = bullet.GetComponent<Droid01Bullet>();
-            if (bulletScript != null)
-                bulletScript.SetDirection(shootDir);
-
             lastShootTime = Time.time;
-
+            
+            Debug.Log($"[{gameObject.name}] Triggered Flying Droid Shoot animation at {Time.time}");
             Debug.DrawLine(gunPoint.Value.position, player.Value.position, Color.red, 1f);
         }
 
         return TaskStatus.Running;
+    }
+
+    public override void OnEnd()
+    {
+        // Khi kết thúc bắn, cho phép droid tiếp tục di chuyển
+        if (droidController != null)
+        {
+            droidController.Resume();
+        }
     }
 }

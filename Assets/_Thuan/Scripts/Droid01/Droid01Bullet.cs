@@ -72,6 +72,7 @@ public class Droid01Bullet : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
 
         animator?.SetTrigger("Destroy");
+        Destroy(gameObject, 0.5f);
     }
 
     public void DestroySelf()
