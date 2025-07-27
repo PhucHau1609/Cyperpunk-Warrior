@@ -24,6 +24,8 @@ public class CraftingUI : HauSingleton<CraftingUI>
     [SerializeField] private Color validRecipeColor = Color.green;
 
     public bool isShowUI = false;
+    private bool wasPlayerAppearanceShowing = false;
+
 
     protected override void Start()
     {
@@ -95,7 +97,11 @@ public class CraftingUI : HauSingleton<CraftingUI>
         isShowUI = true;
         this.showHide.gameObject.SetActive(true);
         this.showHide.DOLocalMove(appearPosition, 0.3f);
-        NewInventoryUI.Instance.MoveToSide();
+
+        // Ghi nhận trạng thái PlayerAppearance trước khi ẩn nó
+        wasPlayerAppearanceShowing = PlayerAppearanceUI.HasInstance && PlayerAppearanceUI.Instance.isShowUI;
+        PlayerAppearanceUI.Instance?.HideUI();
+
         CheckRecipeValidity();
     }
 
@@ -105,9 +111,36 @@ public class CraftingUI : HauSingleton<CraftingUI>
         this.showHide.DOLocalMove(hiddenPosition, 0.3f).OnComplete(() =>
         {
             this.showHide.gameObject.SetActive(false);
+
+            // Nếu trước đó PlayerAppearance đang hiển thị, khôi phục lại
+            if (wasPlayerAppearanceShowing)
+            {
+                PlayerAppearanceUI.Instance?.ShowUI();
+            }
         });
-        NewInventoryUI.Instance.MoveToCenter();
     }
+
+
+
+
+    /*  public virtual void ShowUI()
+      {
+          isShowUI = true;
+          this.showHide.gameObject.SetActive(true);
+          this.showHide.DOLocalMove(appearPosition, 0.3f);
+          NewInventoryUI.Instance.MoveToSide();
+          CheckRecipeValidity();
+      }*/
+
+    /*   public virtual void HideUI()
+       {
+           isShowUI = false;
+           this.showHide.DOLocalMove(hiddenPosition, 0.3f).OnComplete(() =>
+           {
+               this.showHide.gameObject.SetActive(false);
+           });
+           NewInventoryUI.Instance.MoveToCenter();
+       }*/
 
     protected virtual void OnClickCraft()
     {

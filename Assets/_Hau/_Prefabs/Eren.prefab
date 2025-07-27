@@ -87,6 +87,7 @@ MonoBehaviour:
   itemLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  controller: {fileID: 0}
   mainCamera: {fileID: 0}
 --- !u!1 &231321756069712555
 GameObject:
@@ -5605,6 +5606,7 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 15
+  canDash: 1
   isWallSliding: 0
   life: 100
   maxLife: 100
@@ -5818,7 +5820,7 @@ AudioSource:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -5848,7 +5850,7 @@ AudioSource:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
 --- !u!114 &9181579126995914996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5905,6 +5907,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthBar: {fileID: 0}
   healEffect: {fileID: 6150281749274092166}
+  damageOverlay: {fileID: 0}
+  overlayDuration: 0.5
+  flashColor: {r: 1, g: 0, b: 0, a: 0.5}
 --- !u!114 &8276477388122703383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5946,6 +5951,7 @@ MonoBehaviour:
   cooldown: 5
   delayBeforeStart: 0
   shieldVisual: {fileID: 6562729455012665515}
+  shieldTag: Shield
 --- !u!114 &5756595572753698764
 MonoBehaviour:
   m_ObjectHideFlags: 0

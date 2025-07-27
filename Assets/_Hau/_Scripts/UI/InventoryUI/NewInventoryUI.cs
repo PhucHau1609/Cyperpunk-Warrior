@@ -96,14 +96,21 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
         {
             ItemTooltipUI.Instance.HideTooltip();
         }
+
+        // 👇 THÊM DÒNG NÀY
+        PlayerAppearanceUI.Instance?.HideUI();
     }
 
     public virtual void ShowInventoryUI()
     {
         this.isShowUI = true;
         this.showHide.gameObject.SetActive(true);
-        this.ItemsUpdating(); 
+        this.showHide.localPosition = new Vector3(-1000f, 0f, 0f); // vị trí ngoài màn hình bên trái
+        this.showHide.DOLocalMove(centerPosition, 0.3f).SetEase(Ease.OutCubic);
+        this.ItemsUpdating();
 
+        // 👇 THÊM DÒNG NÀY
+        PlayerAppearanceUI.Instance?.ShowUI();
     }
 
     protected virtual void OnOpenInventory(object param)
