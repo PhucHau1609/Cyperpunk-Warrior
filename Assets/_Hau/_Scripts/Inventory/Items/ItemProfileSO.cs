@@ -9,6 +9,7 @@ public class ItemProfileSO : ScriptableObject
     public InventoryCodeName invCodeName;
     public ItemCode itemCode;
     public WeaponType weaponType;
+    public EquipmentType equipmentType = EquipmentType.None;
     public string itemName;
     public Sprite itemSprite;
     public bool isStackable = false;
