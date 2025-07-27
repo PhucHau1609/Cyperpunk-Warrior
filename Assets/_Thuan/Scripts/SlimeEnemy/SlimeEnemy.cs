@@ -39,6 +39,10 @@ public class SlimeEnemy : MonoBehaviour
 
     [Header("Parent Reference (Auto-assigned)")]
     private SlimeEnemy parentSlime;
+    [Header("Auto Patrol Setup")]
+    [SerializeField] private string patrolGroupName = "SlimePatrol"; // Tên nhóm patrol points mặc định
+    [SerializeField] private bool autoFindPatrolPoints = true; // Checkbox để bật/tắt auto find
+    [SerializeField] private float patrolSearchRadius = 20f;
     
     // Private variables
     private float currentHealth;
@@ -73,6 +77,12 @@ public class SlimeEnemy : MonoBehaviour
         if (playerObj != null)
             player = playerObj.transform;
         
+        // ===== THÊM: Auto find patrol points =====
+        if (autoFindPatrolPoints && (pointA == null || pointB == null))
+        {
+            AutoAssignPatrolPoints();
+        }
+        
         // Adjust stats based on split level
         AdjustStatsForSplitLevel();
         
@@ -80,7 +90,7 @@ public class SlimeEnemy : MonoBehaviour
         if (splitLevel >= 2)
             canSplit = false;
         
-        // ===== THÊM: Setup patrol =====
+        // Setup patrol
         SetupPatrol();
     }
     
@@ -114,12 +124,153 @@ public class SlimeEnemy : MonoBehaviour
         }
     }
     
+    private void AutoAssignPatrolPoints()
+    {
+        // Method 1: Tìm theo tên nhóm cụ thể
+        if (!string.IsNullOrEmpty(patrolGroupName))
+        {
+            FindPatrolPointsByGroupName();
+            if (pointA != null && pointB != null) return; // Thành công thì return
+        }
+        
+        // Method 2: Tìm patrol points bằng tag
+        FindNearestPatrolPointsByTag();
+        if (pointA != null && pointB != null) return; // Thành công thì return
+        
+        // Method 3: Tìm theo tên (backup)
+        FindPatrolPointsByName();
+    }
+
+    // THÊM HÀM: FindPatrolPointsByGroupName
+    private void FindPatrolPointsByGroupName()
+    {
+        // Tìm parent object chứa patrol points
+        GameObject patrolGroup = GameObject.Find(patrolGroupName);
+        if (patrolGroup == null)
+        {
+            Debug.LogWarning($"Không tìm thấy patrol group: {patrolGroupName}");
+            return;
+        }
+        
+        // Lấy children làm patrol points
+        if (patrolGroup.transform.childCount >= 2)
+        {
+            pointA = patrolGroup.transform.GetChild(0);
+            pointB = patrolGroup.transform.GetChild(1);
+            Debug.Log($"Auto assigned patrol points from group '{patrolGroupName}' for {gameObject.name}: {pointA.name} and {pointB.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"Patrol group '{patrolGroupName}' cần ít nhất 2 children");
+        }
+    }
+
+    // THÊM HÀM: FindNearestPatrolPointsByTag
+    private void FindNearestPatrolPointsByTag()
+    {
+        // Tìm tất cả objects có tag "PatrolPoint"
+        GameObject[] allPatrolPoints = GameObject.FindGameObjectsWithTag("PatrolPoint");
+        
+        if (allPatrolPoints.Length < 2)
+        {
+            return; // Không đủ points, thử method khác
+        }
+        
+        // Lọc những points trong bán kính tìm kiếm
+        System.Collections.Generic.List<GameObject> nearbyPoints = new System.Collections.Generic.List<GameObject>();
+        foreach (GameObject point in allPatrolPoints)
+        {
+            float distance = Vector2.Distance(transform.position, point.transform.position);
+            if (distance <= patrolSearchRadius)
+            {
+                nearbyPoints.Add(point);
+            }
+        }
+        
+        // Nếu không đủ points gần, lấy tất cả
+        if (nearbyPoints.Count < 2)
+        {
+            nearbyPoints.Clear();
+            nearbyPoints.AddRange(allPatrolPoints);
+        }
+        
+        // Sắp xếp theo khoảng cách
+        nearbyPoints.Sort((a, b) => 
+        {
+            float distA = Vector2.Distance(transform.position, a.transform.position);
+            float distB = Vector2.Distance(transform.position, b.transform.position);
+            return distA.CompareTo(distB);
+        });
+        
+        pointA = nearbyPoints[0].transform;
+        pointB = nearbyPoints[1].transform;
+        
+        Debug.Log($"Auto assigned nearest patrol points by tag for {gameObject.name}: {pointA.name} and {pointB.name}");
+    }
+
+    // THÊM HÀM: FindPatrolPointsByName (backup method)
+    private void FindPatrolPointsByName()
+    {
+        // Tìm các objects có tên chứa "Patrol", "Point", etc.
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        System.Collections.Generic.List<GameObject> patrolCandidates = new System.Collections.Generic.List<GameObject>();
+        
+        foreach (GameObject obj in allObjects)
+        {
+            string objName = obj.name.ToLower();
+            if (objName.Contains("patrol") || objName.Contains("point") || objName.Contains("waypoint"))
+            {
+                float distance = Vector2.Distance(transform.position, obj.transform.position);
+                if (distance <= patrolSearchRadius)
+                {
+                    patrolCandidates.Add(obj);
+                }
+            }
+        }
+        
+        if (patrolCandidates.Count >= 2)
+        {
+            // Sắp xếp theo khoảng cách
+            patrolCandidates.Sort((a, b) => 
+            {
+                float distA = Vector2.Distance(transform.position, a.transform.position);
+                float distB = Vector2.Distance(transform.position, b.transform.position);
+                return distA.CompareTo(distB);
+            });
+            
+            pointA = patrolCandidates[0].transform;
+            pointB = patrolCandidates[1].transform;
+            
+            Debug.Log($"Auto assigned patrol points by name for {gameObject.name}: {pointA.name} and {pointB.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"Không tìm thấy đủ patrol points cho {gameObject.name}. Slime sẽ không patrol.");
+        }
+    }
+
+    // THÊM CÁC PUBLIC METHODS (nếu cần control từ bên ngoài):
+    public void SetPatrolPoints(Transform newPointA, Transform newPointB)
+    {
+        pointA = newPointA;
+        pointB = newPointB;
+        autoFindPatrolPoints = false; // Tắt auto find khi đã set manual
+        SetupPatrol(); // Re-setup với points mới
+    }
+
+    public void ForceAutoFindPatrolPoints()
+    {
+        autoFindPatrolPoints = true;
+        AutoAssignPatrolPoints();
+        SetupPatrol();
+    }
+    
     private void HandleState()
     {
         if (currentState == EnemyState.Hurt) return;
 
         float distanceToPlayer = player != null ? Vector2.Distance(transform.position, player.position) : float.MaxValue;
-        
+
         switch (currentState)
         {
             case EnemyState.Patrol:
@@ -133,14 +284,14 @@ public class SlimeEnemy : MonoBehaviour
                         float directionToPlayer = player.position.x > transform.position.x ? 1 : -1;
                         if ((directionToPlayer > 0 && !facingRight) || (directionToPlayer < 0 && facingRight))
                             Flip();
-                        
+
                         // Explode khi đủ gần
                         if (distanceToPlayer <= explosionRadius * 0.5f)
                             StartExplosion();
                     }
                     return; // Small slime không patrol
                 }
-                
+
                 // ===== Logic cho Large (0) và Medium (1) slimes =====
                 if (distanceToPlayer <= attackRange)
                 {
@@ -151,7 +302,7 @@ public class SlimeEnemy : MonoBehaviour
                         if ((directionToPlayer > 0 && !facingRight) || (directionToPlayer < 0 && facingRight))
                             Flip();
                     }
-                    
+
                     // Large/Medium slime attacks
                     if (Time.time >= lastAttackTime + attackCooldown)
                         currentState = EnemyState.Attack;
@@ -165,7 +316,7 @@ public class SlimeEnemy : MonoBehaviour
                     }
                 }
                 break;
-                
+
             case EnemyState.Attack:
                 // Đảm bảo vẫn quay mặt về Player trong lúc tấn công
                 if (player != null)
@@ -174,7 +325,7 @@ public class SlimeEnemy : MonoBehaviour
                     if ((directionToPlayer > 0 && !facingRight) || (directionToPlayer < 0 && facingRight))
                         Flip();
                 }
-                
+
                 if (Time.time >= lastAttackTime + attackCooldown)
                 {
                     PerformMeleeAttack();
