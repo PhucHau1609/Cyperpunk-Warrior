@@ -75,6 +75,14 @@ public class CardsController : MonoBehaviour
         ResetGame();
 
         Invoke(nameof(StartTimerAfterDeal), 2f);
+
+        var player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            var move = player.GetComponent<PlayerMovement>();
+            if (move != null)
+                move.SetCanMove(false); // ← KHÓA DI CHUYỂN
+        }
     }
 
     void StartTimerAfterDeal()
@@ -544,6 +552,15 @@ public class CardsController : MonoBehaviour
         {
             AudioManager.Instance?.PlayLoseGame();
         }
+
+        var player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            var move = player.GetComponent<PlayerMovement>();
+            if (move != null)
+                move.SetCanMove(true); // ← MỞ LẠI DI CHUYỂN
+        }
+
     }
 
     void Shuffle<T>(List<T> list)

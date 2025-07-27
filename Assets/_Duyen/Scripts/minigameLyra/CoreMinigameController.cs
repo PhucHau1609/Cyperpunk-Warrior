@@ -111,10 +111,32 @@ public class CoreMinigameController : MonoBehaviour
     void MoveLyra()
     {
         float move = Input.GetAxis("Horizontal");
+
+        // Di chuyển vị trí
         Vector2 pos = lyra.anchoredPosition;
         pos.x += move * lyraSpeed * Time.deltaTime;
         pos.x = Mathf.Clamp(pos.x, movementBounds.rect.xMin, movementBounds.rect.xMax);
         lyra.anchoredPosition = pos;
+
+        // Xoay hướng (flip)
+        if (Mathf.Abs(move) > 0.01f)
+        {
+            Vector3 scale = lyra.localScale;
+            scale.x = move > 0 ? 1f : -1f;
+            lyra.localScale = scale;
+        }
+
+        // Luôn chạy animation duy nhất nếu có Animator
+        Animator animator = lyra.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.SetBool("isMoving", Mathf.Abs(move) > 0.01f);
+        }
+        //float move = Input.GetAxis("Horizontal");
+        //Vector2 pos = lyra.anchoredPosition;
+        //pos.x += move * lyraSpeed * Time.deltaTime;
+        //pos.x = Mathf.Clamp(pos.x, movementBounds.rect.xMin, movementBounds.rect.xMax);
+        //lyra.anchoredPosition = pos;
     }
 
     void UpdateProgress()
