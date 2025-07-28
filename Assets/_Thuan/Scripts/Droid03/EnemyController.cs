@@ -27,6 +27,8 @@ public class EnemyController : MonoBehaviour, IDamageResponder
     private EnemyDamageReceiver damageReceiver;
     private ItemDropTable itemDropTable;
 
+    private bool isDead = false;
+
     void Awake()
     {
         if (player == null)
@@ -129,6 +131,9 @@ public class EnemyController : MonoBehaviour, IDamageResponder
 
     public void OnDead()
     {
+        if (isDead) return; 
+        isDead = true;
+
         animator.SetTrigger("Death");
         currentState = State.Dead;
         rb.linearVelocity = Vector2.zero;
@@ -142,7 +147,7 @@ public class EnemyController : MonoBehaviour, IDamageResponder
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
 
-        itemDropTable?.TryDropItems();
+        //itemDropTable?.TryDropItems();
         Destroy(gameObject, 2f);
     }
 

@@ -32,6 +32,26 @@ public class TeleportPortal_01 : MonoBehaviour
 
         isTeleporting = true;
 
+        WeaponSystemManager weapon = other.GetComponent<WeaponSystemManager>();
+        if (weapon != null)
+        {
+            //Debug.Log("start turn off weapon");
+
+            weapon.isWeaponActive = false;
+
+            var weaponHolderField = other.transform.Find("WeaponHandle");
+            if (weaponHolderField != null)
+            {
+                foreach (Transform child in weaponHolderField)
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+
+            //Debug.Log("done turn off weapon");
+        }
+
+
         // ✅ Gọi animation biến mất của player nếu chưa gọi
         Animator playerAnim = other.GetComponentInChildren<Animator>();
         if (playerAnim != null && !hasTriggeredDisappear)
@@ -41,6 +61,8 @@ public class TeleportPortal_01 : MonoBehaviour
             hasTriggeredDisappear = true;
         }
 
+
+      
         // ✅ Gọi animation biến mất của pet
         FloatingFollower pet = FindFirstObjectByType<FloatingFollower>();
         if (pet != null)

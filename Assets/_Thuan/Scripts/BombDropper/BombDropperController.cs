@@ -103,6 +103,9 @@ public class BombDropperController : MonoBehaviour, IDamageResponder
 
     public void OnDead()
     {
+        Debug.Log($"[BombDropperController] {name} OnDead CALLED");
+
+
         animator.SetTrigger("Death");
         currentState = State.Dead;
 
@@ -114,7 +117,7 @@ public class BombDropperController : MonoBehaviour, IDamageResponder
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
 
-        itemDropTable?.TryDropItems();
+        //itemDropTable?.TryDropItems();
 
         Destroy(gameObject, 2f);
     }
