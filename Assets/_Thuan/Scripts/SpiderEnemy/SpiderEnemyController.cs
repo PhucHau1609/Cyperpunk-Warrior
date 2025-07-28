@@ -85,7 +85,7 @@ public class SpiderEnemyController : MonoBehaviour, IDamageResponder
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
 
-        itemDropTable?.TryDropItems();
+        //itemDropTable?.TryDropItems();
         Destroy(gameObject, 2f);
     }
 
