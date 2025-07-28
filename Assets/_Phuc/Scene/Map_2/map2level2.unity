@@ -88966,6 +88966,7 @@ GameObject:
   - component: {fileID: 941076266}
   - component: {fileID: 941076265}
   - component: {fileID: 941076270}
+  - component: {fileID: 941076271}
   m_Layer: 6
   m_Name: Ground
   m_TagString: Ground
@@ -100050,6 +100051,21 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
+--- !u!114 &941076271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941076263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe76d93c3ec8d9548afb8638f6155a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 50
+  maxHP: 50
+  IsImmotal: 1
 --- !u!1001 &942169550
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -149664,8 +149680,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 10
-  maxHP: 10
+  currentHP: 8
+  maxHP: 8
   IsImmotal: 0
 --- !u!1 &7823527108034746126
 GameObject:

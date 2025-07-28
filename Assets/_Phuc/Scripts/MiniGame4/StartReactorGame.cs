@@ -6,6 +6,7 @@ using TMPro;
 
 public class StartReactorGame : MonoBehaviour
 {
+    [Header("UI & Game Elements")]
     public GameObject panel;
     public GameObject laserBlock;
     public Button openMiniGameButton;
@@ -25,13 +26,18 @@ public class StartReactorGame : MonoBehaviour
     public TMP_Text failedText;
     public TMP_Text completedText;
 
+    public PlayerMovement player;
+
+    [Header("Interaction Settings")]
+    public Transform interactionPoint;
+    public float interactionDistance = 3f;
+
     private List<int> pattern = new List<int>();
     private int inputIndex = 0;
     private int currentLevel = 1;
 
     private bool canStartGame = true;
-
-    public PlayerMovement player;
+    private bool hasCompletedGame = false;
 
     void Start()
     {
@@ -45,12 +51,36 @@ public class StartReactorGame : MonoBehaviour
             int idx = i;
             inputButtons[i].onClick.AddListener(() => OnButtonPressed(idx));
         }
+
+        // Kiểm tra khoảng cách ban đầu
+        if (openMiniGameButton != null && interactionPoint != null)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            openMiniGameButton.interactable = (dist <= interactionDistance);
+        }
+    }
+
+    void Update()
+    {
+        if (openMiniGameButton != null && interactionPoint != null && player != null && !hasCompletedGame)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            openMiniGameButton.interactable = (dist <= interactionDistance);
+        }
     }
 
     public void OpenMiniGame()
     {
 
         GameStateManager.Instance.SetState(GameState.MiniGame);
+        if (hasCompletedGame) return; // 🚫 Đã thắng thì không cho mở lại
+
+        if (interactionPoint != null && player != null)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            if (dist > interactionDistance)
+                return;
+        }
 
         panel.SetActive(true);
 
@@ -60,7 +90,7 @@ public class StartReactorGame : MonoBehaviour
         if (player != null)
             player.SetCanMove(false);
 
-        canStartGame = true; // Cho phép bấm Start 1 lần khi mở panel
+        canStartGame = true;
     }
 
     public void CloseMiniGame()
@@ -78,7 +108,7 @@ public class StartReactorGame : MonoBehaviour
     {
         if (!canStartGame) return;
 
-        canStartGame = false; // Ngăn bấm lại
+        canStartGame = false;
         ResetAll();
         StartCoroutine(ShowPattern());
     }
@@ -160,7 +190,8 @@ public class StartReactorGame : MonoBehaviour
             if (openMiniGameButton != null)
                 openMiniGameButton.interactable = false;
 
-            canStartGame = false; // Không được chơi lại sau khi thắng
+            canStartGame = false;
+            hasCompletedGame = true; // ✅ Đánh dấu game đã thắng
             yield break;
         }
 
@@ -183,8 +214,8 @@ public class StartReactorGame : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
 
-        ResetAll(); // ✅ Reset trạng thái nhưng KHÔNG gán lại `canStartGame = true`
-        StartCoroutine(ShowPattern()); // Tự động chơi lại
+        ResetAll();
+        StartCoroutine(ShowPattern());
     }
 
     void EnableInput(bool enable)
