@@ -34,6 +34,8 @@ public class CameraZoomTrigger : MonoBehaviour
     [Header("Dialogue")]
     public GameObject dialogueHolder;
     public GameObject miniGame;
+
+    public GameObject[] enemies;
     
     void Start()
     {
@@ -98,6 +100,18 @@ public class CameraZoomTrigger : MonoBehaviour
         if (miniGame != null)
         {
             miniGame.SetActive(true);
+            
+            // Đợi dialogue kết thúc
+            yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
+        }
+
+        if (enemies != null)
+        {
+            foreach (GameObject enemy in enemies)
+            {
+                if (enemy != null)
+                    enemy.SetActive(true);
+            }
             
             // Đợi dialogue kết thúc
             yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
