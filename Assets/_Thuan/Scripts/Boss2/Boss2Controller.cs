@@ -577,7 +577,7 @@ public class Boss2Controller : MonoBehaviour
 
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
-        
+
         // Buộc tất cả cánh tay dừng tấn công
         foreach (var hand in hands)
         {
@@ -588,6 +588,19 @@ public class Boss2Controller : MonoBehaviour
         }
 
         Destroy(gameObject, 2f);
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            SlimeEnemy slime = enemy.GetComponent<SlimeEnemy>();
+            Animator animator = enemy.GetComponent<Animator>();
+            if (slime != null)
+            {
+                slime.enabled = false;
+                animator.SetTrigger("Death");
+            }
+            Destroy(enemy, 2f);
+        }
     }
 }
 
