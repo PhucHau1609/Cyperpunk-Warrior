@@ -47,7 +47,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
     public BossPhuHealthBar healthBar;
     private State currentState = State.Idle;
     public BossPhuDamageReceiver damageReceiver;
-    public GameObject Laser;
+    private BossManager bossManager;
 
     void Awake()
     {
@@ -86,6 +86,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         {
             healthBar.ShowHealthBar(normalizedHealth);
         }
+        bossManager = FindFirstObjectByType<BossManager>();
     }
 
     void InitializeBoss()
@@ -324,6 +325,11 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
 
+        if (bossManager != null)
+        {
+            bossManager.ReportBossDeath(this.gameObject);
+        }
+
         healthBar?.HideHealthBar();
 
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
@@ -331,16 +337,6 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
 
         Destroy(gameObject, 2f);
 
-        if (Laser != null)
-        {
-            // Bật trigger nếu có Collider
-            var collider = Laser.GetComponent<Collider2D>();
-            if (collider != null) collider.isTrigger = true;
-
-            // Gọi animation mở cửa nếu có Animator
-            var animator = Laser.GetComponent<Animator>();
-            if (animator != null) animator.SetTrigger("open");
-        }
     }
 
     private float GetNormalizedHealth()
