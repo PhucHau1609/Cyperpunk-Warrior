@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class PoolPrefabs<T> : HauMonoBehaviour where T : MonoBehaviour //E51 create
 {
     [SerializeField] protected List<T> prefabs = new();
-
     protected override void Awake()
     {
         base.Awake();

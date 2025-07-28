@@ -49,6 +49,9 @@ public class StartReactorGame : MonoBehaviour
 
     public void OpenMiniGame()
     {
+
+        GameStateManager.Instance.SetState(GameState.MiniGame);
+
         panel.SetActive(true);
 
         if (player == null)
@@ -63,6 +66,7 @@ public class StartReactorGame : MonoBehaviour
     public void CloseMiniGame()
     {
         if (!panel.activeSelf) return;
+        GameStateManager.Instance.ResetToGameplay();
 
         panel.SetActive(false);
 

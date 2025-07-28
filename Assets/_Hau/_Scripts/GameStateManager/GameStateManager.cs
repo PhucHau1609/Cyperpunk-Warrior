@@ -19,7 +19,7 @@ public class GameStateManager : HauSingleton<GameStateManager>
 
     public void SetState(GameState newState)
     {
-        Debug.Log($"[GameStateManager] SetState from {currentState} → {newState}", this);
+        //Debug.Log($"[GameStateManager] SetState from {currentState} → {newState}", this);
         currentState = newState;
         ObserverManager.Instance?.PostEvent(EventID.GameStateChanged, currentState);
     }
