@@ -546,7 +546,7 @@ public class CardsController : MonoBehaviour
     {
         if (turnPanel == null || turnText == null) return;
 
-        string message = currentTurn == Turn.Player ? "Đến lượt bạn" : "Đến lượt Jack";
+        string message = currentTurn == Turn.Player ? "EREN" : "Jack";
         turnText.text = message;
 
         // Hiện panel trong 1–2 giây (tuỳ thích)
