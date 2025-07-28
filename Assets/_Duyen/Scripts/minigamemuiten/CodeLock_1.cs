@@ -267,8 +267,8 @@ public class CodeLock_1 : MonoBehaviour
             reopenButton.onClick.RemoveAllListeners();
             reopenButton.interactable = false;
 
-            //StartCoroutine(CloseCanvasAfterDelay(.2f));
-            CheckBothConditions();
+            StartCoroutine(CloseCanvasAfterDelay(.2f));
+            //CheckBothConditions();
 
         }
         else
