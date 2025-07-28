@@ -37,7 +37,8 @@ public class CharacterController2D : MonoBehaviour
     private bool canCheck = false; //For check if player is wallsliding
 
     private PlayerGravityController gravityController; //Gravity Intervered
-  
+    private WeaponSystemManager weaponManager;
+
 
 
     public float life = 100f; //Life of the player
@@ -72,6 +73,7 @@ public class CharacterController2D : MonoBehaviour
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         gravityController = GetComponent<PlayerGravityController>();
+        weaponManager = GetComponent<WeaponSystemManager>();
 
         if (OnFallEvent == null)
             OnFallEvent = new UnityEvent();
@@ -427,6 +429,15 @@ public class CharacterController2D : MonoBehaviour
         //m_Rigidbody2D.linearVelocity = new Vector2(0, m_Rigidbody2D.linearVelocity.y);
         //yield return new WaitForSeconds(1.1f);
         //SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        weaponManager.isWeaponActive = false;
+        var weaponHolderField = weaponManager.weaponHolder;
+        if (weaponHolderField != null)
+        {
+            foreach (Transform child in weaponHolderField)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
 
         if (GameOverPanel.Instance != null)
             GameOverPanel.Instance.ShowGameOver();
@@ -447,6 +458,12 @@ public class CharacterController2D : MonoBehaviour
         // Reset trạng thái khác nếu cần
         animator.Play("Iddle", 0, 0f);
         CameraFollow.Instance.TryFindPlayer();
+
+        if (gravityController != null && gravityController.IsGravityInverted())
+        {
+            gravityController.InvertGravity(); // Trả lại trọng lực bình thường
+        }
+
     }
 
 

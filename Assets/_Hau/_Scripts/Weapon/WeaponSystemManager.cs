@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class WeaponSystemManager : MonoBehaviour
 {
-    [SerializeField] private Transform weaponHolder;
+    public Transform weaponHolder;
     private GameObject currentWeapon;
     private int currentWeaponIndex = 0;
     public bool isWeaponActive = false;
