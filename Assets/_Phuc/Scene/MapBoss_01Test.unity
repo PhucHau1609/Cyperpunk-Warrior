@@ -75423,6 +75423,7 @@ MonoBehaviour:
   sprite70: {fileID: -6470460504253458178, guid: 39946d00983fc43469902d6f23d17609, type: 3}
   sprite100: {fileID: -4178046375966092550, guid: b3c8709b19738af4088c6f72ab9c6e1c, type: 3}
   rewardCore: 26
+  spawnCore: {x: 0, y: 0, z: 0}
   minigamePrefab: {fileID: 2182414936255438811, guid: 86de064342ad7da42a993399a46f9d59, type: 3}
   targetSpeed: 100
 --- !u!4 &482197854
@@ -119474,6 +119475,7 @@ MonoBehaviour:
   sprite70: {fileID: -6470460504253458178, guid: 39946d00983fc43469902d6f23d17609, type: 3}
   sprite100: {fileID: -4178046375966092550, guid: b3c8709b19738af4088c6f72ab9c6e1c, type: 3}
   rewardCore: 25
+  spawnCore: {x: 0, y: 0, z: 0}
   minigamePrefab: {fileID: 2182414936255438811, guid: 86de064342ad7da42a993399a46f9d59, type: 3}
   targetSpeed: 100
 --- !u!4 &967790479
@@ -130360,6 +130362,14 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 359209347803936225, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
+      propertyPath: mapBoundaryLeft
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 359209347803936225, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
+      propertyPath: mapBoundaryRight
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 359209347803936225, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
       propertyPath: teleportCooldown
       value: 3
       objectReference: {fileID: 0}
@@ -130373,11 +130383,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8791739205114402387, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 161.61255
+      value: 161.63
       objectReference: {fileID: 0}
     - target: {fileID: 8791739205114402387, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.68
+      value: 13.28
       objectReference: {fileID: 0}
     - target: {fileID: 8791739205114402387, guid: 5b6a2e54f63229c43aa52a96b379938c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -131382,6 +131392,7 @@ MonoBehaviour:
   sprite70: {fileID: -6470460504253458178, guid: 39946d00983fc43469902d6f23d17609, type: 3}
   sprite100: {fileID: -4178046375966092550, guid: b3c8709b19738af4088c6f72ab9c6e1c, type: 3}
   rewardCore: 21
+  spawnCore: {x: 0, y: 0, z: 0}
   minigamePrefab: {fileID: 2182414936255438811, guid: 86de064342ad7da42a993399a46f9d59, type: 3}
   targetSpeed: 100
 --- !u!4 &1703535667
@@ -132443,11 +132454,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3345796593097316204, guid: 97ff6e160e372ef4680ebf1eb92b023c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 159.44
+      value: 159.53
       objectReference: {fileID: 0}
     - target: {fileID: 3345796593097316204, guid: 97ff6e160e372ef4680ebf1eb92b023c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.72
+      value: 13.12
       objectReference: {fileID: 0}
     - target: {fileID: 3345796593097316204, guid: 97ff6e160e372ef4680ebf1eb92b023c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146699,6 +146710,11 @@ MonoBehaviour:
   teleportFadeTime: 1
   teleportCooldown: 5
   teleportBombPrefab: {fileID: 313522942144382796, guid: ab54804e0e8d26840b24dce4618388f1, type: 3}
+  mapBoundaryLeft: {fileID: 0}
+  mapBoundaryRight: {fileID: 0}
+  useFixedBoundaries: 0
+  mapLeftBoundary: -20
+  mapRightBoundary: 20
   attackSound: {fileID: 8300000, guid: 0a6afa76028b15c4f914e99df3be5efd, type: 3}
   teleportSound: {fileID: 8300000, guid: fc30831e51fcd234581e09af067ec0ed, type: 3}
   hurtSound: {fileID: 8300000, guid: 561a59b2658c5cd4a9730bb946599a22, type: 3}

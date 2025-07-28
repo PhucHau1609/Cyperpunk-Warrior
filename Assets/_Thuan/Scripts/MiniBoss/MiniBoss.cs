@@ -61,6 +61,15 @@ public class MiniBoss : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Collider2D[] allColliders;
 
+    [Header("Map Boundary Settings")]
+    public Transform mapBoundaryLeft;      // GameObject hoặc Transform đánh dấu biên trái map
+    public Transform mapBoundaryRight;
+
+    [Header("Map Boundary Values (Alternative)")]
+    public bool useFixedBoundaries = false;
+    public float mapLeftBoundary = -20f;
+    public float mapRightBoundary = 20f;
+
     [Header("Audio Settings")]
     public AudioClip attackSound;
     public AudioClip teleportSound;
@@ -127,8 +136,14 @@ public class MiniBoss : MonoBehaviour
         audioSource.playOnAwake = false;
 
         Debug.Log("MiniBoss initialized successfully!");
-        
+
         bossManager = FindFirstObjectByType<BossManager>();
+        
+        if (!useFixedBoundaries && 
+        (mapBoundaryLeft == null || mapBoundaryRight == null))
+        {
+            AutoDetectMapBoundaries();
+        }
     }
 
     void Update()
@@ -473,14 +488,30 @@ public class MiniBoss : MonoBehaviour
         Vector3 currentPos = transform.position;
         Vector3 newPos = currentPos;
         
-        // Thử tìm vị trí mới trong vòng 20 lần
-        for (int i = 0; i < 20; i++)
+        // Lấy thông tin boundary của map (chỉ trục X)
+        float leftBound, rightBound;
+        
+        if (useFixedBoundaries)
         {
-            // Random vị trí theo trục X
-            float randomX = Random.Range(-teleportRange, teleportRange);
-            newPos = new Vector3(currentPos.x + randomX, currentPos.y, currentPos.z);
+            leftBound = mapLeftBoundary;
+            rightBound = mapRightBoundary;
+        }
+        else
+        {
+            // Sử dụng Transform references
+            leftBound = mapBoundaryLeft != null ? mapBoundaryLeft.position.x : currentPos.x - teleportRange;
+            rightBound = mapBoundaryRight != null ? mapBoundaryRight.position.x : currentPos.x + teleportRange;
+        }
+        
+        // Thử tìm vị trí mới trong vòng 30 lần
+        for (int i = 0; i < 30; i++)
+        {
+            // Random vị trí theo trục X trong phạm vi map, giữ nguyên Y
+            float randomX = Random.Range(leftBound + 1f, rightBound - 1f); // +1f và -1f để tránh spawn sát biên
             
-            // Kiểm tra khoảng cách đến Player (tối thiểu 3f)
+            newPos = new Vector3(randomX, currentPos.y, currentPos.z);
+            
+            // Kiểm tra khoảng cách đến Player (tối thiểu 8f)
             float distanceToPlayer = Vector2.Distance(newPos, player.position);
             if (distanceToPlayer < 8f)
             {
@@ -495,11 +526,52 @@ public class MiniBoss : MonoBehaviour
             }
         }
         
-        // Nếu không tìm được vị trí hợp lệ, dịch chuyển về phía đối diện Player
+        // Nếu không tìm được vị trí hợp lệ, tìm vị trí an toàn theo trục X
         Vector2 directionFromPlayer = (currentPos - player.position).normalized;
-        newPos = player.position + (Vector3)(directionFromPlayer * 8f); // 5f là khoảng cách tối thiểu
         
-        return newPos;
+        // Thử 2 hướng: trái và phải
+        float[] xOffsets = { 8f, -8f }; // Khoảng cách tối thiểu từ Player
+        
+        foreach (float offset in xOffsets)
+        {
+            float candidateX = player.position.x + offset;
+            
+            // Kiểm tra xem vị trí có trong map không
+            if (candidateX >= leftBound + 1f && candidateX <= rightBound - 1f)
+            {
+                Vector3 candidatePos = new Vector3(candidateX, currentPos.y, currentPos.z);
+                
+                // Kiểm tra va chạm
+                Collider2D hit = Physics2D.OverlapCircle(candidatePos, 0.5f, LayerMask.GetMask("Ground", "Wall"));
+                if (hit == null)
+                {
+                    return candidatePos;
+                }
+            }
+        }
+        
+        // Cuối cùng, nếu vẫn không tìm được, giữ nguyên vị trí hiện tại
+        Debug.LogWarning("MiniBoss: Không thể tìm vị trí teleport hợp lệ!");
+        return currentPos;
+    }
+
+    private void AutoDetectMapBoundaries()
+    {
+        // Tìm các GameObject có tag "MapBoundary" hoặc tương tự
+        GameObject[] boundaries = GameObject.FindGameObjectsWithTag("MapBoundary");
+        
+        if (boundaries.Length >= 2)
+        {
+            // Sắp xếp theo vị trí X để xác định left và right
+            System.Array.Sort(boundaries, (a, b) => a.transform.position.x.CompareTo(b.transform.position.x));
+            mapBoundaryLeft = boundaries[0].transform;
+            mapBoundaryRight = boundaries[boundaries.Length - 1].transform;
+        }
+        else
+        {
+            Debug.LogWarning("MiniBoss: Không tìm thấy đủ MapBoundary objects. Sử dụng fixed boundaries.");
+            useFixedBoundaries = true;
+        }
     }
 
     private void SetCollidersEnabled(bool enabled)
@@ -651,8 +723,48 @@ public class MiniBoss : MonoBehaviour
             Gizmos.color = Color.blue;
             Gizmos.DrawWireCube(firePoint.position, Vector3.one * 0.2f);
         }
-        
+
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireCube(transform.position, new Vector3(teleportRange * 2f, 1f, 1f));
+        
+        if (useFixedBoundaries)
+        {
+            Gizmos.color = Color.cyan;
+            
+            // Vẽ 2 đường thẳng đứng cho left và right boundary
+            Vector3 leftLine = new Vector3(mapLeftBoundary, transform.position.y - 5f, 0f);
+            Vector3 leftLineEnd = new Vector3(mapLeftBoundary, transform.position.y + 5f, 0f);
+            Gizmos.DrawLine(leftLine, leftLineEnd);
+            
+            Vector3 rightLine = new Vector3(mapRightBoundary, transform.position.y - 5f, 0f);
+            Vector3 rightLineEnd = new Vector3(mapRightBoundary, transform.position.y + 5f, 0f);
+            Gizmos.DrawLine(rightLine, rightLineEnd);
+            
+            // Vẽ vùng teleport có thể
+            Gizmos.color = Color.cyan;
+            Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
+            Vector3 center = new Vector3((mapLeftBoundary + mapRightBoundary) / 2f, transform.position.y, 0f);
+            Vector3 size = new Vector3(mapRightBoundary - mapLeftBoundary, 2f, 1f);
+            Gizmos.DrawCube(center, size);
+        }
+        else if (mapBoundaryLeft != null && mapBoundaryRight != null)
+        {
+            Gizmos.color = Color.cyan;
+            
+            // Vẽ 2 đường thẳng đứng cho left và right boundary
+            Vector3 leftLine = new Vector3(mapBoundaryLeft.position.x, transform.position.y - 5f, 0f);
+            Vector3 leftLineEnd = new Vector3(mapBoundaryLeft.position.x, transform.position.y + 5f, 0f);
+            Gizmos.DrawLine(leftLine, leftLineEnd);
+            
+            Vector3 rightLine = new Vector3(mapBoundaryRight.position.x, transform.position.y - 5f, 0f);
+            Vector3 rightLineEnd = new Vector3(mapBoundaryRight.position.x, transform.position.y + 5f, 0f);
+            Gizmos.DrawLine(rightLine, rightLineEnd);
+            
+            // Vẽ vùng teleport có thể
+            Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
+            Vector3 center = new Vector3((mapBoundaryLeft.position.x + mapBoundaryRight.position.x) / 2f, transform.position.y, 0f);
+            Vector3 size = new Vector3(mapBoundaryRight.position.x - mapBoundaryLeft.position.x, 2f, 1f);
+            Gizmos.DrawCube(center, size);
+        }
     }
 }
