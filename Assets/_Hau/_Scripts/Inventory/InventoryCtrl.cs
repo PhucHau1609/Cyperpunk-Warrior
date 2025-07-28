@@ -12,17 +12,44 @@ public abstract class InventoryCtrl : HauMonoBehaviour
     public virtual void AddItem(ItemInventory item)
     {
         ItemInventory itemExist = this.FindItem(item.ItemProfileSO.itemCode);
+        bool wasEmpty = this.itemInventories.Count == 0;
 
-        if (!item.ItemProfileSO.isStackable || itemExist ==  null )
+        if (!item.ItemProfileSO.isStackable || itemExist == null)
         {
-            item.SetId(Random.Range(0, 999999999)); //E71 create
+            item.SetId(Random.Range(0, 999999999));
             this.itemInventories.Add(item);
-            return;
+        }
+        else
+        {
+            itemExist.itemCount += item.itemCount;
         }
 
-        itemExist.itemCount += item.itemCount;
-        
+        // ? N?u ðây là v?t ph?m ð?u tiên
+        if (wasEmpty && this.itemInventories.Count > 0)
+        {
+            ObserverManager.Instance?.PostEvent(EventID.FirstItemPickedUp, null);
+        }
     }
+
+
+    /*  public virtual void AddItem(ItemInventory item)
+      {
+          ItemInventory itemExist = this.FindItem(item.ItemProfileSO.itemCode);
+          bool wasEmpty = this.itemInventories.Count == 0;
+
+
+          if (!item.ItemProfileSO.isStackable || itemExist ==  null )
+          {
+              item.SetId(Random.Range(0, 999999999)); //E71 create
+              this.itemInventories.Add(item);
+              return;
+          }
+
+          itemExist.itemCount += item.itemCount;
+
+
+
+      }*/
 
     public virtual bool RemoveItem(ItemInventory item) //E75 create
     {
