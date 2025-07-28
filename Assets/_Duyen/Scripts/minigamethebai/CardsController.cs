@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 public class CardsController : MonoBehaviour
@@ -25,6 +26,7 @@ public class CardsController : MonoBehaviour
     [SerializeField] GameObject buttonPanel;
     [SerializeField] GameObject banPanel;
     [SerializeField] GameObject barrierObject;
+    [SerializeField] GameObject dialogue;
     [SerializeField] TMPro.TextMeshProUGUI playerTimerText;
     [SerializeField] TMPro.TextMeshProUGUI npcTimerText;
 
@@ -556,6 +558,8 @@ public class CardsController : MonoBehaviour
                 // Gọi animation mở cửa nếu có Animator
                 var animator = barrierObject.GetComponent<Animator>();
                 if (animator != null) animator.SetTrigger("open");
+
+                dialogue.SetActive(true);
             }
         }
         else
