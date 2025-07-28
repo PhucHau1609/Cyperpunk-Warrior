@@ -1528,6 +1528,76 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170222504}
   m_CullTransparentMesh: 1
+--- !u!1001 &174437533
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1353727829}
+    m_Modifications:
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 143.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 15.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6600569092310070862, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_Name
+      value: CheckPoint_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7307607406679590861, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_Size.y
+      value: 8.433782
+      objectReference: {fileID: 0}
+    - target: {fileID: 7307607406679590861, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.7575278
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+--- !u!4 &174437534 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 316172499390579561, guid: 2c81f02a882641b44bccbb4584402166, type: 3}
+  m_PrefabInstance: {fileID: 174437533}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &183024553
 GameObject:
   m_ObjectHideFlags: 0
@@ -123056,6 +123126,7 @@ Transform:
   m_Children:
   - {fileID: 169098590}
   - {fileID: 1377957859}
+  - {fileID: 174437534}
   - {fileID: 1469115935}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -141846,8 +141917,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 1.7.7
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!224 &438278672531404734
 RectTransform:
   m_ObjectHideFlags: 0
@@ -143008,8 +143079,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!1 &1928100367135654245
 GameObject:
   m_ObjectHideFlags: 0
@@ -145572,8 +145643,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!1 &6856159148045455954
 GameObject:
   m_ObjectHideFlags: 0
@@ -146256,8 +146327,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!224 &8191538814923076515
 RectTransform:
   m_ObjectHideFlags: 0
@@ -146711,8 +146782,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!222 &8789412658380285515
 CanvasRenderer:
   m_ObjectHideFlags: 0
