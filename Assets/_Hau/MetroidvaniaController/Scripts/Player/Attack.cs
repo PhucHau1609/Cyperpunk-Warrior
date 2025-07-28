@@ -13,11 +13,12 @@ public class Attack : MonoBehaviour
 	public bool isTimeToCheck = false;
 
 	public GameObject cam;
-
+    private WeaponSystemManager weaponSystemManager;
 
     private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        weaponSystemManager = GetComponentInParent<WeaponSystemManager>();
 	}
 
     private void Start()
@@ -41,14 +42,14 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetKeyDown(KeyCode.Z) && canAttack)
+		if (Input.GetKeyDown(KeyCode.Z) && canAttack && !weaponSystemManager.isWeaponActive)
 		{
 			canAttack = false;
 			animator.SetBool("IsAttacking", true);
 			StartCoroutine(AttackCooldown());
 		}
 
-        if (Input.GetKeyDown(KeyCode.X) && canAttack)
+        if (Input.GetKeyDown(KeyCode.X) && canAttack && !weaponSystemManager.isWeaponActive)
         {
             canAttack = false;
             animator.SetBool("IsMeleeAttack", true);
@@ -96,47 +97,5 @@ public class Attack : MonoBehaviour
             }
         }
     }
-
-
-    /*  public void DoDashDamage()
-      {
-          int damageToDeal = Mathf.Abs(dmgValue);
-
-          Collider2D[] collidersEnemies = Physics2D.OverlapCircleAll(attackCheck.position, 0.9f);
-          for (int i = 0; i < collidersEnemies.Length; i++)
-          {
-              if (collidersEnemies[i].CompareTag("Enemy"))
-              {
-                  if (collidersEnemies[i].transform.position.x - transform.position.x < 0)
-                  {
-                      damageToDeal = -Mathf.Abs(dmgValue);
-                  }
-
-                  var enemyHealth = collidersEnemies[i].GetComponent<EnemyController>(); 
-                  var Droid01Health = collidersEnemies[i].GetComponent<FlyingDroidController>();
-                  var BombHealth = collidersEnemies[i].GetComponent<BomberController>();
-
-                  if (enemyHealth != null)
-                  {
-                      //enemyHealth.TakeDamage(Mathf.Abs(damageToDeal));
-                      //cam.GetComponent<CameraFollow>()?.ShakeCamera();
-                  }
-                  else if (Droid01Health != null)
-                  {
-                      Droid01Health.TakeDamage(Mathf.Abs(damageToDeal));
-                      //cam.GetComponent<CameraFollow>()?.ShakeCamera();
-                  }
-                  else if (BombHealth != null)
-                  {
-                      BombHealth.TakeDamage(Mathf.Abs(damageToDeal));
-                      //cam.GetComponent<CameraFollow>()?.ShakeCamera();
-                  }
-                  else
-                  {
-                      Debug.LogWarning("Enemy không có component chứa TakeDamage");
-                  }
-              }
-          }
-      }*/
 }
 

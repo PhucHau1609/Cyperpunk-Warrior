@@ -9,6 +9,7 @@ public class CoreZone : MonoBehaviour
 
     [Header("Reward")]
     [SerializeField] protected ItemCode rewardCore;
+    [SerializeField] protected Vector3 spawnCore;
 
     [Header("Minigame")]
     public GameObject minigamePrefab; // Kéo prefab MinigameCoreUI vào đây trong Inspector
@@ -97,7 +98,7 @@ public class CoreZone : MonoBehaviour
             currentStage = 3;
 
             // Rơi ra phần thưởng
-            ItemsDropManager.Instance.DropItem(rewardCore, 1, this.transform.position);
+            ItemsDropManager.Instance.DropItem(rewardCore, 1, this.transform.position + spawnCore);
         }
         else if (percent >= 70 && currentStage < 2)
         {
