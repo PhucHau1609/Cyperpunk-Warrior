@@ -28679,6 +28679,7 @@ GameObject:
   - component: {fileID: 915357945}
   - component: {fileID: 915357944}
   - component: {fileID: 915357947}
+  - component: {fileID: 915357948}
   m_Layer: 6
   m_Name: Ground
   m_TagString: Ground
@@ -48991,6 +48992,21 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
+--- !u!114 &915357948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915357940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe76d93c3ec8d9548afb8638f6155a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 50
+  maxHP: 50
+  IsImmotal: 1
 --- !u!1 &925982459
 GameObject:
   m_ObjectHideFlags: 0
@@ -57556,6 +57572,7 @@ GameObject:
   - component: {fileID: 3134071883582051358}
   - component: {fileID: 4663349426046508185}
   - component: {fileID: 7380991387317730587}
+  - component: {fileID: 7749706861182840970}
   m_Layer: 13
   m_Name: Enemy1
   m_TagString: Enemy
@@ -57563,6 +57580,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7749706861182840970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7749706861182840969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f4f3b40553aee4fb3900a39dfbc13f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropEntries:
+  - itemCode: 103
+    dropChance: 1
+    minAmount: 1
+    maxAmount: 1
+  spawnHeight: 1
 --- !u!224 &7949784977276888484
 RectTransform:
   m_ObjectHideFlags: 0

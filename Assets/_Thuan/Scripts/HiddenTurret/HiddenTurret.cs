@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class HiddenTurret : MonoBehaviour
+public class HiddenTurret : MonoBehaviour, IDamageResponder
 {
     [Header("Detection Settings")]
     public float detectionRange = 10f;

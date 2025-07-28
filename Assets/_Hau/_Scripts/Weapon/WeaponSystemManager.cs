@@ -6,7 +6,7 @@ public class WeaponSystemManager : MonoBehaviour
     [SerializeField] private Transform weaponHolder;
     private GameObject currentWeapon;
     private int currentWeaponIndex = 0;
-    private bool isWeaponActive = false;
+    public bool isWeaponActive = false;
 
     private List<ItemInventory> ownedWeapons = new();
     private Dictionary<int, GameObject> instantiatedWeapons = new(); // key: index
