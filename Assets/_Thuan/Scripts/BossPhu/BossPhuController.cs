@@ -330,7 +330,17 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         if (behavior != null) behavior.DisableBehavior();
 
         Destroy(gameObject, 2f);
-        Laser.SetActive(false);
+
+        if (Laser != null)
+        {
+            // Bật trigger nếu có Collider
+            var collider = Laser.GetComponent<Collider2D>();
+            if (collider != null) collider.isTrigger = true;
+
+            // Gọi animation mở cửa nếu có Animator
+            var animator = Laser.GetComponent<Animator>();
+            if (animator != null) animator.SetTrigger("open");
+        }
     }
 
     private float GetNormalizedHealth()
