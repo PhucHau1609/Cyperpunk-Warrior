@@ -1,3 +1,4 @@
+﻿using System.Collections;
 using UnityEngine;
 
 public class HiddenTurretDamageReceiver : DamageReceiver
@@ -19,6 +20,29 @@ public class HiddenTurretDamageReceiver : DamageReceiver
 
     protected override void OnDead()
     {
-        hiddenTurret?.OnDead();
+        if (isDead) return;
+        
+
+        isDead = true; // Gán ở đây, lần đầu chết mới chạy
+
+        base.OnDead();
+        responder?.OnDead();
+        StartCoroutine(DelayedDrop());
+    }
+
+
+    private IEnumerator DelayedDrop()
+    {
+        yield return null;
+
+        var drop = GetComponent<ItemDropTable>();
+        if (drop != null)
+        {
+            drop.TryDropItems();
+        }
+        else
+        {
+            Debug.Log($"[EnemyDamageReceiver] {name} has NO ItemDropTable");
+        }
     }
 }
