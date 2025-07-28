@@ -5110,6 +5110,7 @@ GameObject:
   - component: {fileID: 1195862605}
   - component: {fileID: 1195862604}
   - component: {fileID: 1195862606}
+  - component: {fileID: 1195862607}
   m_Layer: 6
   m_Name: Ground
   m_TagString: Ground
@@ -66356,6 +66357,21 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
+--- !u!114 &1195862607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195862599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe76d93c3ec8d9548afb8638f6155a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 50
+  maxHP: 50
+  IsImmotal: 1
 --- !u!1 &1208670206
 GameObject:
   m_ObjectHideFlags: 0
@@ -67074,8 +67090,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6300615341167840181, guid: d71001c854fdad743810bb9aecb35b93, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1294613794}
   m_SourcePrefab: {fileID: 100100000, guid: d71001c854fdad743810bb9aecb35b93, type: 3}
+--- !u!1 &1294613793 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6300615341167840181, guid: d71001c854fdad743810bb9aecb35b93, type: 3}
+  m_PrefabInstance: {fileID: 1294613792}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1294613794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294613793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35f4f3b40553aee4fb3900a39dfbc13f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropEntries:
+  - itemCode: 301
+    dropChance: 1
+    minAmount: 1
+    maxAmount: 1
+  spawnHeight: 1
 --- !u!1 &1305506608
 GameObject:
   m_ObjectHideFlags: 0
@@ -102457,7 +102499,6 @@ GameObject:
   - component: {fileID: 6068225640888209623}
   - component: {fileID: 795516223056121093}
   - component: {fileID: 9172860543897182651}
-  - component: {fileID: 9172860543897182652}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Enemy
@@ -102507,24 +102548,6 @@ MonoBehaviour:
   currentHP: 10
   maxHP: 10
   IsImmotal: 0
---- !u!114 &9172860543897182652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9117071366131869101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35f4f3b40553aee4fb3900a39dfbc13f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dropEntries:
-  - itemCode: 301
-    dropChance: 1
-    minAmount: 1
-    maxAmount: 1
-  spawnHeight: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -333,7 +333,7 @@ public class SceneSetupTool : EditorWindow
 
         // Add collider
         BoxCollider2D collider = barrierGO.AddComponent<BoxCollider2D>();
-        collider.isTrigger = true;
+        collider.isTrigger = false;
         collider.size = new Vector2(2f, 3f);
 
         // Add sprite renderer

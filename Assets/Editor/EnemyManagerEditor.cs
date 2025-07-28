@@ -313,7 +313,7 @@ public class EnemyManagerEditor : Editor
         barrierGO.transform.position = position;
 
         // Add components
-        barrierGO.AddComponent<BoxCollider2D>().isTrigger = true;
+        barrierGO.AddComponent<BoxCollider2D>().isTrigger = false;
 
         var spriteRenderer = barrierGO.AddComponent<SpriteRenderer>();
         spriteRenderer.color = Color.red;
