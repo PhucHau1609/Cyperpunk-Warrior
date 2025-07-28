@@ -1891,6 +1891,7 @@ GameObject:
   - component: {fileID: 214215451}
   - component: {fileID: 214215450}
   - component: {fileID: 214215449}
+  - component: {fileID: 214215452}
   m_Layer: 0
   m_Name: Door3_0
   m_TagString: Untagged
@@ -2014,6 +2015,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &214215452
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 214215448}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &215018321
 GameObject:
   m_ObjectHideFlags: 0
@@ -102952,7 +102975,7 @@ MonoBehaviour:
   finishPanel: {fileID: 264973049}
   buttonPanel: {fileID: 625760989}
   banPanel: {fileID: 2058443496}
-  barrierObject: {fileID: 0}
+  barrierObject: {fileID: 214215448}
   playerTimerText: {fileID: 996338523}
   npcTimerText: {fileID: 638804259}
   cameraFocusPoint: {fileID: 834969532}
@@ -112928,7 +112951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 100f6ee9943061841b1b8721ee930f70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetToEnable: {fileID: 0}
+  targetToEnable: {fileID: 214215448}
 --- !u!1 &1852717634
 GameObject:
   m_ObjectHideFlags: 0
@@ -125874,8 +125897,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 2
-  showBehaviorDesignerGizmo: 1
+  gizmoViewMode: 0
+  showBehaviorDesignerGizmo: 0
 --- !u!1 &1928100367135654245
 GameObject:
   m_ObjectHideFlags: 0
@@ -127656,8 +127679,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 2
-  showBehaviorDesignerGizmo: 1
+  gizmoViewMode: 0
+  showBehaviorDesignerGizmo: 0
 --- !u!1 &6856159148045455954
 GameObject:
   m_ObjectHideFlags: 0
@@ -128149,8 +128172,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 2
-  showBehaviorDesignerGizmo: 1
+  gizmoViewMode: 0
+  showBehaviorDesignerGizmo: 0
 --- !u!224 &8191538814923076515
 RectTransform:
   m_ObjectHideFlags: 0
@@ -128566,8 +128589,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 2
-  showBehaviorDesignerGizmo: 1
+  gizmoViewMode: 0
+  showBehaviorDesignerGizmo: 0
 --- !u!1 &8799088583565981655
 GameObject:
   m_ObjectHideFlags: 0

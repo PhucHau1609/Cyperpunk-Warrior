@@ -546,7 +546,17 @@ public class CardsController : MonoBehaviour
         if (playerWin)
         {
             AudioManager.Instance?.PlayWinGame();
-            if (barrierObject != null) barrierObject.SetActive(false);
+            //if (barrierObject != null) barrierObject.SetActive(false);
+            if (barrierObject != null)
+            {
+                // Bật trigger nếu có Collider
+                var collider = barrierObject.GetComponent<Collider2D>();
+                if (collider != null) collider.isTrigger = true;
+
+                // Gọi animation mở cửa nếu có Animator
+                var animator = barrierObject.GetComponent<Animator>();
+                if (animator != null) animator.SetTrigger("open");
+            }
         }
         else
         {
