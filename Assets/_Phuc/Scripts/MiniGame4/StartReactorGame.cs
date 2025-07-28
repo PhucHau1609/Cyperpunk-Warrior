@@ -71,6 +71,8 @@ public class StartReactorGame : MonoBehaviour
 
     public void OpenMiniGame()
     {
+
+        GameStateManager.Instance.SetState(GameState.MiniGame);
         if (hasCompletedGame) return; // 🚫 Đã thắng thì không cho mở lại
 
         if (interactionPoint != null && player != null)
@@ -94,6 +96,7 @@ public class StartReactorGame : MonoBehaviour
     public void CloseMiniGame()
     {
         if (!panel.activeSelf) return;
+        GameStateManager.Instance.ResetToGameplay();
 
         panel.SetActive(false);
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class WeaponSystemManager : MonoBehaviour
+public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
 {
     public Transform weaponHolder;
     private GameObject currentWeapon;
@@ -13,7 +13,7 @@ public class WeaponSystemManager : MonoBehaviour
     private bool wasWeaponActiveBeforeWallSlide = false; // Lưu trạng thái súng trước khi wall slide
 
 
-    void Start()
+    protected override void Start()
     {
         RefreshOwnedWeapons();
 
@@ -161,4 +161,17 @@ public class WeaponSystemManager : MonoBehaviour
             wasWeaponActiveBeforeWallSlide = false;
         }
     }
+
+    public void TurnOffAllWeapon()
+    {
+        isWeaponActive = false;
+
+        if (weaponHolder != null)
+        {
+            foreach (Transform child in weaponHolder)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
+    }    
 }

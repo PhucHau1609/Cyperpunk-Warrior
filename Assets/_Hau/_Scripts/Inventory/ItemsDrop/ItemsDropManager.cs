@@ -1,6 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class ItemsDropManager : HauSingleton<ItemsDropManager>
 {
@@ -9,6 +11,42 @@ public class ItemsDropManager : HauSingleton<ItemsDropManager>
 
     protected float spawnHeight = 1.0f;
     protected float forceAmount = 5.0f;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        this.ClearAllDroppedItems();
+    }
+
+    public void ClearAllDroppedItems()
+    {
+        Debug.Log("🧹 ClearAllDroppedItems");
+
+        // 1. Clear all active items from pool holder (chính xác nhất)
+        if (itemsDropSpawner.PoolHolder is Transform poolHolder)
+        {
+            foreach (Transform child in poolHolder)
+            {
+                ItemsDropCtrl item = child.GetComponent<ItemsDropCtrl>();
+                if (item != null && item.gameObject.activeSelf)
+                {
+                    itemsDropSpawner.Despawn(item);
+                    Debug.Log("🟡 Despawned: " + item.name);
+                }
+            }
+        }
+
+        // 2. Optional: clear inPoolObj nếu muốn
+        itemsDropSpawner.InPoolObj.Clear();
+    }
 
 
 

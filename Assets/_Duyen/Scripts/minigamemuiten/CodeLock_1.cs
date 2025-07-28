@@ -330,6 +330,12 @@ public class CodeLock_1 : MonoBehaviour
 
     void ReopenCanvas()
     {
+        if (!MinigameTriggerZone.PlayerInsideZone)
+        {
+            Debug.Log("Player is not in the trigger zone!");
+            return; // Không cho mở nếu chưa đứng trong vùng
+        }
+
         GameStateManager.Instance.SetState(GameState.MiniGame);
         canvas.SetActive(true);
         canvasGroup.alpha = 0;

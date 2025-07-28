@@ -3,7 +3,7 @@
 public class SimpleFlyToTarget : MonoBehaviour
 {
     public Transform target;
-    public float speed = 2f;
+    public float speed = 10f;
     public bool active = false;
 
     void Update()
