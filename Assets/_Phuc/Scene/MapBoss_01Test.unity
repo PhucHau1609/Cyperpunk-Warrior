@@ -108677,7 +108677,6 @@ GameObject:
   - component: {fileID: 1506313486}
   - component: {fileID: 1506313485}
   - component: {fileID: 1506313484}
-  - component: {fileID: 1506313492}
   m_Layer: 0
   m_Name: LyraEnemy_Attack_1
   m_TagString: Enemy
@@ -108738,7 +108737,7 @@ MonoBehaviour:
   currentHP: 10
   maxHP: 5
   IsImmotal: 0
-  explodableTarget: {fileID: 0}
+  explodableTarget: {fileID: 1506313487}
 --- !u!114 &1506313487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108896,22 +108895,6 @@ Transform:
   - {fileID: 1945663665}
   m_Father: {fileID: 81649228}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1506313492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1506313483}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a53a766132b4cf74bbf370ae6af17d5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 5
-  maxHP: 5
-  IsImmotal: 0
-  explosionPrefab: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
 --- !u!1 &1511976989
 GameObject:
   m_ObjectHideFlags: 0
@@ -111071,7 +111054,6 @@ GameObject:
   - component: {fileID: 1623291608}
   - component: {fileID: 1623291607}
   - component: {fileID: 1623291606}
-  - component: {fileID: 1623291614}
   m_Layer: 0
   m_Name: LyraEnemy_Attack
   m_TagString: Enemy
@@ -111132,7 +111114,7 @@ MonoBehaviour:
   currentHP: 10
   maxHP: 5
   IsImmotal: 0
-  explodableTarget: {fileID: 0}
+  explodableTarget: {fileID: 1623291609}
 --- !u!114 &1623291609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111290,22 +111272,6 @@ Transform:
   - {fileID: 974241960}
   m_Father: {fileID: 81649228}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1623291614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1623291605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a53a766132b4cf74bbf370ae6af17d5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 5
-  maxHP: 5
-  IsImmotal: 0
-  explosionPrefab: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
 --- !u!1 &1658260975
 GameObject:
   m_ObjectHideFlags: 0
