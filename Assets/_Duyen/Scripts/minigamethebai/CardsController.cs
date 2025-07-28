@@ -30,6 +30,9 @@ public class CardsController : MonoBehaviour
     [SerializeField] TMPro.TextMeshProUGUI playerTimerText;
     [SerializeField] TMPro.TextMeshProUGUI npcTimerText;
 
+    [SerializeField] private GameObject turnPanel;
+    [SerializeField] private TMPro.TextMeshProUGUI turnText;
+
     private List<Card> deckCards = new List<Card>();
     private List<Card> playerHand = new List<Card>();
     private List<Card> npcHand = new List<Card>();
@@ -106,6 +109,7 @@ public class CardsController : MonoBehaviour
         playerFlipAttempts = 0;
         npcFlipAttempts = 0;
         currentTurn = Turn.Player;
+        UpdateTurnUI();
 
         List<Sprite> deckSprites = new List<Sprite>();
         for (int i = 0; i < sprites.Length; i++) deckSprites.Add(sprites[i]);
@@ -361,6 +365,7 @@ public class CardsController : MonoBehaviour
 
                 currentTurn = Turn.NPC;
                 isPlayerInputEnabled = false;
+                UpdateTurnUI();
                 StartCoroutine(NPCTurn());
             }
             else
@@ -385,6 +390,7 @@ public class CardsController : MonoBehaviour
                 currentTurn = Turn.Player;
                 isPlayerInputEnabled = true;
                 playerFlipAttempts = 0;
+                UpdateTurnUI();
             }
         }
 
@@ -534,6 +540,36 @@ public class CardsController : MonoBehaviour
     {
         playerTimerText.text = Mathf.CeilToInt(playerTimeRemaining).ToString() + "s";
         npcTimerText.text = Mathf.CeilToInt(npcTimeRemaining).ToString() + "s";
+    }
+
+    void UpdateTurnUI()
+    {
+        if (turnPanel == null || turnText == null) return;
+
+        string message = currentTurn == Turn.Player ? "EREN" : "Jack";
+        turnText.text = message;
+
+        // Hiện panel trong 1–2 giây (tuỳ thích)
+        turnPanel.SetActive(true);
+        CanvasGroup cg = turnPanel.GetComponent<CanvasGroup>();
+        if (cg != null)
+        {
+            cg.alpha = 1;
+            cg.DOFade(0, 1.5f).SetDelay(1.0f).OnComplete(() =>
+            {
+                turnPanel.SetActive(false);
+            });
+        }
+        else
+        {
+            // Không có CanvasGroup thì tắt thủ công
+            Invoke(nameof(HideTurnPanel), 2f);
+        }
+    }
+
+    void HideTurnPanel()
+    {
+        turnPanel.SetActive(false);
     }
 
     void EndGame(bool playerWin)
