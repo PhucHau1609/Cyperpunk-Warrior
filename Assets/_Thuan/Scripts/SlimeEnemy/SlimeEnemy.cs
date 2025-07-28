@@ -212,7 +212,7 @@ public class SlimeEnemy : MonoBehaviour
     private void FindPatrolPointsByName()
     {
         // Tìm các objects có tên chứa "Patrol", "Point", etc.
-        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
         System.Collections.Generic.List<GameObject> patrolCandidates = new System.Collections.Generic.List<GameObject>();
         
         foreach (GameObject obj in allObjects)

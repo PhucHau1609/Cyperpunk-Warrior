@@ -81,11 +81,17 @@ public class MiniBoss : MonoBehaviour
 
     private AudioSource audioSource;
     private BossManager bossManager;
+    
+    // Lưu trạng thái ban đầu để reset
+    private Vector3 initialPosition;
+    private Vector3 initialScale;
+    private bool initialDataSaved = false;
 
     void Awake()
     {
         damageReceiver = GetComponent<MiniBossDamageReceiver>();
     }
+    
     void Start()
     {
         // Tự động tham chiếu các component
@@ -144,6 +150,19 @@ public class MiniBoss : MonoBehaviour
         {
             AutoDetectMapBoundaries();
         }
+        
+        // Lưu trạng thái ban đầu lần đầu tiên
+        if (!initialDataSaved)
+        {
+            SaveInitialState();
+        }
+    }
+    
+    private void SaveInitialState()
+    {
+        initialPosition = transform.position;
+        initialScale = transform.localScale;
+        initialDataSaved = true;
     }
 
     void Update()
@@ -622,6 +641,80 @@ public class MiniBoss : MonoBehaviour
         yield return new WaitForSeconds(teleportCooldown);
         canTeleport = true;
     }
+    
+    // Method để reset MiniBoss về trạng thái ban đầu
+    public void ResetBoss()
+    {
+        // Dừng tất cả coroutines
+        StopAllCoroutines();
+        
+        // Reset trạng thái
+        isDead = false;
+        isAttacking = false;
+        isHurt = false;
+        isTeleporting = false;
+        canTeleport = true;
+        currentState = State.Patrolling;
+        lastAttackTime = 0f;
+        lastTeleportTime = 0f;
+        
+        // Reset vị trí và scale
+        if (initialDataSaved)
+        {
+            transform.position = initialPosition;
+            transform.localScale = initialScale;
+        }
+        
+        // Reset physics
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 1f; // Reset gravity
+        
+        // Bật lại colliders và script
+        SetCollidersEnabled(true);
+        this.enabled = true;
+        
+        // Reset sprite renderer (trong trường hợp đang teleport)
+        if (spriteRenderer != null)
+        {
+            Color originalColor = spriteRenderer.color;
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
+        }
+        
+        // Reset animator
+        animator.ResetTrigger("Attack1");
+        animator.ResetTrigger("Attack2");
+        animator.ResetTrigger("Attack3");
+        animator.ResetTrigger("Hurt");
+        animator.ResetTrigger("Death");
+        animator.SetBool("IsRunning", false);
+        
+        // Reset máu
+        if (damageReceiver != null)
+        {
+            damageReceiver.ResetBossHealth();
+        }
+        
+        // Reset health bar
+        if (healthBarEnemy != null)
+        {
+            healthBarEnemy.ShowHealthBar(1f);
+        }
+        
+        // Reset audio
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        
+        // Tìm lại player
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+        }
+        
+        Debug.Log($"MiniBoss {gameObject.name} đã được reset về trạng thái ban đầu!");
+    }
 
     public void OnHurt()
     {
@@ -655,6 +748,7 @@ public class MiniBoss : MonoBehaviour
 
         animator.SetTrigger("Death");
         currentState = State.Dead;
+        isDead = true;
         rb.linearVelocity = Vector2.zero;
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
