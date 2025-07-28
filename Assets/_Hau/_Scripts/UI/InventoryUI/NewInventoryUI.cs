@@ -85,6 +85,8 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
         this.showHide.gameObject.SetActive(false);
         this.isShowUI = false;
 
+        GameStateManager.Instance.ResetToGameplay(); // 👈 quay về trạng thái gameplay
+
         // 👉 Nếu crafting đang mở, thì tắt luôn
         if (CraftingUI.HasInstance) // để tránh null nếu Crafting chưa được khởi tạo
         {
