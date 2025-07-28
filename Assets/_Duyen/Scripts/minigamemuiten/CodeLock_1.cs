@@ -46,6 +46,9 @@ public class CodeLock_1 : MonoBehaviour
     private CanvasGroup canvasGroup;
     private bool inputLocked = false;
 
+    private bool minigameCompleted = false;
+
+
     void Start()
     {
         canvasGroup = canvas.GetComponent<CanvasGroup>();
@@ -99,8 +102,34 @@ public class CodeLock_1 : MonoBehaviour
                 playerMovement = playerObj.GetComponent<PlayerMovement>();
         }
 
+        // Subscribe to enemy completion event
+        if (EnemyManager.Instance != null)
+        {
+            EnemyManager.Instance.OnAllEnemiesKilled += OnAllEnemiesKilled;
+            Debug.Log("1");
+        }
+
         //if (playerMovement != null)
         //    playerMovement.SetCanMove(false); // ⚠️ Khóa di chuyển khi mở minigame
+    }
+
+    private void OnAllEnemiesKilled()
+    {
+        // Khi enemy hết, kiểm tra lại điều kiện
+        if (minigameCompleted)
+        {
+            Debug.Log("1");
+            CheckBothConditions();
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Unsubscribe để tránh memory leak
+        if (EnemyManager.Instance != null)
+        {
+            EnemyManager.Instance.OnAllEnemiesKilled -= OnAllEnemiesKilled;
+        }
     }
 
     void AddNumber(int number)
@@ -231,6 +260,7 @@ public class CodeLock_1 : MonoBehaviour
         {
             string correctCodeString = string.Join("", correctCode);
             PetUnlocked = true;
+            minigameCompleted = true; // Đánh dấu minigame hoàn thành
 
             // Đổi ảnh và vô hiệu hóa nút
             //reopenButton.image.sprite = image2;
@@ -238,10 +268,42 @@ public class CodeLock_1 : MonoBehaviour
             reopenButton.interactable = false;
 
             StartCoroutine(CloseCanvasAfterDelay(.2f));
+            //CheckBothConditions();
+
         }
         else
         {
             StartCoroutine(ResetInputAfterDelay(1.0f));
+        }
+    }
+
+    private void CheckBothConditions()
+    {
+        // Kiểm tra xem có EnemyManager và đã hoàn thành chưa
+        bool enemiesCompleted = false;
+        if (EnemyManager.Instance != null)
+        {
+            Debug.Log("3");
+            enemiesCompleted = EnemyManager.Instance.IsCompleted();
+        }
+        else
+        {
+            // Nếu không có EnemyManager, coi như không cần giết enemy
+            enemiesCompleted = true;
+            Debug.Log("4");
+        }
+
+        // Nếu cả 2 điều kiện đều thỏa mãn
+        if (minigameCompleted && enemiesCompleted)
+        {
+            PetUnlocked = true;
+            StartCoroutine(CloseCanvasAfterDelay(.2f));
+        }
+        else
+        {
+            // Hiển thị thông báo cần giết hết enemy
+            Debug.Log("Cần tiêu diệt hết enemy trước khi mở cửa!");
+            // TODO: Có thể hiển thị UI notification
         }
     }
 
@@ -278,6 +340,7 @@ public class CodeLock_1 : MonoBehaviour
 
     IEnumerator CloseCanvasAfterDelay(float delay)
     {
+        Debug.Log("5");
         yield return new WaitForSeconds(delay);
 
         CloseCanvas();
