@@ -81,7 +81,7 @@ public class MinigameManager : MonoBehaviour
 
         if (!MinigameZoneTrigger.playerInside)
         {
-            Debug.Log("Không được mở minigame ngoài vùng!");
+            //Debug.Log("Không được mở minigame ngoài vùng!");
             return;
         }
 
@@ -136,7 +136,7 @@ public class MinigameManager : MonoBehaviour
                 if (block != null)
                 {
                     slot.SetBlock(block);
-                    Debug.Log($"Gán lại block cho slot {slot.name}: {block.name}");
+                    //Debug.Log($"Gán lại block cho slot {slot.name}: {block.name}");
                 }
             }
             //BlockController block = slot.transform.childCount > 0

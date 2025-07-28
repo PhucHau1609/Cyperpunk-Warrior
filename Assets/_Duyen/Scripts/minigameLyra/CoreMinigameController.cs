@@ -171,6 +171,37 @@ public class CoreMinigameController : MonoBehaviour
     {
         Vector3[] corners = new Vector3[4];
         rt.GetWorldCorners(corners);
-        return new Rect(corners[0], corners[2] - corners[0]);
+
+        Vector2 bottomLeft = corners[0];
+        Vector2 topRight = corners[2];
+
+        // Sửa nếu width âm (khi scale.x < 0)
+        if (topRight.x < bottomLeft.x)
+        {
+            float temp = topRight.x;
+            topRight.x = bottomLeft.x;
+            bottomLeft.x = temp;
+        }
+
+        return new Rect(bottomLeft, topRight - bottomLeft);
     }
+    //Rect GetWorldRect(RectTransform rt)
+    //{
+    //    Vector3[] corners = new Vector3[4];
+    //    rt.GetWorldCorners(corners);
+
+    //    float minX = Mathf.Min(corners[0].x, corners[2].x);
+    //    float maxX = Mathf.Max(corners[0].x, corners[2].x);
+    //    float minY = Mathf.Min(corners[0].y, corners[2].y);
+    //    float maxY = Mathf.Max(corners[0].y, corners[2].y);
+
+    //    return new Rect(new Vector2(minX, minY), new Vector2(maxX - minX, maxY - minY));
+    //}
+
+    //Rect GetWorldRect(RectTransform rt)
+    //{
+    //    Vector3[] corners = new Vector3[4];
+    //    rt.GetWorldCorners(corners);
+    //    return new Rect(corners[0], corners[2] - corners[0]);
+    //}
 }

@@ -42,12 +42,12 @@ public class PortalEnergyTracker : MonoBehaviour
     {
         portalStates[portal] = newEnergy;
 
-        Debug.Log($"🌀 Portal {portal.name} now has energy: {newEnergy}");
+        //Debug.Log($"🌀 Portal {portal.name} now has energy: {newEnergy}");
 
         if (!allPortalsActivated && AllPortalsHaveEnergy())
         {
             allPortalsActivated = true;
-            Debug.Log("✅ Tất cả các portal đã có năng lượng! Thực thi hành động...");
+            //Debug.Log("✅ Tất cả các portal đã có năng lượng! Thực thi hành động...");
             // Gọi sự kiện hoặc trigger tùy ý ở đây
             OnAllPortalsEnergized();
         }
@@ -68,7 +68,7 @@ public class PortalEnergyTracker : MonoBehaviour
         if (other.CompareTag(playerTag))
         {
             playerInTrigger = true;
-            Debug.Log("👣 Player đã vào vùng trigger.");
+            //Debug.Log("👣 Player đã vào vùng trigger.");
             OnAllPortalsEnergized();
         }
     }
@@ -78,7 +78,7 @@ public class PortalEnergyTracker : MonoBehaviour
         if (other.CompareTag(playerTag))
         {
             playerInTrigger = false;
-            Debug.Log("🚪 Player đã rời khỏi vùng trigger.");
+            //Debug.Log("🚪 Player đã rời khỏi vùng trigger.");
         }
     }
 
@@ -104,11 +104,11 @@ public class PortalEnergyTracker : MonoBehaviour
             if (doorAnimator != null)
             {
                 doorAnimator.SetTrigger("open");
-                Debug.Log("🚪 Cửa đã mở với animation 'open'!");
+                //Debug.Log("🚪 Cửa đã mở với animation 'open'!");
             }
             else
             {
-                Debug.LogWarning("⚠️ Không tìm thấy Animator trên doorObject!");
+                //Debug.LogWarning("⚠️ Không tìm thấy Animator trên doorObject!");
             }
         }
     }

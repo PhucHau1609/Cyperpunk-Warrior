@@ -3,8 +3,9 @@
 public class SimpleFlyToTarget : MonoBehaviour
 {
     public Transform target;
-    public float speed = 10f;
+    public float speed = 50f;
     public bool active = false;
+    public string triggerZoneName; // Tên GameObject vùng trigger (trong scene mới)
 
     void Update()
     {
@@ -16,7 +17,22 @@ public class SimpleFlyToTarget : MonoBehaviour
         {
             transform.position = target.position;
             active = false;
-            Debug.Log("🛬 NPC đã đến đích!");
+            //Debug.Log("🛬 NPC đã đến đích!");
+        }
+
+        // ✅ Bật vùng trigger nếu tên hợp lệ
+        if (!string.IsNullOrEmpty(triggerZoneName))
+        {
+            GameObject zone = GameObject.Find(triggerZoneName);
+            if (zone != null)
+            {
+                zone.SetActive(true);
+                //Debug.Log("📦 Vùng mở cửa đã được bật: " + triggerZoneName);
+            }
+            else
+            {
+                //Debug.LogWarning("❌ Không tìm thấy vùng mở cửa: " + triggerZoneName);
+            }
         }
     }
 }

@@ -38,7 +38,7 @@ public class NPCDisableTrigger2D : MonoBehaviour
             GameObject targetObj = GameObject.Find(targetName);
             if (targetObj == null)
             {
-                Debug.LogWarning("❌ Không tìm thấy target trong scene hiện tại!");
+                //Debug.LogWarning("❌ Không tìm thấy target trong scene hiện tại!");
                 return;
             }
 
@@ -50,7 +50,7 @@ public class NPCDisableTrigger2D : MonoBehaviour
                 flyer.speed = flySpeed;
                 flyer.active = true;
 
-                Debug.Log("🛫 NPC đã được gán target mới và bắt đầu bay.");
+                //Debug.Log("🛫 NPC đã được gán target mới và bắt đầu bay.");
             }
             //
 
