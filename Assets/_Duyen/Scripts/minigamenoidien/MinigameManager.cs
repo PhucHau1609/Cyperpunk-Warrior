@@ -79,6 +79,12 @@ public class MinigameManager : MonoBehaviour
     {
         if (isCompleted) return;
 
+        if (!MinigameZoneTrigger.playerInside)
+        {
+            Debug.Log("Không được mở minigame ngoài vùng!");
+            return;
+        }
+
         canvasUI.SetActive(true);
         levelPanel.SetActive(true);
         canvasUI.transform.localScale = Vector3.zero;

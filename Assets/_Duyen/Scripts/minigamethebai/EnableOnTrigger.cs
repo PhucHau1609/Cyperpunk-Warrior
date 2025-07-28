@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnableOnTrigger : MonoBehaviour
 {
@@ -9,7 +9,15 @@ public class EnableOnTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             if (targetToEnable != null)
-                targetToEnable.SetActive(true);
+            {
+                // Tắt trigger nếu có Collider2D
+                var collider = targetToEnable.GetComponent<Collider2D>();
+                if (collider != null) collider.isTrigger = false;
+
+                // Gọi animation "close" nếu có Animator
+                var animator = targetToEnable.GetComponent<Animator>();
+                if (animator != null) animator.SetTrigger("close");
+            }
         }
     }
 }
