@@ -22,6 +22,7 @@ public class CameraZoomTrigger : MonoBehaviour
 
     [Header("Boss Control")]
     public MonoBehaviour bossController; 
+    public MiniBoss miniBoss;
     public bool disableBossOnTrigger = true;
     public BehaviorTree behaviorTree;
     public Rigidbody2D rb;
@@ -32,6 +33,7 @@ public class CameraZoomTrigger : MonoBehaviour
     
     [Header("Dialogue")]
     public GameObject dialogueHolder;
+    public GameObject miniGame;
     
     void Start()
     {
@@ -93,6 +95,14 @@ public class CameraZoomTrigger : MonoBehaviour
             yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
         }
         
+        if (miniGame != null)
+        {
+            miniGame.SetActive(true);
+            
+            // Đợi dialogue kết thúc
+            yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
+        }
+
         // Resume game
         Time.timeScale = 1f;
         
@@ -159,6 +169,11 @@ public class CameraZoomTrigger : MonoBehaviour
         {
             bossController.enabled = false;
         }
+
+        if (miniBoss != null)
+        {
+            miniBoss.enabled = false;
+        }
         
         if (behaviorTree != null)
         {
@@ -178,6 +193,11 @@ public class CameraZoomTrigger : MonoBehaviour
             bossController.enabled = true;
         }
         
+        if (miniBoss != null)
+        {
+            miniBoss.enabled = true;
+        }
+
         if (behaviorTree != null)
         {
             behaviorTree.enabled = true;
