@@ -9,6 +9,7 @@ public enum EventID
     EnemyKilled,
     ScoreChanged,
     LevelCompleted,
+    FirstItemPickedUp,
     // Thêm các sự kiện khác tùy theo game của bạn
 
     // 🔹 Các phím hotkey
