@@ -71,6 +71,7 @@ public class MiniBoss : MonoBehaviour
     public float audioVolume = 0.7f;
 
     private AudioSource audioSource;
+    private BossManager bossManager;
 
     void Awake()
     {
@@ -82,14 +83,14 @@ public class MiniBoss : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
-        
+
         // Tìm Player trong scene
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             player = playerObj.transform;
         }
-        
+
         float normalizedHealth = GetNormalizedHealth();
         if (healthBarEnemy != null)
         {
@@ -98,7 +99,7 @@ public class MiniBoss : MonoBehaviour
             else
                 healthBarEnemy.HideHealthBar();
         }
-        
+
         // Kiểm tra firePoint, nếu không có thì tạo một cái mới
         if (firePoint == null)
         {
@@ -107,10 +108,10 @@ public class MiniBoss : MonoBehaviour
             firePointObj.transform.localPosition = new Vector3(1f, 0f, 0f);
             firePoint = firePointObj.transform;
         }
-        
+
         // Lưu vị trí FirePoint ban đầu
         initialFirePointX = firePoint.localPosition.x;
-        
+
         // Validate tỷ lệ attack
         ValidateAttackChances();
 
@@ -124,8 +125,10 @@ public class MiniBoss : MonoBehaviour
         }
         audioSource.volume = audioVolume;
         audioSource.playOnAwake = false;
-        
+
         Debug.Log("MiniBoss initialized successfully!");
+        
+        bossManager = FindFirstObjectByType<BossManager>();
     }
 
     void Update()
@@ -583,6 +586,11 @@ public class MiniBoss : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
+
+        if (bossManager != null)
+        {
+            bossManager.ReportBossDeath(this.gameObject);
+        }
 
         healthBarEnemy?.HideHealthBar();
 
