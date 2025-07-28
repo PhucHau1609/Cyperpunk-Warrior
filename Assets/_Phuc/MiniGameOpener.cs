@@ -37,6 +37,10 @@ public class MiniGameOpener : MonoBehaviour
 
     public void OpenMiniGame()
     {
+        Debug.Log("OpenMiniGame() Called");
+
+        GameStateManager.Instance.SetState(GameState.MiniGame);
+
         float distance = Vector3.Distance(player.transform.position, interactionPoint.position);
         if (distance > interactionDistance) return;
 
@@ -58,5 +62,8 @@ public class MiniGameOpener : MonoBehaviour
         {
             movementScript.enabled = true;
         }
+
+        GameStateManager.Instance.ResetToGameplay();
+
     }
 }

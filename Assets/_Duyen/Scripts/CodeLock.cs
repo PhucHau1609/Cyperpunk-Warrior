@@ -170,12 +170,13 @@ public class CodeLock : MonoBehaviour
             canvas.SetActive(false);
             if (playerMovement != null)
                 playerMovement.SetCanMove(true); // ⚠️ Mở lại di chuyển sau khi tắt minigame
-
+            GameStateManager.Instance.ResetToGameplay();
         });
     }
 
     void ReopenCanvas()
     {
+        GameStateManager.Instance.SetState(GameState.MiniGame);
         canvas.SetActive(true);
         canvasGroup.alpha = 0;
         canvas.transform.localScale = Vector3.zero;
