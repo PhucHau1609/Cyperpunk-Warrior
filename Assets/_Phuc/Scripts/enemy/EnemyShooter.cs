@@ -20,7 +20,6 @@ public class EnemyShooter : MonoBehaviour, IExplodable
     public GameObject explosionPrefab;
     public GameObject explosionSoundPrefab;
 
-
     private Transform player;
     private Animator animator;
     private float shootTimer = 0f;
@@ -37,40 +36,49 @@ public class EnemyShooter : MonoBehaviour, IExplodable
 
     private void Update()
     {
-        switch (currentState)
+        if (currentState == State.MoveToShoot && player != null)
         {
-            case State.MoveToShoot:
-                if (player == null) return;
+            var playerShader = player.GetComponentInChildren<PlayerShader>();
+            if (playerShader != null && playerShader.IsInvisible())
+            {
+                Debug.Log("🔙 Player tàng hình → EnemyShooter quay về");
+                currentState = State.Returning;
+                animator.SetTrigger("Sleep");
+                return;
+            }
 
-                chaseTimer += Time.deltaTime;
-                if (chaseTimer >= chaseDuration)
-                {
-                    currentState = State.Returning;
-                    animator.SetTrigger("Sleep");
-                    return;
-                }
+            chaseTimer += Time.deltaTime;
+            if (chaseTimer >= chaseDuration)
+            {
+                currentState = State.Returning;
+                animator.SetTrigger("Sleep");
+                return;
+            }
 
-                UpdatePlayerDirection();
+            UpdatePlayerDirection();
 
-                Vector3 targetOffset = new Vector3(-playerDirection * offset.x, offset.y, 0f);
-                Vector3 targetPos = player.position + targetOffset;
-                targetPos.x = Mathf.Clamp(targetPos.x, moveAreaMin.x, moveAreaMax.x);
-                targetPos.y = Mathf.Clamp(targetPos.y, moveAreaMin.y, moveAreaMax.y);
+            Vector3 targetOffset = new Vector3(-playerDirection * offset.x, offset.y, 0f);
+            Vector3 targetPos = player.position + targetOffset;
+            targetPos.x = Mathf.Clamp(targetPos.x, moveAreaMin.x, moveAreaMax.x);
+            targetPos.y = Mathf.Clamp(targetPos.y, moveAreaMin.y, moveAreaMax.y);
 
-                MoveTowards(targetPos);
-                TryShoot();
-                break;
-
-            case State.Returning:
-                MoveTowards(startPos);
-                if (Vector3.Distance(transform.position, startPos) < 0.1f)
-                {
-                    currentState = State.Sleep;
-                    animator.SetTrigger("Sleep");
-                    player = null;
-                }
-                break;
+            MoveTowards(targetPos);
+            TryShoot();
         }
+
+        if (currentState == State.Returning)
+        {
+            MoveTowards(startPos);
+
+            if (Vector3.Distance(transform.position, startPos) < 0.1f)
+            {
+                Debug.Log("😴 EnemyShooter đã quay về vị trí ban đầu → về trạng thái Sleep");
+                currentState = State.Sleep;
+                animator.SetTrigger("Sleep");
+                player = null; // xoá player để reset
+            }
+        }
+
     }
 
     private void MoveTowards(Vector3 target)
@@ -136,7 +144,6 @@ public class EnemyShooter : MonoBehaviour, IExplodable
         }
     }
 
-    // Gọi từ animation event cuối clip 'Awaken'
     public void OnAwakenComplete()
     {
         currentState = State.MoveToShoot;
@@ -147,15 +154,12 @@ public class EnemyShooter : MonoBehaviour, IExplodable
 
     public void Explode()
     {
-        // Gọi hiệu ứng nổ (nếu có)
         if (explosionPrefab != null)
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
 
-        // Gọi prefab phát âm thanh
         if (explosionSoundPrefab != null)
             Instantiate(explosionSoundPrefab, transform.position, Quaternion.identity);
 
-        // Hủy enemy
         Destroy(gameObject);
     }
 }
