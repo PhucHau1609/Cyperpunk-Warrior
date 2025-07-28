@@ -868,8 +868,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 4
-  maxHP: 4
+  currentHP: 3
+  maxHP: 3
   IsImmotal: 0
 --- !u!114 &246508019
 MonoBehaviour:
@@ -1344,8 +1344,8 @@ GameObject:
   - component: {fileID: 353852976}
   - component: {fileID: 353852975}
   - component: {fileID: 353852974}
-  - component: {fileID: 353852973}
   - component: {fileID: 353852972}
+  - component: {fileID: 353852977}
   m_Layer: 6
   m_Name: tile000_4
   m_TagString: Untagged
@@ -1414,19 +1414,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &353852973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 353852970}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &353852974
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1550,6 +1537,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &353852977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 353852970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &372757917
 GameObject:
   m_ObjectHideFlags: 0
@@ -1562,8 +1562,8 @@ GameObject:
   - component: {fileID: 372757923}
   - component: {fileID: 372757922}
   - component: {fileID: 372757921}
-  - component: {fileID: 372757920}
   - component: {fileID: 372757919}
+  - component: {fileID: 372757924}
   m_Layer: 6
   m_Name: tile000_3
   m_TagString: Untagged
@@ -1632,19 +1632,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &372757920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372757917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &372757921
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1768,6 +1755,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &372757924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372757917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &389282637
 GameObject:
   m_ObjectHideFlags: 0
@@ -2973,8 +2973,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 10
-  maxHP: 10
+  currentHP: 8
+  maxHP: 8
   IsImmotal: 0
 --- !u!1 &589051125
 GameObject:
@@ -3764,8 +3764,8 @@ GameObject:
   - component: {fileID: 834032325}
   - component: {fileID: 834032324}
   - component: {fileID: 834032323}
-  - component: {fileID: 834032322}
   - component: {fileID: 834032321}
+  - component: {fileID: 834032326}
   m_Layer: 6
   m_Name: tile000_7
   m_TagString: Untagged
@@ -3834,19 +3834,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &834032322
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 834032319}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &834032323
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3970,6 +3957,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &834032326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 834032319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &842311493
 GameObject:
   m_ObjectHideFlags: 0
@@ -5092,8 +5092,8 @@ GameObject:
   - component: {fileID: 1110858578}
   - component: {fileID: 1110858577}
   - component: {fileID: 1110858576}
-  - component: {fileID: 1110858575}
   - component: {fileID: 1110858574}
+  - component: {fileID: 1110858579}
   m_Layer: 6
   m_Name: tile000_6
   m_TagString: Untagged
@@ -5162,19 +5162,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &1110858575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110858572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &1110858576
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5298,6 +5285,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1110858579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110858572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &1127788609
 GameObject:
   m_ObjectHideFlags: 0
@@ -40438,8 +40438,8 @@ GameObject:
   - component: {fileID: 1267023079}
   - component: {fileID: 1267023078}
   - component: {fileID: 1267023077}
-  - component: {fileID: 1267023076}
   - component: {fileID: 1267023075}
+  - component: {fileID: 1267023080}
   m_Layer: 6
   m_Name: tile000_5
   m_TagString: Untagged
@@ -40508,19 +40508,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &1267023076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267023073}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &1267023077
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -40644,6 +40631,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1267023080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267023073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &1302383680
 GameObject:
   m_ObjectHideFlags: 0
@@ -41691,8 +41691,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 10
-  maxHP: 10
+  currentHP: 8
+  maxHP: 8
   IsImmotal: 0
 --- !u!114 &1464869562
 MonoBehaviour:
@@ -42100,8 +42100,8 @@ GameObject:
   - component: {fileID: 1552851385}
   - component: {fileID: 1552851384}
   - component: {fileID: 1552851383}
-  - component: {fileID: 1552851382}
   - component: {fileID: 1552851387}
+  - component: {fileID: 1552851388}
   m_Layer: 6
   m_Name: tile000_1
   m_TagString: Untagged
@@ -42109,19 +42109,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1552851382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1552851381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &1552851383
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -42306,6 +42293,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
+--- !u!114 &1552851388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1552851381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &1559254924
 GameObject:
   m_ObjectHideFlags: 0
@@ -42318,8 +42318,8 @@ GameObject:
   - component: {fileID: 1559254930}
   - component: {fileID: 1559254929}
   - component: {fileID: 1559254928}
-  - component: {fileID: 1559254927}
   - component: {fileID: 1559254926}
+  - component: {fileID: 1559254931}
   m_Layer: 6
   m_Name: tile000_8
   m_TagString: Untagged
@@ -42388,19 +42388,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &1559254927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559254924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &1559254928
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -42524,6 +42511,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1559254931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559254924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &1576311722
 GameObject:
   m_ObjectHideFlags: 0
@@ -42760,8 +42760,8 @@ GameObject:
   - component: {fileID: 1722482738}
   - component: {fileID: 1722482737}
   - component: {fileID: 1722482736}
-  - component: {fileID: 1722482735}
   - component: {fileID: 1722482734}
+  - component: {fileID: 1722482739}
   m_Layer: 6
   m_Name: tile000_2
   m_TagString: Untagged
@@ -42830,19 +42830,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.13127033, y: 0.32}
   m_EdgeRadius: 0
---- !u!114 &1722482735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1722482732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!61 &1722482736
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -42966,6 +42953,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1722482739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722482732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &1727303424
 GameObject:
   m_ObjectHideFlags: 0
@@ -73912,8 +73912,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 4
-  maxHP: 4
+  currentHP: 3
+  maxHP: 3
   IsImmotal: 0
 --- !u!114 &1890813723
 MonoBehaviour:
@@ -76827,8 +76827,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 4
-  maxHP: 4
+  currentHP: 3
+  maxHP: 3
   IsImmotal: 0
 --- !u!1 &7574517841393480551
 GameObject:

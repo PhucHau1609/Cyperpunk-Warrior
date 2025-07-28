@@ -7,7 +7,9 @@ public abstract class Spawner<T> : HauMonoBehaviour where T : PoolObj // Day 6 -
 {
     [SerializeField] protected int spawnCount = 0;
     [SerializeField] protected Transform poolHolder; //E49,50 create
+    public Transform PoolHolder => poolHolder;
     [SerializeField] protected List<T> inPoolObj;
+    public List<T> InPoolObj => inPoolObj;
 
     [SerializeField] protected PoolPrefabs<T> poolPrefabs;
     public PoolPrefabs<T> PoolPrefabs => poolPrefabs;

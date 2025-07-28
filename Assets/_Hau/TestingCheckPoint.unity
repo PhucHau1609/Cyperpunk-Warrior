@@ -16954,6 +16954,7 @@ MonoBehaviour:
   shakeDuration: 0
   shakeAmount: 0.1
   decreaseFactor: 1
+  IsPreviewing: 0
 --- !u!114 &204561740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70433,6 +70434,7 @@ MonoBehaviour:
   effectCtrl: {fileID: 1081578528}
   _collider: {fileID: 1081578524}
   _hitName: 0
+  forceKnockBack: 5
 --- !u!114 &1081578528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78619,7 +78621,9 @@ MonoBehaviour:
   animator: {fileID: 1268019418}
   healthSlider: {fileID: 618753035}
   player: {fileID: 0}
+  bulletPrefab: {fileID: 0}
   initialPosition: {x: 0, y: 0, z: 0}
+  canShoot: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -103790,7 +103794,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb88fbdf4b22be64ab6b427f389da9dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hpItemPrefab: {fileID: 1813886598402880208, guid: c3bdcb0420ded0b4d9623f13750000b1, type: 3}
   spawnPoints:
   - {fileID: 839532171}
   - {fileID: 1507021260}
@@ -109124,7 +109127,9 @@ MonoBehaviour:
   animator: {fileID: 1963522382}
   healthSlider: {fileID: 1974060035}
   player: {fileID: 0}
+  bulletPrefab: {fileID: 0}
   initialPosition: {x: 0, y: 0, z: 0}
+  canShoot: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -119654,6 +119659,7 @@ MonoBehaviour:
   itemLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  controller: {fileID: 0}
   mainCamera: {fileID: 0}
 --- !u!198 &2637359012142502085
 ParticleSystem:
@@ -126840,6 +126846,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponHolder: {fileID: 4208705150770242535}
+  isWeaponActive: 0
 --- !u!1 &5181697808419254567
 GameObject:
   m_ObjectHideFlags: 0
@@ -139526,6 +139533,7 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 25
+  canDash: 1
   isWallSliding: 0
   life: 10
   maxLife: 100

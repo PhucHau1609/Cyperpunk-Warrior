@@ -49,6 +49,10 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
     public BossPhuDamageReceiver damageReceiver;
     private BossManager bossManager;
 
+    private Vector3 initialPosition;
+    private Vector3 initialScale;
+    private bool initialDataSaved = false;
+
     void Awake()
     {
         damageReceiver = GetComponent<BossPhuDamageReceiver>();
@@ -87,6 +91,18 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
             healthBar.ShowHealthBar(normalizedHealth);
         }
         bossManager = FindFirstObjectByType<BossManager>();
+
+        if (!initialDataSaved)
+        {
+            SaveInitialState();
+        }
+    }
+
+    private void SaveInitialState()
+    {
+        initialPosition = transform.position;
+        initialScale = transform.localScale;
+        initialDataSaved = true;
     }
 
     void InitializeBoss()
@@ -116,12 +132,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         if (playerObj != null)
         {
             player = playerObj.transform;
-            playerDetected = true; // Ngay khi tìm thấy Player là target luôn
-           // Debug.Log("Boss đã phát hiện Player!");
-        }
-        else
-        {
-            //Debug.LogWarning("Chưa tìm thấy Player, sẽ tìm lại...");
+            playerDetected = true;
         }
     }
 
@@ -132,9 +143,6 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
         {
             FindPlayer();
         }
-
-        // Update Behavior Designer variables
-        //UpdateBehaviorVariables();
 
         // Flip Boss để nhìn về phía Player
         if (!isDead && player != null)
@@ -345,6 +353,69 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
             return damageReceiver.CurrentHP / (float)damageReceiver.MaxHP;
         else
             return 1f;
+    }
+
+    public void ResetBoss()
+    {
+        // Reset trạng thái
+        isDead = false;
+        isPhase2 = false;
+        hasChangedPhase = false;
+        isAttacking = false;
+        playerDetected = false;
+        currentState = State.Idle;
+        lastAttackTime = 0f;
+        
+        // Reset vị trí và scale
+        if (initialDataSaved)
+        {
+            transform.position = initialPosition;
+            transform.localScale = initialScale;
+        }
+        
+        // Reset physics
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.freezeRotation = true;
+        
+        // Bật lại collider và script
+        GetComponent<Collider2D>().enabled = true;
+        this.enabled = true;
+        
+        // Reset animator
+        animator.ResetTrigger("Death");
+        animator.ResetTrigger("Hurt");
+        animator.ResetTrigger("PhaseChange");
+        animator.SetBool("IsRunning", false);
+        
+        // Reset máu
+        if (damageReceiver != null)
+        {
+            damageReceiver.ResetBossHealth();
+        }
+        
+        // Reset health bar
+        if (healthBar != null)
+        {
+            healthBar.ShowHealthBar(1f);
+        }
+        
+        // Reset behavior tree
+        var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+        if (behavior != null) 
+        {
+            behavior.EnableBehavior();
+            behavior.RestartWhenComplete = true;
+        }
+        
+        // Reset audio
+        StopAllSounds();
+        
+        // Tìm lại player
+        FindPlayer();
+        
+        Debug.Log($"Boss {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
 
     private void PlaySound(AudioClip clip)

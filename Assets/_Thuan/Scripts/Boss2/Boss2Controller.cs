@@ -62,6 +62,11 @@ public class Boss2Controller : MonoBehaviour
     public AudioClip deathSound;
     public AudioClip shieldActivateSound;
     public AudioClip phase2TransitionSound;
+    
+    // Lưu trạng thái ban đầu để reset
+    private Vector3 initialPosition;
+    private Vector3 initialScale;
+    private bool initialDataSaved = false;
 
     private void Awake()
     {
@@ -98,6 +103,19 @@ public class Boss2Controller : MonoBehaviour
         SpawnMinion();
         SpawnMinion();
         SpawnMinion();
+        
+        // Lưu trạng thái ban đầu lần đầu tiên
+        if (!initialDataSaved)
+        {
+            SaveInitialState();
+        }
+    }
+    
+    private void SaveInitialState()
+    {
+        initialPosition = transform.position;
+        initialScale = transform.localScale;
+        initialDataSaved = true;
     }
 
     private void Update()
@@ -195,6 +213,94 @@ public class Boss2Controller : MonoBehaviour
     public bool IsShieldActive()
     {
         return shieldActive;
+    }
+    
+    // Method để reset Boss2 về trạng thái ban đầu
+    public void ResetBoss()
+    {
+        // Dừng tất cả coroutines
+        StopAllCoroutines();
+        
+        // Reset trạng thái cơ bản
+        isAttacking = false;
+        isPhase2 = false;
+        shieldActive = false;
+        currentState = State.Idle;
+        lastAttackTime = -attackCooldown; // Cho phép attack ngay
+        lastMinionSpawnTime = 0f;
+        attackingHand = null;
+        
+        // Reset vị trí và scale
+        if (initialDataSaved)
+        {
+            transform.position = initialPosition;
+            transform.localScale = initialScale;
+        }
+        
+        // Bật lại collider và script
+        GetComponent<Collider2D>().enabled = true;
+        this.enabled = true;
+        
+        // Reset animator
+        animator.ResetTrigger("LaserAttack");
+        animator.ResetTrigger("BombAttack");
+        animator.ResetTrigger("Hurt");
+        animator.ResetTrigger("Death");
+        
+        // Reset máu
+        if (damageReceiver != null)
+        {
+            damageReceiver.ResetBossHealth();
+        }
+        
+        // Reset health bar
+        if (healthBar != null)
+        {
+            healthBar.ShowHealthBar(1f);
+        }
+        
+        // Reset shield
+        if (shield != null)
+        {
+            shield.SetActive(false);
+        }
+        
+        // Reset behavior tree
+        var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+        if (behavior != null) 
+        {
+            behavior.EnableBehavior();
+            behavior.RestartWhenComplete = true;
+        }
+        
+        // Xóa tất cả minions hiện tại
+        foreach (var minion in activeMinions)
+        {
+            if (minion != null)
+            {
+                Destroy(minion);
+            }
+        }
+        activeMinions.Clear();
+        
+        // Reset hands list (các hands sẽ tự đăng ký lại)
+        hands.Clear();
+        
+        // Reset audio
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        
+        // Tìm lại player
+        FindPlayer();
+        
+        // Spawn lại minions ban đầu
+        SpawnMinion();
+        SpawnMinion();
+        SpawnMinion();
+        
+        Debug.Log($"Boss2 {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
     
     // Hand Management Methods
