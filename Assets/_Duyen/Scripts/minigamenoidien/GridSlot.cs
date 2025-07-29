@@ -14,11 +14,11 @@ public class GridSlot : MonoBehaviour, IDropHandler
         if (existingBlock != null)
         {
             currentBlock = existingBlock;
-            Debug.Log($"[GridSlot] {name} gán lại currentBlock: {existingBlock.name}");
+            //Debug.Log($"[GridSlot] {name} gán lại currentBlock: {existingBlock.name}");
         }
         else
         {
-            Debug.LogWarning($"[GridSlot] {name} KHÔNG tìm thấy block con");
+            //Debug.LogWarning($"[GridSlot] {name} KHÔNG tìm thấy block con");
         }
     }
     public void OnDrop(PointerEventData eventData)

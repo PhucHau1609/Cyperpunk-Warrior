@@ -2,68 +2,31 @@
 
 public class DoorTriggerWithNPCCheck : MonoBehaviour
 {
-    [Header("Kiểm tra NPC quanh cửa")]
-    [SerializeField] private string npcTag = "NPC";              // Tag của NPC
-    [SerializeField] private Transform doorPosition;             // Vị trí kiểm tra NPC (thường là chính cửa)
-    [SerializeField] private float checkRadius = 1f;             // Bán kính kiểm tra
-
-    [Header("Animator & Collider")]
-    [SerializeField] private Animator doorAnimator;              // Animator của cửa
-    [SerializeField] private string openTrigger = "open";        // Tên trigger trong Animator
-    [SerializeField] private Collider2D doorCollider;            // Collider2D của cửa
+    [Header("Animator & Collider của cửa")]
+    [SerializeField] private Animator doorAnimator;
+    [SerializeField] private string openTrigger = "open";
+    [SerializeField] private Collider2D doorCollider;
 
     private bool doorOpened = false;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (doorOpened) return;
+        //if (doorOpened) return;
 
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && gameObject.CompareTag("mocua"))
         {
-            // Kiểm tra quanh cửa có NPC chưa
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(doorPosition.position, checkRadius);
-            bool npcFound = false;
+            //Debug.Log("🚪 Player đã vào vùng 'mocua'. Mở cửa!");
 
-            foreach (var col in colliders)
+            if (doorAnimator != null)
+                doorAnimator.SetTrigger(openTrigger);
+
+            if (doorCollider != null)
             {
-                if (col.CompareTag(npcTag))
-                {
-                    npcFound = true;
-                    break;
-                }
+                doorCollider.isTrigger = true;
+                //Debug.Log("✅ Cửa đã bật trigger.");
             }
 
-            if (npcFound)
-            {
-                Debug.Log("🔓 NPC đã có mặt tại cửa. Mở cửa!");
-
-                // Bật animation
-                if (doorAnimator != null)
-                    doorAnimator.SetTrigger(openTrigger);
-
-                // Bật trigger cho collider cửa
-                if (doorCollider != null)
-                {
-                    doorCollider.isTrigger = true;
-                    Debug.Log("✅ Trigger cửa đã bật.");
-                }
-
-                doorOpened = true; // Ngăn gọi lại
-            }
-            else
-            {
-                Debug.Log("🚫 Chưa có NPC tại cửa. Không mở.");
-            }
-        }
-    }
-
-    // Vẽ vòng kiểm tra trong Scene
-    private void OnDrawGizmosSelected()
-    {
-        if (doorPosition != null)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(doorPosition.position, checkRadius);
+            doorOpened = true;
         }
     }
 }
