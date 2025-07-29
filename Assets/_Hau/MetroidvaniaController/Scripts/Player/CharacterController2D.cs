@@ -45,6 +45,7 @@ public class CharacterController2D : MonoBehaviour
     public float maxLife = 100f;
     public bool invincible = false; //If player can die
     private bool canMove = true; //If player can move
+    public bool isDead = false;
 
     private Animator animator;
     public ParticleSystem particleJumpUp; //Trail particles
@@ -422,6 +423,7 @@ public class CharacterController2D : MonoBehaviour
     {
         //yield return new WaitForSeconds(0.2f);
         animator.SetBool("IsDead", true);
+        isDead = true;
         canMove = false;
         invincible = true;
         //GetComponent<Attack>().enabled = false;
@@ -451,6 +453,7 @@ public class CharacterController2D : MonoBehaviour
     public void RestoreFullLife()
     {
         life = maxLife;
+        isDead = false;
         animator.SetBool("IsDead", false);
         invincible = false;
         canMove = true;

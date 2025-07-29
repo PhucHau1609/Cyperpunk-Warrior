@@ -21,6 +21,9 @@ public class SwapTargetManager : MonoBehaviour
     private Transform specialBullet;
     private CharacterController2D controller;
 
+    private float lastSwapTime = -Mathf.Infinity;
+    public float swapCooldown = 5f; // Thời gian cooldown (phù hợp với UI)
+
     void Awake()
     {
         Instance = this;
@@ -30,37 +33,48 @@ public class SwapTargetManager : MonoBehaviour
         if (controller == null) controller = player.GetComponent<CharacterController2D>();
     }
 
-
-    /*   void Update()
-       {
-           if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
-               PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
-           {
-               PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
-               if (currentTarget != null)
-               {
-                   // Swap với object bình thường
-                   SwapWithEffect(currentTarget.transform, swapDuration);
-               }
-               else if (specialBullet != null)
-               {
-                   // Swap với viên đạn đặc biệt
-                   SwapWithEffect(specialBullet, 0.1f, true); // swapDuration = 0.1f, destroyAfterSwap = true
-                   specialBullet = null;
-               }
-           }
-       }*/
-
     public bool ActiveSwapSkill()
+    {
+        if (Time.time < lastSwapTime + swapCooldown)
+        {
+            Debug.Log("Swap skill đang trong thời gian hồi chiêu!");
+            return false;
+        }
+
+        if (!isSwapping && PlayerStatus.Instance != null)
+        {
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
+
+            if (currentTarget != null)
+            {
+                SwapWithEffect(currentTarget.transform, swapDuration);
+                PlayerStatus.Instance.UseEnergy(10f);
+                lastSwapTime = Time.time; // Cập nhật thời gian sử dụng
+                return true;
+            }
+            else if (specialBullet != null)
+            {
+                SwapWithEffect(specialBullet, 0.1f, true);
+                specialBullet = null;
+                lastSwapTime = Time.time; // Cập nhật thời gian sử dụng
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /*public bool ActiveSwapSkill()
     {
         if (!isSwapping && PlayerStatus.Instance != null)
         {
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
-             PlayerStatus.Instance.UseEnergy(10f);
             if (currentTarget != null)
             {
                 // Swap với object bình thường
                 SwapWithEffect(currentTarget.transform, swapDuration);
+                PlayerStatus.Instance.UseEnergy(10f);
                 return true;
             }
             else if (specialBullet != null)
@@ -73,7 +87,7 @@ public class SwapTargetManager : MonoBehaviour
         }
 
         return false;
-    }    
+    } */
 
     public void SetSpecialBullet(Transform bullet)
     {
@@ -178,6 +192,27 @@ public class SwapTargetManager : MonoBehaviour
         });
     }
 }
+
+
+/*   void Update()
+   {
+       if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
+           PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
+       {
+           PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
+           if (currentTarget != null)
+           {
+               // Swap với object bình thường
+               SwapWithEffect(currentTarget.transform, swapDuration);
+           }
+           else if (specialBullet != null)
+           {
+               // Swap với viên đạn đặc biệt
+               SwapWithEffect(specialBullet, 0.1f, true); // swapDuration = 0.1f, destroyAfterSwap = true
+               specialBullet = null;
+           }
+       }
+   }*/
 
 
 /*public class SwapTargetManager : MonoBehaviour

@@ -110,6 +110,12 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
     [SerializeField] private float skillSpacing = 80f; // Khoảng cách giữa các skill
 
     private List<GameObject> skillSlots = new List<GameObject>(); // Danh sách các skill đã tạo
+    private CharacterController2D characterController;
+
+    protected override void Awake()
+    {
+        characterController = FindFirstObjectByType<CharacterController2D>();
+    }
 
     protected override void Start()
     {
@@ -152,6 +158,7 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
                 break;
             case SkillID.Swap:
                 skill.onActivateCallback = swapTargetManager.ActiveSwapSkill;
+                swapTargetManager.swapCooldown = skill.cooldownTime;
                 break;
             case SkillID.Dash:
                 skill.onActivateCallback = playerMovement.TriggerDashX;
@@ -182,6 +189,8 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
 
     void Update()
     {
+        if (characterController.isDead) return;
+
         foreach (var pair in keyToSlot)
         {
             if (Input.GetKeyDown(pair.Key))
