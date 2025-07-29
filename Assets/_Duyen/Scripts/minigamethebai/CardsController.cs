@@ -204,7 +204,7 @@ public class CardsController : MonoBehaviour
 
     IEnumerator FillDeckCards(List<Sprite> deckSprites)
     {
-        for (int i = 0; i < 16 && i < deckSprites.Count; i++)
+        for (int i = 0; i < 12 && i < deckSprites.Count; i++)
         {
             Sprite sp = deckSprites[i];
             Card c = Instantiate(cardPrefab, deckPileTransform);
@@ -237,7 +237,7 @@ public class CardsController : MonoBehaviour
 
     IEnumerator FillNPCHand(List<Sprite> deckSprites)
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             Sprite sp = deckSprites[Random.Range(0, deckSprites.Count)];
 
@@ -260,7 +260,7 @@ public class CardsController : MonoBehaviour
 
     IEnumerator FillPlayerHand(List<Sprite> deckSprites)
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             Sprite sp = deckSprites[Random.Range(0, deckSprites.Count)];
             Card c = Instantiate(cardPrefab, deckPileTransform);
@@ -546,7 +546,7 @@ public class CardsController : MonoBehaviour
     {
         if (turnPanel == null || turnText == null) return;
 
-        string message = currentTurn == Turn.Player ? "EREN" : "Jack";
+        string message = currentTurn == Turn.Player ? "EREN" : "JACK";
         turnText.text = message;
 
         // Hiện panel trong 1–2 giây (tuỳ thích)
