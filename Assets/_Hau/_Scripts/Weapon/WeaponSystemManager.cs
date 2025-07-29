@@ -11,6 +11,7 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
     private List<ItemInventory> ownedWeapons = new();
     private Dictionary<int, GameObject> instantiatedWeapons = new(); // key: index
     private bool wasWeaponActiveBeforeWallSlide = false; // Lưu trạng thái súng trước khi wall slide
+    private CharacterController2D characterController;
 
 
     protected override void Start()
@@ -18,7 +19,7 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
         RefreshOwnedWeapons();
 
         // Tìm CharacterController2D và đăng ký events
-        var characterController = FindFirstObjectByType<CharacterController2D>();
+        characterController = FindFirstObjectByType<CharacterController2D>();
         if (characterController != null)
         {
             characterController.OnWallSlideStart.AddListener(HideWeaponDuringWallSlide);
@@ -28,6 +29,8 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
 
     void Update()
     {
+        if (characterController.isDead) return;
+
         if (Input.GetKeyDown(KeyCode.T))
         {
             SwapWeapon();
