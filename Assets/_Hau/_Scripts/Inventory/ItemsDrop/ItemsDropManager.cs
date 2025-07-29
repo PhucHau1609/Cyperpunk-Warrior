@@ -28,7 +28,7 @@ public class ItemsDropManager : HauSingleton<ItemsDropManager>
 
     public void ClearAllDroppedItems()
     {
-        Debug.Log("🧹 ClearAllDroppedItems");
+        //Debug.Log("🧹 ClearAllDroppedItems");
 
         // 1. Clear all active items from pool holder (chính xác nhất)
         if (itemsDropSpawner.PoolHolder is Transform poolHolder)
