@@ -72,6 +72,7 @@ public class SceneController : MonoBehaviour
     // Gọi hàm này từ TriggerZone
     public void SwitchToPetControl()
     {
+        GameStateManager.Instance.SetState(GameState.MiniGame);
         if (petAgent != null)
             petAgent.enabled = false;
 
@@ -127,6 +128,7 @@ public class SceneController : MonoBehaviour
     public void ReturnControlToPlayer()
     {
         player.SetCanMove(true);
+        GameStateManager.Instance.ResetToGameplay();
 
         if (petAgent != null)
             petAgent.enabled = true;
