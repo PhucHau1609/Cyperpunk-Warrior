@@ -269,6 +269,14 @@ public class Boss2Controller : MonoBehaviour
             behavior.EnableBehavior();
             behavior.RestartWhenComplete = true;
         }
+
+        foreach (var hand in hands)
+        {
+            if (hand != null)
+            {
+                hand.ResetHand(); // Gọi method reset của hand
+            }
+        }
         
         // Xóa tất cả minions hiện tại
         foreach (var minion in activeMinions)
@@ -280,9 +288,6 @@ public class Boss2Controller : MonoBehaviour
         }
         activeMinions.Clear();
         
-        // Reset hands list (các hands sẽ tự đăng ký lại)
-        hands.Clear();
-        
         // Reset audio
         if (audioSource != null && audioSource.isPlaying)
         {
@@ -291,11 +296,6 @@ public class Boss2Controller : MonoBehaviour
         
         // Tìm lại player
         FindPlayer();
-        
-        // Spawn lại minions ban đầu
-        SpawnMinion();
-        SpawnMinion();
-        SpawnMinion();
         
         Debug.Log($"Boss2 {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
@@ -696,10 +696,12 @@ public class Boss2Controller : MonoBehaviour
         foreach (GameObject enemy in enemies)
         {
             SlimeEnemy slime = enemy.GetComponent<SlimeEnemy>();
+            FlyingDroidController flyingDroidController = enemy.GetComponent<FlyingDroidController>();
             Animator animator = enemy.GetComponent<Animator>();
             if (slime != null)
             {
                 slime.enabled = false;
+                flyingDroidController.enabled = false;
                 animator.SetTrigger("Death");
             }
             Destroy(enemy, 2f);

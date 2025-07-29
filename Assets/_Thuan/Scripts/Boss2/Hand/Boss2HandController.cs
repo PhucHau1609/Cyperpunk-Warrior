@@ -31,6 +31,11 @@ public class Boss2HandController : MonoBehaviour
     [Header("Hit Box")]
     public Boss2HandHitBox hitBox;
 
+    [Header("Reset Settings")]
+    private Vector3 initialPosition;
+    private bool initialDataSaved = false;
+
+
     [Header("Audio Settings")]
     public AudioSource audioSource;
     public AudioClip handMoveSound;
@@ -70,7 +75,7 @@ public class Boss2HandController : MonoBehaviour
             audioSource.PlayOneShot(clip, volume);
         }
     }
-    
+
     void Start()
     {
         // Tìm Boss2Controller
@@ -79,14 +84,19 @@ public class Boss2HandController : MonoBehaviour
         {
             Debug.LogError($"{gameObject.name}: Không tìm thấy Boss2Controller!");
         }
-        
+
         // Tìm Player
         FindPlayer();
-        
+
         // Đăng ký cánh tay với Boss2
         if (boss2Controller != null)
         {
             boss2Controller.RegisterHand(this);
+        }
+        
+        if (!initialDataSaved)
+        {
+            SaveInitialState();
         }
     }
     
@@ -100,6 +110,65 @@ public class Boss2HandController : MonoBehaviour
         
         // Xử lý state - Hand không tự động tấn công nữa
         HandleCurrentState();
+    }
+
+    private void SaveInitialState()
+    {
+        initialPosition = transform.position;
+        initialDataSaved = true;
+    }
+
+    public void ResetHand()
+    {
+        // Dừng tất cả coroutines nếu có
+        StopAllCoroutines();
+        
+        // Reset trạng thái
+        isAttacking = false;
+        currentState = HandState.Idle;
+        lastAttackTime = -999f;
+        hasExecutedAttack = false;
+        assignedAttackType = Boss2AttackType.Laser; // Default value
+        
+        // Reset vị trí
+        if (initialDataSaved)
+        {
+            transform.position = initialPosition;
+        }
+        else
+        {
+            transform.position = originalPosition;
+        }
+        
+        // Reset physics
+        rb.linearVelocity = Vector2.zero;
+        
+        // Reset animator
+        animator.ResetTrigger("Attack3");
+        animator.ResetTrigger("Attack4");
+        animator.ResetTrigger("Hurt");
+        animator.ResetTrigger("Death");
+        
+        // Reset collider và enable script
+        GetComponent<Collider2D>().enabled = true;
+        this.enabled = true;
+        
+        // Reset damage receiver (máu)
+        if (damageReceiver != null)
+        {
+            damageReceiver.ResetHandHealth();
+        }
+        
+        // Disable hitbox nếu đang active
+        DisableHitBox();
+        
+        // Reset audio
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        
+        Debug.Log($"Hand {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
     
     void FindPlayer()

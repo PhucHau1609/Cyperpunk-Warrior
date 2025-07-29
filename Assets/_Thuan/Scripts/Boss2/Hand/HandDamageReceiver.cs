@@ -5,21 +5,30 @@ public class HandDamageReceiver : DamageReceiver
     private IDamageResponder responder;
     [SerializeField] private Boss2HandController handController;
     [SerializeField] private Boss2Controller boss2Controller; // Thêm reference này
+    private int initialHP;
 
     protected override void Awake()
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
         handController = GetComponent<Boss2HandController>();
-        
+
         // Tự động tìm Boss2Controller nếu chưa gán
         if (boss2Controller == null)
         {
             boss2Controller = FindFirstObjectByType<Boss2Controller>();
         }
-        
+
+        initialHP = maxHP;
+
         if (responder == null)
             Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
+    }
+
+    public void ResetHandHealth()
+    {
+        this.currentHP = initialHP;
+        Debug.Log($"Hand {gameObject.name} health reset to {currentHP}/{maxHP}");
     }
 
     protected override void OnHurt()
