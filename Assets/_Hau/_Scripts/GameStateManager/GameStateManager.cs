@@ -8,7 +8,6 @@ public enum GameState
     Dialogue,
     Paused,
     Cutscene,
-    Dead
 }
 
 public class GameStateManager : HauSingleton<GameStateManager>

@@ -190,7 +190,6 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
     void Update()
     {
         if (characterController.isDead) return;
-        if (!GameStateManager.Instance.IsGameplay) return;
 
         foreach (var pair in keyToSlot)
         {

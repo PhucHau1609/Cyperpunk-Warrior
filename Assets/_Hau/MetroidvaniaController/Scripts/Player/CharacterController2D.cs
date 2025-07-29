@@ -421,7 +421,6 @@ public class CharacterController2D : MonoBehaviour
 
     IEnumerator WaitToDead()
     {
-        GameStateManager.Instance.SetState(GameState.Dead);
         //yield return new WaitForSeconds(0.2f);
         animator.SetBool("IsDead", true);
         isDead = true;
@@ -442,9 +441,6 @@ public class CharacterController2D : MonoBehaviour
             }
         }
 
-        SwapTargetManager.Instance.ResetCurrentTarget();
-
-
         if (GameOverPanel.Instance != null)
             GameOverPanel.Instance.ShowGameOver();
     }
@@ -456,7 +452,6 @@ public class CharacterController2D : MonoBehaviour
 
     public void RestoreFullLife()
     {
-        GameStateManager.Instance.ResetToGameplay();
         life = maxLife;
         isDead = false;
         animator.SetBool("IsDead", false);

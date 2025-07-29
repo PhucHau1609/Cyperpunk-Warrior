@@ -23,8 +23,6 @@ public class SwapTargetManager : MonoBehaviour
 
     private float lastSwapTime = -Mathf.Infinity;
     public float swapCooldown = 5f; // Thời gian cooldown (phù hợp với UI)
-    public float maxSwapDistance = 5f; // Có thể cho inspector chỉnh nếu muốn
-
 
     void Awake()
     {
@@ -49,13 +47,6 @@ public class SwapTargetManager : MonoBehaviour
 
             if (currentTarget != null)
             {
-                float distance = Vector3.Distance(player.position, currentTarget.transform.position);
-                if (distance > maxSwapDistance)
-                {
-                    Debug.Log("Khoảng cách quá xa, không thể swap!");
-                    return false;
-                }
-
                 SwapWithEffect(currentTarget.transform, swapDuration);
                 PlayerStatus.Instance.UseEnergy(10f);
                 lastSwapTime = Time.time; // Cập nhật thời gian sử dụng
@@ -200,11 +191,6 @@ public class SwapTargetManager : MonoBehaviour
             }
         });
     }
-
-    public void ResetCurrentTarget()
-    {
-        if(controller.isDead) currentTarget = null;
-    }    
 }
 
 

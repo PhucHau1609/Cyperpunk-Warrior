@@ -26,7 +26,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         else
         {
             // Reset tất cả bosses trước khi respawn player
-            ResetAllBossesInScene();
+            //ResetAllBossesInScene();
             
             player.transform.position = lastCheckpointPosition;
             FinishRespawn(player);
