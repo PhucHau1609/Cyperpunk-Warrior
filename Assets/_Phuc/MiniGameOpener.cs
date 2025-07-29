@@ -39,6 +39,13 @@ public class MiniGameOpener : MonoBehaviour
     {
         Debug.Log("OpenMiniGame() Called");
 
+        // ⚠️ Chỉ cho mở nếu đã mở khóa Pet trong CodeLock
+        if (!CodeLock.PetUnlocked)
+        {
+            Debug.Log("MiniGame chưa được mở khóa từ CodeLock!");
+            return;
+        }
+
         GameStateManager.Instance.SetState(GameState.MiniGame);
 
         float distance = Vector3.Distance(player.transform.position, interactionPoint.position);
@@ -52,6 +59,7 @@ public class MiniGameOpener : MonoBehaviour
             movementScript.enabled = false;
         }
     }
+
 
     public void CloseMiniGame()
     {
