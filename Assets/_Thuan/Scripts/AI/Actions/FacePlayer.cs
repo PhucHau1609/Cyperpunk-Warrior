@@ -7,30 +7,46 @@ public class FacePlayer : Action
 {
     public SharedTransform player;
     private Transform cachedPlayerTransform;
+    private PlayerShader playerShader; // Thêm reference
 
     public override void OnStart()
     {
-        // Nếu chưa có player, tìm kiếm
         if (player == null || player.Value == null)
         {
-            // Thử tìm player từ cached
             if (cachedPlayerTransform == null)
             {
                 cachedPlayerTransform = FindPlayerInScene();
             }
 
-            // Gán giá trị
             if (cachedPlayerTransform != null)
             {
                 player.Value = cachedPlayerTransform;
-            }
-            else
-            {
-                // Đăng ký sự kiện để tìm player khi scene load
-                SceneManager.sceneLoaded += OnSceneLoaded;
-                Debug.LogWarning("[FacePlayer] Không tìm thấy Player");
+                playerShader = cachedPlayerTransform.GetComponentInChildren<PlayerShader>(); // Lấy PlayerShader
             }
         }
+    }
+
+    public override TaskStatus OnUpdate()
+    {
+        if (player.Value == null)
+            return TaskStatus.Failure;
+
+        // Không quay mặt khi Player tàng hình
+        if (playerShader != null && playerShader.IsInvisible())
+        {
+            return TaskStatus.Failure; // Hoặc Success tùy logic của bạn
+        }
+
+        Vector2 dir = player.Value.position - transform.position;
+
+        if (dir.x != 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Sign(dir.x) * Mathf.Abs(scale.x);
+            transform.localScale = scale;
+        }
+
+        return TaskStatus.Success;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -58,25 +74,5 @@ public class FacePlayer : Action
         }
 
         return playerObject?.transform;
-    }
-
-    public override TaskStatus OnUpdate()
-    {
-        // Kiểm tra player
-        if (player.Value == null)
-            return TaskStatus.Failure;
-
-        // Tính toán hướng
-        Vector2 dir = player.Value.position - transform.position;
-
-        // Thay đổi hướng
-        if (dir.x != 0)
-        {
-            Vector3 scale = transform.localScale;
-            scale.x = Mathf.Sign(dir.x) * Mathf.Abs(scale.x);
-            transform.localScale = scale;
-        }
-
-        return TaskStatus.Success;
     }
 }
