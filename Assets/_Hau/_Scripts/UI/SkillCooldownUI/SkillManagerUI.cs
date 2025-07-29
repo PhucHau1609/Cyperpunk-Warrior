@@ -158,6 +158,7 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
                 break;
             case SkillID.Swap:
                 skill.onActivateCallback = swapTargetManager.ActiveSwapSkill;
+                swapTargetManager.swapCooldown = skill.cooldownTime;
                 break;
             case SkillID.Dash:
                 skill.onActivateCallback = playerMovement.TriggerDashX;
