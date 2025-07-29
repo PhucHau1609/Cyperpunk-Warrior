@@ -22,7 +22,9 @@ public class CameraZoomTrigger : MonoBehaviour
 
     [Header("Boss Control")]
     public MonoBehaviour bossController; 
+    public BossPhuDamageReceiver bossPhuDamageReceiver;
     public MiniBoss miniBoss;
+    public MiniBossDamageReceiver miniBossDamageReceiver;
     public bool disableBossOnTrigger = true;
     public BehaviorTree behaviorTree;
     public Rigidbody2D rb;
@@ -188,6 +190,16 @@ public class CameraZoomTrigger : MonoBehaviour
         {
             miniBoss.enabled = false;
         }
+
+        if (bossPhuDamageReceiver != null)
+        {
+            bossPhuDamageReceiver.enabled = false;
+        }
+        
+        if (miniBossDamageReceiver != null)
+        {
+            miniBossDamageReceiver.enabled = false;
+        }
         
         if (behaviorTree != null)
         {
@@ -210,6 +222,16 @@ public class CameraZoomTrigger : MonoBehaviour
         if (miniBoss != null)
         {
             miniBoss.enabled = true;
+        }
+
+        if (bossPhuDamageReceiver != null)
+        {
+            bossPhuDamageReceiver.enabled = true;
+        }
+        
+        if (miniBossDamageReceiver != null)
+        {
+            miniBossDamageReceiver.enabled = true;
         }
 
         if (behaviorTree != null)
