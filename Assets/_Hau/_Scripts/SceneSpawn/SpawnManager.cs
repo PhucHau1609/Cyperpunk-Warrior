@@ -22,7 +22,7 @@ public class SpawnManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        Debug.Log("📂 Log file path: " + Application.persistentDataPath);
+        //Debug.Log("📂 Log file path: " + Application.persistentDataPath);
         LogToFile("📂 Log file path: " + Application.persistentDataPath);
     }
 
