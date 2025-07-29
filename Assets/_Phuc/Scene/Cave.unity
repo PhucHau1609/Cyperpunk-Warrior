@@ -67694,7 +67694,7 @@ MonoBehaviour:
   throwableObject: {fileID: 5532974359214069763, guid: 340067e8e5a097546ad175f1d00a6ece, type: 3}
   attackCheck: {fileID: 2884001753378499200}
   animator: {fileID: 7992599513654883142}
-  canAttack: 1
+  canAttack: 0
   isTimeToCheck: 0
   cam: {fileID: 0}
 --- !u!114 &1041481151868616959
@@ -68001,7 +68001,7 @@ AudioSource:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -68031,7 +68031,7 @@ AudioSource:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
 --- !u!114 &2006434089735179939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79122,6 +79122,7 @@ MonoBehaviour:
   life: 10
   maxLife: 100
   invincible: 0
+  isDead: 0
   particleJumpUp: {fileID: 6222749652619235447}
   particleJumpDown: {fileID: 6267885364391039237}
   OnFallEvent:

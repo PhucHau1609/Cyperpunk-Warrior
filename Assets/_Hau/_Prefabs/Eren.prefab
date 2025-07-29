@@ -5611,6 +5611,7 @@ MonoBehaviour:
   life: 100
   maxLife: 100
   invincible: 0
+  isDead: 0
   particleJumpUp: {fileID: 6222749650843242311}
   particleJumpDown: {fileID: 6267885364826426933}
   OnFallEvent:
@@ -5893,6 +5894,8 @@ MonoBehaviour:
   swapEase: 4
   swapSpeedMultiplier: 2
   slowMotionScale: 0.1
+  swapCooldown: 5
+  maxSwapDistance: 8
 --- !u!114 &962040126155233556
 MonoBehaviour:
   m_ObjectHideFlags: 0
