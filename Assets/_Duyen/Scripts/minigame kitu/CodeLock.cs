@@ -9,6 +9,7 @@ public class CodeLock : MonoBehaviour
 {
     public static bool PetUnlocked = false;
 
+    [Header("UI References")]
     public Button[] buttons;
     public TMP_Text[] numberTexts;
     public TMP_Text messageText;
@@ -19,11 +20,16 @@ public class CodeLock : MonoBehaviour
     public Image imageToChange;
     public Sprite image2;
     public Sprite reopenDisabledSprite;
-    public PlayerMovement playerMovement; // GÁN TRONG INSPECTOR
+    public PlayerMovement playerMovement;
 
-
+    [Header("Hints")]
     public Sprite[] hintImages;
     public Image[] hintImageSlots;
+
+    [Header("Interaction Settings")]
+    [SerializeField] private Transform interactionPoint;
+    [SerializeField] private float interactionDistance = 3f;
+
     private int[] hintIndexes = new int[4];
     private int[] currentValues = new int[4];
     private int[] correctCode = new int[4];
@@ -45,7 +51,7 @@ public class CodeLock : MonoBehaviour
             int index = i;
             buttons[i].onClick.AddListener(() =>
             {
-                AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm số
+                AudioManager.Instance.PlayClickSFX();
                 IncreaseNumber(index);
             });
             UpdateDisplay(index);
@@ -53,23 +59,22 @@ public class CodeLock : MonoBehaviour
 
         submitButton.onClick.AddListener(() =>
         {
-            AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm Submit
+            AudioManager.Instance.PlayClickSFX();
             CheckCode();
         });
 
         closeButton.onClick.AddListener(() =>
         {
-            AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm Close
+            AudioManager.Instance.PlayClickSFX();
             CloseCanvas();
         });
 
         reopenButton.onClick.AddListener(() =>
         {
-            AudioManager.Instance.PlayClickSFX(); // ✅ Âm thanh khi bấm Reopen
+            AudioManager.Instance.PlayClickSFX();
             ReopenCanvas();
         });
 
-        // Mở đầu canvas với hiệu ứng DOTween
         canvasGroup.alpha = 0;
         canvas.transform.localScale = Vector3.zero;
         canvas.SetActive(false);
@@ -77,16 +82,22 @@ public class CodeLock : MonoBehaviour
         canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
 
         if (playerMovement != null)
-            playerMovement.SetCanMove(false); // ⚠️ Khóa di chuyển khi mở minigame
-
+            playerMovement.SetCanMove(false);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            AudioManager.Instance.PlayClickSFX(); // ✅ Enter cũng tính như Submit
+            AudioManager.Instance.PlayClickSFX();
             CheckCode();
+        }
+
+        // Cập nhật trạng thái nút Reopen nếu player đứng xa
+        if (interactionPoint != null && playerMovement != null && reopenButton != null)
+        {
+            float distance = Vector3.Distance(playerMovement.transform.position, interactionPoint.position);
+            reopenButton.interactable = (distance <= interactionDistance);
         }
     }
 
@@ -95,13 +106,10 @@ public class CodeLock : MonoBehaviour
         currentValues[index] = (currentValues[index] + 1) % 10;
         UpdateDisplay(index);
 
-        // Reset scale về 1 trước khi tạo hiệu ứng mới
-        buttons[index].transform.DOKill(); // Hủy tween cũ nếu đang chạy
+        buttons[index].transform.DOKill();
         buttons[index].transform.localScale = Vector3.one;
-
         buttons[index].transform.DOPunchScale(Vector3.one * 0.2f, 0.3f, 5, 0.5f);
     }
-
 
     void UpdateDisplay(int index)
     {
@@ -112,7 +120,6 @@ public class CodeLock : MonoBehaviour
     {
         System.Random rand = new System.Random();
         List<int> allIndexes = new List<int>();
-
         for (int i = 0; i < 10; i++) allIndexes.Add(i);
 
         for (int i = 0; i < 4; i++)
@@ -132,7 +139,7 @@ public class CodeLock : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            int index = i; // ✅ Cách 3: tạo biến cục bộ để tránh capture sai trong lambda
+            int index = i;
 
             if (currentValues[index] != correctCode[index])
             {
@@ -169,7 +176,7 @@ public class CodeLock : MonoBehaviour
         {
             canvas.SetActive(false);
             if (playerMovement != null)
-                playerMovement.SetCanMove(true); // ⚠️ Mở lại di chuyển sau khi tắt minigame
+                playerMovement.SetCanMove(true);
             GameStateManager.Instance.ResetToGameplay();
         });
     }
@@ -177,9 +184,17 @@ public class CodeLock : MonoBehaviour
     void ReopenCanvas()
     {
         if (!MinigameTriggerZone.PlayerInsideZone)
+            return;
+
+        // Kiểm tra khoảng cách đến interaction point
+        if (interactionPoint != null && playerMovement != null)
         {
-            //Debug.Log("Player is not in the trigger zone!");
-            return; // Không cho mở nếu chưa đứng trong vùng
+            float distance = Vector3.Distance(playerMovement.transform.position, interactionPoint.position);
+            if (distance > interactionDistance)
+            {
+                Debug.Log("Player quá xa CodeLock để tương tác!");
+                return;
+            }
         }
 
         GameStateManager.Instance.SetState(GameState.MiniGame);
@@ -189,8 +204,7 @@ public class CodeLock : MonoBehaviour
         canvasGroup.DOFade(1, 0.4f);
         canvas.transform.DOScale(1, 0.4f).SetEase(Ease.OutBack);
         if (playerMovement != null)
-            playerMovement.SetCanMove(false); // ⚠️ Khóa lại nếu mở lại minigame
-
+            playerMovement.SetCanMove(false);
     }
 
     IEnumerator CloseCanvasAfterDelay(float delay)
