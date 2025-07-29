@@ -27,6 +27,8 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     protected virtual void OpenInventory()
     {
         if (!GameStateManager.Instance.IsGameplay) return; // ❌ Không gửi sự kiện nếu không phải gameplay
+        if (pausegame.IsPaused) return; // ✅ Chặn mở inventory nếu đang pause
+
 
         if (Input.GetKeyUp(KeyCode.I))
         {

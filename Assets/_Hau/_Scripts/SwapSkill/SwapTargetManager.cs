@@ -56,11 +56,11 @@ public class SwapTargetManager : MonoBehaviour
         if (!isSwapping && PlayerStatus.Instance != null)
         {
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
-             PlayerStatus.Instance.UseEnergy(10f);
             if (currentTarget != null)
             {
                 // Swap với object bình thường
                 SwapWithEffect(currentTarget.transform, swapDuration);
+                PlayerStatus.Instance.UseEnergy(10f);
                 return true;
             }
             else if (specialBullet != null)

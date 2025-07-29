@@ -18,6 +18,8 @@ public class pausegame : MonoBehaviour
 
 
     public static pausegame Instance { get; private set; }
+    public static bool IsPaused { get; private set; } = false;
+
 
     private void Awake()
     {
@@ -76,6 +78,8 @@ public class pausegame : MonoBehaviour
         {
             pauseButtonImage.sprite = imagePause;
         }
+
+        IsPaused = true;
         pauseButton.interactable = false;
     }
 
@@ -114,6 +118,7 @@ public class pausegame : MonoBehaviour
             }
 
             pauseButton.interactable = true;
+            IsPaused = false;
         }, ignoreTimeScale: true);
     }
 
