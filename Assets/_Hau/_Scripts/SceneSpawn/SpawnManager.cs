@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class SpawnManager : MonoBehaviour
 
     private IEnumerator DelayedSpawn()
     {
+
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         // Chờ tới khi Player từ DontDestroyOnLoad xuất hiện
@@ -45,6 +48,7 @@ public class SpawnManager : MonoBehaviour
         if (playerScene.name != "DontDestroyOnLoad")
         {
             Debug.LogWarning("Có thể player hiện tại không phải từ DontDestroyOnLoad");
+            LogToFile("⚠ Player không phải từ DontDestroyOnLoad, đang ở scene: " + playerScene.name);
             yield break;
         }
 
@@ -112,4 +116,11 @@ public class SpawnManager : MonoBehaviour
     {
         nextSpawnPointID = spawnID.ToString();
     }
+
+    private void LogToFile(string message)
+    {
+        string path = Application.persistentDataPath + "/debug_log.txt";
+        System.IO.File.AppendAllText(path, Time.time + " | " + message + "\n");
+    }
+
 }
