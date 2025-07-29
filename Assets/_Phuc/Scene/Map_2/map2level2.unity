@@ -1045,8 +1045,8 @@ GameObject:
   m_Component:
   - component: {fileID: 148095565}
   - component: {fileID: 148095564}
-  - component: {fileID: 148095566}
   - component: {fileID: 148095567}
+  - component: {fileID: 148095568}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -1180,19 +1180,6 @@ Transform:
   - {fileID: 1000273841}
   m_Father: {fileID: 1838809984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &148095566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 148095563}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 5
 --- !u!61 &148095567
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1239,6 +1226,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.0702349, y: 3.3709114}
   m_EdgeRadius: 0
+--- !u!114 &148095568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148095563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1001 &148677266
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43637,8 +43637,8 @@ GameObject:
   m_Component:
   - component: {fileID: 920078756}
   - component: {fileID: 920078760}
-  - component: {fileID: 920078759}
   - component: {fileID: 920078758}
+  - component: {fileID: 920078761}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -43711,19 +43711,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.0702349, y: 3.3709114}
   m_EdgeRadius: 0
---- !u!114 &920078759
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 920078755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 5
 --- !u!120 &920078760
 LineRenderer:
   serializedVersion: 2
@@ -43831,6 +43818,19 @@ LineRenderer:
   m_UseWorldSpace: 0
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &920078761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920078755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
 --- !u!1 &933550040
 GameObject:
   m_ObjectHideFlags: 0
