@@ -9,7 +9,7 @@ public class MinigameZoneTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInside = true;
-            Debug.Log("Player vào vùng minigame");
+            //Debug.Log("Player vào vùng minigame");
         }
     }
 
@@ -18,7 +18,7 @@ public class MinigameZoneTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInside = false;
-            Debug.Log("Player ra khỏi vùng minigame");
+            //Debug.Log("Player ra khỏi vùng minigame");
         }
     }
 }
