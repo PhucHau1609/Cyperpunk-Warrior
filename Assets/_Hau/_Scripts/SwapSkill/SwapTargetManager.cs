@@ -200,6 +200,11 @@ public class SwapTargetManager : MonoBehaviour
             }
         });
     }
+
+    public void ResetCurrentTarget()
+    {
+        if(controller.isDead) currentTarget = null;
+    }    
 }
 
 
