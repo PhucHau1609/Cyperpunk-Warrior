@@ -19,7 +19,7 @@ public class SpawnManager : MonoBehaviour
         }
 
         Instance = this;
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         Debug.Log("📂 Log file path: " + Application.persistentDataPath);
@@ -120,6 +120,14 @@ public class SpawnManager : MonoBehaviour
                 return;
             }
         }
+
+        var allPlayers = GameObject.FindGameObjectsWithTag("Player");
+        LogToFile("🔍 Số lượng Player hiện tại: " + allPlayers.Length);
+        foreach (var p in allPlayers)
+        {
+            LogToFile("👉 Player: " + p.name + " | Pos: " + p.transform.position + " | Scene: " + p.scene.name);
+        }
+
 
         LogToFile("❌ Không tìm thấy spawn point trùng với ID: " + nextSpawnPointID);
     }
