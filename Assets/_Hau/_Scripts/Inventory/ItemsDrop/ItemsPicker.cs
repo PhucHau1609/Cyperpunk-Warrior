@@ -124,6 +124,9 @@ public class ItemsPicker : HauMonoBehaviour
             return;
         }
 
+        ItemPickupFlyUI.Instance.PlayFromTransform(itemsDropCtrl.ItemCode, itemsDropCtrl.transform);
+
+
         ItemCollectionTracker.Instance.OnItemCollected(itemsDropCtrl.ItemCode);
         HauSoundManager.Instance.SpawnSound(Vector3.zero, SoundName.PickUpItem);
         itemsDropCtrl.Despawn.DoDespawn();

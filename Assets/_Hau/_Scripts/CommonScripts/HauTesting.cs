@@ -16,8 +16,8 @@ public class HauTesting : MonoBehaviour
     [ProButton]
     public void DropManyItemsTesting()
     {
-        ItemsDropManager.Instance.DropManyItems(ItemCode.CraftingRecipe, 1, new Vector3(0, 0, 0));
-        //ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_1, 1, new Vector3(0, 0, 0));
+        //ItemsDropManager.Instance.DropManyItems(ItemCode.CraftingRecipe, 1, new Vector3(0, -1, 0));
+        //ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_1, 1, new Vector3(-1, -1, 0));
         //ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_2, 1, new Vector3(0, 0, 0));
         //ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_3, 1, new Vector3(0, 0, 0));
         //ItemsDropManager.Instance.DropManyItems(ItemCode.Clothes_4, 1, new Vector3(0, 0, 0));
@@ -25,7 +25,7 @@ public class HauTesting : MonoBehaviour
         //ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_0, 1, new Vector3(-5, -2, 0));
         //ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_2, 1, new Vector3(-6, -2, 0));
 
-        ItemsDropManager.Instance.DropManyItems(ItemCode.HP, 1, new Vector3(5, 0, 0));
+        //ItemsDropManager.Instance.DropManyItems(ItemCode.HP, 1, new Vector3(5, -1, 0));
 
     }
 
