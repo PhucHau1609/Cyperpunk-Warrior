@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MiniBoss : MonoBehaviour
+public class MiniBoss : MonoBehaviour, IBossResettable
 {
     [Header("Boss Settings")]
     public float moveSpeed = 2f;
@@ -33,13 +33,13 @@ public class MiniBoss : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private Collider2D col;
-    
+
     private float lastAttackTime;
     private bool isAttacking = false;
     private bool isDead = false;
     private bool isHurt = false;
     private bool facingRight = true;
-    
+
     private Vector2 movement;
     private float distanceToPlayer;
     private float initialFirePointX; // Lưu vị trí X ban đầu của FirePoint
@@ -81,7 +81,7 @@ public class MiniBoss : MonoBehaviour
 
     private AudioSource audioSource;
     private BossManager bossManager;
-    
+
     // Lưu trạng thái ban đầu để reset
     private Vector3 initialPosition;
     private Vector3 initialScale;
@@ -91,7 +91,7 @@ public class MiniBoss : MonoBehaviour
     {
         damageReceiver = GetComponent<MiniBossDamageReceiver>();
     }
-    
+
     void Start()
     {
         // Tự động tham chiếu các component
@@ -144,20 +144,20 @@ public class MiniBoss : MonoBehaviour
         Debug.Log("MiniBoss initialized successfully!");
 
         bossManager = FindFirstObjectByType<BossManager>();
-        
-        if (!useFixedBoundaries && 
+
+        if (!useFixedBoundaries &&
         (mapBoundaryLeft == null || mapBoundaryRight == null))
         {
             AutoDetectMapBoundaries();
         }
-        
+
         // Lưu trạng thái ban đầu lần đầu tiên
         if (!initialDataSaved)
         {
             SaveInitialState();
         }
     }
-    
+
     private void SaveInitialState()
     {
         initialPosition = transform.position;
@@ -171,19 +171,19 @@ public class MiniBoss : MonoBehaviour
 
         // Tính khoảng cách đến Player
         distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        
+
         // Luôn luôn di chuyển theo Player (không cần khoảng cách)
-        if (!isAttacking && !isHurt&& !isTeleporting)
+        if (!isAttacking && !isHurt && !isTeleporting)
         {
             MoveTowardsPlayer();
         }
 
         // Kiểm tra tấn công
-        if (CanAttack() && !isTeleporting) 
+        if (CanAttack() && !isTeleporting)
         {
             PerformRandomAttack();
         }
-        
+
         // Cập nhật animation
         UpdateAnimation();
     }
@@ -191,7 +191,7 @@ public class MiniBoss : MonoBehaviour
     void FixedUpdate()
     {
         if (isDead || isAttacking || isHurt) return;
-        
+
         // Di chuyển
         rb.linearVelocity = new Vector2(movement.x * moveSpeed, rb.linearVelocity.y);
     }
@@ -231,7 +231,7 @@ public class MiniBoss : MonoBehaviour
                 Flip();
             }
         }
-        
+
         if (distanceToPlayer > stopDistance && moveSound != null && audioSource != null)
         {
             if (!audioSource.isPlaying || audioSource.clip != moveSound)
@@ -257,14 +257,14 @@ public class MiniBoss : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
-        
+
         // Không cần di chuyển FirePoint vì nó đã tự động flip theo Boss
         // FirePoint sẽ luôn ở đúng vị trí phía trước Boss
     }
 
     bool CanAttack()
     {
-        return !isAttacking && !isHurt && 
+        return !isAttacking && !isHurt &&
                Time.time - lastAttackTime >= attackCooldown &&
                distanceToPlayer <= attackRange;
     }
@@ -272,7 +272,7 @@ public class MiniBoss : MonoBehaviour
     void PerformRandomAttack()
     {
         float randomValue = Random.Range(0f, 1f);
-        
+
         if (randomValue <= attack1Chance)
         {
             StartAttack1();
@@ -285,7 +285,7 @@ public class MiniBoss : MonoBehaviour
         {
             StartAttack3();
         }
-        
+
         lastAttackTime = Time.time;
     }
 
@@ -350,10 +350,10 @@ public class MiniBoss : MonoBehaviour
         {
             // Tính vị trí spawn bomb phía trên Player
             Vector3 spawnPosition = player.position + Vector3.up * bombSpawnHeight;
-            
+
             // Thêm offset ngẫu nhiên
             spawnPosition.x += Random.Range(-bombSpawnOffset, bombSpawnOffset);
-            
+
             // Spawn bomb
             GameObject bomb = Instantiate(bombPrefab, spawnPosition, Quaternion.identity);
             Debug.Log("Bomb spawned at: " + spawnPosition);
@@ -367,10 +367,10 @@ public class MiniBoss : MonoBehaviour
     void FireBullets()
     {
         if (bulletPrefab == null || firePoint == null || player == null) return;
-        
+
         // Tính hướng bắn đến Player
         Vector2 directionToPlayer = (player.position - firePoint.position).normalized;
-        
+
         for (int i = 0; i < bulletsPerShot; i++)
         {
             // Tính góc tản
@@ -379,21 +379,21 @@ public class MiniBoss : MonoBehaviour
             {
                 spreadAngle = bulletSpread * (i - (bulletsPerShot - 1) / 2f);
             }
-            
+
             // Xoay hướng theo góc tản
             float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) + spreadAngle * Mathf.Deg2Rad;
             Vector2 bulletDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-            
+
             // Tạo đạn
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
             MiniBossBullet bulletScript = bullet.GetComponent<MiniBossBullet>();
-            
+
             if (bulletScript != null)
             {
                 bulletScript.Initialize(bulletDirection, bulletSpeed);
             }
         }
-        
+
         Debug.Log($"Fired {bulletsPerShot} bullets towards player");
     }
 
@@ -411,7 +411,7 @@ public class MiniBoss : MonoBehaviour
         {
             yield break;
         }
-        
+
         isTeleporting = true;
         canTeleport = false;
         lastTeleportTime = Time.time;
@@ -420,50 +420,50 @@ public class MiniBoss : MonoBehaviour
         {
             audioSource.PlayOneShot(teleportSound);
         }
-        
+
         // Lưu vị trí hiện tại để spawn bomb
         Vector3 originalPosition = transform.position;
-        
+
         // Dừng mọi chuyển động
         rb.linearVelocity = Vector2.zero;
         movement = Vector2.zero;
         rb.gravityScale = 0;
-        
+
         // Tắt colliders khi invisible
         SetCollidersEnabled(false);
 
         // Fade out (giảm opacity từ 100% về 0%)
         yield return StartCoroutine(FadeOut());
-        
+
         // Kiểm tra lại trạng thái sau khi fade out
         if (isDead || currentState == State.Dead)
         {
             yield break;
         }
-        
+
         // Spawn bomb tại vị trí cũ
         if (teleportBombPrefab != null)
         {
             GameObject bomb = Instantiate(teleportBombPrefab, originalPosition, Quaternion.identity);
-            
+
             // Kích hoạt nổ sau 2 giây
             StartCoroutine(ExplodeBombAfterDelay(bomb, 1f));
         }
-        
+
         // Tính toán vị trí mới
         Vector3 newPosition = CalculateNewTeleportPosition();
-        
+
         // Dịch chuyển đến vị trí mới
         transform.position = newPosition;
-        
+
         // Fade in (tăng opacity từ 0% về 100%)
         yield return StartCoroutine(FadeIn());
-        
+
         // Bật lại colliders
         SetCollidersEnabled(true);
-        
+
         isTeleporting = false;
-        
+
         // Bắt đầu cooldown
         StartCoroutine(TeleportCooldown());
     }
@@ -472,7 +472,7 @@ public class MiniBoss : MonoBehaviour
     {
         float elapsedTime = 0f;
         Color originalColor = spriteRenderer.color;
-        
+
         while (elapsedTime < teleportFadeTime)
         {
             elapsedTime += Time.deltaTime;
@@ -480,7 +480,7 @@ public class MiniBoss : MonoBehaviour
             spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
             yield return null;
         }
-        
+
         // Đảm bảo alpha = 0
         spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
     }
@@ -489,7 +489,7 @@ public class MiniBoss : MonoBehaviour
     {
         float elapsedTime = 0f;
         Color originalColor = spriteRenderer.color;
-        
+
         while (elapsedTime < teleportFadeTime)
         {
             elapsedTime += Time.deltaTime;
@@ -497,7 +497,7 @@ public class MiniBoss : MonoBehaviour
             spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
             yield return null;
         }
-        
+
         // Đảm bảo alpha = 1
         spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
     }
@@ -506,10 +506,10 @@ public class MiniBoss : MonoBehaviour
     {
         Vector3 currentPos = transform.position;
         Vector3 newPos = currentPos;
-        
+
         // Lấy thông tin boundary của map (chỉ trục X)
         float leftBound, rightBound;
-        
+
         if (useFixedBoundaries)
         {
             leftBound = mapLeftBoundary;
@@ -521,22 +521,22 @@ public class MiniBoss : MonoBehaviour
             leftBound = mapBoundaryLeft != null ? mapBoundaryLeft.position.x : currentPos.x - teleportRange;
             rightBound = mapBoundaryRight != null ? mapBoundaryRight.position.x : currentPos.x + teleportRange;
         }
-        
+
         // Thử tìm vị trí mới trong vòng 30 lần
         for (int i = 0; i < 30; i++)
         {
             // Random vị trí theo trục X trong phạm vi map, giữ nguyên Y
             float randomX = Random.Range(leftBound + 1f, rightBound - 1f); // +1f và -1f để tránh spawn sát biên
-            
+
             newPos = new Vector3(randomX, currentPos.y, currentPos.z);
-            
+
             // Kiểm tra khoảng cách đến Player (tối thiểu 8f)
             float distanceToPlayer = Vector2.Distance(newPos, player.position);
             if (distanceToPlayer < 8f)
             {
                 continue; // Thử lại nếu quá gần Player
             }
-            
+
             // Kiểm tra vị trí có hợp lệ không (không va chạm với wall/ground)
             Collider2D hit = Physics2D.OverlapCircle(newPos, 0.5f, LayerMask.GetMask("Ground", "Wall"));
             if (hit == null)
@@ -544,22 +544,22 @@ public class MiniBoss : MonoBehaviour
                 return newPos;
             }
         }
-        
+
         // Nếu không tìm được vị trí hợp lệ, tìm vị trí an toàn theo trục X
         Vector2 directionFromPlayer = (currentPos - player.position).normalized;
-        
+
         // Thử 2 hướng: trái và phải
         float[] xOffsets = { 8f, -8f }; // Khoảng cách tối thiểu từ Player
-        
+
         foreach (float offset in xOffsets)
         {
             float candidateX = player.position.x + offset;
-            
+
             // Kiểm tra xem vị trí có trong map không
             if (candidateX >= leftBound + 1f && candidateX <= rightBound - 1f)
             {
                 Vector3 candidatePos = new Vector3(candidateX, currentPos.y, currentPos.z);
-                
+
                 // Kiểm tra va chạm
                 Collider2D hit = Physics2D.OverlapCircle(candidatePos, 0.5f, LayerMask.GetMask("Ground", "Wall"));
                 if (hit == null)
@@ -568,7 +568,7 @@ public class MiniBoss : MonoBehaviour
                 }
             }
         }
-        
+
         // Cuối cùng, nếu vẫn không tìm được, giữ nguyên vị trí hiện tại
         Debug.LogWarning("MiniBoss: Không thể tìm vị trí teleport hợp lệ!");
         return currentPos;
@@ -578,7 +578,7 @@ public class MiniBoss : MonoBehaviour
     {
         // Tìm các GameObject có tag "MapBoundary" hoặc tương tự
         GameObject[] boundaries = GameObject.FindGameObjectsWithTag("MapBoundary");
-        
+
         if (boundaries.Length >= 2)
         {
             // Sắp xếp theo vị trí X để xác định left và right
@@ -607,7 +607,7 @@ public class MiniBoss : MonoBehaviour
     private System.Collections.IEnumerator ExplodeBombAfterDelay(GameObject bomb, float delay)
     {
         yield return new WaitForSeconds(delay);
-        
+
         if (bomb != null)
         {
             // Kích hoạt animation nổ
@@ -616,11 +616,11 @@ public class MiniBoss : MonoBehaviour
             {
                 bombAnimator.SetTrigger("Explode");
             }
-            
+
             // Gây damage cho Player nếu trong vùng nổ
             float explosionRadius = 3f; // Bán kính nổ
             Collider2D playerCollider = Physics2D.OverlapCircle(bomb.transform.position, explosionRadius, LayerMask.GetMask("TransparentFX"));
-            
+
             if (playerCollider != null && playerCollider.CompareTag("Player"))
             {
                 CharacterController2D playerController = playerCollider.GetComponent<CharacterController2D>();
@@ -630,7 +630,7 @@ public class MiniBoss : MonoBehaviour
                     Debug.Log("Player nhận damage từ teleport bomb!");
                 }
             }
-            
+
             // Hủy bomb sau khi nổ
             Destroy(bomb, 1f);
         }
@@ -641,13 +641,13 @@ public class MiniBoss : MonoBehaviour
         yield return new WaitForSeconds(teleportCooldown);
         canTeleport = true;
     }
-    
+
     // Method để reset MiniBoss về trạng thái ban đầu
     public void ResetBoss()
     {
         // Dừng tất cả coroutines
         StopAllCoroutines();
-        
+
         // Reset trạng thái
         isDead = false;
         isAttacking = false;
@@ -657,29 +657,29 @@ public class MiniBoss : MonoBehaviour
         currentState = State.Patrolling;
         lastAttackTime = 0f;
         lastTeleportTime = 0f;
-        
+
         // Reset vị trí và scale
         if (initialDataSaved)
         {
             transform.position = initialPosition;
             transform.localScale = initialScale;
         }
-        
+
         // Reset physics
         rb.linearVelocity = Vector2.zero;
         rb.gravityScale = 1f; // Reset gravity
-        
+
         // Bật lại colliders và script
         SetCollidersEnabled(true);
         this.enabled = true;
-        
+
         // Reset sprite renderer (trong trường hợp đang teleport)
         if (spriteRenderer != null)
         {
             Color originalColor = spriteRenderer.color;
             spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
         }
-        
+
         // Reset animator
         animator.ResetTrigger("Attack1");
         animator.ResetTrigger("Attack2");
@@ -687,32 +687,32 @@ public class MiniBoss : MonoBehaviour
         animator.ResetTrigger("Hurt");
         animator.ResetTrigger("Death");
         animator.SetBool("IsRunning", false);
-        
+
         // Reset máu
         if (damageReceiver != null)
         {
             damageReceiver.ResetBossHealth();
         }
-        
+
         // Reset health bar
         if (healthBarEnemy != null)
         {
             healthBarEnemy.ShowHealthBar(1f);
         }
-        
+
         // Reset audio
         if (audioSource != null && audioSource.isPlaying)
         {
             audioSource.Stop();
         }
-        
+
         // Tìm lại player
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             player = playerObj.transform;
         }
-        
+
         Debug.Log($"MiniBoss {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
 
@@ -780,7 +780,7 @@ public class MiniBoss : MonoBehaviour
     void UpdateAnimation()
     {
         if (isDead || isAttacking || isHurt) return;
-        
+
         // Set animation parameters
         animator.SetBool("IsRunning", Mathf.Abs(movement.x) > 0.1f);
     }
@@ -820,20 +820,20 @@ public class MiniBoss : MonoBehaviour
 
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireCube(transform.position, new Vector3(teleportRange * 2f, 1f, 1f));
-        
+
         if (useFixedBoundaries)
         {
             Gizmos.color = Color.cyan;
-            
+
             // Vẽ 2 đường thẳng đứng cho left và right boundary
             Vector3 leftLine = new Vector3(mapLeftBoundary, transform.position.y - 5f, 0f);
             Vector3 leftLineEnd = new Vector3(mapLeftBoundary, transform.position.y + 5f, 0f);
             Gizmos.DrawLine(leftLine, leftLineEnd);
-            
+
             Vector3 rightLine = new Vector3(mapRightBoundary, transform.position.y - 5f, 0f);
             Vector3 rightLineEnd = new Vector3(mapRightBoundary, transform.position.y + 5f, 0f);
             Gizmos.DrawLine(rightLine, rightLineEnd);
-            
+
             // Vẽ vùng teleport có thể
             Gizmos.color = Color.cyan;
             Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
@@ -844,16 +844,16 @@ public class MiniBoss : MonoBehaviour
         else if (mapBoundaryLeft != null && mapBoundaryRight != null)
         {
             Gizmos.color = Color.cyan;
-            
+
             // Vẽ 2 đường thẳng đứng cho left và right boundary
             Vector3 leftLine = new Vector3(mapBoundaryLeft.position.x, transform.position.y - 5f, 0f);
             Vector3 leftLineEnd = new Vector3(mapBoundaryLeft.position.x, transform.position.y + 5f, 0f);
             Gizmos.DrawLine(leftLine, leftLineEnd);
-            
+
             Vector3 rightLine = new Vector3(mapBoundaryRight.position.x, transform.position.y - 5f, 0f);
             Vector3 rightLineEnd = new Vector3(mapBoundaryRight.position.x, transform.position.y + 5f, 0f);
             Gizmos.DrawLine(rightLine, rightLineEnd);
-            
+
             // Vẽ vùng teleport có thể
             Gizmos.color = new Color(0f, 1f, 1f, 0.2f);
             Vector3 center = new Vector3((mapBoundaryLeft.position.x + mapBoundaryRight.position.x) / 2f, transform.position.y, 0f);
@@ -861,4 +861,16 @@ public class MiniBoss : MonoBehaviour
             Gizmos.DrawCube(center, size);
         }
     }
+
+    #region IBossResettable Implementation
+    public bool IsActive()
+    {
+        return gameObject.activeInHierarchy && enabled && !isDead;
+    }
+
+    public string GetBossName()
+    {
+        return gameObject.name;
+    }
+    #endregion
 }

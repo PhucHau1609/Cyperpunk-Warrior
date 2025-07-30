@@ -3,7 +3,7 @@ using BehaviorDesigner.Runtime;
 using System.Collections.Generic;
 using static EnemyMini;
 
-public class Boss2Controller : MonoBehaviour
+public class Boss2Controller : MonoBehaviour, IBossResettable
 {
     [Header("Boss2 Attack Settings")]
     public Transform laserPoint;
@@ -707,6 +707,17 @@ public class Boss2Controller : MonoBehaviour
             Destroy(enemy, 2f);
         }
     }
+    #region IBossResettable Implementation
+    public bool IsActive()
+    {
+        return gameObject.activeInHierarchy && enabled;
+    }
+    
+    public string GetBossName()
+    {
+        return gameObject.name;
+    }
+    #endregion
 }
 
 public enum Boss2AttackType
