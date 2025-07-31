@@ -207,4 +207,20 @@ public class BombDefuseMiniGame : MonoBehaviour
     {
         objectToShowAfterWin.SetActive(true);
     }
+
+    public void ResetState()
+    {
+        gameInProgress = false;
+        gameWon = false;
+        ResetGame();
+
+        if (objectToShowAfterWin != null)
+            objectToShowAfterWin.SetActive(false);
+
+        miniGamePanel.SetActive(false);
+
+        if (wallShrinker != null)
+            wallShrinker.ResetState();
+    }
+
 }

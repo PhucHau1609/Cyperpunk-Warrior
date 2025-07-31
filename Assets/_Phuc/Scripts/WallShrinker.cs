@@ -7,6 +7,11 @@ public class WallShrinker : MonoBehaviour
     public Transform rightWall;
     public float shrinkSpeed = 2f;
 
+    private float shakeInterval = 0.2f;
+    private float shakeTimer = 0f;
+
+
+
     [Header("Target X Positions")]
     public float leftTargetX;
     public float rightTargetX;
@@ -56,6 +61,16 @@ public class WallShrinker : MonoBehaviour
             {
                 isShrinking = false;
             }
+
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0f)
+            {
+                if (CameraFollow.Instance != null)
+                    CameraFollow.Instance.ShakeCamera(0.1f, 0.1f); // rung nhẹ mỗi 0.2s
+
+                shakeTimer = shakeInterval;
+            }
+
         }
     }
 
@@ -81,4 +96,22 @@ public class WallShrinker : MonoBehaviour
 
         btnOpenMiniGame.gameObject.SetActive(false);
     }
+
+    public void ResetState()
+    {
+        // Reset lại vị trí tường
+        leftWall.localPosition = new Vector3(0, leftWall.localPosition.y, leftWall.localPosition.z); // hoặc vị trí gốc ban đầu bạn lưu lại
+        rightWall.localPosition = new Vector3(0, rightWall.localPosition.y, rightWall.localPosition.z);
+
+        isShrinking = false;
+        isTriggered = false;
+        allowShrink = false;
+        gameFinished = false;
+
+        if (wallMoveAudio.isPlaying)
+            wallMoveAudio.Stop();
+
+        btnOpenMiniGame.gameObject.SetActive(false);
+    }
+
 }
