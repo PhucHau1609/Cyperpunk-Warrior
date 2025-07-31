@@ -52,7 +52,7 @@ public class Droid02Bullet : MonoBehaviour
             Explode();
         }
         // Đạn gặp bất kỳ collider nào khác cũng nổ (trừ Enemy hoặc chính nó)
-        else if (!collision.CompareTag("Enemy") && !collision.isTrigger)
+        else if (collision.CompareTag("Ground"))
         {
             Explode();
         }

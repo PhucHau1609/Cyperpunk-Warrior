@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class CheckPlayerInShootRange : Conditional
 {
-    public float shootRange = 3f;
+    [Header("Line of Sight Settings")]
+    public float shootRange = 8f;              // Khoảng cách tối đa
+    public float lineWidth = 2f;                // Độ rộng của đường thẳng (tolerance)
+    public LayerMask obstacleLayer = -1;        // Layer của vật cản (wall, obstacles)
+    public bool drawDebugRay = true;            // Hiển thị debug ray
+    
     public SharedTransform player;
-    private PlayerShader playerShader; // Thêm reference
+    private PlayerShader playerShader;
 
     public override void OnStart()
     {
@@ -16,7 +21,7 @@ public class CheckPlayerInShootRange : Conditional
             if (playerGO != null)
             {
                 player.Value = playerGO.transform;
-                playerShader = playerGO.GetComponentInChildren<PlayerShader>(); // Lấy PlayerShader
+                playerShader = playerGO.GetComponentInChildren<PlayerShader>();
             }
         }
     }
@@ -26,13 +31,63 @@ public class CheckPlayerInShootRange : Conditional
         if (player == null || player.Value == null)
             return TaskStatus.Failure;
 
-        // Kiểm tra tàng hình - nếu tàng hình thì trả về Failure
+        // Kiểm tra tàng hình
         if (playerShader != null && playerShader.IsInvisible())
         {
             return TaskStatus.Failure;
         }
 
-        float dist = Vector2.Distance(transform.position, player.Value.position);
-        return dist <= shootRange ? TaskStatus.Success : TaskStatus.Failure;
+        Vector2 enemyPos = transform.position;
+        Vector2 playerPos = player.Value.position;
+        
+        // Kiểm tra khoảng cách
+        float distance = Vector2.Distance(enemyPos, playerPos);
+        if (distance > shootRange)
+        {
+            return TaskStatus.Failure;
+        }
+
+        // Kiểm tra xem player có nằm trên đường thẳng ngang không
+        bool isInLineOfSight = CheckLineOfSight(enemyPos, playerPos);
+        
+        if (drawDebugRay)
+        {
+            DrawDebugLine(enemyPos, playerPos, isInLineOfSight);
+        }
+
+        return isInLineOfSight ? TaskStatus.Success : TaskStatus.Failure;
+    }
+
+    private bool CheckLineOfSight(Vector2 enemyPos, Vector2 playerPos)
+    {
+        // Kiểm tra độ chênh lệch theo trục Y (để xác định có nằm trên đường thẳng ngang không)
+        float yDifference = Mathf.Abs(playerPos.y - enemyPos.y);
+        if (yDifference > lineWidth)
+        {
+            return false; // Player không nằm trong "đường thẳng"
+        }
+
+        // Kiểm tra xem có vật cản giữa Enemy và Player không
+        Vector2 direction = (playerPos - enemyPos).normalized;
+        float distance = Vector2.Distance(enemyPos, playerPos);
+        
+        // Raycast để kiểm tra vật cản
+        RaycastHit2D hit = Physics2D.Raycast(enemyPos, direction, distance, obstacleLayer);
+        
+        // Nếu không có vật cản hoặc vật cản là chính Player thì OK
+        return hit.collider == null || hit.collider.CompareTag("Player");
+    }
+
+    private void DrawDebugLine(Vector2 enemyPos, Vector2 playerPos, bool canSee)
+    {
+        Color lineColor = canSee ? Color.green : Color.red;
+        Debug.DrawLine(enemyPos, playerPos, lineColor, 0.1f);
+        
+        // Vẽ vùng "đường thẳng" (line width)
+        Vector2 upOffset = Vector2.up * (lineWidth / 2f);
+        Debug.DrawLine(enemyPos + upOffset, enemyPos + Vector2.right * shootRange + upOffset, Color.yellow, 0.1f);
+        Debug.DrawLine(enemyPos - upOffset, enemyPos + Vector2.right * shootRange - upOffset, Color.yellow, 0.1f);
+        Debug.DrawLine(enemyPos + upOffset, enemyPos + Vector2.left * shootRange + upOffset, Color.yellow, 0.1f);
+        Debug.DrawLine(enemyPos - upOffset, enemyPos + Vector2.left * shootRange - upOffset, Color.yellow, 0.1f);
     }
 }
