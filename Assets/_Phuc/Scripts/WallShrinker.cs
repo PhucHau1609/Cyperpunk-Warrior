@@ -81,4 +81,22 @@ public class WallShrinker : MonoBehaviour
 
         btnOpenMiniGame.gameObject.SetActive(false);
     }
+
+    public void ResetState()
+    {
+        // Reset lại vị trí tường
+        leftWall.localPosition = new Vector3(0, leftWall.localPosition.y, leftWall.localPosition.z); // hoặc vị trí gốc ban đầu bạn lưu lại
+        rightWall.localPosition = new Vector3(0, rightWall.localPosition.y, rightWall.localPosition.z);
+
+        isShrinking = false;
+        isTriggered = false;
+        allowShrink = false;
+        gameFinished = false;
+
+        if (wallMoveAudio.isPlaying)
+            wallMoveAudio.Stop();
+
+        btnOpenMiniGame.gameObject.SetActive(false);
+    }
+
 }

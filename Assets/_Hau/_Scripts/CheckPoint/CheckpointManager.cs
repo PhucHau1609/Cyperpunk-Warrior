@@ -75,6 +75,13 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         {
             controller.RestoreFullLife();
         }
+
+        // 👉 Reset hệ thống tường và minigame nếu có
+        BombDefuseMiniGame[] allMiniGames = Object.FindObjectsByType<BombDefuseMiniGame>(FindObjectsSortMode.None);
+        foreach (var miniGame in allMiniGames)
+        {
+            miniGame.ResetState();
+        }
     }
 
     private void LoadSceneWithCleanup(string sceneName, GameObject player)
