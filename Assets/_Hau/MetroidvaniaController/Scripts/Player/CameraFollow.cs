@@ -90,4 +90,12 @@ public class CameraFollow : HauSingleton<CameraFollow>
 		originalPos = camTransform.localPosition;
 		shakeDuration = 0.2f;
 	}
+
+    public void ShakeCamera(float amount, float duration)
+    {
+        originalPos = camTransform.localPosition;
+        shakeAmount = amount;
+        shakeDuration = duration;
+    }
+
 }
