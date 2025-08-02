@@ -12,7 +12,7 @@ public enum GameState
 
 public class GameStateManager : HauSingleton<GameStateManager>
 {
-    private GameState currentState = GameState.Gameplay;
+    [SerializeField] protected GameState currentState = GameState.Gameplay;
     public GameState CurrentState => currentState;
 
     public bool IsGameplay => currentState == GameState.Gameplay;

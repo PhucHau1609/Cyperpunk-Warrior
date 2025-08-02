@@ -23,7 +23,7 @@ public class SpawnManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         //Debug.Log("📂 Log file path: " + Application.persistentDataPath);
-        LogToFile("📂 Log file path: " + Application.persistentDataPath);
+        //LogToFile("📂 Log file path: " + Application.persistentDataPath);
     }
 
     private bool SceneRequiresSpawn(Scene scene)
@@ -33,16 +33,16 @@ public class SpawnManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        LogToFile("🧭 Scene loaded: " + scene.name);
-        LogToFile("nextSpawnPointID = " + nextSpawnPointID);
+        //LogToFile("🧭 Scene loaded: " + scene.name);
+        //LogToFile("nextSpawnPointID = " + nextSpawnPointID);
         if (SceneRequiresSpawn(scene))
         {
-            LogToFile("⏳ Scene requires spawn, starting DelayedSpawn...");
+            //LogToFile("⏳ Scene requires spawn, starting DelayedSpawn...");
             StartCoroutine(DelayedSpawn());
         }
         else
         {
-            LogToFile("⛔ Scene doesn't require spawn: " + scene.name);
+            //LogToFile("⛔ Scene doesn't require spawn: " + scene.name);
         }
     }
 
@@ -52,17 +52,17 @@ public class SpawnManager : MonoBehaviour
         yield return new WaitUntil(() => player != null);
 
         Scene playerScene = player.scene;
-        LogToFile("✅ Found player. Scene of player: " + playerScene.name);
+        //LogToFile("✅ Found player. Scene of player: " + playerScene.name);
 
         if (playerScene.name != "DontDestroyOnLoad")
         {
             Debug.LogWarning("⚠ Có thể player hiện tại không phải từ DontDestroyOnLoad");
-            LogToFile("⚠ Player không phải từ DontDestroyOnLoad, đang ở scene: " + playerScene.name);
+            //LogToFile("⚠ Player không phải từ DontDestroyOnLoad, đang ở scene: " + playerScene.name);
             yield break;
         }
 
         yield return new WaitForEndOfFrame();
-        LogToFile("➡ Moving player to spawn point...");
+        //LogToFile("➡ Moving player to spawn point...");
         MovePlayerToSpawnPoint();
 
         yield return new WaitForSeconds(0.5f);
@@ -72,7 +72,7 @@ public class SpawnManager : MonoBehaviour
             if (itemPicker.mainCamera == null)
             {
                 itemPicker.RefreshCamera();
-                LogToFile("📷 Refreshed camera for item picker");
+                //LogToFile("📷 Refreshed camera for item picker");
             }
         }
     }
@@ -82,24 +82,24 @@ public class SpawnManager : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
         {
-            LogToFile("❌ Không tìm thấy Player");
+            //LogToFile("❌ Không tìm thấy Player");
             return;
         }
 
-        LogToFile("➡ Bắt đầu tìm spawn point, nextSpawnPointID = " + nextSpawnPointID);
+        //LogToFile("➡ Bắt đầu tìm spawn point, nextSpawnPointID = " + nextSpawnPointID);
 
         if (string.IsNullOrEmpty(nextSpawnPointID) || nextSpawnPointID == "Default")
         {
-            LogToFile("⚠ nextSpawnPointID bị null hoặc default → bỏ qua spawn");
+            //LogToFile("⚠ nextSpawnPointID bị null hoặc default → bỏ qua spawn");
             return;
         }
 
         SpawnPoint[] spawnPoints = Object.FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
-        LogToFile("🔍 Có tổng cộng " + spawnPoints.Length + " spawn point trong scene");
+        //LogToFile("🔍 Có tổng cộng " + spawnPoints.Length + " spawn point trong scene");
 
         foreach (var point in spawnPoints)
         {
-            LogToFile("🧩 So sánh: " + point.sceneName + " == " + nextSpawnPointID);
+            //LogToFile("🧩 So sánh: " + point.sceneName + " == " + nextSpawnPointID);
             if (point.sceneName.ToString() == nextSpawnPointID)
             {
                 var rb = player.GetComponent<Rigidbody2D>();
@@ -112,7 +112,7 @@ public class SpawnManager : MonoBehaviour
                 player.transform.position = point.transform.position;
                 player.transform.rotation = point.transform.rotation;
 
-                LogToFile("✅ Player moved to: " + point.transform.position + " | Rotation: " + point.transform.rotation);
+                //LogToFile("✅ Player moved to: " + point.transform.position + " | Rotation: " + point.transform.rotation);
 
                 if (rb != null)
                     StartCoroutine(ReenablePhysics(rb));
@@ -122,14 +122,14 @@ public class SpawnManager : MonoBehaviour
         }
 
         var allPlayers = GameObject.FindGameObjectsWithTag("Player");
-        LogToFile("🔍 Số lượng Player hiện tại: " + allPlayers.Length);
+        //LogToFile("🔍 Số lượng Player hiện tại: " + allPlayers.Length);
         foreach (var p in allPlayers)
         {
-            LogToFile("👉 Player: " + p.name + " | Pos: " + p.transform.position + " | Scene: " + p.scene.name);
+            //LogToFile("👉 Player: " + p.name + " | Pos: " + p.transform.position + " | Scene: " + p.scene.name);
         }
 
 
-        LogToFile("❌ Không tìm thấy spawn point trùng với ID: " + nextSpawnPointID);
+        //LogToFile("❌ Không tìm thấy spawn point trùng với ID: " + nextSpawnPointID);
     }
 
     private IEnumerator ReenablePhysics(Rigidbody2D rb)
@@ -141,7 +141,7 @@ public class SpawnManager : MonoBehaviour
     public void SetNextSpawnPoint(SpawnSceneName spawnID)
     {
         nextSpawnPointID = spawnID.ToString();
-        LogToFile("✅ SetNextSpawnPoint → " + nextSpawnPointID);
+        //LogToFile("✅ SetNextSpawnPoint → " + nextSpawnPointID);
     }
 
     private void LogToFile(string message)
