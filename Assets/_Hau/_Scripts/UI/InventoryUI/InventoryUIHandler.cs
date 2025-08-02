@@ -17,7 +17,7 @@ public class InventoryUIHandler : MonoBehaviour
     private void OnFirstItemPickedUp(object param)
     {
         inventoryIconUI.SetActive(true);
-        Debug.Log("🔔 Hiển thị icon Inventory vì nhặt vật phẩm đầu tiên.");
+        //Debug.Log("🔔 Hiển thị icon Inventory vì nhặt vật phẩm đầu tiên.");
     }
 }
 

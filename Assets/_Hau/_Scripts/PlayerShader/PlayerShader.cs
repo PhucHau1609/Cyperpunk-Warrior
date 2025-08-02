@@ -23,11 +23,6 @@ public class PlayerShader : MonoBehaviour
     [Header("Attribute Upgrade")]
     private CharacterController2D characterController;
 
- /*   [Header("SkillDownUI")]
-    [SerializeField] private SkillCooldownUI cooldownUI;*/
-
-
-
     private static readonly Dictionary<ShaderEffect, string> ShaderEffectKeywords = new Dictionary<ShaderEffect, string>
     {
         { ShaderEffect.Glow, "GLOW_ON" },
@@ -58,7 +53,6 @@ public class PlayerShader : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerShaderComponent = GetComponent<AllIn1Shader>();
         characterController = GetComponentInParent<CharacterController2D>();
-        //cooldownUI = FindFirstObjectByType<SkillCooldownUI>();
 
         if (spriteRenderer != null)
         {
@@ -71,27 +65,6 @@ public class PlayerShader : MonoBehaviour
             Debug.LogWarning("Player chưa có component AllIn1Shader!");
         }
     }
-
-    /*void Update()
-    {
-       if (Input.GetKeyDown(KeyCode.J) && !isEffectActive && !isOnCooldown &&
-            PlayerStatus.Instance != null)
-        {
-            PlayerStatus.Instance.UseEnergy(10f);
-            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.qImage);
-            StartCoroutine(ActivateEffectWithInvisibility());
-        }
-
-
-        // Nhấn phím 1 để biến hình ColorRamp (có cooldown)
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (ItemCollectionTracker.Instance.ConditionMet && !isEffectActive && !isOnCooldown)
-            {
-                StartCoroutine(ActivateColorRampEffect());
-            }
-        }
-    }*/
 
     public bool ActivateInvisibility()
     {
@@ -121,7 +94,22 @@ public class PlayerShader : MonoBehaviour
         return false;
     }
 
+    public void OnClickActivateColorRampIfReady()
+    {
+        bool condition = EquipmentConditionChecker.Instance != null &&
+                         EquipmentConditionChecker.Instance.IsConditionMet();
 
+        //Debug.Log($"🧪 Kiểm tra điều kiện: {condition}");
+
+        if (condition && !isEffectActive && !isOnCooldown)
+        {
+            StartCoroutine(ActivateColorRampEffect());
+        }
+        else
+        {
+            Debug.Log("❌ Không đủ điều kiện trang bị để biến hình");
+        }
+    }
 
 
     IEnumerator ActivateEffectWithInvisibility()
@@ -217,6 +205,27 @@ public class PlayerShader : MonoBehaviour
         return isInvisible;
     }
 }
+
+/*void Update()
+   {
+      if (Input.GetKeyDown(KeyCode.J) && !isEffectActive && !isOnCooldown &&
+           PlayerStatus.Instance != null)
+       {
+           PlayerStatus.Instance.UseEnergy(10f);
+           PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.qImage);
+           StartCoroutine(ActivateEffectWithInvisibility());
+       }
+
+
+       // Nhấn phím 1 để biến hình ColorRamp (có cooldown)
+       if (Input.GetKeyDown(KeyCode.Alpha1))
+       {
+           if (ItemCollectionTracker.Instance.ConditionMet && !isEffectActive && !isOnCooldown)
+           {
+               StartCoroutine(ActivateColorRampEffect());
+           }
+       }
+   }*/
 
 /* IEnumerator ActivateEffectWithInvisibility()
    {

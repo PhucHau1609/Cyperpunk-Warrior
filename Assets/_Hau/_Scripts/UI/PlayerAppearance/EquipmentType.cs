@@ -6,5 +6,6 @@ public enum EquipmentType
     Trouser,
     Shoes,
     Weapon,
-    Accessory
+    Accessory,
+    Gloves
 }
