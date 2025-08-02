@@ -85,6 +85,7 @@ public class BoardGame : MonoBehaviour
 
     public void CloseMiniGame()
     {
+        GameStateManager.Instance.ResetToGameplay();
         miniGameUI.SetActive(false);
         if (teleportPortal != null)
         {

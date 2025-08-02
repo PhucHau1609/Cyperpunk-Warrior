@@ -30,6 +30,10 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
     void Update()
     {
         if (characterController.isDead) return;
+        if (GameStateManager.Instance.CurrentState == GameState.MiniGame)
+        {
+            this.TurnOffAllWeapon();
+        }
 
         if (Input.GetKeyDown(KeyCode.T))
         {

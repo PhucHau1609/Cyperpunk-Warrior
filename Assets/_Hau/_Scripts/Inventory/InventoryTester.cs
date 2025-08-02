@@ -16,6 +16,8 @@ public class InventoryTester : HauMonoBehaviour //E75 create
         //this.AddTestItems(ItemCode.Clothes_4, 1);
 
         //this.AddTestItems(ItemCode.Artefacts_1, 1);
+        //this.AddTestItems(ItemCode.CraftingRecipe, 1);
+
 
 
         //this.AddTestItems(ItemCode.MachineGun_0, 1);

@@ -99,6 +99,12 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
             ItemTooltipUI.Instance.HideTooltip();
         }
 
+        // 👉 Tắt tooltip nếu đang hiển thị
+        if (PanelCraft.HasInstance)
+        {
+            PanelCraft.Instance.ClosePanel();
+        }
+
         // 👇 THÊM DÒNG NÀY
         PlayerAppearanceUI.Instance?.HideUI();
     }
