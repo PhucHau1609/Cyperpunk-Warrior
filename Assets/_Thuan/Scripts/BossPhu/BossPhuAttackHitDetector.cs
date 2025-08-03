@@ -48,8 +48,6 @@ public class BossPhuAttackHitDetector : MonoBehaviour
     public void OnPunchHit()
     {
         if (!canDealDamage) return;
-        
-        //Debug.Log("Checking punch hit...");
         CheckHit(punchHitBox.position, punchHitSize, "Punch");
     }
     
@@ -57,8 +55,6 @@ public class BossPhuAttackHitDetector : MonoBehaviour
     public void OnSlamHit()
     {
         if (!canDealDamage) return;
-        
-        //Debug.Log("Checking slam hit...");
         CheckHit(slamHitBox.position, slamHitSize, "Slam");
     }
     
@@ -123,7 +119,6 @@ public class BossPhuAttackHitDetector : MonoBehaviour
         EnableDamage();
     }
     
-    // Vẽ gizmos để debug hit boxes
     void OnDrawGizmosSelected()
     {
         if (punchHitBox != null)

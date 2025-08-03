@@ -80,10 +80,6 @@ public class Boss2HandController : MonoBehaviour
     {
         // Tìm Boss2Controller
         boss2Controller = FindFirstObjectByType<Boss2Controller>();
-        if (boss2Controller == null)
-        {
-            Debug.LogError($"{gameObject.name}: Không tìm thấy Boss2Controller!");
-        }
 
         // Tìm Player
         FindPlayer();
@@ -167,8 +163,6 @@ public class Boss2HandController : MonoBehaviour
         {
             audioSource.Stop();
         }
-        
-        Debug.Log($"Hand {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
     
     void FindPlayer()
@@ -187,7 +181,6 @@ public class Boss2HandController : MonoBehaviour
     {
         if (isAttacking || IsDead() || currentState != HandState.Idle) 
         {
-            Debug.Log($"{gameObject.name}: Không thể tấn công - isAttacking:{isAttacking}, IsDead:{IsDead()}, State:{currentState}");
             return;
         }
 
@@ -206,8 +199,6 @@ public class Boss2HandController : MonoBehaviour
         {
             boss2Controller.OnHandStartAttack(this);
         }
-        
-        Debug.Log($"{gameObject.name}: Bắt đầu tấn công {attackType} tại vị trí {targetPosition}!");
     }
     
     void HandleCurrentState()
@@ -240,8 +231,6 @@ public class Boss2HandController : MonoBehaviour
             // Chạy animation dựa trên assignedAttackType
             string attackAnimation = assignedAttackType == Boss2AttackType.Attack3 ? "Attack3" : "Attack4";
             animator.SetTrigger(attackAnimation);
-            
-            Debug.Log($"{gameObject.name}: Thực hiện {attackAnimation} tại target position!");
         }
     }
     
@@ -271,7 +260,6 @@ public class Boss2HandController : MonoBehaviour
             PlaySound(handAttackSound, 0.9f);
 
             hitBox.EnableHitBox();
-            Debug.Log($"{gameObject.name}: HitBox enabled for attack!");
         }
     }
 
@@ -303,8 +291,6 @@ public class Boss2HandController : MonoBehaviour
             {
                 boss2Controller.OnHandEndAttack(this);
             }
-            
-            Debug.Log($"{gameObject.name}: Đã trở về vị trí ban đầu");
         }
     }
     
@@ -317,7 +303,6 @@ public class Boss2HandController : MonoBehaviour
         //     if (boss2Controller != null)
         //     {
         //         boss2Controller.TakeDamage(5); // Damage có thể điều chỉnh
-        //         Debug.Log($"{gameObject.name}: Player tấn công vào cánh tay!");
         //     }
         // }
     }
@@ -347,8 +332,6 @@ public class Boss2HandController : MonoBehaviour
             {
                 boss2Controller.OnHandEndAttack(this);
             }
-            
-            Debug.Log($"{gameObject.name}: Buộc kết thúc tấn công");
         }
     }
 
@@ -389,8 +372,6 @@ public class Boss2HandController : MonoBehaviour
         else if (damageReceiver != null && damageReceiver.IsDead())
         {
             PlaySound(handDeathSound, 0.8f);
-
-            Debug.Log($"[{gameObject.name}] Hand is dead!");
             
             // Nếu cánh tay đang tấn công thì dừng lại
             if (isAttacking)

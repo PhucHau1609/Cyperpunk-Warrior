@@ -31,10 +31,6 @@ public class BombDropperController : MonoBehaviour, IDamageResponder
         if (bombPrefab == null)
         {
             bombPrefab = Resources.Load<GameObject>("Prefabs/Bomb");
-            if (bombPrefab == null)
-            {
-                Debug.LogWarning($"[{gameObject.name}] Không tìm thấy bombPrefab trong Resources/Prefabs/");
-            }
         }
 
         // Tự động tìm dropPoint nếu chưa được gán
@@ -52,7 +48,6 @@ public class BombDropperController : MonoBehaviour, IDamageResponder
                 dropPointObj.transform.SetParent(transform);
                 dropPointObj.transform.localPosition = new Vector3(0, -1f, 0);
                 dropPoint = dropPointObj.transform;
-                Debug.Log($"[{gameObject.name}] Tự động tạo DropPoint");
             }
         }
     }
@@ -82,11 +77,6 @@ public class BombDropperController : MonoBehaviour, IDamageResponder
         if (bombPrefab != null && dropPoint != null)
         {
             Instantiate(bombPrefab, dropPoint.position, Quaternion.identity);
-            Debug.Log($"[{gameObject.name}] Dropped bomb at {dropPoint.position}");
-        }
-        else
-        {
-            Debug.LogWarning($"[{gameObject.name}] Cannot drop bomb - missing bombPrefab or dropPoint");
         }
     }
 
@@ -103,9 +93,6 @@ public class BombDropperController : MonoBehaviour, IDamageResponder
 
     public void OnDead()
     {
-        Debug.Log($"[BombDropperController] {name} OnDead CALLED");
-
-
         animator.SetTrigger("Death");
         currentState = State.Dead;
 

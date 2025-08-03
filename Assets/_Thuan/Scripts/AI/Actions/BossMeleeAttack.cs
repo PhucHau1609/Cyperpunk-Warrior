@@ -35,7 +35,6 @@ public class BossMeleeAttack : Action
             string[] meleeAttacks = {"Attack3", "Attack4" };
             string selectedAttack = meleeAttacks[Random.Range(0, meleeAttacks.Length)];
             animator.SetTrigger(selectedAttack);
-            //Debug.Log($"Boss thực hiện {selectedAttack}");
         }
 
         if (bossAI != null)

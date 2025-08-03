@@ -27,7 +27,5 @@ public class BossManager : MonoBehaviour
 
         var animator = barrierObject.GetComponent<Animator>();
         if (animator != null) animator.SetTrigger("open");
-
-        Debug.Log("✅ Cửa đã mở — cả MiniBoss và BossPhu đã bị tiêu diệt!");
     }
 }

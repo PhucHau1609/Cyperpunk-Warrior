@@ -91,7 +91,6 @@ public class Boss2Laser : MonoBehaviour
 
             isPlayerInLaser = true;
             StartDamageCoroutine(other.gameObject);
-            Debug.Log("[Boss2Laser] Player entered laser beam!");
         }
     }
 
@@ -101,7 +100,6 @@ public class Boss2Laser : MonoBehaviour
         {
             isPlayerInLaser = false;
             StopDamageCoroutine();
-            Debug.Log("[Boss2Laser] Player exited laser beam!");
         }
     }
 
@@ -137,7 +135,6 @@ public class Boss2Laser : MonoBehaviour
                 if (applyDamageMethod != null)
                 {
                     applyDamageMethod.Invoke(playerScript, new object[] { laserDamage, transform.position });
-                    Debug.Log($"[Boss2Laser] Dealt {laserDamage} laser damage to Player!");
                 }
             }
 

@@ -42,12 +42,6 @@ public class BossCheckPlayerInMeleeRange : Conditional
         //         _playerTransform = playerController.transform;
         //     }
         // }
-
-        // Nếu vẫn không tìm thấy, log cảnh báo
-        if (_playerTransform == null)
-        {
-            Debug.LogWarning("Không tìm thấy Player trong scene!");
-        }
     }
     
     public override TaskStatus OnUpdate()

@@ -58,7 +58,6 @@ public class EnemyDestroyTracker : MonoBehaviour
         }
         
         totalEnemyCount = aliveEnemies.Count;
-        Debug.Log($"[EnemyDestroyTracker] Initialized with {totalEnemyCount} enemies to track");
     }
     
     void RegisterEnemyForDestruction(GameObject enemy)
@@ -83,8 +82,6 @@ public class EnemyDestroyTracker : MonoBehaviour
             aliveEnemies.Remove(destroyedEnemy);
             int remainingCount = aliveEnemies.Count;
             
-            Debug.Log($"[EnemyDestroyTracker] Enemy destroyed. Remaining: {remainingCount}/{totalEnemyCount}");
-            
             // Kích hoạt event khi có enemy bị destroy
             OnEnemyDestroyed?.Invoke(remainingCount);
             
@@ -101,8 +98,6 @@ public class EnemyDestroyTracker : MonoBehaviour
         if (isComplete) return;
         
         isComplete = true;
-        
-        Debug.Log("[EnemyDestroyTracker] All enemies destroyed! Objective complete.");
         
         // Kích hoạt Events
         OnAllEnemiesDestroyed?.Invoke();
@@ -134,11 +129,9 @@ public class EnemyDestroyTracker : MonoBehaviour
             try
             {
                 scriptToActivate.Invoke(methodToCall, 0f);
-                Debug.Log($"[EnemyDestroyTracker] Called method {methodToCall} on {scriptToActivate.GetType().Name}");
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[EnemyDestroyTracker] Failed to call method {methodToCall}: {e.Message}");
             }
         }
     }
@@ -151,7 +144,6 @@ public class EnemyDestroyTracker : MonoBehaviour
             aliveEnemies.Add(enemy);
             RegisterEnemyForDestruction(enemy);
             totalEnemyCount++;
-            Debug.Log($"[EnemyDestroyTracker] Added enemy. Total: {totalEnemyCount}");
         }
     }
     
@@ -161,7 +153,6 @@ public class EnemyDestroyTracker : MonoBehaviour
         {
             aliveEnemies.Remove(enemy);
             totalEnemyCount--;
-            Debug.Log($"[EnemyDestroyTracker] Removed enemy from tracking. Total: {totalEnemyCount}");
         }
     }
     

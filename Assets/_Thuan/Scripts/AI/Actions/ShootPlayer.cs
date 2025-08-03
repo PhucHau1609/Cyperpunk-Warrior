@@ -35,8 +35,6 @@ public class ShootPlayer : Action
             // Trigger animation - việc bắn thực sự sẽ được thực hiện trong Animation Event
             enemy.animator.SetTrigger("Shoot");
             lastShootTime = Time.time;
-            
-            Debug.Log($"[{gameObject.name}] Triggered Shoot animation at {Time.time}");
         }
 
         return TaskStatus.Running;

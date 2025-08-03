@@ -44,10 +44,6 @@ public class DropSingleBomb : Action
             {
                 animator.Value.SetTrigger("Attack");
             }
-            else
-            {
-                Debug.LogWarning($"[{gameObject.name}] DropSingleBomb: Animator not found!");
-            }
         }
     }
 

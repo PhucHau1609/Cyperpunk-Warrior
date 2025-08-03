@@ -28,8 +28,6 @@ public class CageDamageReceiver : DamageReceiver, IDamageResponder
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
 
         IsImmotal = true;
         InitializeEnemyTracking();
@@ -106,7 +104,6 @@ public class CageDamageReceiver : DamageReceiver, IDamageResponder
         
         // Tắt IsImmotal
         IsImmotal = false;
-        Debug.Log($"{name}: All target enemies destroyed! Cage is now vulnerable.");
     }
 
     // Public methods để quản lý danh sách enemies

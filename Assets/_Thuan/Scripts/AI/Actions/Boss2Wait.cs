@@ -30,8 +30,6 @@ public class Boss2Wait : Action
         {
             actualWaitTime = waitTime;
         }
-        
-        Debug.Log($"Boss2 chờ {actualWaitTime:F1} giây");
     }
     
     public override TaskStatus OnUpdate()

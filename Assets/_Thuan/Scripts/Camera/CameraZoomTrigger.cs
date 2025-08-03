@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using BehaviorDesigner.Runtime;
+using TMPro;
 
 public class CameraZoomTrigger : MonoBehaviour
 {
@@ -13,12 +14,26 @@ public class CameraZoomTrigger : MonoBehaviour
     
     [Header("Audio Settings")]
     public AudioClip zoomSound;
+    public AudioClip warningSFX;
     [Range(0f, 1f)]
     public float audioVolume = 0.5f;
+    [Range(0f, 1f)]
+    public float warningVolume = 0.7f;
+    
+    [Header("Warning Effect Settings")]
+    public TextMeshProUGUI warningText;
+    public float letterAppearDelay = 0.1f; // Thời gian delay giữa các chữ cái xuất hiện
+    public float blinkSpeed = 0.3f; // Tốc độ nhấp nháy
+    public float disappearDelay = 1f; // Thời gian chờ trước khi biến mất
+    public float letterDisappearDelay = 0.05f; // Thời gian delay giữa các chữ cái biến mất
+    public Color redColor = Color.red;
+    public Color blackColor = Color.black;
     
     private float originalZoomSize;
     private bool hasTriggered = false;
     private AudioSource audioSource;
+    private AudioSource warningAudioSource;
+    private string originalWarningText;
 
     [Header("Boss Control")]
     public MonoBehaviour bossController; 
@@ -56,6 +71,20 @@ public class CameraZoomTrigger : MonoBehaviour
         }
         audioSource.volume = audioVolume;
         audioSource.playOnAwake = false;
+        
+        // Setup warning audio source
+        warningAudioSource = gameObject.AddComponent<AudioSource>();
+        warningAudioSource.volume = warningVolume;
+        warningAudioSource.playOnAwake = false;
+        warningAudioSource.loop = false;
+        
+        // Setup warning text
+        if (warningText != null)
+        {
+            originalWarningText = warningText.text;
+            warningText.text = "";
+            warningText.gameObject.SetActive(false);
+        }
     }
     
     void OnTriggerEnter2D(Collider2D other)
@@ -71,22 +100,144 @@ public class CameraZoomTrigger : MonoBehaviour
                 DisableColliders();
             }
             
-            // Play zoom sound
-            if (zoomSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(zoomSound);
-            }
-            
-            // Zoom camera và kích hoạt dialogue
-            StartCoroutine(ZoomThenDialogue());
+            // Bắt đầu với hiệu ứng Warning
+            StartCoroutine(WarningSequence());
         }
     }
 
-    IEnumerator ZoomThenDialogue()
+    IEnumerator WarningSequence()
     {
-        // Zoom camera trước
-        yield return StartCoroutine(ZoomCamera(targetZoomSize));
+        // Bắt đầu zoom và warning đồng thời
+        Coroutine zoomCoroutine = null;
+        Coroutine warningCoroutine = null;
         
+        // Play zoom sound trước
+        if (zoomSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(zoomSound);
+        }
+        
+        // Bắt đầu zoom camera
+        zoomCoroutine = StartCoroutine(ZoomCamera(targetZoomSize));
+        
+        // Bắt đầu hiệu ứng Warning
+        if (warningText != null)
+        {
+            warningCoroutine = StartCoroutine(WarningEffect());
+        }
+        
+        // Đợi cả zoom và warning hoàn thành
+        if (zoomCoroutine != null)
+        {
+            yield return zoomCoroutine;
+        }
+        
+        if (warningCoroutine != null)
+        {
+            yield return warningCoroutine;
+        }
+        
+        // Tiếp tục với dialogue
+        yield return StartCoroutine(DialogueSequence());
+    }
+    
+    IEnumerator WarningEffect()
+    {
+        // Phát SFX Warning
+        if (warningSFX != null && warningAudioSource != null)
+        {
+            warningAudioSource.clip = warningSFX;
+            warningAudioSource.Play();
+        }
+        
+        warningText.gameObject.SetActive(true);
+        
+        // Hiệu ứng xuất hiện từng chữ cái
+        yield return StartCoroutine(ShowWarningLetters());
+        
+        // Chờ 1 giây rồi biến mất
+        yield return new WaitForSeconds(disappearDelay);
+        
+        // Hiệu ứng biến mất từng chữ cái
+        yield return StartCoroutine(HideWarningLetters());
+        
+        // Tắt SFX Warning khi hiệu ứng kết thúc
+        if (warningAudioSource != null && warningAudioSource.isPlaying)
+        {
+            warningAudioSource.Stop();
+        }
+        
+        // Ẩn warning text
+        warningText.gameObject.SetActive(false);
+    }
+
+    IEnumerator ShowWarningLetters()
+    {
+        if (warningText == null || string.IsNullOrEmpty(originalWarningText)) yield break;
+        
+        warningText.text = "";
+        warningText.color = redColor;
+        
+        // Coroutine cho hiệu ứng nhấp nháy
+        Coroutine blinkCoroutine = StartCoroutine(BlinkWarningText());
+        
+        // Hiển thị từng chữ cái
+        for (int i = 0; i <= originalWarningText.Length; i++)
+        {
+            warningText.text = originalWarningText.Substring(0, i);
+            yield return new WaitForSeconds(letterAppearDelay);
+        }
+        
+        // Dừng hiệu ứng nhấp nháy
+        if (blinkCoroutine != null)
+        {
+            StopCoroutine(blinkCoroutine);
+        }
+        
+        // Đảm bảo text hiển thị đầy đủ với màu đỏ
+        warningText.text = originalWarningText;
+        warningText.color = redColor;
+    }
+    
+    IEnumerator HideWarningLetters()
+    {
+        if (warningText == null || string.IsNullOrEmpty(originalWarningText)) yield break;
+        
+        // Bắt đầu hiệu ứng nhấp nháy lại
+        Coroutine blinkCoroutine = StartCoroutine(BlinkWarningText());
+        
+        // Ẩn từng chữ cái (từ cuối về đầu)
+        for (int i = originalWarningText.Length; i >= 0; i--)
+        {
+            warningText.text = originalWarningText.Substring(0, i);
+            yield return new WaitForSeconds(letterDisappearDelay);
+        }
+        
+        // Dừng hiệu ứng nhấp nháy
+        if (blinkCoroutine != null)
+        {
+            StopCoroutine(blinkCoroutine);
+        }
+        
+        warningText.text = "";
+    }
+    
+    IEnumerator BlinkWarningText()
+    {
+        if (warningText == null) yield break;
+        
+        bool useRedColor = true;
+        
+        while (true)
+        {
+            warningText.color = useRedColor ? redColor : blackColor;
+            useRedColor = !useRedColor;
+            yield return new WaitForSeconds(blinkSpeed);
+        }
+    }
+
+    IEnumerator DialogueSequence()
+    {
         // Pause game
         Time.timeScale = 0f;
         
@@ -128,6 +279,15 @@ public class CameraZoomTrigger : MonoBehaviour
         
         // Tắt trigger này
         gameObject.SetActive(false);
+    }
+
+    IEnumerator ZoomThenDialogue()
+    {
+        // Zoom camera trước
+        yield return StartCoroutine(ZoomCamera(targetZoomSize));
+        
+        // Tiếp tục với dialogue
+        yield return StartCoroutine(DialogueSequence());
     }
     
     void OnTriggerExit2D(Collider2D other)
@@ -243,8 +403,6 @@ public class CameraZoomTrigger : MonoBehaviour
         {
             rb.bodyType = RigidbodyType2D.Dynamic;
         }
-        
-        //Debug.Log("Boss activated!");
     }
     
     // Methods để quản lý colliders
@@ -257,7 +415,6 @@ public class CameraZoomTrigger : MonoBehaviour
                 col.enabled = false;
             }
         }
-        //Debug.Log($"Disabled {collidersToControl.Count} colliders");
     }
     
     private void EnableColliders()
@@ -269,7 +426,6 @@ public class CameraZoomTrigger : MonoBehaviour
                 col.enabled = true;
             }
         }
-        //Debug.Log($"Enabled {collidersToControl.Count} colliders");
     }
     
     // Public methods để sử dụng từ bên ngoài
@@ -314,5 +470,27 @@ public class CameraZoomTrigger : MonoBehaviour
     public void ForceEnableColliders()
     {
         EnableColliders();
+    }
+    
+    // Public methods để điều khiển warning effect từ bên ngoài
+    public void PlayWarningEffect()
+    {
+        if (warningText != null)
+        {
+            StartCoroutine(WarningSequence());
+        }
+    }
+    
+    public void SetWarningText(string newText)
+    {
+        originalWarningText = newText;
+    }
+    
+    public void StopWarningSFX()
+    {
+        if (warningAudioSource != null && warningAudioSource.isPlaying)
+        {
+            warningAudioSource.Stop();
+        }
     }
 }

@@ -129,9 +129,6 @@ public class ShootPlayerDirection2D : Action
             // Trigger animation - việc bắn thực sự sẽ được thực hiện trong Animation Event
             animator?.Value?.SetTrigger("Shoot");
             lastShootTime = Time.time;
-            
-            Debug.Log($"[{gameObject.name}] Triggered Flying Droid Shoot animation at {Time.time}");
-            Debug.DrawLine(gunPoint.Value.position, player.Value.position, Color.red, 1f);
         }
 
         return TaskStatus.Running;
