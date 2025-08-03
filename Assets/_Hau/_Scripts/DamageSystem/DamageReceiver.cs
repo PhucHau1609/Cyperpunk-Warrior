@@ -35,12 +35,6 @@ public abstract class DamageReceiver : HauMonoBehaviour, IDamageable // E43,E44 
         return this.currentHP <= 0;
     }
 
-
-    /*  public virtual bool IsDead()
-      {
-          return this.isDead = this.currentHP <= 0; //currentHP > 0 -> false . and else
-      }*/
-
     protected virtual void OnDead() // E45 create
     {
         //For override to do animation.....
@@ -61,3 +55,9 @@ public abstract class DamageReceiver : HauMonoBehaviour, IDamageable // E43,E44 
         Deduct(damage);
     }
 }
+
+
+/*  public virtual bool IsDead()
+     {
+         return this.isDead = this.currentHP <= 0; //currentHP > 0 -> false . and else
+     }*/
