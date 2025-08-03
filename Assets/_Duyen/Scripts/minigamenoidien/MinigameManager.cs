@@ -167,7 +167,7 @@ public class MinigameManager : MonoBehaviour
 
     private IEnumerator HandleMinigameCompleted()
     {
-        yield return new WaitForSeconds(.5f);
+        //yield return new WaitForSeconds(.5f);
         if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
         {
             AudioManager.Instance.StopBGM();
