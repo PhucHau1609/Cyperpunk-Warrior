@@ -674,24 +674,46 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
                 hand.ForceEndAttack();
             }
         }
-
+        KillAllEnemies();
         Destroy(gameObject, 2f);
+    }
+
+    private void KillAllEnemies()
+    {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
         foreach (GameObject enemy in enemies)
         {
+            if (enemy == null) continue;
+
+            // Lấy animator
+            Animator enemyAnimator = enemy.GetComponent<Animator>();
+            
+            // Kiểm tra và disable các script enemy
             SlimeEnemy slime = enemy.GetComponent<SlimeEnemy>();
-            FlyingDroidController flyingDroidController = enemy.GetComponent<FlyingDroidController>();
-            Animator animator = enemy.GetComponent<Animator>();
             if (slime != null)
             {
                 slime.enabled = false;
-                flyingDroidController.enabled = false;
-                animator.SetTrigger("Death");
             }
+
+            FlyingDroidController flyingDroid = enemy.GetComponent<FlyingDroidController>();
+            if (flyingDroid != null)
+            {
+                flyingDroid.enabled = false;
+                flyingDroid.healthBarEnemy.HideHealthBar();
+            }
+
+            // Trigger death animation nếu có
+            if (enemyAnimator != null)
+            {
+                enemyAnimator.SetTrigger("Death");
+            }
+
+            // Destroy enemy sau 2 giây
             Destroy(enemy, 2f);
         }
     }
+
     #region IBossResettable Implementation
     public bool IsActive()
     {
