@@ -22,6 +22,10 @@ public class HealthBarEnemy : MonoBehaviour
         {
             enemyTransform = GetComponentInParent<EnemyController>()?.transform;
         }
+        if (enemyTransform == null)
+        {
+            enemyTransform = GetComponentInParent<MiniBoss>()?.transform;
+        }
         
         // Lưu scale gốc của HealthBar
         originalScale = transform.localScale;
