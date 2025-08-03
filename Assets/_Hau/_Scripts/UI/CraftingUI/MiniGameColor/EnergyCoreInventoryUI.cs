@@ -16,12 +16,18 @@ public class EnergyCoreInventoryUI : HauSingleton<EnergyCoreInventoryUI>
 
     public void ShowUI()
     {
+        if (GameStateManager.Instance.CurrentState == GameState.Inventory) return;
+        if (GameStateManager.Instance.CurrentState == GameState.Crafting) return;
+
+        //
         this.gameObject.SetActive(true);
+        GameStateManager.Instance.SetState(GameState.MiniGame);
         UpdateUI();
     }
 
     public void HideUI()
     {
+        GameStateManager.Instance.ResetToGameplay();
         this.gameObject.SetActive(false);
     }
 
