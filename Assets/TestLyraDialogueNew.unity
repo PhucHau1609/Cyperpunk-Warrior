@@ -82303,9 +82303,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4618465904409218892, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1434224837}
-    - targetCorrespondingSourceObject: {fileID: 4618465904409218892, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1434224838}
   m_SourcePrefab: {fileID: 100100000, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
 --- !u!114 &957212127 stripped
 MonoBehaviour:
@@ -110167,6 +110164,63 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectSpawner: {fileID: 1383621342}
+--- !u!1001 &1383847653
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 960
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 540
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345360297643138513, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6171146672649002614, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+      propertyPath: m_Name
+      value: audio
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
 --- !u!1 &1384554527
 GameObject:
   m_ObjectHideFlags: 0
@@ -110401,7 +110455,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1434224838}
+      - m_Target: {fileID: 1515655631}
         m_TargetAssemblyTypeName: CraftRecipeClaimUI, Assembly-CSharp
         m_MethodName: OnClaimRecipeButtonClicked
         m_Mode: 1
@@ -111594,22 +111648,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 489933587}
---- !u!114 &1434224838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30860075}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c143e8f9e54ed6d479c056569f045d16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panelController: {fileID: 1993995697}
-  targetInventoryIcon: {fileID: 4304172483557296230}
-  recipeSprite: {fileID: -5576024501118311066, guid: 3f591d6ab1535f146a893c61184fad19, type: 3}
-  recipeCode: 12
 --- !u!1 &1434890151
 GameObject:
   m_ObjectHideFlags: 0
@@ -113478,6 +113516,7 @@ GameObject:
   - component: {fileID: 1515655628}
   - component: {fileID: 1515655630}
   - component: {fileID: 1515655629}
+  - component: {fileID: 1515655631}
   m_Layer: 5
   m_Name: Image_4_craft
   m_TagString: Untagged
@@ -113544,6 +113583,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515655627}
   m_CullTransparentMesh: 1
+--- !u!114 &1515655631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515655627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c143e8f9e54ed6d479c056569f045d16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelController: {fileID: 1993995697}
+  targetInventoryIcon: {fileID: 4304172483557296230}
+  recipeSprite: {fileID: -5576024501118311066, guid: 3f591d6ab1535f146a893c61184fad19, type: 3}
+  recipeCode: 12
 --- !u!1 &1519156563
 GameObject:
   m_ObjectHideFlags: 0
@@ -132028,6 +132083,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 213290306}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1793268122
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1793268123}
+  - component: {fileID: 1793268124}
+  m_Layer: 0
+  m_Name: DialogueEventTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1793268123
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793268122}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2112356143}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1793268124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793268122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38ff23b879564ff499351b6b16b9fbc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lyraTransform: {fileID: 1457919137}
+  firstGunDialogue: {fileID: 11400000, guid: 25e188d978e0e5e41846ab1bd90dcd55, type: 2}
+  diedTwiceInMap2Dialogue: {fileID: 11400000, guid: 25e188d978e0e5e41846ab1bd90dcd55, type: 2}
 --- !u!1 &1796021254
 GameObject:
   m_ObjectHideFlags: 0
@@ -139687,7 +139789,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1434224838}
+      - m_Target: {fileID: 1515655631}
         m_TargetAssemblyTypeName: CraftRecipeClaimUI, Assembly-CSharp
         m_MethodName: OnClaimRecipeButtonClicked
         m_Mode: 1
@@ -146924,53 +147026,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &1962425142
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1962425143}
-  - component: {fileID: 1962425144}
-  m_Layer: 0
-  m_Name: DialogueEventTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1962425143
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1962425142}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2112356143}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1962425144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1962425142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38ff23b879564ff499351b6b16b9fbc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lyraTransform: {fileID: 1457919137}
-  firstGunDialogue: {fileID: 11400000, guid: 25e188d978e0e5e41846ab1bd90dcd55, type: 2}
-  diedTwiceInMap2Dialogue: {fileID: 11400000, guid: 2c50ea394ce39494f869e62e59b2fc3c, type: 2}
 --- !u!1 &1963183205
 GameObject:
   m_ObjectHideFlags: 0
@@ -150164,7 +150219,7 @@ Transform:
   - {fileID: 1337160928}
   - {fileID: 251562418}
   - {fileID: 1025633820}
-  - {fileID: 1962425143}
+  - {fileID: 1793268123}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2112961600
@@ -152944,3 +152999,4 @@ SceneRoots:
   - {fileID: 1434890153}
   - {fileID: 1028018128}
   - {fileID: 634544007}
+  - {fileID: 1383847653}

@@ -13,6 +13,8 @@ public class ItemsPicker : HauMonoBehaviour
     [SerializeField] protected CharacterController2D controller;
 
     public Camera mainCamera;
+    private bool hasPickedFirstGun = false;
+
 
     protected override void LoadComponents()
     {
@@ -117,6 +119,8 @@ public class ItemsPicker : HauMonoBehaviour
     protected virtual void PickupItem(ItemsDropCtrl itemsDropCtrl)
     {
         if (itemsDropCtrl == null) return;
+        CheckIsPickFirstGun(itemsDropCtrl);
+       
 
         if (itemsDropCtrl.ItemCode == ItemCode.HP && controller != null && controller.life < controller.maxLife)
         {
@@ -148,5 +152,19 @@ public class ItemsPicker : HauMonoBehaviour
         if (this.mainCamera == null)
             this.mainCamera = FindFirstObjectByType<Camera>();
     }
+
+    public void CheckIsPickFirstGun(ItemsDropCtrl itemsDropCtrl)
+    {
+        if (hasPickedFirstGun) return; // ✅ Đã nhặt rồi thì bỏ qua
+
+        ItemProfileSO itemProfile = InventoryManager.Instance.GetProfileByCode(itemsDropCtrl.ItemCode);
+        if (itemProfile != null && itemProfile.weaponType == WeaponType.Gun)
+        {
+            hasPickedFirstGun = true; // ✅ Đánh dấu đã nhặt
+            //Debug.Log("Đã nhặt được súng đầu tiên → phát event");
+            ObserverManager.Instance.PostEvent(EventID.FirstGunPickedUp);
+        }
+    }
+
 
 }
