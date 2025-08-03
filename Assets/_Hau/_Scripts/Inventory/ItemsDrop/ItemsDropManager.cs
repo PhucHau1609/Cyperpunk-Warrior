@@ -39,7 +39,7 @@ public class ItemsDropManager : HauSingleton<ItemsDropManager>
                 if (item != null && item.gameObject.activeSelf)
                 {
                     itemsDropSpawner.Despawn(item);
-                    Debug.Log("🟡 Despawned: " + item.name);
+                    //Debug.Log("🟡 Despawned: " + item.name);
                 }
             }
         }

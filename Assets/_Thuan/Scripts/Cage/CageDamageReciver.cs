@@ -38,6 +38,8 @@ public class CageDamageReceiver : DamageReceiver, IDamageResponder
         StartEnemyTracking();
     }
 
+
+
     private void InitializeEnemyTracking()
     {
         aliveEnemies.Clear();
