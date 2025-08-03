@@ -25,8 +25,6 @@ public class SceneTransition : MonoBehaviour
 
     void OnDestroy()
     {
-        //Debug.Log("OnDestroy was called", this);
-
         if (playableDirector != null)
         {
             playableDirector.stopped -= OnTimelineFinished;

@@ -12,8 +12,6 @@ public class MiniBossDamageReceiver : DamageReceiver
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
             
         // Lưu HP ban đầu
         initialHP = maxHP;
@@ -33,6 +31,5 @@ public class MiniBossDamageReceiver : DamageReceiver
     public void ResetBossHealth()
     {
         this.currentHP = initialHP;
-        Debug.Log($"MiniBoss {gameObject.name} health reset to {currentHP}/{maxHP}");
     }
 }

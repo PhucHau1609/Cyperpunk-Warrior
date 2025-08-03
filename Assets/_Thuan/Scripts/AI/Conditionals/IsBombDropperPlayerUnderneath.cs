@@ -10,10 +10,6 @@ public class IsBombDropperPlayerUnderneath : Conditional
     {
         // Tự động gán controller
         controller = GetComponent<BombDropperController>();
-        if (controller == null)
-        {
-            Debug.LogError($"[{gameObject.name}] IsBombDropperPlayerUnderneath: BombDropperController not found!");
-        }
     }
 
     public override TaskStatus OnUpdate()

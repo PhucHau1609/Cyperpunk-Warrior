@@ -100,12 +100,8 @@ public class PatrolSetupHelper : EditorWindow
                 }
                 
                 setupCount++;
-                
-                Debug.Log($"Setup completed for {obj.name} with points: {pointAName}, {pointBName}");
             }
         }
-        
-        Debug.Log($"Patrol Setup Complete! Enemies setup: {setupCount}, Points created: {pointsCreated}");
         
         // Refresh scene
         EditorUtility.SetDirty(Selection.activeGameObject);

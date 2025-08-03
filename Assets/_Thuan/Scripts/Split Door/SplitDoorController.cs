@@ -16,7 +16,6 @@ public class SplitDoorController : MonoBehaviour
         if (doorCollider != null)
         {
             doorCollider.enabled = false;
-            //Debug.Log("[SplitDoor] Collider đã tắt khi mở cửa.");
         }
     }
 

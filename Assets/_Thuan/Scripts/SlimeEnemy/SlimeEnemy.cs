@@ -118,10 +118,6 @@ public class SlimeEnemy : MonoBehaviour
             
             currentTarget = distanceToA < distanceToB ? pointA : pointB;
         }
-        else if (splitLevel <= 1)
-        {
-            Debug.LogWarning($"Patrol points not set for slime (level {splitLevel}): {gameObject.name}");
-        }
     }
     
     private void AutoAssignPatrolPoints()
@@ -148,7 +144,6 @@ public class SlimeEnemy : MonoBehaviour
         GameObject patrolGroup = GameObject.Find(patrolGroupName);
         if (patrolGroup == null)
         {
-            Debug.LogWarning($"Không tìm thấy patrol group: {patrolGroupName}");
             return;
         }
         
@@ -157,11 +152,6 @@ public class SlimeEnemy : MonoBehaviour
         {
             pointA = patrolGroup.transform.GetChild(0);
             pointB = patrolGroup.transform.GetChild(1);
-            Debug.Log($"Auto assigned patrol points from group '{patrolGroupName}' for {gameObject.name}: {pointA.name} and {pointB.name}");
-        }
-        else
-        {
-            Debug.LogWarning($"Patrol group '{patrolGroupName}' cần ít nhất 2 children");
         }
     }
 
@@ -204,8 +194,6 @@ public class SlimeEnemy : MonoBehaviour
         
         pointA = nearbyPoints[0].transform;
         pointB = nearbyPoints[1].transform;
-        
-        Debug.Log($"Auto assigned nearest patrol points by tag for {gameObject.name}: {pointA.name} and {pointB.name}");
     }
 
     // THÊM HÀM: FindPatrolPointsByName (backup method)
@@ -240,12 +228,6 @@ public class SlimeEnemy : MonoBehaviour
             
             pointA = patrolCandidates[0].transform;
             pointB = patrolCandidates[1].transform;
-            
-            Debug.Log($"Auto assigned patrol points by name for {gameObject.name}: {pointA.name} and {pointB.name}");
-        }
-        else
-        {
-            Debug.LogWarning($"Không tìm thấy đủ patrol points cho {gameObject.name}. Slime sẽ không patrol.");
         }
     }
 

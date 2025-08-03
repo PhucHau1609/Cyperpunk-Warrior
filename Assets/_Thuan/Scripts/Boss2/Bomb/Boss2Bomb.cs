@@ -103,7 +103,6 @@ public class Boss2Bomb : MonoBehaviour
                 if (applyDamageMethod != null)
                 {
                     applyDamageMethod.Invoke(playerScript, new object[] { explosionDamage, transform.position });
-                    Debug.Log($"[Boss2Bomb] Explosion dealt {explosionDamage} damage to Player!");
                 }
             }
         }
@@ -129,7 +128,6 @@ public class Boss2Bomb : MonoBehaviour
                 firePosition.y -= 0f; // Điều chỉnh theo nhu cầu
 
                 GameObject fireArea = Instantiate(fireAreaPrefab, firePosition, Quaternion.identity);
-                Debug.Log("[Boss2Bomb] Created fire area at explosion site!");
             }
         }
     }

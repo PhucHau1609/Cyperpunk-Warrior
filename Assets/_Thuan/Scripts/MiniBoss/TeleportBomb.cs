@@ -55,7 +55,6 @@ public class TeleportBomb : MonoBehaviour
             if (playerController != null)
             {
                 playerController.ApplyDamage(explosionDamage, transform.position);
-                Debug.Log("Player nhận damage từ teleport bomb!");
             }
         }
         

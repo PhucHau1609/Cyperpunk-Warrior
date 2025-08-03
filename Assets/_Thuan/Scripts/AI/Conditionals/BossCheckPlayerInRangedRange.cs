@@ -76,18 +76,11 @@ public class BossCheckPlayerInRangedRange : Conditional
         // Tính khoảng cách
         float distance = Vector2.Distance(_transform.position, _playerTransform.position);
 
-        // Debug log để kiểm tra
-        if (Application.isEditor)
-        {
-            //Debug.Log($"BossCheckPlayerInRangedRange - IsPhase2: {isPhase2}, Distance: {distance:F2}, RangedRange: {_rangedAttackRange}, MeleeRange: {_meleeAttackRange}");
-        }
-
         // Chỉ tấn công tầm xa khi:
         // 1. Boss ở Phase 2
         // 2. Player ở trong tầm bắn nhưng ngoài tầm cận chiến
         if (isPhase2 && distance <= _rangedAttackRange && distance > _meleeAttackRange)
         {
-            Debug.Log("Boss có thể tấn công tầm xa!");
             return TaskStatus.Success;
         }
 
@@ -119,8 +112,6 @@ public class BossCheckPlayerInRangedRange : Conditional
         {
             isPhase2SharedVar.Value = isPhase2;
         }
-
-        //Debug.Log($"BossCheckPlayerInRangedRange - SetPhase2: {isPhase2}");
     }
 
     // Phương thức để cập nhật khả năng tấn công

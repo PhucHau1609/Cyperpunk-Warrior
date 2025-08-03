@@ -14,7 +14,6 @@ public class ExtraConditionTrigger: MonoBehaviour
         if (other.CompareTag("Player"))
         {
             triggered = true;
-            Debug.Log("Extra condition met (e.g. pickup)");
             
             // ✅ Gọi event nếu có người đăng ký
             OnExtraConditionMet?.Invoke();

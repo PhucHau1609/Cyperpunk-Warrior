@@ -21,7 +21,6 @@ public class CameraSwitch : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CameraFollow instance not found!");
             return;
         }
 
@@ -39,7 +38,6 @@ public class CameraSwitch : MonoBehaviour
     {
         if (trapFocusPoint == null)
         {
-            Debug.LogError("trapFocusPoint is null!");
             yield break;
         }
 

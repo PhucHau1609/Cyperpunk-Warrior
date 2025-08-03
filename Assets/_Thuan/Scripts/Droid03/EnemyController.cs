@@ -101,19 +101,15 @@ public class EnemyController : MonoBehaviour, IDamageResponder
         {
             bulletScript.SetDirection(shootDir);
         }
-
-        Debug.Log($"[{gameObject.name}] Fired bullet at {Time.time}");
     }
 
     public void OnShootAnimationComplete()
     {
         canShoot = true;
-        Debug.Log($"[{gameObject.name}] Shoot animation completed");
     }
     public void OnShootAnimationStart()
     {
         canShoot = false;
-        Debug.Log($"[{gameObject.name}] Shoot animation started");
     }
 
     public void OnHurt()

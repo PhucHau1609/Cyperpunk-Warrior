@@ -20,15 +20,11 @@ public class HandDamageReceiver : DamageReceiver
         }
 
         initialHP = maxHP;
-
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
     }
 
     public void ResetHandHealth()
     {
         this.currentHP = initialHP;
-        Debug.Log($"Hand {gameObject.name} health reset to {currentHP}/{maxHP}");
     }
 
     protected override void OnHurt()
@@ -53,7 +49,6 @@ public class HandDamageReceiver : DamageReceiver
         // Nếu Boss2 trên 50% máu hoặc shield chưa active
         if (boss2Controller == null || !boss2Controller.IsShieldActive())
         {
-            Debug.Log("[HandDamageReceiver] Shield not active, damage goes to Boss2!");
             // Chuyển damage cho Boss2
             if (boss2Controller != null)
             {
@@ -61,9 +56,6 @@ public class HandDamageReceiver : DamageReceiver
             }
             return this.currentHP; // Cánh tay không nhận damage
         }
-
-        // Nếu shield đang active (Boss2 dưới 50% máu), cánh tay mới nhận damage
-        Debug.Log($"[HandDamageReceiver] Shield active, hand takes {damage} damage!");
         
         if (!this.IsImmotal) this.currentHP -= damage;
 

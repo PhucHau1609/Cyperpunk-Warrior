@@ -8,8 +8,6 @@ public class SlimeEnemyDamageReciver : DamageReceiver
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
     }
 
     protected override void OnHurt()
