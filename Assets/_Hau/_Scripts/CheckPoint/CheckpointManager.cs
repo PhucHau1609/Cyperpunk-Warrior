@@ -129,6 +129,25 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         {
             miniGame.ResetState();
         }
+
+        // ✅ Reset các Laser Trap (không cần interface)
+        LaserManagerTrap[] laserTraps = Object.FindObjectsByType<LaserManagerTrap>(FindObjectsSortMode.None);
+
+        foreach (var trap in laserTraps)
+        {
+            trap.ResetTrap();
+        }
+
+        // ✅ Reset Falling Blocks
+        FallingBlockManager.ResetAllBlocks();
+
+        // ✅ Reset lại các LaserActivator trigger
+        LaserActivator[] activators = Object.FindObjectsByType<LaserActivator>(FindObjectsSortMode.None);
+        foreach (var activator in activators)
+        {
+            activator.ResetTrigger();
+        }
+
     }
 
     private void LoadSceneWithCleanup(string sceneName, GameObject player)
