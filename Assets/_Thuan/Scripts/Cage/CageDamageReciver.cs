@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -103,9 +104,10 @@ public class CageDamageReceiver : DamageReceiver, IDamageResponder
     {
         isTrackingEnemies = false;
         CancelInvoke(nameof(CheckEnemiesStatus));
-        
+
         // Tắt IsImmotal
-        IsImmotal = false;
+        Destroy(gameObject);
+        playableDirector.Play();
     }
 
     // Public methods để quản lý danh sách enemies
@@ -150,7 +152,6 @@ public class CageDamageReceiver : DamageReceiver, IDamageResponder
     {
         responder?.OnDead();
         Destroy(gameObject);
-        playableDirector.Play();
     }
 
     void IDamageResponder.OnHurt()
