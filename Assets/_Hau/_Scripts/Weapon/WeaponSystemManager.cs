@@ -7,6 +7,9 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
     private GameObject currentWeapon;
     private int currentWeaponIndex = 0;
     public bool isWeaponActive = false;
+    [Header("Equip Gun Slot")]
+    [SerializeField] private EquipmentSlot[] gunSlots;
+
 
     private List<ItemInventory> ownedWeapons = new();
     private Dictionary<int, GameObject> instantiatedWeapons = new(); // key: index
@@ -49,19 +52,38 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
     void RefreshOwnedWeapons()
     {
         ownedWeapons.Clear();
-        var inventory = InventoryManager.Instance.ItemInventory().ItemInventories;
 
-        for (int i = 0; i < inventory.Count; i++)
+        for (int i = 0; i < gunSlots.Length; i++)
         {
-            var item = inventory[i];
-            if (item.ItemProfileSO == null) continue;
-
-            if (item.ItemProfileSO.weaponType == WeaponType.Gun)
+            var slot = gunSlots[i];
+            if (slot != null && slot.HasItem())
             {
-                ownedWeapons.Add(item);
+                var item = slot.currentItem;
+                if (item.ItemProfileSO.weaponType == WeaponType.Gun)
+                {
+                    ownedWeapons.Add(item);
+                }
             }
         }
     }
+
+
+    /*  void RefreshOwnedWeapons()
+      {
+          ownedWeapons.Clear();
+          var inventory = InventoryManager.Instance.ItemInventory().ItemInventories;
+
+          for (int i = 0; i < inventory.Count; i++)
+          {
+              var item = inventory[i];
+              if (item.ItemProfileSO == null) continue;
+
+              if (item.ItemProfileSO.weaponType == WeaponType.Gun)
+              {
+                  ownedWeapons.Add(item);
+              }
+          }
+      }*/
 
     void ToggleWeapon()
     {
@@ -180,5 +202,22 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
                 child.gameObject.SetActive(false);
             }
         }
-    }    
+    }
+
+    private void OnEquipmentChanged(object obj)
+    {
+        RefreshOwnedWeapons();
+
+        if (ownedWeapons.Count == 0)
+        {
+            TurnOffAllWeapon();
+
+            if (currentWeapon != null)
+            {
+                Destroy(currentWeapon);
+                currentWeapon = null;
+            }
+        }
+    }
+
 }

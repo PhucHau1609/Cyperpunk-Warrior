@@ -85,7 +85,7 @@ public class PlayerShader : MonoBehaviour
 
     public bool ActivateColorRampEffectSkill()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1) && ItemCollectionTracker.Instance.ConditionMet &&
+        if (ItemCollectionTracker.Instance.ConditionMet &&
             !isEffectActive && !isOnCooldown)
         {
             StartCoroutine(ActivateColorRampEffect());
@@ -99,11 +99,14 @@ public class PlayerShader : MonoBehaviour
         bool condition = EquipmentConditionChecker.Instance != null &&
                          EquipmentConditionChecker.Instance.IsConditionMet();
 
+
         //Debug.Log($"🧪 Kiểm tra điều kiện: {condition}");
 
         if (condition && !isEffectActive && !isOnCooldown)
         {
-            StartCoroutine(ActivateColorRampEffect());
+            //StartCoroutine(ActivateColorRampEffect());
+            ObserverManager.Instance.PostEvent(EventID.UnlockSkill_ColorRamp, SkillID.ColorRamp);
+
         }
         else
         {
