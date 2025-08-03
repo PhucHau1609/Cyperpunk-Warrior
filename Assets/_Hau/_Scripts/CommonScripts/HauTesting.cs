@@ -8,7 +8,7 @@ public class HauTesting : MonoBehaviour
 
     private void Start()
     {
-        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_1, 1, new Vector3(0, 0, 0));
+        //ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_1, 1, new Vector3(0, 0, 0));
         //ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_0, 1, new Vector3(0, 0, 0));
 
     }
