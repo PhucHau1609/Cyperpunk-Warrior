@@ -42,7 +42,9 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetKeyDown(KeyCode.Z) && canAttack && !weaponSystemManager.isWeaponActive)
+        if (!GameStateManager.Instance.IsGameplay) return; // ❌ Không gửi sự kiện nếu không phải gameplay
+
+        if (Input.GetKeyDown(KeyCode.Z) && canAttack && !weaponSystemManager.isWeaponActive)
 		{
 			canAttack = false;
 			animator.SetBool("IsAttacking", true);

@@ -84,6 +84,8 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDr
         UpdateVisual();
 
         ObserverManager.Instance.PostEvent(EventID.InventoryChanged);
+        ObserverManager.Instance.PostEvent(EventID.EquipmentChanged); // ✅ thêm dòng này
+
     }
 
 
@@ -91,10 +93,6 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDr
     {
         return currentItem != null && currentItem.ItemProfileSO != null;
     }
-
-
-
-
 
     private void UpdateVisual()
     {
@@ -165,6 +163,7 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDr
         {
             InventoryManager.Instance.AddItem(currentItem.ItemProfileSO.itemCode, 1);
             ObserverManager.Instance.PostEvent(EventID.InventoryChanged);
+
             returnedToInventory = true;
         }
 
@@ -172,6 +171,8 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDr
         {
             currentItem = null;
             UpdateVisual();
+            ObserverManager.Instance.PostEvent(EventID.EquipmentChanged); // thông báo đã gỡ trang bị
+
         }
     }
 

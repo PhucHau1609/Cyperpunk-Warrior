@@ -106,6 +106,7 @@ public enum EventID
     FirstItemPickedUp,
     GameStateChanged,
     FirstGunPickedUp,
+    EquipmentChanged,
 
 
     // UI & Input

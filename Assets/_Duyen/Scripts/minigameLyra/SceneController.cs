@@ -73,6 +73,7 @@ public class SceneController : MonoBehaviour
     public void SwitchToPetControl()
     {
         GameStateManager.Instance.SetState(GameState.MiniGame);
+        InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
 
         if (petAgent != null)
             petAgent.enabled = false;
@@ -129,6 +130,7 @@ public class SceneController : MonoBehaviour
     public void ReturnControlToPlayer()
     {
         GameStateManager.Instance.ResetToGameplay();
+        InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
         player.SetCanMove(true);
 
         if (petAgent != null)
