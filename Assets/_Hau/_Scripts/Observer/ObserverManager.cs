@@ -105,6 +105,8 @@ public enum EventID
     LevelCompleted,
     FirstItemPickedUp,
     GameStateChanged,
+    FirstGunPickedUp,
+
 
     // UI & Input
     OpenInventory,
