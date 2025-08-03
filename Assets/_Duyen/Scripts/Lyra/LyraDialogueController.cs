@@ -3,6 +3,7 @@
 public class LyraDialogueTrigger : MonoBehaviour
 {
     private Transform npcTransform;
+    public Transform NPCTransform => npcTransform;
     private FloatingFollower follower;
 
     private void Start()

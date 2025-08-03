@@ -423,6 +423,7 @@ public class CharacterController2D : MonoBehaviour
     {
         //yield return new WaitForSeconds(0.2f);
         animator.SetBool("IsDead", true);
+        ObserverManager.Instance.PostEvent(EventID.PlayerDied);
         isDead = true;
         canMove = false;
         invincible = true;
