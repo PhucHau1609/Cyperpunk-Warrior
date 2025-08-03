@@ -35,7 +35,7 @@ public class CageDamageReceiver : DamageReceiver, IDamageResponder
         InitializeEnemyTracking();
     }
 
-    private void Start()
+    protected override void Start()
     {
         StartEnemyTracking();
     }
