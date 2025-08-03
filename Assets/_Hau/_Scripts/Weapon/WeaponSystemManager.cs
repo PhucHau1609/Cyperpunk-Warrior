@@ -41,7 +41,9 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
             this.TurnOffAllWeapon();
         }
 
-        if (GameStateManager.Instance.CurrentState == GameState.Inventory) return;
+        if (GameStateManager.Instance.CurrentState == GameState.Inventory) 
+            return;
+
 
         if (Input.GetKeyDown(KeyCode.T))
         {
