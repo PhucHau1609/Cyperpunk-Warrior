@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
+
 
 public class SwapTargetManager : MonoBehaviour
 {
@@ -23,6 +25,25 @@ public class SwapTargetManager : MonoBehaviour
 
     private float lastSwapTime = -Mathf.Infinity;
     public float swapCooldown = 5f; // Thời gian cooldown (phù hợp với UI)
+    public float maxSwapDistance = 5f; // Có thể cho inspector chỉnh nếu muốn
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        //Debug.Log($"[SwapTargetManager] Scene loaded: {scene.name}, reset current target.");
+        currentTarget = null;
+    }
+
+
 
     void Awake()
     {
@@ -37,7 +58,7 @@ public class SwapTargetManager : MonoBehaviour
     {
         if (Time.time < lastSwapTime + swapCooldown)
         {
-            Debug.Log("Swap skill đang trong thời gian hồi chiêu!");
+            //Debug.Log("Swap skill đang trong thời gian hồi chiêu!");
             return false;
         }
 
@@ -45,50 +66,34 @@ public class SwapTargetManager : MonoBehaviour
         {
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
 
+            // 1. Swap với object bình thường
             if (currentTarget != null)
             {
+                float distance = Vector3.Distance(player.position, currentTarget.transform.position);
+                if (distance > maxSwapDistance)
+                {
+                    //Debug.Log("Khoảng cách quá xa, không thể swap!");
+                    return false;
+                }
+
                 SwapWithEffect(currentTarget.transform, swapDuration);
                 PlayerStatus.Instance.UseEnergy(10f);
-                lastSwapTime = Time.time; // Cập nhật thời gian sử dụng
+                lastSwapTime = Time.time;
                 return true;
             }
+
+            // 2. Swap với đạn đặc biệt (không kiểm tra khoảng cách)
             else if (specialBullet != null)
             {
                 SwapWithEffect(specialBullet, 0.1f, true);
                 specialBullet = null;
-                lastSwapTime = Time.time; // Cập nhật thời gian sử dụng
+                lastSwapTime = Time.time;
                 return true;
             }
         }
 
         return false;
     }
-
-
-    /*public bool ActiveSwapSkill()
-    {
-        if (!isSwapping && PlayerStatus.Instance != null)
-        {
-            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
-            if (currentTarget != null)
-            {
-                // Swap với object bình thường
-                SwapWithEffect(currentTarget.transform, swapDuration);
-                PlayerStatus.Instance.UseEnergy(10f);
-                return true;
-            }
-            else if (specialBullet != null)
-            {
-                // Swap với viên đạn đặc biệt
-                SwapWithEffect(specialBullet, 0.1f, true); // swapDuration = 0.1f, destroyAfterSwap = true
-                specialBullet = null;
-                return true;
-            }
-        }
-
-        return false;
-    } */
-
     public void SetSpecialBullet(Transform bullet)
     {
         specialBullet = bullet;
@@ -96,25 +101,25 @@ public class SwapTargetManager : MonoBehaviour
 
     public void SetTarget(SwapableObject target, bool selected)
     {
-        Debug.Log($"[SetTarget] target: {target.name}, selected: {selected}");
+        //Debug.Log($"[SetTarget] target: {target.name}, selected: {selected}");
 
         if (selected)
         {
             if (currentTarget != null && currentTarget != target)
             {
-                Debug.Log($"[SetTarget] Deselect old target: {currentTarget.name}");
+                //Debug.Log($"[SetTarget] Deselect old target: {currentTarget.name}");
                 currentTarget.isSelected = false;
                 currentTarget.GetComponent<SpriteRenderer>().color = Color.white;
             }
 
             currentTarget = target;
-            Debug.Log($"[SetTarget] New current target: {currentTarget.name}");
+            //Debug.Log($"[SetTarget] New current target: {currentTarget.name}");
         }
         else
         {
             if (currentTarget == target)
             {
-                Debug.Log($"[SetTarget] Unselect current target: {currentTarget.name}");
+                //Debug.Log($"[SetTarget] Unselect current target: {currentTarget.name}");
                 currentTarget = null;
             }
         }
@@ -194,156 +199,35 @@ public class SwapTargetManager : MonoBehaviour
 }
 
 
-/*   void Update()
-   {
-       if (Input.GetKeyDown(KeyCode.Tab) && !isSwapping &&
-           PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
-       {
-           PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
-           if (currentTarget != null)
-           {
-               // Swap với object bình thường
-               SwapWithEffect(currentTarget.transform, swapDuration);
-           }
-           else if (specialBullet != null)
-           {
-               // Swap với viên đạn đặc biệt
-               SwapWithEffect(specialBullet, 0.1f, true); // swapDuration = 0.1f, destroyAfterSwap = true
-               specialBullet = null;
-           }
-       }
-   }*/
 
-
-/*public class SwapTargetManager : MonoBehaviour
-{
-    public static SwapTargetManager Instance;
-
-    public Transform player;
-    private SwapableObject currentTarget;
-    private bool isSwapping = false;
-
-    [Header("Swap Settings")]
-    public float swapDuration = 0.3f;
-    public Ease swapEase = Ease.InOutSine;
-
-    [Tooltip("Tăng tốc / làm chậm toàn bộ hiệu ứng swap")]
-    public float swapSpeedMultiplier = 1.0f;
-
-    [Tooltip("Làm chậm thời gian khi swap (0.1 = slow motion)")]
-    public float slowMotionScale = 0.1f;
-
-    private Animator playerAnimator;
-
-    // NEW: reference đạn đặc biệt
-    //private Transform specialBullet;
-
-    void Awake()
+/*    public bool ActiveSwapSkill()
     {
-        Instance = this;
-        if (player != null) playerAnimator = player.GetComponentInChildren<Animator>();
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab) && currentTarget != null && !isSwapping)
+        if (Time.time < lastSwapTime + swapCooldown)
         {
-            SwapWithEffect();
+            Debug.Log("Swap skill đang trong thời gian hồi chiêu!");
+            return false;
         }
-    }
 
-
-    public void SetTarget(SwapableObject target, bool selected)
-    {
-        if (selected)
+        if (!isSwapping && PlayerStatus.Instance != null)
         {
-            if (currentTarget != null && currentTarget != target)
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.rImage);
+
+            if (currentTarget != null)
             {
-                currentTarget.isSelected = false;
-                currentTarget.GetComponent<SpriteRenderer>().color = Color.white;
+                SwapWithEffect(currentTarget.transform, swapDuration);
+                PlayerStatus.Instance.UseEnergy(10f);
+                lastSwapTime = Time.time; // Cập nhật thời gian sử dụng
+                return true;
             }
-            currentTarget = target;
-        }
-        else
-        {
-            if (currentTarget == target)
+            else if (specialBullet != null)
             {
-                currentTarget = null;
+                SwapWithEffect(specialBullet, 0.1f, true);
+                specialBullet = null;
+                lastSwapTime = Time.time; // Cập nhật thời gian sử dụng
+                return true;
             }
         }
+
+        return false;
     }
-    void SwapWithEffect()
-    {
-        if (currentTarget == null || player == null) return;
-
-        isSwapping = true;
-
-        Vector3 playerStartPos = player.position;
-        Vector3 targetStartPos = currentTarget.transform.position;
-
-        Vector3 playerStartScale = player.localScale;
-        Vector3 targetStartScale = currentTarget.transform.localScale;
-        //Debug.Log($"Before swap: playerScale.x = {playerStartScale.x}, targetScale.x = {targetStartScale.x}");
-
-
-        float baseDuration = swapDuration / Mathf.Max(swapSpeedMultiplier, 0.01f);
-
-        float scaleDuration = baseDuration * 0.3f;
-        float moveDuration = baseDuration * 0.4f;
-        float scaleBackDuration = baseDuration * 0.3f;
-
-        Time.timeScale = slowMotionScale;
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
-
-        if (playerAnimator != null) playerAnimator.speed = 0f;
-
-        // Thu nhỏ theo đúng hướng scale hiện tại
-        Vector3 playerShrinkScale = playerStartScale * 0.4f;
-        Vector3 targetShrinkScale = targetStartScale * 0.4f;
-
-
-        Sequence s = DOTween.Sequence();
-
-        // Giai đoạn 1: thu nhỏ
-        s.Append(player.DOScale(playerShrinkScale, scaleDuration).SetEase(Ease.InOutQuad));
-        s.Join(currentTarget.transform.DOScale(targetShrinkScale, scaleDuration).SetEase(Ease.InOutQuad));
-
-        // Giai đoạn 2: hoán đổi vị trí
-        s.Append(player.DOMove(targetStartPos, moveDuration).SetEase(swapEase));
-        s.Join(currentTarget.transform.DOMove(playerStartPos, moveDuration).SetEase(swapEase));
-
-        // Giai đoạn 3: phóng to lại, nhưng dùng scale của object đích
-        s.Append(player.DOScale(playerStartScale, scaleBackDuration).SetEase(Ease.InOutQuad));
-        s.Join(currentTarget.transform.DOScale(targetStartScale, scaleBackDuration).SetEase(Ease.InOutQuad));
-
-        // Hiệu ứng màu
-        var playerRenderer = player.GetComponent<SpriteRenderer>();
-        var targetRenderer = currentTarget.GetComponent<SpriteRenderer>();
-
-        if (playerRenderer != null)
-            s.Join(playerRenderer.DOColor(Color.green, baseDuration * 0.5f));
-
-        if (targetRenderer != null)
-            s.Join(targetRenderer.DOColor(Color.white, baseDuration * 0.5f));
-
-        s.OnComplete(() =>
-        {
-            Time.timeScale = 1f;
-            Time.fixedDeltaTime = 0.02f;
-
-            // SWAP hướng nhìn giữa player và target
-            Vector3 tempScale = player.localScale;
-            player.localScale = currentTarget.transform.localScale;
-            currentTarget.transform.localScale = tempScale;
-
-            // Nếu player có controller giữ biến m_FacingRight thì sync lại
-            var controller = player.GetComponent<CharacterController2D>(); // tên class controller của bạn
-            if (controller != null)
-                controller.SyncFacingDirection(); // bạn sẽ tạo hàm này bên dưới
-
-            if (playerAnimator != null) playerAnimator.speed = 1f;
-            isSwapping = false;
-        });
-
-    }
-}*/
+*/
