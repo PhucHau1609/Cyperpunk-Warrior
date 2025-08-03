@@ -32,11 +32,6 @@ public class EnemyPlayerTargeting : MonoBehaviour
             {
                 staticPlayerTransform = playerGO.transform;
                 staticPlayerShader = playerGO.GetComponent<PlayerShader>();
-                
-                if (staticPlayerShader == null)
-                {
-                    Debug.LogWarning("Player không có component PlayerShader!");
-                }
             }
         }
         

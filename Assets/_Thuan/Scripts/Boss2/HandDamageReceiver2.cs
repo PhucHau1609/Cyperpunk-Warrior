@@ -10,8 +10,6 @@ public class HandDamageReceiver2 : DamageReceiver
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
     }
 
     protected override void OnHurt()

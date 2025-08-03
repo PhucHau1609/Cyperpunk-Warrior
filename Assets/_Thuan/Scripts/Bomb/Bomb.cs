@@ -149,7 +149,6 @@ public class Bomb : MonoBehaviour
         }
     }
 
-    // Để debug bán kính nổ trong Scene view
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

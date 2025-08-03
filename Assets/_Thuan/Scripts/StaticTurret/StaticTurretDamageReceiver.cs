@@ -9,8 +9,6 @@ public class StaticTurretDamageReceiver : DamageReceiver
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
     }
 
     protected override void OnHurt()
@@ -39,10 +37,6 @@ public class StaticTurretDamageReceiver : DamageReceiver
         if (drop != null)
         {
             drop.TryDropItems();
-        }
-        else
-        {
-            Debug.Log($"[EnemyDamageReceiver] {name} has NO ItemDropTable");
         }
     }
 }

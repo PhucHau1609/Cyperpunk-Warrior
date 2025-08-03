@@ -12,8 +12,6 @@ public class BossPhuDamageReceiver : DamageReceiver
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
             
         // Lưu HP ban đầu
         initialHP = maxHP;
@@ -34,7 +32,6 @@ public class BossPhuDamageReceiver : DamageReceiver
         if (this.CurrentHP < this.MaxHP / 2)
         {
             damage = Mathf.RoundToInt(damage * (1 - damageReductionPercent));
-            //Debug.Log($"[Boss] Armor reduced damage to {damage}");
         }
 
         // Trừ máu như bình thường
@@ -51,6 +48,5 @@ public class BossPhuDamageReceiver : DamageReceiver
     public void ResetBossHealth()
     {
         this.currentHP = initialHP;
-        Debug.Log($"Boss {gameObject.name} health reset to {currentHP}/{maxHP}");
     }
 }

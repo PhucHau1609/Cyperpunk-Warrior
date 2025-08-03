@@ -215,7 +215,6 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
     {
         isPhase2 = true;
         isAttacking = false;
-        //Debug.Log("Boss đã chuyển sang Phase 2 - Có thêm tấn công tầm xa!");
     }
 
     // Methods cho Behavior Designer Tasks
@@ -247,7 +246,6 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
                     bulletScript.Initialize(direction, bulletSpeed);
                 }
             }
-            //Debug.Log("Boss bắn đạn!");
         }
     }
 
@@ -414,8 +412,7 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
         
         // Tìm lại player
         FindPlayer();
-        
-        Debug.Log($"Boss {gameObject.name} đã được reset về trạng thái ban đầu!");
+
     }
 
     private void PlaySound(AudioClip clip)

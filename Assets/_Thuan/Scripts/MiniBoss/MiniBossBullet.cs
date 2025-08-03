@@ -81,7 +81,6 @@ public class MiniBossBullet : MonoBehaviour
         // Kiểm tra va chạm với Player
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Bullet hit Player!");
             StopBulletMovement();
             
             // Gây damage cho Player sử dụng hàm ApplyDamage từ CharacterController2D
@@ -90,7 +89,6 @@ public class MiniBossBullet : MonoBehaviour
             {
                 // Truyền damage và vị trí của bullet để tính toán knockback
                 playerController.ApplyDamage(damage, transform.position);
-                Debug.Log($"Player nhận {damage} damage từ Boss bullet!");
             }
 
             CreateImpactEffect();
@@ -98,7 +96,6 @@ public class MiniBossBullet : MonoBehaviour
         // Kiểm tra va chạm với Ground/Wall
         else if (other.CompareTag("Ground") || other.CompareTag("Wall"))
         {
-            Debug.Log($"Bullet hit {other.tag}!");
             StopBulletMovement();
             CreateImpactEffect();
         }

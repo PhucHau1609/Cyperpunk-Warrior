@@ -155,8 +155,6 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
                 droid02BulletScript.SetDirection(shootDir);
             }
         }
-
-        Debug.Log($"[{gameObject.name}] Flying Droid fired bullet at {Time.time}");
         Debug.DrawLine(gunPoint.position, player.position, Color.red, 1f);
     }
 
@@ -164,13 +162,11 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
     public void OnShootAnimationComplete()
     {
         canShoot = true;
-        Debug.Log($"[{gameObject.name}] Flying Droid shoot animation completed");
     }
 
     public void OnShootAnimationStart()
     {
         canShoot = false;
-        Debug.Log($"[{gameObject.name}] Flying Droid shoot animation started");
     }
 
     public void OnHurt()

@@ -141,8 +141,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         audioSource.volume = audioVolume;
         audioSource.playOnAwake = false;
 
-        Debug.Log("MiniBoss initialized successfully!");
-
         bossManager = FindFirstObjectByType<BossManager>();
 
         if (!useFixedBoundaries &&
@@ -299,8 +297,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         {
             audioSource.PlayOneShot(attackSound);
         }
-
-        Debug.Log("MiniBoss performing Attack 1");
     }
 
     void StartAttack2()
@@ -313,8 +309,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         {
             audioSource.PlayOneShot(attackSound);
         }
-
-        Debug.Log("MiniBoss performing Attack 2");
     }
 
     void StartAttack3()
@@ -327,8 +321,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         {
             audioSource.PlayOneShot(attackSound);
         }
-
-        Debug.Log("MiniBoss performing Attack 3");
     }
 
     // Được gọi từ Animation Event trong Attack1
@@ -356,11 +348,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
 
             // Spawn bomb
             GameObject bomb = Instantiate(bombPrefab, spawnPosition, Quaternion.identity);
-            Debug.Log("Bomb spawned at: " + spawnPosition);
-        }
-        else
-        {
-            Debug.LogWarning("Bomb prefab or player is null!");
         }
     }
 
@@ -393,15 +380,12 @@ public class MiniBoss : MonoBehaviour, IBossResettable
                 bulletScript.Initialize(bulletDirection, bulletSpeed);
             }
         }
-
-        Debug.Log($"Fired {bulletsPerShot} bullets towards player");
     }
 
     // Được gọi từ Animation Event khi kết thúc attack
     public void OnAttackComplete()
     {
         isAttacking = false;
-        Debug.Log("Attack completed");
     }
 
     private System.Collections.IEnumerator TeleportSkill()
@@ -568,9 +552,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
                 }
             }
         }
-
-        // Cuối cùng, nếu vẫn không tìm được, giữ nguyên vị trí hiện tại
-        Debug.LogWarning("MiniBoss: Không thể tìm vị trí teleport hợp lệ!");
         return currentPos;
     }
 
@@ -588,7 +569,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         }
         else
         {
-            Debug.LogWarning("MiniBoss: Không tìm thấy đủ MapBoundary objects. Sử dụng fixed boundaries.");
             useFixedBoundaries = true;
         }
     }
@@ -627,7 +607,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
                 if (playerController != null)
                 {
                     playerController.ApplyDamage(5f, bomb.transform.position); // 20 damage
-                    Debug.Log("Player nhận damage từ teleport bomb!");
                 }
             }
 
@@ -712,8 +691,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         {
             player = playerObj.transform;
         }
-
-        Debug.Log($"MiniBoss {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
 
     public void OnHurt()
@@ -790,7 +767,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         float total = attack1Chance + attack2Chance + attack3Chance;
         if (Mathf.Abs(total - 1f) > 0.01f)
         {
-            Debug.LogWarning($"Attack chances don't sum to 1.0! Current sum: {total}");
             // Tự động normalize
             attack1Chance /= total;
             attack2Chance /= total;

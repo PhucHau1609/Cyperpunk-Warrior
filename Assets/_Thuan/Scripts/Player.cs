@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal; // THÊM NÀY nếu bạn dùng Light 2D URP
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -21,23 +22,25 @@ public class Player : MonoBehaviour
     [Header("Movement Control")]
     public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
 
-    // private void Awake()
-    // {
-    //     DontDestroyOnLoad(this);
-    // }
+
+    void Awake()
+    {
+        
+    }
 
     void Start()
     {
-        GetComponent<Animator>().SetTrigger("PlayAppear");
-        //spriteRenderer = GetComponent<SpriteRenderer>();
+        GetComponentInChildren<Animator>().SetTrigger("PlayAppear");
     }
 
     void Update()
     {
-        if (!canMove) return; // ⚠️ MỚI: Nếu bị khóa thì không làm gì
-
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        if (!canMove || (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive))
+        {
+            horizontalMove = 0f;
+            animator.SetFloat("Speed", 0f); // ⚠️ RESET animation chạy
             return;
+        }
 
         // Di chuyển
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
@@ -46,33 +49,27 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             jump = true;
 
-        // if (Input.GetKeyDown(KeyCode.E))
-        //     dashX = true; // ⚠️ THAY ĐỔI: dash ngang
+     /*   if (Input.GetKeyDown(KeyCode.E) && PlayerStatus.Instance != null && controller.canDash)
+        {
+            PlayerStatus.Instance.UseEnergy(10f);
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.eImage);
+            dashX = true; // ⚠️ THAY ĐỔI: dash ngang
+
+        }
 
         if (Input.GetKeyDown(KeyCode.S))
-            dashY = true; // ⚠️ MỚI: dash dọc
+            dashY = true; // ⚠️ MỚI: dash dọc*/
+    }
 
-        // Bật/tắt tàng hình bằng phím J
-        if (Input.GetKeyDown(KeyCode.J))
+    public bool TriggerDashX()
+    {
+        if (controller.canDash && PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
         {
-            isInvisible = !isInvisible;
-
-           // Bật/tắt Spot Light
-           if (invisibilityLight != null)
-           {
-                invisibilityLight.enabled = !isInvisible;
-            }
-
-        //     // Thay đổi độ alpha của nhân vật
-            if (spriteRenderer != null)
-            {
-               Color color = spriteRenderer.color;
-               color.a = isInvisible ? 0.1490196f : 1f;
-               spriteRenderer.color = color;
-          }
-
-            Debug.Log("Tàng hình: " + isInvisible);
+            PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.eImage);
+            dashX = true;
+            return true;
         }
+        return false;
     }
 
     void FixedUpdate()
@@ -125,3 +122,5 @@ public class Player : MonoBehaviour
         }
     }
 }
+
+

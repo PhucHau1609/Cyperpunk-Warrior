@@ -148,7 +148,6 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
             activeMinions.Add(minion);
             
             lastMinionSpawnTime = Time.time;
-            Debug.Log($"[Boss2] Spawned minion at {spawnPoint.name}. Active minions: {activeMinions.Count}");
         }
     }
 
@@ -195,10 +194,7 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
             PlaySound(phase2TransitionSound, 1f);
 
             StartMinionSpawning();
-            Debug.Log("[Boss2] Entered Phase 2! Shield deactivated and minions will spawn!");
         }
-        
-        Debug.Log("[Boss2] Shield Deactivated! Boss2 can take damage again.");
     }
 
     public void StartMinionSpawning()
@@ -296,8 +292,6 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
         
         // Tìm lại player
         FindPlayer();
-        
-        Debug.Log($"Boss2 {gameObject.name} đã được reset về trạng thái ban đầu!");
     }
     
     // Hand Management Methods
@@ -306,14 +300,12 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
         if (!hands.Contains(hand))
         {
             hands.Add(hand);
-            Debug.Log($"Đã đăng ký {hand.gameObject.name} với Boss2");
         }
     }
     
      public void OnHandStartAttack(Boss2HandController hand)
     {
         // Method này giờ chỉ để log, attackingHand đã được set trong ExecuteHandAttack
-        Debug.Log($"Boss2: {hand.gameObject.name} bắt đầu tấn công");
     }
     
     private void ExecuteHandAttack(Boss2AttackType attackType)
@@ -348,12 +340,9 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
 
             closestHand.StartHandAttack(attackType, player.position);
             attackingHand = closestHand;
-            Debug.Log($"Boss2: {closestHand.gameObject.name} thực hiện {attackType}");
         }
         else
         {
-            // Không có cánh tay khả dụng, kết thúc attack
-            Debug.Log("Boss2: Không có cánh tay nào khả dụng để tấn công!");
             EndAttack();
         }
     }
@@ -363,7 +352,6 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
         if (attackingHand == hand)
         {
             attackingHand = null;
-            Debug.Log($"Boss2: {hand.gameObject.name} kết thúc tấn công");
             
             // Kiểm tra nếu shield đang active và cả 2 cánh tay đều chết
             if (shieldActive && AreAllHandsDead())
@@ -390,7 +378,6 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
             }
         }
         
-        Debug.Log($"[Boss2] Dead hands: {deadCount}/{totalHands}");
         return deadCount >= totalHands && totalHands > 0;
     }
 
@@ -546,7 +533,6 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
             if (phase2LaserPoints[i] != null)
             {
                 Instantiate(laserPrefab, phase2LaserPoints[i].position, phase2LaserPoints[i].rotation);
-                Debug.Log($"[Boss2] Phase 2 laser {i+1}/3 fired!");
                 yield return new WaitForSeconds(laserSequenceDelay);
             }
         }
@@ -588,7 +574,6 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
                 if (applyDamageMethod != null)
                 {
                     applyDamageMethod.Invoke(playerScript, new object[] { damage, attackPosition });
-                    Debug.Log($"[Boss2] Applied {damage} damage to Player from {attackPosition}");
                 }
             }
         }

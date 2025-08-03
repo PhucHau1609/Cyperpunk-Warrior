@@ -5,7 +5,7 @@ public class TimelinePlayerController : MonoBehaviour
 {
     [Header("Player References")]
     [SerializeField] private PlayerMovement playerMovement;
-    [SerializeField] private Player player;
+    [SerializeField] private PlayerMovement2 playerMovement2;
     [SerializeField] private CharacterController2D characterController;
     
     [Header("Timeline Settings")]
@@ -21,8 +21,8 @@ public class TimelinePlayerController : MonoBehaviour
         if (playerMovement == null)
             playerMovement = FindFirstObjectByType<PlayerMovement>();
 
-        if (player == null)
-            player = FindFirstObjectByType<Player>();
+        if (playerMovement2 == null)
+            playerMovement2 = FindFirstObjectByType<PlayerMovement2>();
             
         if (characterController == null)
             characterController = FindFirstObjectByType<CharacterController2D>();
@@ -80,13 +80,11 @@ public class TimelinePlayerController : MonoBehaviour
             wasPlayerAbleToMove = playerMovement.canMove;
             playerMovement.SetCanMove(false);
         }
-        if (player != null)
+        if (playerMovement2 != null)
         {
-            wasPlayerAbleToMove = player.canMove;
-            player.SetCanMove(false);
+            wasPlayerAbleToMove = playerMovement2.canMove;
+            playerMovement2.SetCanMove(false);
         }
-        
-        Debug.Log("Player movement locked during cutscene");
     }
 
     /// <summary>
@@ -98,12 +96,10 @@ public class TimelinePlayerController : MonoBehaviour
         {
             playerMovement.SetCanMove(wasPlayerAbleToMove);
         }
-        if (player != null)
+        if (playerMovement2 != null)
         {
-            player.SetCanMove(wasPlayerAbleToMove);
+            playerMovement2.SetCanMove(wasPlayerAbleToMove);
         }
-        
-        Debug.Log("Player movement unlocked after cutscene");
     }
 
     /// <summary>
@@ -115,12 +111,10 @@ public class TimelinePlayerController : MonoBehaviour
         {
             playerMovement.SetCanMove(true);
         }
-        if (player != null)
+        if (playerMovement2 != null)
         {
-            player.SetCanMove(true);
+            playerMovement2.SetCanMove(true);
         }
-        
-        Debug.Log("Player movement force unlocked");
     }
 
     /// <summary>
@@ -131,8 +125,8 @@ public class TimelinePlayerController : MonoBehaviour
         if (playerMovement != null)
         return !playerMovement.canMove;
 
-        if (player != null)
-            return !player.canMove;
+        if (playerMovement2 != null)
+            return !playerMovement2.canMove;
 
         return false;
     }

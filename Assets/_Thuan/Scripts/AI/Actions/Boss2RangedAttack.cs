@@ -21,13 +21,8 @@ public class Boss2RangedAttack : Action
         {
             // Debug thêm thông tin về Shield
             bool shieldActive = boss2Controller.IsShieldActive();
-            Debug.Log($"Boss2RangedAttack: Bắt đầu attack - Shield Active: {shieldActive}");
             
             boss2Controller.StartAttack();
-        }
-        else
-        {
-            Debug.LogError("Boss2RangedAttack: Không tìm thấy Boss2Controller!");
         }
     }
 
@@ -41,14 +36,12 @@ public class Boss2RangedAttack : Action
         if (!hasStartedAttackAnimation && elapsedTime >= attackDelay)
         {
             hasStartedAttackAnimation = true;
-            Debug.Log("Boss2RangedAttack: Đã qua delay, đang attack...");
         }
 
         // Khi đủ thời gian attackDuration thì kết thúc
         if (elapsedTime >= attackDuration)
         {
             boss2Controller.EndAttack();
-            Debug.Log("Boss2RangedAttack: Kết thúc attack!");
             return TaskStatus.Success;
         }
 

@@ -36,12 +36,6 @@ public class BossChasePlayer : Action
     {
         // Ưu tiên tìm Player qua tag
         _playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
-
-        // Nếu vẫn không tìm thấy, log cảnh báo
-        if (_playerTransform == null)
-        {
-            Debug.LogWarning("Không tìm thấy Player trong scene!");
-        }
     }
     
     public override TaskStatus OnUpdate()

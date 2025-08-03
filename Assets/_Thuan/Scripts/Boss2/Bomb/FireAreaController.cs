@@ -47,8 +47,6 @@ public class FireAreaController : MonoBehaviour
         
         // Bắt đầu timer để tắt lửa
         fireCoroutine = StartCoroutine(FireDurationCoroutine());
-        
-        Debug.Log($"[FireArea] Fire started for {fireDuration} seconds");
     }
     
     void OnTriggerEnter2D(Collider2D other)
@@ -59,8 +57,6 @@ public class FireAreaController : MonoBehaviour
         {
             currentPlayer = other.gameObject;
             StartDamageCoroutine();
-            
-            Debug.Log("[FireArea] Player entered fire area!");
         }
     }
     
@@ -72,8 +68,6 @@ public class FireAreaController : MonoBehaviour
         {
             currentPlayer = null;
             StopDamageCoroutine();
-            
-            Debug.Log("[FireArea] Player exited fire area!");
         }
     }
     
@@ -101,7 +95,6 @@ public class FireAreaController : MonoBehaviour
         {
             // Sử dụng hàm ApplyDamageToPlayer
             ApplyDamageToPlayer(damagePerSecond, transform.position);
-            Debug.Log($"[FireArea] Dealt {damagePerSecond} fire damage to player!");
             yield return new WaitForSeconds(damageInterval);
         }
     }
@@ -120,7 +113,6 @@ public class FireAreaController : MonoBehaviour
                 if (applyDamageMethod != null)
                 {
                     applyDamageMethod.Invoke(playerScript, new object[] { damage, attackPosition });
-                    Debug.Log($"[FireArea] Applied {damage} damage to Player from {attackPosition}");
                 }
             }
         }
@@ -152,8 +144,6 @@ public class FireAreaController : MonoBehaviour
         {
             StopCoroutine(fireCoroutine);
         }
-        
-        Debug.Log("[FireArea] Fire extinguished!");
         
         // Destroy object sau một chút để đảm bảo tất cả effect đã tắt
         Destroy(gameObject, 0.5f);
