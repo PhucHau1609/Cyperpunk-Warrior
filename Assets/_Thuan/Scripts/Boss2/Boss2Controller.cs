@@ -700,6 +700,7 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
             if (flyingDroid != null)
             {
                 flyingDroid.enabled = false;
+                flyingDroid.rb.gravityScale = 1;
                 flyingDroid.healthBarEnemy.HideHealthBar();
             }
 

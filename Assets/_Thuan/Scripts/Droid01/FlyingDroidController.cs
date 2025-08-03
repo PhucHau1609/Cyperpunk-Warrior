@@ -18,7 +18,7 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
     [HideInInspector] public bool canShoot = true; // Flag để kiểm soát việc bắn
 
     private Vector3 target;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private bool isMoving = true;
 
     private enum State { Patrolling, Shooting, Returning, Dead }
@@ -83,7 +83,6 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
         if (animator != null)
         {
             animator.SetBool("Run", true);
-            animator.SetBool("Fly", true); // Uncomment nếu có Fly animation
         }
     }
 
@@ -97,7 +96,6 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
         if (animator != null)
         {
             animator.SetBool("Run", false);
-            animator.SetBool("Fly", false);
         }
     }
 
@@ -110,7 +108,6 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
         if (animator != null)
         {
             animator.SetBool("Run", true);
-            animator.SetBool("Fly", true);
         }
     }
 
