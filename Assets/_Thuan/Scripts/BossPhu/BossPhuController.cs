@@ -1,7 +1,7 @@
 using UnityEngine;
 using BehaviorDesigner.Runtime;
 
-public class BossPhuController : MonoBehaviour, IDamageResponder
+public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettable
 {
     [Header("Boss Stats")]
     public float moveSpeed = 3f;
@@ -478,4 +478,16 @@ public class BossPhuController : MonoBehaviour, IDamageResponder
             audioSource.pitch = soundPitch;
         }
     }
+
+    #region IBossResettable Implementation
+    public bool IsActive()
+    {
+        return gameObject.activeInHierarchy && enabled && !isDead;
+    }
+
+    public string GetBossName()
+    {
+        return gameObject.name;
+    }
+    #endregion
 }
