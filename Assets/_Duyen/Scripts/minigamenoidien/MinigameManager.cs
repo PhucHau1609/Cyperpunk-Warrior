@@ -203,10 +203,10 @@ public class MinigameManager : MonoBehaviour
         yield return new WaitForSeconds(0f);
         
         // DISABLE PLAYER MOVEMENT TRƯỚC KHI CHẠY TIMELINE
-        if (playerMovement != null)
-        {
-            playerMovement.SetCanMove(false);
-        }
+        // if (playerMovement != null)
+        // {
+        //     playerMovement.SetCanMove(false);
+        // }
         
         // Chạy Timeline cutscene
         if (cutsceneDirector != null)
