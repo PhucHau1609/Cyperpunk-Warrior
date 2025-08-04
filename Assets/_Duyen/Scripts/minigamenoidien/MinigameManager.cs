@@ -25,7 +25,7 @@ public class MinigameManager : MonoBehaviour
     private bool isCompleted = false;
     private AudioClip previousBGM;
     public int nextSceneIndex;
-    public Player playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+    public PlayerMovement2 playerMovement;
     public GameObject DialogueTrigger;
 
 
@@ -49,6 +49,16 @@ public class MinigameManager : MonoBehaviour
             AudioManager.Instance.PlayClickSFX();
             CloseMinigame();
         });
+
+        if (playerMovement == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+            {
+                playerMovement = playerObj.GetComponent<PlayerMovement2>(); // ✅ ĐÚNG
+            }
+        }
+
 
         // Subscribe to Timeline completion event
         if (cutsceneDirector != null)
