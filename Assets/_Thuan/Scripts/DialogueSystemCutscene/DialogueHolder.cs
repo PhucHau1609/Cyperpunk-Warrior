@@ -64,11 +64,12 @@ namespace DialogueSystem
             Deactivate(); // Tắt hết hội thoại đang hiện
             gameObject.SetActive(false);
             Time.timeScale = 1f;
-            GameStateManager.Instance.ResetToGameplay();
+
             if (nextTimeline != null)
             {
                 nextTimeline.Play();
             }
+            GameStateManager.Instance.ResetToGameplay();
         }
 
         private void Deactivate()
