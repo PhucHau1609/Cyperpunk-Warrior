@@ -111,7 +111,11 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
 
     public virtual void ShowInventoryUI()
     {
+        if (GameStateManager.Instance.CurrentState == GameState.Paused)
+            return;
+
         WeaponSystemManager.Instance.TurnOffAllWeapon();
+        GameStateManager.Instance.SetState(GameState.Inventory);
         this.isShowUI = true;
         this.showHide.gameObject.SetActive(true);
         this.showHide.localPosition = new Vector3(-1000f, 0f, 0f); // vị trí ngoài màn hình bên trái

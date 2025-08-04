@@ -61,6 +61,7 @@ public class pausegame : MonoBehaviour
             return;
         }
 
+        GameStateManager.Instance.SetState(GameState.Paused);
         AudioManager.Instance.PlayClickSFX();
         if (playerMovement != null)
             playerMovement.SetCanMove(false);
@@ -93,6 +94,7 @@ public class pausegame : MonoBehaviour
 
     public void OnResumeClicked()
     {
+        GameStateManager.Instance.ResetToGameplay();
         AudioManager.Instance.PlayClickSFX();
 
         var pauseCanvasGroup = pannelpause.GetComponent<CanvasGroup>();
