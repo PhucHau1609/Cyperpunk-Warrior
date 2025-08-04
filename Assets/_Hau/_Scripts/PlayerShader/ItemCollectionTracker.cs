@@ -43,6 +43,7 @@ public class ItemCollectionTracker : MonoBehaviour
 
     private void CheckCompletion()
     {
+        //Debug.Log("1");
         if (!conditionMet && collectedClothes.Count >= 4 && hasCollectedArtefact)
         {
             conditionMet = true;

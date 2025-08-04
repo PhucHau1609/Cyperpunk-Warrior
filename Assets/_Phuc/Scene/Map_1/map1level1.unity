@@ -201,7 +201,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5894254}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 634544012}
+        m_TargetAssemblyTypeName: PlayerShader, Assembly-CSharp
+        m_MethodName: OnClickActivateColorRampIfReady
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5894254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25051,6 +25063,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 371093830}
+  - component: {fileID: 371093831}
   m_Layer: 5
   m_Name: Center_2
   m_TagString: Untagged
@@ -25083,6 +25096,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &371093831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371093829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbcb46728b5f054f951fad81c10fc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  equipmentSlots:
+  - {fileID: 1812732634}
+  - {fileID: 1590697046}
+  - {fileID: 634905467}
+  - {fileID: 1495350200}
+  requiredArtefact: 3
 --- !u!1 &371759875
 GameObject:
   m_ObjectHideFlags: 0
@@ -33037,7 +33068,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &462364527
 RectTransform:
   m_ObjectHideFlags: 0
@@ -41547,9 +41578,9 @@ RectTransform:
   - {fileID: 1332776930}
   - {fileID: 15072575}
   - {fileID: 1008355352}
-  - {fileID: 5894252}
   - {fileID: 359554388}
   - {fileID: 1534660099}
+  - {fileID: 5894252}
   m_Father: {fileID: 853422029}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -122426,7 +122457,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1662980344
 Transform:
   m_ObjectHideFlags: 0
@@ -139737,6 +139768,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2054231972}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1885771009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140089,7 +140132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1892366681
 RectTransform:
   m_ObjectHideFlags: 0
@@ -148037,6 +148080,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2054231972}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1993995699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149423,6 +149478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a980192877587149868785387bdb565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  btnPause: {fileID: 2054231972}
   pannelpause: {fileID: 1300952705}
   panelOptions: {fileID: 1984820034}
   pauseButton: {fileID: 2054231974}
@@ -149473,6 +149529,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 2054231973}
+        m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
+        m_MethodName: CheckIsOpenInventory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2054231973}
         m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
         m_MethodName: OnPauseClicked
@@ -152511,6 +152579,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1008457651}
         m_TargetAssemblyTypeName: NewInventoryUI, Assembly-CSharp
         m_MethodName: Toogle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2054231973}
+        m_TargetAssemblyTypeName: pausegame, Assembly-CSharp
+        m_MethodName: ToggleBTNPause
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

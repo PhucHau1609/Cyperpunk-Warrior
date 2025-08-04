@@ -35,6 +35,7 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
             isToogleInventoryUI = true;
             ObserverManager.Instance.PostEvent(EventID.OpenInventory);
             GameStateManager.Instance.SetState(GameState.Inventory); // 👉 chuyển sang trạng thái inventory
+            pausegame.Instance.ToggleBTNPause();
         }
     }
 
