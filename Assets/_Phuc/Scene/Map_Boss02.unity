@@ -196,6 +196,7 @@ GameObject:
   - component: {fileID: 127226433}
   - component: {fileID: 127226432}
   - component: {fileID: 127226437}
+  - component: {fileID: 127226438}
   m_Layer: 6
   m_Name: Ground
   m_TagString: Ground
@@ -17994,6 +17995,21 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
+--- !u!114 &127226438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127226430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe76d93c3ec8d9548afb8638f6155a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 50
+  maxHP: 50
+  IsImmotal: 1
 --- !u!61 &177306106 stripped
 BoxCollider2D:
   m_CorrespondingSourceObject: {fileID: 1644382958188426818, guid: 266545e504eee18469c082e1f01c28bc, type: 3}
