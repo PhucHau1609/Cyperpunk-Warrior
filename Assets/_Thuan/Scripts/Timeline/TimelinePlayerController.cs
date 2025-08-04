@@ -100,6 +100,7 @@ public class TimelinePlayerController : MonoBehaviour
         {
             playerMovement2.SetCanMove(wasPlayerAbleToMove);
         }
+        GameStateManager.Instance.ResetToGameplay();
     }
 
     /// <summary>
@@ -152,6 +153,7 @@ public class TimelinePlayerController : MonoBehaviour
     /// </summary>
     public void PlayTimelineAndLockPlayer()
     {
+        GameStateManager.Instance.SetState(GameState.MiniGame);
         LockPlayerMovement();
         if (playableDirector != null)
         {
