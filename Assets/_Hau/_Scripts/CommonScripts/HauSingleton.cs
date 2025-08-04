@@ -40,6 +40,6 @@ public abstract class HauSingleton<T> : HauMonoBehaviour where T : HauMonoBehavi
             return;
         }
 
-        if (_instance != this) Debug.LogError("Another instance of SingletonExample already exists!");
+        if (_instance != this) Debug.LogError("Another instance of SingletonExample already exists!" + _instance.name);
     }
 }

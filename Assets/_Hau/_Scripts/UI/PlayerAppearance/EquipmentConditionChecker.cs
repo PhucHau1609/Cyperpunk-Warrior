@@ -48,7 +48,7 @@ public class EquipmentConditionChecker : MonoBehaviour
             }
         }
 
-        // ✅ Check artefact từ inventory thay vì slot
+        //✅ Check artefact từ inventory thay vì slot
         var inventory = InventoryManager.Instance.ItemInventory();
         foreach (var item in inventory.ItemInventories)
         {

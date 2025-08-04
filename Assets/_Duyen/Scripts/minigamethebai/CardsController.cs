@@ -66,6 +66,7 @@ public class CardsController : MonoBehaviour
 
     public void StartGame()
     {
+        GameStateManager.Instance.SetState(GameState.MiniGame);
         gamePanel.SetActive(true);
         finishPanel.SetActive(false);
         buttonPanel.SetActive(false);
@@ -574,6 +575,7 @@ public class CardsController : MonoBehaviour
 
     void EndGame(bool playerWin)
     {
+        GameStateManager.Instance.ResetToGameplay();
         isTimerRunning = false;
         gamePanel.SetActive(false);
         finishPanel.SetActive(false);
