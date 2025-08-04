@@ -25,7 +25,7 @@ public class MinigameManager : MonoBehaviour
     private bool isCompleted = false;
     private AudioClip previousBGM;
     public int nextSceneIndex;
-    public Player playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+    public PlayerMovement2 playerMovement;
     public GameObject DialogueTrigger;
 
 
@@ -49,6 +49,16 @@ public class MinigameManager : MonoBehaviour
             AudioManager.Instance.PlayClickSFX();
             CloseMinigame();
         });
+
+        if (playerMovement == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+            {
+                playerMovement = playerObj.GetComponent<PlayerMovement2>(); // ✅ ĐÚNG
+            }
+        }
+
 
         // Subscribe to Timeline completion event
         if (cutsceneDirector != null)
@@ -193,10 +203,10 @@ public class MinigameManager : MonoBehaviour
         yield return new WaitForSeconds(0f);
         
         // DISABLE PLAYER MOVEMENT TRƯỚC KHI CHẠY TIMELINE
-        if (playerMovement != null)
-        {
-            playerMovement.SetCanMove(false);
-        }
+        // if (playerMovement != null)
+        // {
+        //     playerMovement.SetCanMove(false);
+        // }
         
         // Chạy Timeline cutscene
         if (cutsceneDirector != null)
