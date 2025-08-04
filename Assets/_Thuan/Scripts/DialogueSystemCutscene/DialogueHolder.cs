@@ -14,6 +14,7 @@ namespace DialogueSystem
 
         private void OnEnable()
         {
+            GameStateManager.Instance.SetState(GameState.MiniGame);
             Time.timeScale = 0f; // ⛔ Dừng game
             isSkipped = false;
             dialogueCoroutine = StartCoroutine(dialogueSequence());
@@ -46,7 +47,7 @@ namespace DialogueSystem
 
             gameObject.SetActive(false);
             Time.timeScale = 1f;
-
+            GameStateManager.Instance.ResetToGameplay();
             if (nextTimeline != null)
             {
                 nextTimeline.Play();
@@ -63,7 +64,7 @@ namespace DialogueSystem
             Deactivate(); // Tắt hết hội thoại đang hiện
             gameObject.SetActive(false);
             Time.timeScale = 1f;
-
+            GameStateManager.Instance.ResetToGameplay();
             if (nextTimeline != null)
             {
                 nextTimeline.Play();
