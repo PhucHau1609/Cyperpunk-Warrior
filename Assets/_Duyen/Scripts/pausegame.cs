@@ -7,6 +7,7 @@ using System.Collections;
 public class pausegame : MonoBehaviour
 {
     [Header("UI References")]
+    public GameObject btnPause;
     public GameObject pannelpause;
     public GameObject panelOptions;
     public Button pauseButton;
@@ -18,6 +19,8 @@ public class pausegame : MonoBehaviour
 
 
     public static pausegame Instance { get; private set; }
+    public static bool IsPaused { get; private set; } = false;
+
 
     private void Awake()
     {
@@ -51,6 +54,14 @@ public class pausegame : MonoBehaviour
 
     public void OnPauseClicked()
     {
+        // 🔒 CHẶN nếu không phải đang ở Gameplay
+        if (!GameStateManager.Instance.IsGameplay)
+        {
+            Debug.Log("Không thể pause khi đang ở trạng thái: " + GameStateManager.Instance.CurrentState);
+            return;
+        }
+
+        GameStateManager.Instance.SetState(GameState.Paused);
         AudioManager.Instance.PlayClickSFX();
         if (playerMovement != null)
             playerMovement.SetCanMove(false);
@@ -76,11 +87,14 @@ public class pausegame : MonoBehaviour
         {
             pauseButtonImage.sprite = imagePause;
         }
+
+        IsPaused = true;
         pauseButton.interactable = false;
     }
 
     public void OnResumeClicked()
     {
+        GameStateManager.Instance.ResetToGameplay();
         AudioManager.Instance.PlayClickSFX();
 
         var pauseCanvasGroup = pannelpause.GetComponent<CanvasGroup>();
@@ -114,6 +128,7 @@ public class pausegame : MonoBehaviour
             }
 
             pauseButton.interactable = true;
+            IsPaused = false;
         }, ignoreTimeScale: true);
     }
 
@@ -168,6 +183,21 @@ public class pausegame : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(sceneIndex);
     }
+
+    public void CheckIsOpenInventory()
+    {
+        if (GameStateManager.Instance.CurrentState == GameState.Inventory)
+        {
+            Debug.Log("Dang mo inventory");
+            return;
+        }
+    }
+
+    public void ToggleBTNPause()
+    {
+        Debug.Log("1");
+        btnPause.SetActive(!btnPause.activeSelf);
+    }    
 
     // Nếu bạn muốn đảm bảo rằng game sẽ không bị đóng băng khi object bị vô hiệu hóa, bạn có thể bật lại dòng này:
     // private void OnDisable() => Time.timeScale = 1f;

@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -9,11 +10,14 @@ public class AudioManager : MonoBehaviour
     public AudioSource sfxSource;
     public AudioSource typingSource;
 
-
+    [Header("Map BGM")]
     public AudioClip loginMusic;
     public AudioClip menuMusic;
-    public AudioClip mapMusic;
+    public AudioClip map1Music;
+    public AudioClip map2Music;
+    public AudioClip caveMusic;
 
+    [Header("SFX")]
     public AudioClip typingSFX;
     public AudioClip clickSFX;
 
@@ -31,6 +35,12 @@ public class AudioManager : MonoBehaviour
     public AudioClip wrongSFX;
     public AudioClip winGameSFX;
     public AudioClip loseGameSFX;
+
+    [Header("Audio Settings")]
+    public float fadeDuration = 1.5f; // Thời gian nhạc fade in
+
+    private AudioClip currentBGM;
+    private AudioClip previousBGM;
 
     private void Awake()
     {
@@ -50,38 +60,51 @@ public class AudioManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        switch (scene.name)
+        string sceneName = scene.name;
+
+        if (sceneName == "Home")
         {
-            case "Home":
-                PlayBGM(loginMusic);
-                break;
-            case "map1level2":
-                PlayBGM(menuMusic);
-                break;
-            case "map1level1":
-                PlayBGM(mapMusic);
-                break;
+            PlayBGM(loginMusic);
+        }
+
+        else if (sceneName.StartsWith("map1level"))
+        {
+            PlayBGM(map1Music);
+        }
+        else if (sceneName.StartsWith("map2level"))
+        {
+            PlayBGM(map2Music);
+        }
+        else if (sceneName == "Cave")
+        {
+            PlayBGM(caveMusic);
         }
     }
 
     public void PlayBGM(AudioClip clip)
     {
         if (bgmSource == null || clip == null) return;
-
         if (bgmSource.clip == clip) return;
 
-        bgmSource.Stop();
-        bgmSource.clip = clip;
-        bgmSource.loop = true;
-        bgmSource.Play();
+        StopAllCoroutines(); // Ngăn chồng fade
+        StartCoroutine(FadeInBGM(clip));
+    }
+
+    public void StopBGM()
+    {
+        if (bgmSource != null && bgmSource.isPlaying)
+        {
+            bgmSource.Stop();
+            bgmSource.clip = null;
+            currentBGM = null;
+        }
     }
 
     public void PlaySFX(AudioClip clip)
     {
-        if (bgmSource == null || clip == null) return;
+        if (sfxSource == null || clip == null) return;
 
-        if (clip != null)
-            sfxSource.PlayOneShot(clip);
+        sfxSource.PlayOneShot(clip);
     }
 
     public void PlayClickSFX()
@@ -92,14 +115,6 @@ public class AudioManager : MonoBehaviour
     public void PlayTypingSFX()
     {
         PlaySFX(typingSFX);
-    }
-    public void StopBGM()
-    {
-        if (bgmSource.isPlaying)
-        {
-            bgmSource.Stop();
-            bgmSource.clip = null;
-        }
     }
 
     public void StopTypingSFX()
@@ -123,4 +138,39 @@ public class AudioManager : MonoBehaviour
     public void PlayWrong() => PlaySFX(wrongSFX);
     public void PlayWinGame() => PlaySFX(winGameSFX);
     public void PlayLoseGame() => PlaySFX(loseGameSFX);
+
+    // ==== Minigame Transition Logic ====
+    public void EnterMinigame()
+    {
+        previousBGM = currentBGM;
+        PlayBGM(minigameBGM);
+    }
+
+    public void ExitMinigame()
+    {
+        if (previousBGM != null)
+            PlayBGM(previousBGM);
+    }
+
+    // ==== Fade In Logic ====
+    private IEnumerator FadeInBGM(AudioClip newClip)
+    {
+        bgmSource.Stop();
+        bgmSource.clip = newClip;
+        bgmSource.volume = 0f;
+        bgmSource.loop = true;
+        bgmSource.Play();
+
+        currentBGM = newClip;
+
+        float timer = 0f;
+        while (timer < fadeDuration)
+        {
+            timer += Time.deltaTime;
+            bgmSource.volume = Mathf.Lerp(0f, 1f, timer / fadeDuration);
+            yield return null;
+        }
+
+        bgmSource.volume = 1f;
+    }
 }

@@ -6,7 +6,6 @@ public class EnemyDialogue: MonoBehaviour
 
     public void Die()
     {
-        Debug.Log("Enemy killed!");
         OnAnyEnemyKilled?.Invoke();
         Destroy(gameObject);
     }

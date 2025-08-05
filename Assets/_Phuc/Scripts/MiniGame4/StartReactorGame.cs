@@ -6,6 +6,7 @@ using TMPro;
 
 public class StartReactorGame : MonoBehaviour
 {
+    [Header("UI & Game Elements")]
     public GameObject panel;
     public GameObject laserBlock;
     public Button openMiniGameButton;
@@ -25,33 +26,89 @@ public class StartReactorGame : MonoBehaviour
     public TMP_Text failedText;
     public TMP_Text completedText;
 
+    public PlayerMovement player;
+
+    [Header("Interaction Settings")]
+    public Transform interactionPoint;
+    public float interactionDistance = 3f;
+
     private List<int> pattern = new List<int>();
     private int inputIndex = 0;
     private int currentLevel = 1;
 
+    private bool canStartGame = true;
+    private bool hasCompletedGame = false;
+
     void Start()
     {
         panel.SetActive(false);
+
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
 
         for (int i = 0; i < inputButtons.Length; i++)
         {
             int idx = i;
             inputButtons[i].onClick.AddListener(() => OnButtonPressed(idx));
         }
+
+        // Kiểm tra khoảng cách ban đầu
+        if (openMiniGameButton != null && interactionPoint != null)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            openMiniGameButton.interactable = (dist <= interactionDistance);
+        }
+    }
+
+    void Update()
+    {
+        if (openMiniGameButton != null && interactionPoint != null && player != null && !hasCompletedGame)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            openMiniGameButton.interactable = (dist <= interactionDistance);
+        }
     }
 
     public void OpenMiniGame()
     {
+
+        GameStateManager.Instance.SetState(GameState.MiniGame);
+        if (hasCompletedGame) return; // 🚫 Đã thắng thì không cho mở lại
+
+        if (interactionPoint != null && player != null)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            if (dist > interactionDistance)
+                return;
+        }
+
         panel.SetActive(true);
+
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
+
+        if (player != null)
+            player.SetCanMove(false);
+
+        canStartGame = true;
     }
 
     public void CloseMiniGame()
     {
+        if (!panel.activeSelf) return;
+        GameStateManager.Instance.ResetToGameplay();
+
         panel.SetActive(false);
+
+        if (player != null)
+            player.SetCanMove(true);
     }
 
     public void StartGame()
     {
+        if (!canStartGame) return;
+
+        canStartGame = false;
         ResetAll();
         StartCoroutine(ShowPattern());
     }
@@ -78,7 +135,7 @@ public class StartReactorGame : MonoBehaviour
 
         for (int i = 0; i < patternLength; i++)
         {
-            int randomIndex = Random.Range(0, 9);
+            int randomIndex = Random.Range(0, displayPattern.Length);
             pattern.Add(randomIndex);
             displayPattern[randomIndex].color = highlightColor;
             SoundMiniGame4.Instance?.PlayPatternSound();
@@ -124,7 +181,8 @@ public class StartReactorGame : MonoBehaviour
             failedText.gameObject.SetActive(false);
             SoundMiniGame4.Instance?.PlayWinSound();
             yield return new WaitForSeconds(1.5f);
-            panel.SetActive(false);
+
+            CloseMiniGame();
 
             if (laserBlock != null)
                 laserBlock.SetActive(false);
@@ -132,6 +190,8 @@ public class StartReactorGame : MonoBehaviour
             if (openMiniGameButton != null)
                 openMiniGameButton.interactable = false;
 
+            canStartGame = false;
+            hasCompletedGame = true; // ✅ Đánh dấu game đã thắng
             yield break;
         }
 

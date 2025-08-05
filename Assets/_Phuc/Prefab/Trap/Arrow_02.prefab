@@ -13,9 +13,8 @@ GameObject:
   - component: {fileID: 1967436266764524698}
   - component: {fileID: 8870541426202079104}
   - component: {fileID: 2626867718493329117}
-  - component: {fileID: 132674255594712785}
   - component: {fileID: 1614203204831352429}
-  - component: {fileID: 4460683575010293547}
+  - component: {fileID: 315488470698270318}
   m_Layer: 0
   m_Name: Arrow_02
   m_TagString: Ground
@@ -130,7 +129,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -188,20 +187,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.5006034, y: 0.19500293}
   m_EdgeRadius: 0
---- !u!114 &132674255594712785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4485494048552129145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc7062b366010d7479c930ba8b6f2251, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 1
-  damageCooldown: 1
 --- !u!114 &1614203204831352429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +202,7 @@ MonoBehaviour:
   lifetime: 4
   hitEffectGround: {fileID: 1887770714040227954, guid: e270c8ee0716de542925c472189224ae, type: 3}
   hitEffectEnemy: {fileID: 6490485284205829814, guid: f61a53debaa977940822f4672820c3c9, type: 3}
---- !u!114 &4460683575010293547
+--- !u!114 &315488470698270318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,7 +211,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4485494048552129145}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc7062b366010d7479c930ba8b6f2251, type: 3}
+  m_Script: {fileID: 11500000, guid: aa8f5dbf09e57734f80076d539f00363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10

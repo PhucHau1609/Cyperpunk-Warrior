@@ -3,7 +3,7 @@ using BehaviorDesigner.Runtime;
 using System.Collections.Generic;
 using static EnemyMini;
 
-public class Boss2Controller : MonoBehaviour
+public class Boss2Controller : MonoBehaviour, IBossResettable
 {
     [Header("Boss2 Attack Settings")]
     public Transform laserPoint;
@@ -62,6 +62,11 @@ public class Boss2Controller : MonoBehaviour
     public AudioClip deathSound;
     public AudioClip shieldActivateSound;
     public AudioClip phase2TransitionSound;
+    
+    // Lưu trạng thái ban đầu để reset
+    private Vector3 initialPosition;
+    private Vector3 initialScale;
+    private bool initialDataSaved = false;
 
     private void Awake()
     {
@@ -95,6 +100,19 @@ public class Boss2Controller : MonoBehaviour
 
         // Cho phép attack ngay khi scene load
         lastAttackTime = -attackCooldown;
+        
+        // Lưu trạng thái ban đầu lần đầu tiên
+        if (!initialDataSaved)
+        {
+            SaveInitialState();
+        }
+    }
+    
+    private void SaveInitialState()
+    {
+        initialPosition = transform.position;
+        initialScale = transform.localScale;
+        initialDataSaved = true;
     }
 
     private void Update()
@@ -130,7 +148,6 @@ public class Boss2Controller : MonoBehaviour
             activeMinions.Add(minion);
             
             lastMinionSpawnTime = Time.time;
-            Debug.Log($"[Boss2] Spawned minion at {spawnPoint.name}. Active minions: {activeMinions.Count}");
         }
     }
 
@@ -177,10 +194,7 @@ public class Boss2Controller : MonoBehaviour
             PlaySound(phase2TransitionSound, 1f);
 
             StartMinionSpawning();
-            Debug.Log("[Boss2] Entered Phase 2! Shield deactivated and minions will spawn!");
         }
-        
-        Debug.Log("[Boss2] Shield Deactivated! Boss2 can take damage again.");
     }
 
     public void StartMinionSpawning()
@@ -194,20 +208,104 @@ public class Boss2Controller : MonoBehaviour
         return shieldActive;
     }
     
+    // Method để reset Boss2 về trạng thái ban đầu
+    public void ResetBoss()
+    {
+        // Dừng tất cả coroutines
+        StopAllCoroutines();
+        
+        // Reset trạng thái cơ bản
+        isAttacking = false;
+        isPhase2 = false;
+        shieldActive = false;
+        currentState = State.Idle;
+        lastAttackTime = -attackCooldown; // Cho phép attack ngay
+        lastMinionSpawnTime = 0f;
+        attackingHand = null;
+        
+        // Reset vị trí và scale
+        if (initialDataSaved)
+        {
+            transform.position = initialPosition;
+            transform.localScale = initialScale;
+        }
+        
+        // Bật lại collider và script
+        GetComponent<Collider2D>().enabled = true;
+        this.enabled = true;
+        
+        // Reset animator
+        animator.ResetTrigger("LaserAttack");
+        animator.ResetTrigger("BombAttack");
+        animator.ResetTrigger("Hurt");
+        animator.ResetTrigger("Death");
+        
+        // Reset máu
+        if (damageReceiver != null)
+        {
+            damageReceiver.ResetBossHealth();
+        }
+        
+        // Reset health bar
+        if (healthBar != null)
+        {
+            healthBar.ShowHealthBar(1f);
+        }
+        
+        // Reset shield
+        if (shield != null)
+        {
+            shield.SetActive(false);
+        }
+        
+        // Reset behavior tree
+        var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+        if (behavior != null) 
+        {
+            behavior.EnableBehavior();
+            behavior.RestartWhenComplete = true;
+        }
+
+        foreach (var hand in hands)
+        {
+            if (hand != null)
+            {
+                hand.ResetHand(); // Gọi method reset của hand
+            }
+        }
+        
+        // Xóa tất cả minions hiện tại
+        foreach (var minion in activeMinions)
+        {
+            if (minion != null)
+            {
+                Destroy(minion);
+            }
+        }
+        activeMinions.Clear();
+        
+        // Reset audio
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        
+        // Tìm lại player
+        FindPlayer();
+    }
+    
     // Hand Management Methods
     public void RegisterHand(Boss2HandController hand)
     {
         if (!hands.Contains(hand))
         {
             hands.Add(hand);
-            Debug.Log($"Đã đăng ký {hand.gameObject.name} với Boss2");
         }
     }
     
      public void OnHandStartAttack(Boss2HandController hand)
     {
         // Method này giờ chỉ để log, attackingHand đã được set trong ExecuteHandAttack
-        Debug.Log($"Boss2: {hand.gameObject.name} bắt đầu tấn công");
     }
     
     private void ExecuteHandAttack(Boss2AttackType attackType)
@@ -242,12 +340,9 @@ public class Boss2Controller : MonoBehaviour
 
             closestHand.StartHandAttack(attackType, player.position);
             attackingHand = closestHand;
-            Debug.Log($"Boss2: {closestHand.gameObject.name} thực hiện {attackType}");
         }
         else
         {
-            // Không có cánh tay khả dụng, kết thúc attack
-            Debug.Log("Boss2: Không có cánh tay nào khả dụng để tấn công!");
             EndAttack();
         }
     }
@@ -257,7 +352,6 @@ public class Boss2Controller : MonoBehaviour
         if (attackingHand == hand)
         {
             attackingHand = null;
-            Debug.Log($"Boss2: {hand.gameObject.name} kết thúc tấn công");
             
             // Kiểm tra nếu shield đang active và cả 2 cánh tay đều chết
             if (shieldActive && AreAllHandsDead())
@@ -284,7 +378,6 @@ public class Boss2Controller : MonoBehaviour
             }
         }
         
-        Debug.Log($"[Boss2] Dead hands: {deadCount}/{totalHands}");
         return deadCount >= totalHands && totalHands > 0;
     }
 
@@ -325,7 +418,7 @@ public class Boss2Controller : MonoBehaviour
         if (shieldActive)
         {
             // Ưu tiên tấn công Hand 70%, Boss attack 30%
-            int[] weights = {10, 10, 40, 40}; // Laser(10%), Bomb(10%), Attack3(40%), Attack4(40%)
+            int[] weights = {40, 20, 20, 20}; // Laser(10%), Bomb(10%), Attack3(40%), Attack4(40%)
             int totalWeight = 100;
             int randomValue = Random.Range(0, totalWeight);
             
@@ -440,7 +533,6 @@ public class Boss2Controller : MonoBehaviour
             if (phase2LaserPoints[i] != null)
             {
                 Instantiate(laserPrefab, phase2LaserPoints[i].position, phase2LaserPoints[i].rotation);
-                Debug.Log($"[Boss2] Phase 2 laser {i+1}/3 fired!");
                 yield return new WaitForSeconds(laserSequenceDelay);
             }
         }
@@ -482,7 +574,6 @@ public class Boss2Controller : MonoBehaviour
                 if (applyDamageMethod != null)
                 {
                     applyDamageMethod.Invoke(playerScript, new object[] { damage, attackPosition });
-                    Debug.Log($"[Boss2] Applied {damage} damage to Player from {attackPosition}");
                 }
             }
         }
@@ -574,7 +665,7 @@ public class Boss2Controller : MonoBehaviour
 
         var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
         if (behavior != null) behavior.DisableBehavior();
-        
+
         // Buộc tất cả cánh tay dừng tấn công
         foreach (var hand in hands)
         {
@@ -583,9 +674,58 @@ public class Boss2Controller : MonoBehaviour
                 hand.ForceEndAttack();
             }
         }
-
+        KillAllEnemies();
         Destroy(gameObject, 2f);
     }
+
+    private void KillAllEnemies()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            if (enemy == null) continue;
+
+            // Lấy animator
+            Animator enemyAnimator = enemy.GetComponent<Animator>();
+            
+            // Kiểm tra và disable các script enemy
+            SlimeEnemy slime = enemy.GetComponent<SlimeEnemy>();
+            if (slime != null)
+            {
+                slime.enabled = false;
+            }
+
+            FlyingDroidController flyingDroid = enemy.GetComponent<FlyingDroidController>();
+            if (flyingDroid != null)
+            {
+                flyingDroid.enabled = false;
+                flyingDroid.rb.gravityScale = 1;
+                flyingDroid.healthBarEnemy.HideHealthBar();
+            }
+
+            // Trigger death animation nếu có
+            if (enemyAnimator != null)
+            {
+                enemyAnimator.SetTrigger("Death");
+            }
+
+            // Destroy enemy sau 2 giây
+            Destroy(enemy, 2f);
+        }
+    }
+
+    #region IBossResettable Implementation
+    public bool IsActive()
+    {
+        return gameObject.activeInHierarchy && enabled;
+    }
+    
+    public string GetBossName()
+    {
+        return gameObject.name;
+    }
+    #endregion
 }
 
 public enum Boss2AttackType

@@ -18,7 +18,6 @@ public class CameraBoundaries : MonoBehaviour
         cam = Camera.main;
         if (cam == null)
         {
-            Debug.LogWarning("Không tìm thấy Main Camera!");
             return;
         }
 

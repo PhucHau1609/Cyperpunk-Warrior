@@ -33,7 +33,6 @@ public class BossRangedAttack : Action
             string[] rangedAttacks = {"Attack1", "Attack2"};
             string selectedAttack = rangedAttacks[Random.Range(0, rangedAttacks.Length)];
             animator.SetTrigger(selectedAttack);
-            //Debug.Log($"Boss thực hiện {selectedAttack}");
         }
         
         if (bossAI != null)

@@ -15,11 +15,6 @@ public class Boss2HandHitBox : MonoBehaviour
         handController = GetComponentInParent<Boss2HandController>();
         hitBoxCollider = GetComponent<Collider2D>();
         
-        if (hitBoxCollider == null)
-        {
-            Debug.LogError($"{gameObject.name}: HitBox cần có Collider2D!");
-        }
-        
         // Đảm bảo HitBox bắt đầu ở trạng thái tắt
         DisableHitBox();
     }
@@ -31,7 +26,6 @@ public class Boss2HandHitBox : MonoBehaviour
         {
             hitBoxCollider.enabled = true;
         }
-        Debug.Log($"{gameObject.name}: HitBox enabled");
     }
 
     public void DisableHitBox()
@@ -41,7 +35,6 @@ public class Boss2HandHitBox : MonoBehaviour
         {
             hitBoxCollider.enabled = false;
         }
-        Debug.Log($"{gameObject.name}: HitBox disabled");
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -61,14 +54,9 @@ public class Boss2HandHitBox : MonoBehaviour
                 if (applyDamageMethod != null)
                 {
                     applyDamageMethod.Invoke(playerScript, new object[] { damage, transform.position });
-                    Debug.Log($"{gameObject.name}: Dealt {damage} damage to Player!");
                     
                     // Tắt HitBox sau khi đánh trúng để tránh damage liên tục
                     DisableHitBox();
-                }
-                else
-                {
-                    Debug.LogWarning($"{gameObject.name}: Player không có hàm ApplyDamage!");
                 }
             }
         }

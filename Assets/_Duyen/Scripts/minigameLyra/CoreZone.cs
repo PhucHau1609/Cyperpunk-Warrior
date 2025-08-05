@@ -1,16 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CoreZone : MonoBehaviour
 {
-    [Header("Charging Settings")]
-    public float chargeTime = 5f;
-    public float decayRate = 1f;
-    public float delayBeforeStart = 1f;
-
-    [Header("UI")]
-    public UIProgressBar uiBar;
-
     [Header("Visuals")]
     public Sprite sprite30;
     public Sprite sprite70;
@@ -18,27 +9,23 @@ public class CoreZone : MonoBehaviour
 
     [Header("Reward")]
     [SerializeField] protected ItemCode rewardCore;
+    [SerializeField] protected Vector3 spawnCore;
 
+    [Header("Minigame")]
+    public GameObject minigamePrefab; // Kéo prefab MinigameCoreUI vào đây trong Inspector
+    public float targetSpeed = 100f;  // Tốc độ riêng cho mỗi lõi
 
-    private float progress = 0f;
-    private float stayTime = 0f;
-    private bool isCharging = false;
-    private bool lyraInside = false;
+    //private bool lyraInside = false;
     private bool canBeInteracted = false;
-
-    private CoreManager coreManager;
     private SpriteRenderer spriteRenderer;
-
-    // Mốc hiện tại để tránh đổi sprite nhiều lần
+    private CoreManager coreManager;
     private int currentStage = 0;
+    private GameObject spawnedMinigame;
 
     void Start()
     {
-        coreManager = FindAnyObjectByType<CoreManager>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        uiBar?.SetProgress(0f);
-        uiBar?.Show(false);
+        coreManager = FindAnyObjectByType<CoreManager>();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -47,9 +34,33 @@ public class CoreZone : MonoBehaviour
 
         if (other.CompareTag("NPC"))
         {
-            lyraInside = true;
-            stayTime = 0f;
-            uiBar?.Show(true);
+            //lyraInside = true;
+
+            if (minigamePrefab != null && spawnedMinigame == null)
+            {
+                Transform canvas = GameObject.Find("bar_ca").transform;
+                spawnedMinigame = Instantiate(minigamePrefab, canvas);
+
+                var minigame = spawnedMinigame.GetComponent<CoreMinigameController>();
+                minigame.targetSpeed = targetSpeed;
+
+                GameObject lyraObj = GameObject.FindGameObjectWithTag("NPC");
+                if (lyraObj != null)
+                {
+                    minigame.lyraObject = lyraObj;
+                }
+
+                minigame.onComplete = () =>
+                {
+                    canBeInteracted = false;
+                    coreManager.MarkCoreAsComplete(this);
+                    SetAsCompletedVisual();
+                    UpdateSpriteByProgress(100f);
+                    Destroy(spawnedMinigame);
+                };
+
+                minigame.StartMinigame();
+            }
         }
     }
 
@@ -59,76 +70,22 @@ public class CoreZone : MonoBehaviour
 
         if (other.CompareTag("NPC"))
         {
-            lyraInside = false;
-            stayTime = 0f;
-            isCharging = false;
-            StopAllCoroutines();
-            StartCoroutine(DecayProgress());
+            //lyraInside = false;
         }
     }
 
-    void Update()
+    public void SetActiveLogic(bool active)
     {
-        if (!canBeInteracted) return;
-
-        if (lyraInside && !isCharging)
+        canBeInteracted = active;
+        if (!active)
         {
-            stayTime += Time.deltaTime;
-            if (stayTime >= delayBeforeStart)
-            {
-                StopAllCoroutines();
-                StartCoroutine(ChargeCore());
-            }
+            //lyraInside = false;
         }
     }
 
-    IEnumerator ChargeCore()
+    public void SetAsCompletedVisual()
     {
-        isCharging = true;
-        while (lyraInside && progress < chargeTime)
-        {
-            progress += Time.deltaTime;
-            float percent = progress / chargeTime;
-            uiBar.SetProgress(percent);
-
-            UpdateSpriteByProgress(percent * 100f);
-
-            yield return null;
-        }
-
-        if (progress >= chargeTime)
-        {
-            progress = chargeTime;
-            uiBar.SetProgress(1f);
-            uiBar.Show(false);
-            canBeInteracted = false;
-
-            coreManager.MarkCoreAsComplete(this);
-            SetAsCompletedVisual();
-        }
-
-        isCharging = false;
-    }
-
-    IEnumerator DecayProgress()
-    {
-        while (!lyraInside && progress > 0f)
-        {
-            progress -= Time.deltaTime * decayRate;
-            float percent = Mathf.Clamp01(progress / chargeTime);
-            uiBar.SetProgress(percent);
-
-            UpdateSpriteByProgress(percent * 100f);
-
-            yield return null;
-        }
-
-        if (progress <= 0f)
-        {
-            progress = 0f;
-            currentStage = 0;
-            uiBar?.Show(false);
-        }
+        UpdateSpriteByProgress(100f); // đảm bảo hiển thị sprite 100%
     }
 
     void UpdateSpriteByProgress(float percent)
@@ -139,8 +96,9 @@ public class CoreZone : MonoBehaviour
         {
             spriteRenderer.sprite = sprite100;
             currentStage = 3;
-            //Rơi ra cục energy
-            ItemsDropManager.Instance.DropItem(rewardCore,1,this.transform.position);
+
+            // Rơi ra phần thưởng
+            ItemsDropManager.Instance.DropItem(rewardCore, 1, this.transform.position + spawnCore);
         }
         else if (percent >= 70 && currentStage < 2)
         {
@@ -153,20 +111,176 @@ public class CoreZone : MonoBehaviour
             currentStage = 1;
         }
     }
-
-    public void SetActiveLogic(bool active)
-    {
-        canBeInteracted = active;
-        if (!active)
-        {
-            lyraInside = false;
-            StopAllCoroutines();
-            uiBar?.Show(false);
-        }
-    }
-
-    public void SetAsCompletedVisual()
-    {
-        UpdateSpriteByProgress(100f); // đảm bảo hiển thị sprite 100%
-    }
 }
+//using UnityEngine;
+//using System.Collections;
+
+//public class CoreZone : MonoBehaviour
+//{
+//    [Header("Charging Settings")]
+//    public float chargeTime = 5f;
+//    public float decayRate = 1f;
+//    public float delayBeforeStart = 1f;
+
+//    [Header("UI")]
+//    public UIProgressBar uiBar;
+
+//    [Header("Visuals")]
+//    public Sprite sprite30;
+//    public Sprite sprite70;
+//    public Sprite sprite100;
+
+//    [Header("Reward")]
+//    [SerializeField] protected ItemCode rewardCore;
+
+
+//    private float progress = 0f;
+//    private float stayTime = 0f;
+//    private bool isCharging = false;
+//    private bool lyraInside = false;
+//    private bool canBeInteracted = false;
+
+//    private CoreManager coreManager;
+//    private SpriteRenderer spriteRenderer;
+
+//    // Mốc hiện tại để tránh đổi sprite nhiều lần
+//    private int currentStage = 0;
+
+//    void Start()
+//    {
+//        coreManager = FindAnyObjectByType<CoreManager>();
+//        spriteRenderer = GetComponent<SpriteRenderer>();
+
+//        uiBar?.SetProgress(0f);
+//        uiBar?.Show(false);
+//    }
+
+//    void OnTriggerEnter2D(Collider2D other)
+//    {
+//        if (!canBeInteracted) return;
+
+//        if (other.CompareTag("NPC"))
+//        {
+//            lyraInside = true;
+//            stayTime = 0f;
+//            uiBar?.Show(true);
+//        }
+//    }
+
+//    void OnTriggerExit2D(Collider2D other)
+//    {
+//        if (!canBeInteracted) return;
+
+//        if (other.CompareTag("NPC"))
+//        {
+//            lyraInside = false;
+//            stayTime = 0f;
+//            isCharging = false;
+//            StopAllCoroutines();
+//            StartCoroutine(DecayProgress());
+//        }
+//    }
+
+//    void Update()
+//    {
+//        if (!canBeInteracted) return;
+
+//        if (lyraInside && !isCharging)
+//        {
+//            stayTime += Time.deltaTime;
+//            if (stayTime >= delayBeforeStart)
+//            {
+//                StopAllCoroutines();
+//                StartCoroutine(ChargeCore());
+//            }
+//        }
+//    }
+
+//    IEnumerator ChargeCore()
+//    {
+//        isCharging = true;
+//        while (lyraInside && progress < chargeTime)
+//        {
+//            progress += Time.deltaTime;
+//            float percent = progress / chargeTime;
+//            uiBar.SetProgress(percent);
+
+//            UpdateSpriteByProgress(percent * 100f);
+
+//            yield return null;
+//        }
+
+//        if (progress >= chargeTime)
+//        {
+//            progress = chargeTime;
+//            uiBar.SetProgress(1f);
+//            uiBar.Show(false);
+//            canBeInteracted = false;
+
+//            coreManager.MarkCoreAsComplete(this);
+//            SetAsCompletedVisual();
+//        }
+
+//        isCharging = false;
+//    }
+
+//    IEnumerator DecayProgress()
+//    {
+//        while (!lyraInside && progress > 0f)
+//        {
+//            progress -= Time.deltaTime * decayRate;
+//            float percent = Mathf.Clamp01(progress / chargeTime);
+//            uiBar.SetProgress(percent);
+
+//            UpdateSpriteByProgress(percent * 100f);
+
+//            yield return null;
+//        }
+
+//        if (progress <= 0f)
+//        {
+//            progress = 0f;
+//            currentStage = 0;
+//            uiBar?.Show(false);
+//        }
+//    }
+
+//    void UpdateSpriteByProgress(float percent)
+//    {
+//        if (spriteRenderer == null) return;
+
+//        if (percent >= 100 && currentStage < 3)
+//        {
+//            spriteRenderer.sprite = sprite100;
+//            currentStage = 3;
+//            //Rơi ra cục energy
+//            ItemsDropManager.Instance.DropItem(rewardCore,1,this.transform.position);
+//        }
+//        else if (percent >= 70 && currentStage < 2)
+//        {
+//            spriteRenderer.sprite = sprite70;
+//            currentStage = 2;
+//        }
+//        else if (percent >= 30 && currentStage < 1)
+//        {
+//            spriteRenderer.sprite = sprite30;
+//            currentStage = 1;
+//        }
+//    }
+
+//    public void SetActiveLogic(bool active)
+//    {
+//        canBeInteracted = active;
+//        if (!active)
+//        {
+//            lyraInside = false;
+//            StopAllCoroutines();
+//            uiBar?.Show(false);
+//        }
+//    }
+
+//    public void SetAsCompletedVisual()
+//    {
+//        UpdateSpriteByProgress(100f); // đảm bảo hiển thị sprite 100%
+//    }
+//}

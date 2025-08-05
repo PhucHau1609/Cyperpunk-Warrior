@@ -34,7 +34,7 @@ public class BulletStaticBullet : MonoBehaviour
             // Nổ đạn sau khi gây sát thương
             Explode();
         }
-        else if (!collision.CompareTag("Enemy") && !collision.isTrigger)
+        else if (collision.CompareTag("Ground"))
         {
             Explode();
         }

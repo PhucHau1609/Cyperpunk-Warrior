@@ -7,6 +7,7 @@ public class BtnCloseInventory : ButtonAbstract
     protected virtual void CloseInventory()
     {
         NewInventoryUI.Instance.HideInventoryUI();
+        pausegame.Instance.ToggleBTNPause();
     }
 
     protected override void OnClick()

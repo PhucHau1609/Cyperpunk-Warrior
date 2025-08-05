@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c685379bfc96de4aafcabdd5e84e341, type: 3}
+  m_Name: QuickTestSetup
+  m_EditorClassIdentifier: 
+  corePrefabs:
+  - name: Player
+    prefab: {fileID: 7918950602902487761, guid: 48dd1f2dbc2e9b541921cc3c69ea9f16, type: 3}
+    checkForExisting: 1
+    existingCheckType: Tag
+    existingCheckValue: Player
+  - name: Game Manager
+    prefab: {fileID: 1371475753246482180, guid: 250a045ee1bc582498c497031b501835, type: 3}
+    checkForExisting: 1
+    existingCheckType: Component
+    existingCheckValue: GameManager
+  - name: UI Canvas
+    prefab: {fileID: 512710335174344976, guid: 2f2dedc7f6f7e174cb0229ec72e3ead3, type: 3}
+    checkForExisting: 1
+    existingCheckType: Component
+    existingCheckValue: Canvas
+  - name: Main Camera
+    prefab: {fileID: 5747057519335813879, guid: 929807a533c31bd488f6493f7d74def3, type: 3}
+    checkForExisting: 1
+    existingCheckType: Tag
+    existingCheckValue: MainCamera
+  - name: GameStasManager
+    prefab: {fileID: 3841374963147606929, guid: 8a318fe9f6e39e040a1e26a1c75c9257, type: 3}
+    checkForExisting: 1
+    existingCheckType: Component
+    existingCheckValue: GameStasManager
+  - name: UI_Game
+    prefab: {fileID: 6335847032734397880, guid: 07cc43b5839287c4ea5227cec9c8f7aa, type: 3}
+    checkForExisting: 1
+    existingCheckType: Component
+    existingCheckValue: UI_Game
+  - name: AudioManager
+    prefab: {fileID: 6171146672649002614, guid: 0aca0d1c84cf0d54bbda2363a0100113, type: 3}
+    checkForExisting: 1
+    existingCheckType: Component
+    existingCheckValue: AudioManager
+  essentialPrefabs: []
+  playerSpawnPosition: {x: 0, y: 0, z: 0}
+  autoFindSpawnPoint: 1
+  saveDataPath: Assets/Editor/QuickTestSetup.asset

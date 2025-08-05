@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
+
 
 public class CameraSwitch : MonoBehaviour
 {
@@ -19,7 +21,6 @@ public class CameraSwitch : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CameraFollow instance not found!");
             return;
         }
 
@@ -35,31 +36,52 @@ public class CameraSwitch : MonoBehaviour
 
     IEnumerator PreviewTrap()
     {
-        isPreviewing = true;
-
-        CameraFollow.Instance.enabled = false;
-
-        Vector3 startPos = camTransform.position;
-        Vector3 targetPos = new Vector3(trapFocusPoint.position.x, trapFocusPoint.position.y, camTransform.position.z);
-
-        while (Vector3.Distance(camTransform.position, targetPos) > 0.1f)
+        if (trapFocusPoint == null)
         {
-            camTransform.position = Vector3.Lerp(camTransform.position, targetPos, moveSpeed * Time.deltaTime);
-            yield return null;
+            yield break;
         }
+
+        CameraFollow.Instance.IsPreviewing = true;
+
+        Vector3 targetPos = new Vector3(trapFocusPoint.position.x, trapFocusPoint.position.y, camTransform.position.z);
+        yield return camTransform.DOMove(targetPos, moveSpeed).SetEase(Ease.InOutSine).WaitForCompletion();
 
         yield return new WaitForSeconds(previewDuration);
 
         Vector3 playerPos = new Vector3(CameraFollow.Instance.Target.position.x, CameraFollow.Instance.Target.position.y, camTransform.position.z);
-        while (Vector3.Distance(camTransform.position, playerPos) > 0.1f)
-        {
-            camTransform.position = Vector3.Lerp(camTransform.position, playerPos, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
+        yield return camTransform.DOMove(playerPos, moveSpeed).SetEase(Ease.InOutSine).WaitForCompletion();
 
-        CameraFollow.Instance.enabled = true;
-        isPreviewing = false;
+        CameraFollow.Instance.IsPreviewing = false;
     }
+
+
+    /*  IEnumerator PreviewTrap()
+      {
+          isPreviewing = true;
+
+          CameraFollow.Instance.enabled = false;
+
+          Vector3 startPos = camTransform.position;
+          Vector3 targetPos = new Vector3(trapFocusPoint.position.x, trapFocusPoint.position.y, camTransform.position.z);
+
+          while (Vector3.Distance(camTransform.position, targetPos) > 0.1f)
+          {
+              camTransform.position = Vector3.Lerp(camTransform.position, targetPos, moveSpeed * Time.deltaTime);
+              yield return null;
+          }
+
+          yield return new WaitForSeconds(previewDuration);
+
+          Vector3 playerPos = new Vector3(CameraFollow.Instance.Target.position.x, CameraFollow.Instance.Target.position.y, camTransform.position.z);
+          while (Vector3.Distance(camTransform.position, playerPos) > 0.1f)
+          {
+              camTransform.position = Vector3.Lerp(camTransform.position, playerPos, moveSpeed * Time.deltaTime);
+              yield return null;
+          }
+
+          CameraFollow.Instance.enabled = true;
+          isPreviewing = false;
+      }*/
 
     void RemoveDuplicateMainCameras()
     {

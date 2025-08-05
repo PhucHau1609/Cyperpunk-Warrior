@@ -26,15 +26,32 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
 
     protected virtual void OpenInventory()
     {
-        //this.isToogleInventoryUI = Input.GetKeyUp(KeyCode.I);
+        if (!GameStateManager.Instance.IsGameplay) return; // ❌ Không gửi sự kiện nếu không phải gameplay
+        if (pausegame.IsPaused) return; // ✅ Chặn mở inventory nếu đang pause
+
 
         if (Input.GetKeyUp(KeyCode.I))
         {
             isToogleInventoryUI = true;
             ObserverManager.Instance.PostEvent(EventID.OpenInventory);
+            GameStateManager.Instance.SetState(GameState.Inventory); // 👉 chuyển sang trạng thái inventory
+            pausegame.Instance.ToggleBTNPause();
         }
-
     }
+
+
+    /*  protected virtual void OpenInventory()
+      {
+          //if (!GameStateManager.Instance.IsGameplay) return; // 👉 Chặn mở inventory khi không ở trạng thái gameplay
+
+          if (Input.GetKeyUp(KeyCode.I))
+          {
+              isToogleInventoryUI = true;
+              ObserverManager.Instance.PostEvent(EventID.OpenInventory);
+              //GameStateManager.Instance.SetState(GameState.Inventory); // 👉 Gán lại trạng thái
+          }
+
+      }*/
 
     protected virtual void OpenCrafting()
     {
@@ -44,6 +61,7 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
             if (NewInventoryUI.Instance != null && NewInventoryUI.Instance.IsShowUI)
             {
                 CraftingUI.Instance.Toggle();
+                GameStateManager.Instance.SetState(GameState.Crafting);
             }
         }
     }

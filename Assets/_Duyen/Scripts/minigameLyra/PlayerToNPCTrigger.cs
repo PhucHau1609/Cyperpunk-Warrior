@@ -10,7 +10,7 @@ public class PlayerToNPCTrigger : MonoBehaviour
             if (controller != null)
             {
                 controller.SwitchToPetControl();
-                gameObject.SetActive(false); // tắt trigger nếu chỉ dùng 1 lần
+                //gameObject.SetActive(false); // tắt trigger nếu chỉ dùng 1 lần
             }
         }
     }

@@ -24,6 +24,13 @@ public class BombDefuseMiniGame : MonoBehaviour
     [Header("Reveal Object After Success")]
     public GameObject objectToShowAfterWin;
 
+    [Header("Player Reference")]
+    public PlayerMovement player;
+
+    [Header("Interaction Settings")]
+    public Transform interactionPoint;
+    public float interactionDistance = 3f;
+
     private float timer = 0f;
     private int targetTime;
     private bool isRunning = false;
@@ -48,6 +55,11 @@ public class BombDefuseMiniGame : MonoBehaviour
         {
             objectToShowAfterWin.SetActive(false);
         }
+
+        if (player == null)
+        {
+            player = Object.FindFirstObjectByType<PlayerMovement>();
+        }
     }
 
     void Update()
@@ -63,16 +75,37 @@ public class BombDefuseMiniGame : MonoBehaviour
 
             UpdateTimerDisplay(timer);
         }
+
+        // ✅ Tự động vô hiệu hóa nút nếu player ở xa
+        if (btnOpenMiniGame != null && interactionPoint != null && player != null)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            btnOpenMiniGame.interactable = (dist <= interactionDistance && !gameWon);
+        }
     }
 
     public void OpenMiniGame()
     {
         if (gameWon) return;
 
+        // ✅ Chặn mở nếu ở xa
+        if (interactionPoint != null && player != null)
+        {
+            float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
+            if (dist > interactionDistance)
+                return;
+        }
+
         miniGamePanel.SetActive(true);
         gameInProgress = false;
         ResetGame();
         wallShrinker.PauseShrinking();
+
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
+
+        if (player != null)
+            player.SetCanMove(false);
     }
 
     public void CloseMiniGame()
@@ -85,16 +118,21 @@ public class BombDefuseMiniGame : MonoBehaviour
         }
         else if (objectToShowAfterWin != null)
         {
-            Invoke(nameof(ShowWinObject), 2f); // Mở sau 2 giây
+            Invoke(nameof(ShowWinObject), 2f);
         }
+
+        if (player == null)
+            player = Object.FindFirstObjectByType<PlayerMovement>();
+
+        if (player != null)
+            player.SetCanMove(true);
 
         ResetGame();
     }
 
-
     void StartGame()
     {
-        if (gameInProgress) return;
+        if (gameInProgress || gameWon) return;
 
         ResetGame();
 
@@ -168,6 +206,21 @@ public class BombDefuseMiniGame : MonoBehaviour
     void ShowWinObject()
     {
         objectToShowAfterWin.SetActive(true);
+    }
+
+    public void ResetState()
+    {
+        gameInProgress = false;
+        gameWon = false;
+        ResetGame();
+
+        if (objectToShowAfterWin != null)
+            objectToShowAfterWin.SetActive(false);
+
+        miniGamePanel.SetActive(false);
+
+        if (wallShrinker != null)
+            wallShrinker.ResetState();
     }
 
 }

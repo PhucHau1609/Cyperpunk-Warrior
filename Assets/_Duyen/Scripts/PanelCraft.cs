@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PanelCraft : MonoBehaviour
+public class PanelCraft : HauSingleton<PanelCraft>
 {
     public GameObject panel;  // Kéo panel cần mở vào đây trong Inspector
 
@@ -16,6 +16,7 @@ public class PanelCraft : MonoBehaviour
 
     public void TogglePanel()
     {
+        Debug.Log("Crafting is Toggle");
         panel.SetActive(!panel.activeSelf);
     }
 }

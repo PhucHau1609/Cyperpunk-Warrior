@@ -7,11 +7,28 @@ public class HealthBarEnemy : MonoBehaviour
     public Canvas healthBarCanvas;
     public Slider healthSlider;
     public Gradient healthBarGradient;
+    
+    [Header("Flip Fix")]
+    public Transform enemyTransform; // Reference đến Enemy transform
+    private Vector3 originalScale;
 
     private void Awake()
     {
         // Khởi tạo Gradient
         InitializeHealthBarGradient();
+        
+        // Tự động tìm Enemy parent nếu chưa gán
+        if (enemyTransform == null)
+        {
+            enemyTransform = GetComponentInParent<EnemyController>()?.transform;
+        }
+        if (enemyTransform == null)
+        {
+            enemyTransform = GetComponentInParent<MiniBoss>()?.transform;
+        }
+        
+        // Lưu scale gốc của HealthBar
+        originalScale = transform.localScale;
     }
 
     private void Start()
@@ -20,6 +37,21 @@ public class HealthBarEnemy : MonoBehaviour
         if (healthBarCanvas != null)
         {
             healthBarCanvas.enabled = false;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        // Counter-flip để HealthBar luôn đúng hướng
+        if (enemyTransform != null)
+        {
+            Vector3 newScale = originalScale;
+            // Nếu Enemy bị flip (scale.x âm), thì flip ngược lại HealthBar
+            if (enemyTransform.localScale.x < 0)
+            {
+                newScale.x = -originalScale.x;
+            }
+            transform.localScale = newScale;
         }
     }
 

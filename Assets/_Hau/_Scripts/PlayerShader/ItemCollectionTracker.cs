@@ -43,9 +43,11 @@ public class ItemCollectionTracker : MonoBehaviour
 
     private void CheckCompletion()
     {
+        //Debug.Log("1");
         if (!conditionMet && collectedClothes.Count >= 4 && hasCollectedArtefact)
         {
             conditionMet = true;
+            //ObserverManager.Instance.PostEvent(EventID.UnlockSkill_ColorRamp, SkillID.ColorRamp);
             //Debug.Log("✅ Đã nhặt đủ điều kiện biến hình! Nhấn phím [1] để kích hoạt.");
         }
     }

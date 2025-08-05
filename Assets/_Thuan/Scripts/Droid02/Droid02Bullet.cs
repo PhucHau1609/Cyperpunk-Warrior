@@ -52,7 +52,7 @@ public class Droid02Bullet : MonoBehaviour
             Explode();
         }
         // Đạn gặp bất kỳ collider nào khác cũng nổ (trừ Enemy hoặc chính nó)
-        else if (!collision.CompareTag("Enemy") && !collision.isTrigger)
+        else if (collision.CompareTag("Ground"))
         {
             Explode();
         }
@@ -63,6 +63,7 @@ public class Droid02Bullet : MonoBehaviour
         isDestroyed = true;
         rb.linearVelocity = Vector2.zero;
         animator.SetTrigger("Destroy");
+        Destroy(gameObject, 0.5f);
     }
 
     public void DestroySelf()

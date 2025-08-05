@@ -56,4 +56,14 @@ public class LaserManagerTrap : MonoBehaviour
             yield return new WaitForSeconds(delay);
         }
     }
+    public void ResetTrap()
+    {
+        StopAllCoroutines(); // Dừng tất cả pattern đang chạy
+        foreach (var laser in lasers)
+        {
+            if (laser != null)
+                laser.SetActive(false);
+        }
+    }
+
 }

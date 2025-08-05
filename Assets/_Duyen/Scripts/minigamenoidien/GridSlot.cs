@@ -7,6 +7,20 @@ public class GridSlot : MonoBehaviour, IDropHandler
     public Vector3 requiredEulerAngles;
     public BaseBlockController currentBlock;
 
+    private void Start()
+    {
+        // Gán block ban đầu nếu có sẵn (FixedBlock đặt trước trong hierarchy)
+        var existingBlock = GetComponentInChildren<BaseBlockController>();
+        if (existingBlock != null)
+        {
+            currentBlock = existingBlock;
+            //Debug.Log($"[GridSlot] {name} gán lại currentBlock: {existingBlock.name}");
+        }
+        else
+        {
+            //Debug.LogWarning($"[GridSlot] {name} KHÔNG tìm thấy block con");
+        }
+    }
     public void OnDrop(PointerEventData eventData)
     {
         var dropped = eventData.pointerDrag?.GetComponent<BlockController>();
@@ -36,15 +50,7 @@ public class GridSlot : MonoBehaviour, IDropHandler
         return GetComponentInChildren<BaseBlockController>() != null;
     }
 
-    private void Start()
-    {
-        // Gán block ban đầu nếu có sẵn (FixedBlock đặt trước trong hierarchy)
-        var existingBlock = GetComponentInChildren<BaseBlockController>();
-        if (existingBlock != null)
-        {
-            currentBlock = existingBlock;
-        }
-    }
+
 }
 
 

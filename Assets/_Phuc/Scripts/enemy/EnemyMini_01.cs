@@ -100,29 +100,19 @@ public class EnemyMini_01 : MonoBehaviour
         FlipTo(npcTarget.position.x);
 
         // Tấn công (bắn hoặc phun lửa)
+        // Tấn công (luôn bắn đạn)
         if (Time.time >= nextFireTime)
         {
-            if (distanceToNPC <= attackDistance)
-            {
-                // Phun lửa
-                //Debug.Log("🔥 Enemy phun lửa vào NPC!");
-                // TODO: Thêm ParticleSystem hoặc animation trigger tại đây
-            }
-            else
-            {
-                // Bắn đạn
-                GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-                Vector2 dir = (npcTarget.position - firePoint.position).normalized;
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            Vector2 dir = (npcTarget.position - firePoint.position).normalized;
 
-                BulletEnemyToNPC bulletScript = bullet.GetComponent<BulletEnemyToNPC>();
-                if (bulletScript != null)
-                    bulletScript.SetDirection(dir);
-
-                //Debug.Log("🔫 Enemy bắn NPC");
-            }
+            BulletEnemyToNPC bulletScript = bullet.GetComponent<BulletEnemyToNPC>();
+            if (bulletScript != null)
+                bulletScript.SetDirection(dir);
 
             nextFireTime = Time.time + 1f / fireRate;
         }
+
 
         if (chaseTimer >= chaseDuration)
         {

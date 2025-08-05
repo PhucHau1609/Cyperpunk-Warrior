@@ -19,7 +19,10 @@ public class CameraFollow : HauSingleton<CameraFollow>
 	public float shakeAmount = 0.1f;
 	public float decreaseFactor = 1.0f;
 
-	Vector3 originalPos;
+    public bool IsPreviewing = false;
+
+
+    Vector3 originalPos;
 
 	protected override void Awake()
 	{
@@ -68,7 +71,9 @@ public class CameraFollow : HauSingleton<CameraFollow>
 
 	private void Update()
 	{
-		Vector3 newPosition = Target.position;
+        if (IsPreviewing) return; // Ngăn follow nếu đang preview trap
+
+        Vector3 newPosition = Target.position;
 		newPosition.z = -10;
 		transform.position = Vector3.Slerp(transform.position, newPosition, FollowSpeed * Time.deltaTime);
 
@@ -85,4 +90,12 @@ public class CameraFollow : HauSingleton<CameraFollow>
 		originalPos = camTransform.localPosition;
 		shakeDuration = 0.2f;
 	}
+
+    public void ShakeCamera(float amount, float duration)
+    {
+        originalPos = camTransform.localPosition;
+        shakeAmount = amount;
+        shakeDuration = duration;
+    }
+
 }

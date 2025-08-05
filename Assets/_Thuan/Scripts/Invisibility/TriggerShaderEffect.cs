@@ -16,11 +16,6 @@ public class TriggerShaderEffect : MonoBehaviour
         // Tự tìm các đối tượng có AllIn1Shader trong scene (bao gồm cả DontDestroyOnLoad)
         AllIn1Shader[] allShaders = Object.FindObjectsByType<AllIn1Shader>(FindObjectsSortMode.None);
         shaderTargets = allShaders;
-
-        if (shaderTargets.Length == 0)
-        {
-            Debug.LogWarning("Không tìm thấy bất kỳ AllIn1Shader nào trong scene.");
-        }
     }
 
     void Update()

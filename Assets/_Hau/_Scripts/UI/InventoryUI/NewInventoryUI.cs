@@ -85,6 +85,8 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
         this.showHide.gameObject.SetActive(false);
         this.isShowUI = false;
 
+        GameStateManager.Instance.ResetToGameplay(); // 👈 quay về trạng thái gameplay
+
         // 👉 Nếu crafting đang mở, thì tắt luôn
         if (CraftingUI.HasInstance) // để tránh null nếu Crafting chưa được khởi tạo
         {
@@ -96,14 +98,32 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
         {
             ItemTooltipUI.Instance.HideTooltip();
         }
+
+        // 👉 Tắt tooltip nếu đang hiển thị
+        if (PanelCraft.HasInstance)
+        {
+            PanelCraft.Instance.ClosePanel();
+        }
+
+        // 👇 THÊM DÒNG NÀY
+        PlayerAppearanceUI.Instance?.HideUI();
     }
 
     public virtual void ShowInventoryUI()
     {
+        if (GameStateManager.Instance.CurrentState == GameState.Paused)
+            return;
+
+        WeaponSystemManager.Instance.TurnOffAllWeapon();
+        GameStateManager.Instance.SetState(GameState.Inventory);
         this.isShowUI = true;
         this.showHide.gameObject.SetActive(true);
-        this.ItemsUpdating(); 
+        this.showHide.localPosition = new Vector3(-1000f, 0f, 0f); // vị trí ngoài màn hình bên trái
+        this.showHide.DOLocalMove(centerPosition, 0.3f).SetEase(Ease.OutCubic);
+        this.ItemsUpdating();
 
+        // 👇 THÊM DÒNG NÀY
+        PlayerAppearanceUI.Instance?.ShowUI();
     }
 
     protected virtual void OnOpenInventory(object param)

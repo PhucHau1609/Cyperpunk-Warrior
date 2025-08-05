@@ -22,8 +22,6 @@ public class Boss2Idle : Action
             // Reset về trạng thái Idle
             animator.SetTrigger("Idle");
         }
-        
-        Debug.Log("Boss2 đang idle");
     }
     
     public override TaskStatus OnUpdate()

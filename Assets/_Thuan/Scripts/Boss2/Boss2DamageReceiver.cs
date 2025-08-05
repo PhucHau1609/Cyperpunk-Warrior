@@ -6,13 +6,17 @@ public class Boss2DamageReceiver : DamageReceiver
     public float damageReductionPercent = 0.5f;
     private bool shieldActivated = false;
     [SerializeField] private Boss2Controller boss2Controller;
+    
+    // Lưu HP ban đầu để reset
+    private int initialHP;
 
     protected override void Awake()
     {
         base.Awake();
         responder = GetComponent<IDamageResponder>();
-        if (responder == null)
-            Debug.LogWarning($"{name} is missing IDamageResponder implementation.");
+            
+        // Lưu HP ban đầu
+        initialHP = maxHP;
     }
 
     protected override void OnHurt()
@@ -32,20 +36,17 @@ public class Boss2DamageReceiver : DamageReceiver
         {
             shieldActivated = true;
             boss2Controller.ActivateShield();
-            Debug.Log("[Boss2] Shield Activated! Now only hands can take damage.");
         }
 
         // Nếu shield đang active, Boss2 không nhận damage
         if (boss2Controller.IsShieldActive())
         {
-            Debug.Log("[Boss2] Shield is blocking damage! Attack the hands instead!");
             return this.currentHP; // Không trừ máu
         }
 
         if (this.CurrentHP < this.MaxHP / 2)
         {
             damage = Mathf.RoundToInt(damage * (1 - damageReductionPercent));
-            Debug.Log($"[Turnet] Armor reduced damage to {damage}");
         }
 
         // Logic damage bình thường khi shield không active
@@ -56,5 +57,12 @@ public class Boss2DamageReceiver : DamageReceiver
 
         if (this.currentHP < 0) this.currentHP = 0;
         return this.currentHP;
+    }
+    
+    // Method để reset máu Boss2 về ban đầu
+    public void ResetBossHealth()
+    {
+        this.currentHP = initialHP;
+        this.shieldActivated = false; // Reset shield activation flag
     }
 }

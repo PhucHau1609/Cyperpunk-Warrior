@@ -110,7 +110,7 @@ public class LyraHealth : MonoBehaviour
 
     void TryFindRespawnPoint()
     {
-        GameObject found = GameObject.FindWithTag("LyraRespawn");
+        GameObject found = GameObject.FindWithTag("spw");
         if (found != null)
         {
             respawnPoint = found.transform;
@@ -138,4 +138,20 @@ public class LyraHealth : MonoBehaviour
             yield return new WaitForSeconds(duration);
         }
     }
+
+    public void ResetLyra()
+    {
+        deathCount = 0;
+        currentHealth = maxHealth;
+
+        if (respawnPoint != null)
+            transform.position = respawnPoint.position;
+
+        if (healthBarUI != null)
+            healthBarUI.fillAmount = 1f;
+
+        if (mat != null)
+            StartCoroutine(FlashTwice(Color.white));
+    }
+
 }

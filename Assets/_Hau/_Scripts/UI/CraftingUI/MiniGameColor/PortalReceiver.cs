@@ -11,6 +11,7 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     public event Action<PortalReceiver, EnergyType> OnEnergySet;
 
+    private bool isReceiverEnergy = false;
 
     void Update()
     {
@@ -72,20 +73,74 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
     public void SetEnergy(EnergyType energy)
     {
         if (currentEnergy != energy) return;
+        if (isReceiverEnergy)
+        {
+            Debug.Log("Portal da co energy core");
+            return;
+        }
 
-        currentEnergy = energy;
+            currentEnergy = energy;
 
         // Trigger animation
         switch (energy)
         {
-            case EnergyType.Orange: animator?.SetTrigger("Orange"); break;
-            case EnergyType.Blue: animator?.SetTrigger("Blue"); break;
-            case EnergyType.Purple: animator?.SetTrigger("Purple"); break;
+            case EnergyType.Orange:
+                animator?.SetTrigger("Orange");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_3, 1);
+                isReceiverEnergy = true;
+                break;
+            case EnergyType.Blue:
+                animator?.SetTrigger("Blue");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_1, 1);
+                isReceiverEnergy = true;
+                break;
+            case EnergyType.Purple:
+                animator?.SetTrigger("Purple");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_5, 1);
+                isReceiverEnergy = true;
+                break;
         }
 
         OnEnergySet?.Invoke(this, energy); // ✅ Thông báo cho tracker
     }
 
+
+
+  /*  public void SetEnergy(EnergyType energy)
+    {
+        // Nếu portal đã có energy rồi thì không cho gắn thêm
+        if (currentEnergy != EnergyType.None)
+        {
+            Debug.Log("Portal already has an energy assigned: " + currentEnergy);
+            return;
+        }
+
+        // Nếu energy truyền vào là None thì cũng bỏ qua
+        if (energy == EnergyType.None) return;
+
+        // Gán energy mới
+        currentEnergy = energy;
+
+        // Trigger animation và trừ item (chỉ lúc gắn thành công)
+        switch (energy)
+        {
+            case EnergyType.Orange:
+                animator?.SetTrigger("Orange");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_3, 1);
+                break;
+            case EnergyType.Blue:
+                animator?.SetTrigger("Blue");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_1, 1);
+                break;
+            case EnergyType.Purple:
+                animator?.SetTrigger("Purple");
+                InventoryManager.Instance.RemoveItem(ItemCode.UpgradeItem_5, 1);
+                break;
+        }
+
+        OnEnergySet?.Invoke(this, energy);
+    }
+*/
 
     private void CycleEnergyType()
     {
@@ -107,5 +162,3 @@ public enum EnergyType
     Blue,
     Purple
 }
-
-

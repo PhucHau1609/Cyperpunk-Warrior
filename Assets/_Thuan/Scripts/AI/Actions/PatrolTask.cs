@@ -60,10 +60,8 @@ public class PatrolTask : Action
         if (pointAObj != null) autoPointA = pointAObj.transform;
         if (pointBObj != null) autoPointB = pointBObj.transform;
         
-        // Log để debug
         if (autoPointA == null || autoPointB == null)
         {
-            Debug.LogWarning($"[{enemyName}] Không tìm thấy patrol points: {pointAName}, {pointBName}");
             
             // Fallback: tìm points không có suffix
             if (autoPointA == null)
@@ -77,17 +75,10 @@ public class PatrolTask : Action
                 if (pointBObj != null) autoPointB = pointBObj.transform;
             }
         }
-        else
-        {
-            //Debug.Log($"[{enemyName}] Tự động tìm thấy patrol points: {pointAName}, {pointBName}");
-        }
     }
     
     private string ExtractEnemyIndex(string enemyName)
     {
-        // Trích xuất số từ tên Enemy
-        // Ví dụ: "Enemy1" -> "_1", "Enemy2" -> "_2", "Enemy" -> ""
-        
         string index = "";
         
         // Tìm số ở cuối tên

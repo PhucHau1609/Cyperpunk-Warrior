@@ -18,14 +18,14 @@ public class MinigameManager : MonoBehaviour
     public Animator doorAnimator;
 
     public GridSlot[] gridSlots;
-
+     
     // Timeline references
     public PlayableDirector cutsceneDirector; // ⚠️ GÁN TRONG INSPECTOR
     
     private bool isCompleted = false;
     private AudioClip previousBGM;
     public int nextSceneIndex;
-    public Player playerMovement; // ⚠️ GÁN TRONG INSPECTOR
+    public PlayerMovement2 playerMovement;
     public GameObject DialogueTrigger;
 
 
@@ -49,6 +49,16 @@ public class MinigameManager : MonoBehaviour
             AudioManager.Instance.PlayClickSFX();
             CloseMinigame();
         });
+
+        if (playerMovement == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+            {
+                playerMovement = playerObj.GetComponent<PlayerMovement2>(); // ✅ ĐÚNG
+            }
+        }
+
 
         // Subscribe to Timeline completion event
         if (cutsceneDirector != null)
@@ -78,6 +88,12 @@ public class MinigameManager : MonoBehaviour
     public void OpenMinigame()
     {
         if (isCompleted) return;
+
+        if (!MinigameZoneTrigger.playerInside)
+        {
+            //Debug.Log("Không được mở minigame ngoài vùng!");
+            return;
+        }
 
         canvasUI.SetActive(true);
         levelPanel.SetActive(true);
@@ -124,10 +140,19 @@ public class MinigameManager : MonoBehaviour
     {
         foreach (var slot in gridSlots)
         {
-            BlockController block = slot.transform.childCount > 0
-                ? slot.transform.GetChild(0).GetComponent<BlockController>()
-                : null;
-            slot.SetBlock(block);
+            if (slot.currentBlock == null)
+            {
+                var block = slot.transform.GetComponentInChildren<BaseBlockController>();
+                if (block != null)
+                {
+                    slot.SetBlock(block);
+                    //Debug.Log($"Gán lại block cho slot {slot.name}: {block.name}");
+                }
+            }
+            //BlockController block = slot.transform.childCount > 0
+            //    ? slot.transform.GetChild(0).GetComponent<BlockController>()
+            //    : null;
+            //slot.SetBlock(block);
         }
     }
 
@@ -152,7 +177,7 @@ public class MinigameManager : MonoBehaviour
 
     private IEnumerator HandleMinigameCompleted()
     {
-        yield return new WaitForSeconds(.5f);
+        //yield return new WaitForSeconds(.5f);
         if (AudioManager.Instance.bgmSource.clip == AudioManager.Instance.minigameBGM)
         {
             AudioManager.Instance.StopBGM();
@@ -175,7 +200,13 @@ public class MinigameManager : MonoBehaviour
         }
         
         // Chờ animation mở cửa hoàn thành
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(0f);
+        
+        // DISABLE PLAYER MOVEMENT TRƯỚC KHI CHẠY TIMELINE
+        // if (playerMovement != null)
+        // {
+        //     playerMovement.SetCanMove(false);
+        // }
         
         // Chạy Timeline cutscene
         if (cutsceneDirector != null)
@@ -195,6 +226,12 @@ public class MinigameManager : MonoBehaviour
     {
         if (director == cutsceneDirector)
         {
+            // Có thể enable lại player movement ở đây nếu cần (tùy game design)
+            // if (playerMovement != null)
+            // {
+            //     playerMovement.SetCanMove(true);
+            // }
+            
             // Chuyển scene sau khi Timeline hoàn thành
             SceneManager.LoadScene(nextSceneIndex);
         }

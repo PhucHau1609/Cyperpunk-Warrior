@@ -87,6 +87,7 @@ MonoBehaviour:
   itemLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  controller: {fileID: 0}
   mainCamera: {fileID: 0}
 --- !u!1 &231321756069712555
 GameObject:
@@ -5605,10 +5606,12 @@ MonoBehaviour:
   canDoubleJump: 0
   m_DashForce: 45
   m_DashForceY: 15
+  canDash: 1
   isWallSliding: 0
   life: 100
   maxLife: 100
   invincible: 0
+  isDead: 0
   particleJumpUp: {fileID: 6222749650843242311}
   particleJumpDown: {fileID: 6267885364826426933}
   OnFallEvent:
@@ -5818,7 +5821,7 @@ AudioSource:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -5848,7 +5851,7 @@ AudioSource:
       outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 0
+    m_RotationOrder: 4
 --- !u!114 &9181579126995914996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5891,6 +5894,8 @@ MonoBehaviour:
   swapEase: 4
   swapSpeedMultiplier: 2
   slowMotionScale: 0.1
+  swapCooldown: 5
+  maxSwapDistance: 8
 --- !u!114 &962040126155233556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5905,6 +5910,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthBar: {fileID: 0}
   healEffect: {fileID: 6150281749274092166}
+  damageOverlay: {fileID: 0}
+  overlayDuration: 0.5
+  flashColor: {r: 1, g: 0, b: 0, a: 0.5}
 --- !u!114 &8276477388122703383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5918,6 +5926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponHolder: {fileID: 570996132708223081}
+  isWeaponActive: 0
 --- !u!114 &7529284080284020473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5937,7 +5946,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6680001067583368946}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7192842586c33364bbbed39510a8fad1, type: 3}
   m_Name: 
@@ -5946,6 +5955,7 @@ MonoBehaviour:
   cooldown: 5
   delayBeforeStart: 0
   shieldVisual: {fileID: 6562729455012665515}
+  shieldTag: Shield
 --- !u!114 &5756595572753698764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5961,6 +5971,8 @@ MonoBehaviour:
   lastCheckpointID: 0
   lastCheckpointPosition: {x: 0, y: 0, z: 0}
   lastCheckpointScene: 
+  enableBossReset: 1
+  resetOnlyActiveBosses: 1
 --- !u!1 &6893562519748869713
 GameObject:
   m_ObjectHideFlags: 0

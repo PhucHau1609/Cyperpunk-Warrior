@@ -15,6 +15,7 @@ public enum ItemCode
 
     //Object
     Bomb_0 = 11,
+    CraftingRecipe = 12,
 
 
     //Upgrade Items
@@ -45,5 +46,6 @@ public enum ItemCode
     Clothes_2 = 301,
     Clothes_3 = 302,
     Clothes_4 = 303,
+    Clothes_5 = 304,
 
 }

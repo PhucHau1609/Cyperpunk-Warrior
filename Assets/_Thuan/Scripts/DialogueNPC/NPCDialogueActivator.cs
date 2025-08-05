@@ -14,10 +14,6 @@ public class NPCDialogueActivator : MonoBehaviour
         {
             condition.OnConditionMet += ActivateDialogue;
         }
-        else
-        {
-            Debug.LogWarning("Trigger không implement ITriggerCondition!");
-        }
 
         speechIcon.SetActive(false);
     }

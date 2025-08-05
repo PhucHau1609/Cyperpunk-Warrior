@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7314971248242184374}
   - component: {fileID: 588025939723135208}
   - component: {fileID: 9037854406281116105}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,8 +115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 873c037ef5a5ab64c8997a61f0090ca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarCanvas: {fileID: 0}
-  healthSlider: {fileID: 0}
+  healthBarCanvas: {fileID: 3811924063665277159}
+  healthSlider: {fileID: 2927271714051226811}
   healthBarGradient:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
@@ -147,6 +147,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
+  enemyTransform: {fileID: 0}
 --- !u!1 &944319752100335758
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +163,8 @@ GameObject:
   - component: {fileID: 5293136430958728263}
   - component: {fileID: 2858121944965883380}
   - component: {fileID: 8689273404243425318}
-  m_Layer: 12
+  - component: {fileID: 7842361713850015001}
+  m_Layer: 13
   m_Name: Droid01
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -229,7 +231,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: -6531728874014187877, guid: a6624596c27435849a3d17713f336169, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -257,7 +259,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 57344
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -393,8 +395,26 @@ MonoBehaviour:
   pointB: {fileID: 0}
   gunPoint: {fileID: 2187092367717971310}
   player: {fileID: 0}
+  bulletPrefab: {fileID: 3721999730941707475, guid: 12403eeae8fffdc4e803e5db102db305, type: 3}
   animator: {fileID: 5293136430958728263}
-  healthBarEnemy: {fileID: 0}
+  canShoot: 1
+  rb: {fileID: 923292647086331033}
+  healthBarEnemy: {fileID: 9037854406281116105}
+--- !u!114 &7842361713850015001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944319752100335758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bb8bf796c2508c4b91dd78f3fbbbd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 10
+  maxHP: 10
+  IsImmotal: 0
 --- !u!1 &2548511045051528087
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,7 +424,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8672369043620402286}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -442,7 +462,7 @@ GameObject:
   - component: {fileID: 7321184314009017844}
   - component: {fileID: 1799254374927433171}
   - component: {fileID: 225216928725965047}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -515,7 +535,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2187092367717971310}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: GunPoint
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
@@ -548,7 +568,7 @@ GameObject:
   - component: {fileID: 5249898290408073791}
   - component: {fileID: 3168661647661448860}
   - component: {fileID: 7034196455506597814}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -622,7 +642,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4222387026944902090}
   - component: {fileID: 2927271714051226811}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
