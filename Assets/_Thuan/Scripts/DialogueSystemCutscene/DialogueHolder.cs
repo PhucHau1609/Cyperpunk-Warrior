@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -47,11 +47,12 @@ namespace DialogueSystem
 
             gameObject.SetActive(false);
             Time.timeScale = 1f;
-            GameStateManager.Instance.ResetToGameplay();
+
             if (nextTimeline != null)
             {
                 nextTimeline.Play();
             }
+            GameStateManager.Instance.ResetToGameplay();
         }
 
         private void SkipDialogue()
