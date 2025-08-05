@@ -4,6 +4,8 @@ using DG.Tweening;
 using System.Collections;
 using TMPro;
 using System.Threading.Tasks;
+using UnityEngine.EventSystems; // <- thêm
+
 
 public class SkillSlotUI : MonoBehaviour
 {
@@ -13,6 +15,10 @@ public class SkillSlotUI : MonoBehaviour
 
     [Header("Optional Text Display")]
     public TextMeshProUGUI keyText;
+
+    [Header("Button Click Skill")]
+    public Button clickableButton; // kéo drop vào prefab
+
 
     private SkillData skill;
     private bool isCoolingDown = false;
@@ -26,6 +32,12 @@ public class SkillSlotUI : MonoBehaviour
         if (keyText != null)
         {
             keyText.text = FormatKeyCode(skill.triggerKey); // ✅ dùng hàm chuyển đổi
+        }
+
+        if (clickableButton != null)
+        {
+            clickableButton.onClick.RemoveAllListeners();
+            clickableButton.onClick.AddListener(() => TryActivate());
         }
     }
 
@@ -47,6 +59,16 @@ public class SkillSlotUI : MonoBehaviour
 
         await Task.Delay((int)(skill.cooldownTime * 1000));
         isCoolingDown = false;
+    }
+
+    // --- xử lý click chuột / touch ---
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // left click / tap -> kích hoạt skill
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            TryActivate();
+        }
     }
 
 
@@ -74,15 +96,3 @@ public class SkillSlotUI : MonoBehaviour
     }
 
 }
-
-
-/*   public void TryActivate()
-       {
-           if (isCoolingDown) return;
-
-           // Nếu có callback và skill được kích hoạt thành công
-           if (skill.onActivateCallback != null && skill.onActivateCallback.Invoke())
-           {
-               StartCoroutine(HandleCooldown());
-           }
-       }*/

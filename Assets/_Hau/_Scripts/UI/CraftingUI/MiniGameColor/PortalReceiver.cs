@@ -75,7 +75,7 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
         if (currentEnergy != energy) return;
         if (isReceiverEnergy)
         {
-            Debug.Log("Portal da co energy core");
+            //Debug.Log("Portal da co energy core");
             return;
         }
 

@@ -133,7 +133,7 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
 
     protected virtual void OnInventoryChanged(object param)
     {
-        Debug.Log("Inventory changed, updating UI...");
+        //Debug.Log("Inventory changed, updating UI...");
         this.ItemsUpdating();
     }
 

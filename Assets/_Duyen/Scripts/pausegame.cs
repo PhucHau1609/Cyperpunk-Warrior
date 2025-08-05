@@ -195,7 +195,7 @@ public class pausegame : MonoBehaviour
 
     public void ToggleBTNPause()
     {
-        Debug.Log("1");
+        //Debug.Log("1");
         btnPause.SetActive(!btnPause.activeSelf);
     }    
 

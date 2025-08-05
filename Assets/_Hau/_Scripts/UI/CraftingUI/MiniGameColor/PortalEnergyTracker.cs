@@ -91,7 +91,7 @@ public class PortalEnergyTracker : MonoBehaviour
         if (doorTriggerObject != null)
         {
             doorTriggerObject.SetActive(true);
-            Debug.Log("🚪 Đã bật DoorTriggerWithNPCCheck!");
+            //Debug.Log("🚪 Đã bật DoorTriggerWithNPCCheck!");
         }
         else
         {
