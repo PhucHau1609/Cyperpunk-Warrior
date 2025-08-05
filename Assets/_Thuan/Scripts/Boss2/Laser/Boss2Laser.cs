@@ -4,7 +4,7 @@ using System.Collections;
 public class Boss2Laser : MonoBehaviour
 {
     [Header("Laser Settings")]
-    public float phase2Duration = 2f;
+    public float phase2Duration = 1f;
 
     private Boss2Controller boss2Controller;
 
@@ -61,9 +61,9 @@ public class Boss2Laser : MonoBehaviour
 
     private IEnumerator SweepLaser()
     {
-        float startAngle = 300f;      // Góc khoảng 10 giờ (dưới trái)
-        float endAngle = 60f;         // Góc khoảng 2 giờ (dưới phải)
-        float sweepDuration = 2f;
+        float startAngle = 290f;      // Góc khoảng 10 giờ (dưới trái)
+        float endAngle = 70f;         // Góc khoảng 2 giờ (dưới phải)
+        float sweepDuration = 1f;
 
         float elapsedTime = 0f;
         while (elapsedTime < sweepDuration)
