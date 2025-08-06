@@ -34,7 +34,7 @@ public class LyraDamageReceiver : DamageReceiver
     protected override void Awake()
     {
         if (!TryGetComponent<IExplodable>(out explodable))
-            Debug.LogError("This GameObject does not implement IExplodable.");
+            Debug.LogError("This GameObject does not implement IExplodable: ." + gameObject.name);
     }
 
 

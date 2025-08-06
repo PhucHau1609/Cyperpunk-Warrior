@@ -174,7 +174,7 @@ public class ItemsPicker : HauMonoBehaviour
         if (hasPickedFirstEnergy) return; // ✅ Đã nhặt rồi thì bỏ qua
 
         ItemProfileSO itemProfile = InventoryManager.Instance.GetProfileByCode(itemsDropCtrl.ItemCode);
-        if (itemProfile != null && itemProfile.itemCode == ItemCode.UpgradeItem_0)
+        if (itemProfile != null && itemProfile.itemCode == ItemCode.UpgradeItem_1)
         {
             hasPickedFirstEnergy = true; // ✅ Đánh dấu đã nhặt
             ObserverManager.Instance.PostEvent(EventID.FirstEnergyPickedUp);

@@ -58,16 +58,17 @@ public class DialogueEventTrigger : MonoBehaviour
         if (currentScene == SpawnSceneName.map2level4.ToString())
         {
             deathCountAtMap2++;
+            //Thiếu logic tìm checkPointPosition
+            //var checkPoint = FindFirstObjectByType<Checkpoint>();
+
 
             if (deathCountAtMap2 == 2 && diedTwiceInMap2Dialogue != null)
             {
-                //Nâng cấp thêm xíu phải bấm check point thì mới hiển thị dialogue này
-                if(playerPos.transform.position == checkPointPosition.transform.position)
-                {
-                    Debug.Log("Hien thi dialogue ne");
-                    DialogueManager.Instance.StartDialogue(diedTwiceInMap2Dialogue, lyraTransform.NPCTransform);
-                    Debug.Log("Hien thi dialogue xong");
-                }
+
+                Debug.Log("Hien thi dialogue ne");
+                DialogueManager.Instance.StartDialogue(diedTwiceInMap2Dialogue, lyraTransform.NPCTransform);
+                Debug.Log("Hien thi dialogue xong");
+
             }
         }
     }

@@ -93875,7 +93875,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1145066240
 Transform:
   m_ObjectHideFlags: 0
@@ -111683,7 +111683,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1434890152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111705,12 +111705,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434890151}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2112356143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1437063032
 GameObject:
@@ -115402,6 +115402,7 @@ MonoBehaviour:
   iconImage: {fileID: 949123172}
   cooldownOverlay: {fileID: 278449136}
   keyText: {fileID: 571602117}
+  clickableButton: {fileID: 0}
 --- !u!114 &1565620705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130778,7 +130779,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1984820039}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PanelCraft, Assembly-CSharp
         m_MethodName: OpenPanel
         m_Mode: 1
@@ -147040,6 +147041,8 @@ MonoBehaviour:
   lyraTransform: {fileID: 1457919137}
   firstGunDialogue: {fileID: 11400000, guid: 25e188d978e0e5e41846ab1bd90dcd55, type: 2}
   diedTwiceInMap2Dialogue: {fileID: 11400000, guid: 2c50ea394ce39494f869e62e59b2fc3c, type: 2}
+  playerPos: {fileID: 1971196970}
+  firstEnergyDialogue: {fileID: 11400000, guid: 3fb70f3afec5ae840b45ce1eb0ef7a2a, type: 2}
 --- !u!1 &1963183205
 GameObject:
   m_ObjectHideFlags: 0
@@ -147563,7 +147566,6 @@ GameObject:
   - component: {fileID: 1984820036}
   - component: {fileID: 1984820035}
   - component: {fileID: 1984820038}
-  - component: {fileID: 1984820039}
   m_Layer: 5
   m_Name: PanelOptions
   m_TagString: Untagged
@@ -147643,19 +147645,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1984820039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1984820034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f7078d13f3c69a4c81d14562ecc1bfc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 489933587}
 --- !u!1 &1985607065
 GameObject:
   m_ObjectHideFlags: 0
@@ -150260,6 +150249,7 @@ Transform:
   - {fileID: 251562418}
   - {fileID: 1025633820}
   - {fileID: 1962425143}
+  - {fileID: 1434890153}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2112961600
@@ -151899,6 +151889,7 @@ MonoBehaviour:
   iconImage: {fileID: 8159001769817100530}
   cooldownOverlay: {fileID: 6472847296277987197}
   keyText: {fileID: 1291751481117408825}
+  clickableButton: {fileID: 0}
 --- !u!1 &4725726232636986818
 GameObject:
   m_ObjectHideFlags: 0
@@ -153048,6 +153039,5 @@ SceneRoots:
   - {fileID: 2112356143}
   - {fileID: 1277788653}
   - {fileID: 1118762242}
-  - {fileID: 1434890153}
   - {fileID: 1028018128}
   - {fileID: 634544007}
