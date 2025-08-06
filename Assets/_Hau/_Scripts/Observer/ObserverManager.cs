@@ -125,6 +125,8 @@ public enum EventID
 
 
     FirstEnergyPickedUp,
+    NotHasCraftingRecipeInInventory,
+
 }
 
 /// <summary>

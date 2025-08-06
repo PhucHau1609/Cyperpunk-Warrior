@@ -21,6 +21,9 @@ public class DialogueEventTrigger : MonoBehaviour
     [Header("Dialogue khi lần đầu nhặt được energy")]
     public DialogueData firstEnergyDialogue;
 
+    [Header("Dialogue khi chưa nhặt được CraftingRecipe")]
+    public DialogueData hasNotHaveCraftingRecipe;
+
     private int deathCountAtMap2 = 0;
 
     private void OnEnable()
@@ -28,6 +31,8 @@ public class DialogueEventTrigger : MonoBehaviour
         ObserverManager.Instance.AddListener(EventID.FirstGunPickedUp, OnFirstGunPickedUp);
         ObserverManager.Instance.AddListener(EventID.FirstEnergyPickedUp, OnFirstEnergyPickedUp);
         ObserverManager.Instance.AddListener(EventID.PlayerDied, OnPlayerDied);
+        ObserverManager.Instance.AddListener(EventID.NotHasCraftingRecipeInInventory, NotHasCraftingRecipeInInventory);
+
     }
 
     private void OnDisable()
@@ -35,6 +40,7 @@ public class DialogueEventTrigger : MonoBehaviour
         ObserverManager.Instance.RemoveListener(EventID.FirstGunPickedUp, OnFirstGunPickedUp);
         ObserverManager.Instance.RemoveListener(EventID.FirstEnergyPickedUp, OnFirstEnergyPickedUp);
         ObserverManager.Instance.RemoveListener(EventID.PlayerDied, OnPlayerDied);
+        ObserverManager.Instance.RemoveListener(EventID.NotHasCraftingRecipeInInventory, NotHasCraftingRecipeInInventory);
     }
 
     private void OnFirstGunPickedUp(object param)
@@ -49,6 +55,13 @@ public class DialogueEventTrigger : MonoBehaviour
         if (firstEnergyDialogue == null) return;
 
         DialogueManager.Instance.StartDialogue(firstEnergyDialogue, lyraTransform.NPCTransform);
+    }
+
+    private void NotHasCraftingRecipeInInventory(object param)
+    {
+        if (hasNotHaveCraftingRecipe == null) return;
+        DialogueManager.Instance.StartDialogue(hasNotHaveCraftingRecipe, lyraTransform.NPCTransform);
+
     }
 
     private void OnPlayerDied(object param)
