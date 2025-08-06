@@ -16,7 +16,7 @@ public class PanelCraft : HauSingleton<PanelCraft>
 
     public void TogglePanel()
     {
-        Debug.Log("Crafting is Toggle");
+        //Debug.Log("Crafting is Toggle");
         panel.SetActive(!panel.activeSelf);
     }
 }

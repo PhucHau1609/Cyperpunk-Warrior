@@ -36,6 +36,9 @@ public class CharacterController2D : MonoBehaviour
     private float prevVelocityX = 0f;
     private bool canCheck = false; //For check if player is wallsliding
 
+    private Transform playerPosition;
+    public Transform PlayerPosition => playerPosition;
+
     private PlayerGravityController gravityController; //Gravity Intervered
     private WeaponSystemManager weaponManager;
 
@@ -87,6 +90,11 @@ public class CharacterController2D : MonoBehaviour
 
         if (OnWallSlideEnd == null)
             OnWallSlideEnd = new UnityEvent();
+    }
+
+    private void Start()
+    {
+        playerPosition = this.gameObject.transform;
     }
 
     private void FixedUpdate()

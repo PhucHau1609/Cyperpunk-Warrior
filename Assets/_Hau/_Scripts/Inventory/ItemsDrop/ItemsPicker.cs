@@ -14,6 +14,8 @@ public class ItemsPicker : HauMonoBehaviour
 
     public Camera mainCamera;
     private bool hasPickedFirstGun = false;
+    private bool hasPickedFirstEnergy = false;
+
 
 
     protected override void LoadComponents()
@@ -120,7 +122,8 @@ public class ItemsPicker : HauMonoBehaviour
     {
         if (itemsDropCtrl == null) return;
         CheckIsPickFirstGun(itemsDropCtrl);
-       
+        CheckIsPickFirstEnergy(itemsDropCtrl);
+
 
         if (itemsDropCtrl.ItemCode == ItemCode.HP && controller != null && controller.life < controller.maxLife)
         {
@@ -165,6 +168,19 @@ public class ItemsPicker : HauMonoBehaviour
             ObserverManager.Instance.PostEvent(EventID.FirstGunPickedUp);
         }
     }
+
+    public void CheckIsPickFirstEnergy(ItemsDropCtrl itemsDropCtrl)
+    {
+        if (hasPickedFirstEnergy) return; // ✅ Đã nhặt rồi thì bỏ qua
+
+        ItemProfileSO itemProfile = InventoryManager.Instance.GetProfileByCode(itemsDropCtrl.ItemCode);
+        if (itemProfile != null && itemProfile.itemCode == ItemCode.UpgradeItem_1)
+        {
+            hasPickedFirstEnergy = true; // ✅ Đánh dấu đã nhặt
+            ObserverManager.Instance.PostEvent(EventID.FirstEnergyPickedUp);
+        }
+    }
+
 
 
 }

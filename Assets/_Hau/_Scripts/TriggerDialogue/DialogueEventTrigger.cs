@@ -15,18 +15,25 @@ public class DialogueEventTrigger : MonoBehaviour
 
     [Header("Dialogue khi chết 2 lần ở map 2")]
     public DialogueData diedTwiceInMap2Dialogue;
+    public CharacterController2D playerPos;
+    private Transform checkPointPosition;
+
+    [Header("Dialogue khi lần đầu nhặt được energy")]
+    public DialogueData firstEnergyDialogue;
 
     private int deathCountAtMap2 = 0;
 
     private void OnEnable()
     {
         ObserverManager.Instance.AddListener(EventID.FirstGunPickedUp, OnFirstGunPickedUp);
+        ObserverManager.Instance.AddListener(EventID.FirstEnergyPickedUp, OnFirstEnergyPickedUp);
         ObserverManager.Instance.AddListener(EventID.PlayerDied, OnPlayerDied);
     }
 
     private void OnDisable()
     {
         ObserverManager.Instance.RemoveListener(EventID.FirstGunPickedUp, OnFirstGunPickedUp);
+        ObserverManager.Instance.RemoveListener(EventID.FirstEnergyPickedUp, OnFirstEnergyPickedUp);
         ObserverManager.Instance.RemoveListener(EventID.PlayerDied, OnPlayerDied);
     }
 
@@ -37,6 +44,13 @@ public class DialogueEventTrigger : MonoBehaviour
         DialogueManager.Instance.StartDialogue(firstGunDialogue, lyraTransform.NPCTransform);
     }
 
+    private void OnFirstEnergyPickedUp(object param)
+    {
+        if (firstEnergyDialogue == null) return;
+
+        DialogueManager.Instance.StartDialogue(firstEnergyDialogue, lyraTransform.NPCTransform);
+    }
+
     private void OnPlayerDied(object param)
     {
         string currentScene = SceneManager.GetActiveScene().name;
@@ -44,11 +58,16 @@ public class DialogueEventTrigger : MonoBehaviour
         if (currentScene == SpawnSceneName.map2level4.ToString())
         {
             deathCountAtMap2++;
+            //Thiếu logic tìm checkPointPosition
+            //var checkPoint = FindFirstObjectByType<Checkpoint>();
+
 
             if (deathCountAtMap2 == 2 && diedTwiceInMap2Dialogue != null)
             {
-                //Nâng cấp thêm xíu phải bấm check point thì mới hiển thị dialogue này
+
+                Debug.Log("Hien thi dialogue ne");
                 DialogueManager.Instance.StartDialogue(diedTwiceInMap2Dialogue, lyraTransform.NPCTransform);
+                Debug.Log("Hien thi dialogue xong");
 
             }
         }

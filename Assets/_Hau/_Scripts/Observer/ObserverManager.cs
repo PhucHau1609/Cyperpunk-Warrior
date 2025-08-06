@@ -122,6 +122,9 @@ public enum EventID
     UnlockSkill_ColorRamp,
     UnlockSkill_Swap,
     UnlockSkill_Dash,
+
+
+    FirstEnergyPickedUp,
 }
 
 /// <summary>
