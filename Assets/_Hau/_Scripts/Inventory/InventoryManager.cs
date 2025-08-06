@@ -62,16 +62,6 @@ public class InventoryManager : HauSingleton<InventoryManager>
         }
     }
 
-    /* public virtual void RemoveItem(ItemInventory itemInventory)
-     {
-         InventoryCodeName invCodeName = itemInventory.ItemProfileSO.invCodeName;
-         InventoryCtrl inventoryCtrl = InventoryManager.Instance.GetInventoryByName(invCodeName);
-         inventoryCtrl.RemoveItem(itemInventory);
-
-         ObserverManager.Instance?.PostEvent(EventID.InventoryChanged, null); // <- thêm dòng này
-
-     }*/
-
     protected virtual void LoadInventoryCtrl()
     {
         if (this.inventoryCtrlList.Count > 0) return;
@@ -125,4 +115,26 @@ public class InventoryManager : HauSingleton<InventoryManager>
         return this.GetInventoryByName(InventoryCodeName.Items);
     }
 
+    // Helper kiểm tra trong inventory có item và count > 0 hay không
+    public bool HasItemInInventory(ItemCode itemCode)
+    {
+        InventoryCtrl itemInv = ItemInventory();
+        if (itemInv == null) return false;
+        ItemInventory found = itemInv.FindItem(itemCode);
+        if (found == null) return false;
+        return found.itemCount > 0;
+    }
+
+
 }
+
+
+/* public virtual void RemoveItem(ItemInventory itemInventory)
+  {
+      InventoryCodeName invCodeName = itemInventory.ItemProfileSO.invCodeName;
+      InventoryCtrl inventoryCtrl = InventoryManager.Instance.GetInventoryByName(invCodeName);
+      inventoryCtrl.RemoveItem(itemInventory);
+
+      ObserverManager.Instance?.PostEvent(EventID.InventoryChanged, null); // <- thêm dòng này
+
+  }*/

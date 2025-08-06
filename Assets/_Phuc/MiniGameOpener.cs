@@ -37,12 +37,22 @@ public class MiniGameOpener : MonoBehaviour
 
     public void OpenMiniGame()
     {
-        Debug.Log("OpenMiniGame() Called");
+        //Debug.Log("OpenMiniGame() Called");
 
         // ⚠️ Chỉ cho mở nếu đã mở khóa Pet trong CodeLock
+        //Tôi muốn kiểm tra thêm đã có CraftingRecipe trong Inventory hay chưa , ví dụ InventoryManager.Instance.AddItem(ItemCode.CraftingRecipe, 1);
+        //nếu chưa có thì return không làm gì cả nhưu PetUnlocked
         if (!CodeLock.PetUnlocked)
         {
-            Debug.Log("MiniGame chưa được mở khóa từ CodeLock!");
+            //Debug.Log("MiniGame chưa được mở khóa từ CodeLock!");
+            return;
+        }
+
+        // Kiểm tra có CraftingRecipe trong inventory không
+        if (!InventoryManager.Instance.HasItemInInventory(ItemCode.CraftingRecipe))
+        {
+            //Debug.Log("Không thể mở MiniGame — thiếu CraftingRecipe trong inventory.");
+            ObserverManager.Instance.PostEvent(EventID.NotHasCraftingRecipeInInventory);
             return;
         }
 

@@ -24,32 +24,11 @@ public abstract class InventoryCtrl : HauMonoBehaviour
             itemExist.itemCount += item.itemCount;
         }
 
-        // ? N?u ðây là v?t ph?m ð?u tiên
         if (wasEmpty && this.itemInventories.Count > 0)
         {
             ObserverManager.Instance?.PostEvent(EventID.FirstItemPickedUp, null);
         }
     }
-
-
-    /*  public virtual void AddItem(ItemInventory item)
-      {
-          ItemInventory itemExist = this.FindItem(item.ItemProfileSO.itemCode);
-          bool wasEmpty = this.itemInventories.Count == 0;
-
-
-          if (!item.ItemProfileSO.isStackable || itemExist ==  null )
-          {
-              item.SetId(Random.Range(0, 999999999)); //E71 create
-              this.itemInventories.Add(item);
-              return;
-          }
-
-          itemExist.itemCount += item.itemCount;
-
-
-
-      }*/
 
     public virtual bool RemoveItem(ItemInventory item) //E75 create
     {
@@ -83,18 +62,6 @@ public abstract class InventoryCtrl : HauMonoBehaviour
 
         return true;
     }
-
-    /*  public virtual bool RemoveItem(ItemInventory item) //E75 create
-      {
-          ItemInventory itemExist = this.FindItemNotEmpty(item.ItemProfileSO.itemCode);
-          if (itemExist == null) return false;
-          if (!itemExist.CanDeduct(item.itemCount)) return false;
-          itemExist.Deduct(item.itemCount);
-
-          if (itemExist.itemCount == 0) this.itemInventories.Remove(itemExist);
-          return true;
-      }*/
-
     public virtual ItemInventory FindItem(ItemCode itemCode)
     {
         foreach(ItemInventory itemInventory in this.itemInventories)
@@ -116,3 +83,33 @@ public abstract class InventoryCtrl : HauMonoBehaviour
         return null;
     }
 }
+
+/*  public virtual void AddItem(ItemInventory item)
+    {
+        ItemInventory itemExist = this.FindItem(item.ItemProfileSO.itemCode);
+        bool wasEmpty = this.itemInventories.Count == 0;
+
+
+        if (!item.ItemProfileSO.isStackable || itemExist ==  null )
+        {
+            item.SetId(Random.Range(0, 999999999)); //E71 create
+            this.itemInventories.Add(item);
+            return;
+        }
+
+        itemExist.itemCount += item.itemCount;
+
+
+
+    }*/
+
+/*  public virtual bool RemoveItem(ItemInventory item) //E75 create
+      {
+          ItemInventory itemExist = this.FindItemNotEmpty(item.ItemProfileSO.itemCode);
+          if (itemExist == null) return false;
+          if (!itemExist.CanDeduct(item.itemCount)) return false;
+          itemExist.Deduct(item.itemCount);
+
+          if (itemExist.itemCount == 0) this.itemInventories.Remove(itemExist);
+          return true;
+      }*/

@@ -349,7 +349,7 @@ public class CodeLock_1 : MonoBehaviour
 
     IEnumerator CloseCanvasAfterDelay(float delay)
     {
-        Debug.Log("5");
+        //Debug.Log("5");
         yield return new WaitForSeconds(delay);
 
         CloseCanvas();
