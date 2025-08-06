@@ -11,7 +11,6 @@ public class StopMoving : Action
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         animator?.SetBool("Run", false);
-        animator?.SetBool("Fly", false); // nếu có Fly animation
     }
 
     public override TaskStatus OnUpdate()
