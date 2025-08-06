@@ -332,7 +332,7 @@ public class CodeLock_1 : MonoBehaviour
     {
         if (!MinigameTriggerZone.PlayerInsideZone)
         {
-            Debug.Log("Player is not in the trigger zone!");
+            //Debug.Log("Player is not in the trigger zone!");
             return; // Không cho mở nếu chưa đứng trong vùng
         }
 
