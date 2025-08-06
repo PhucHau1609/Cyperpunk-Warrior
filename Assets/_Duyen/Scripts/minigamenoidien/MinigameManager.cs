@@ -10,6 +10,7 @@ public class MinigameManager : MonoBehaviour
 {
     public static MinigameManager Instance;
 
+    public GameObject hoverEffectObject;
     public GameObject levelPanel;
     public GameObject canvasUI;
     public GameObject winImage;
@@ -192,6 +193,12 @@ public class MinigameManager : MonoBehaviour
         DialogueTrigger.SetActive(false);
 
         openMinigameButton.interactable = false;
+
+        if (hoverEffectObject != null)
+        {
+            hoverEffectObject.SetActive(false);
+        }
+
 
         // Chạy animation mở cửa
         if (doorAnimator != null)
