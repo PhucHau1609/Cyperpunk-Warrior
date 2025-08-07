@@ -27,6 +27,8 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
     public void RespawnPlayer(GameObject player)
     {
         string currentScene = SceneManager.GetActiveScene().name;
+        
+        Debug.Log($"[CheckpointManager] Starting respawn in scene: {currentScene}");
 
         if (lastCheckpointScene != currentScene)
         {
@@ -40,7 +42,12 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
                 ResetBossesInCurrentScene();
             }
             
+            // Reset triggers về trạng thái respawn - QUAN TRỌNG: Gọi trước khi move player
+            ResetTriggersInCurrentScene();
+            
             player.transform.position = lastCheckpointPosition;
+            Debug.Log($"[CheckpointManager] Player moved to checkpoint position: {lastCheckpointPosition}");
+            
             FinishRespawn(player);
         }
     }
@@ -49,13 +56,42 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
     {
         string currentScene = SceneManager.GetActiveScene().name;
         
-        // Sử dụng cache nếu còn hiệu lực
+        // Reset MiniBoss trực tiếp
+        MiniBoss[] miniBosses = FindObjectsByType<MiniBoss>(FindObjectsSortMode.None);
+        int miniBossResetCount = 0;
+        foreach (var miniBoss in miniBosses)
+        {
+            if (miniBoss != null)
+            {
+                miniBoss.ResetBoss();
+                // Tắt script MiniBoss sau khi reset
+                miniBoss.enabled = false;
+                
+                // Tắt damage receiver
+                MiniBossDamageReceiver damageReceiver = miniBoss.GetComponent<MiniBossDamageReceiver>();
+                if (damageReceiver != null)
+                {
+                    damageReceiver.enabled = false;
+                }
+                
+                // Set Rigidbody về Static
+                Rigidbody2D rb = miniBoss.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.bodyType = RigidbodyType2D.Static;
+                }
+                
+                miniBossResetCount++;
+            }
+        }
+        
+        // Sử dụng cache cho các boss khác
         List<IBossResettable> bosses = GetCachedBosses(currentScene);
         
         int resetCount = 0;
         foreach (var boss in bosses)
         {
-            if (boss != null && ShouldResetBoss(boss))
+            if (boss != null && ShouldResetBoss(boss) && !(boss is MiniBoss))
             {
                 boss.ResetBoss();
                 resetCount++;
@@ -65,9 +101,65 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         // Reset cả những boss được spawn bởi trigger (nếu có BossSpawner system của bạn)
         ResetTriggeredBosses();
         
+        if (miniBossResetCount > 0 || resetCount > 0)
+        {
+            Debug.Log($"[CheckpointManager] Reset {miniBossResetCount} MiniBoss(es) and {resetCount} other boss(es) in scene: {currentScene}");
+        }
+    }
+    
+    // Method mới để reset các Trigger
+    private void ResetTriggersInCurrentScene()
+    {
+        // Reset old triggers
+        CameraZoomTrigger[] oldTriggers = Resources.FindObjectsOfTypeAll<CameraZoomTrigger>();
+        SimpleCameraZoomTrigger[] simpleTriggers = Resources.FindObjectsOfTypeAll<SimpleCameraZoomTrigger>();
+        BossZoneTrigger[] zoneTriggers = Resources.FindObjectsOfTypeAll<BossZoneTrigger>();
+        
+        int resetCount = 0;
+        
+        // Reset old triggers
+        foreach (var trigger in oldTriggers)
+        {
+            if (trigger != null && trigger.gameObject.scene.isLoaded)
+            {
+                trigger.gameObject.SetActive(true);
+                trigger.ResetTrigger();
+                resetCount++;
+                Debug.Log($"[CheckpointManager] Reset old trigger: {trigger.gameObject.name}");
+            }
+        }
+        
+        // Reset simple triggers  
+        foreach (var trigger in simpleTriggers)
+        {
+            if (trigger != null && trigger.gameObject.scene.isLoaded)
+            {
+                trigger.gameObject.SetActive(true);
+                trigger.ResetTrigger();
+                resetCount++;
+                Debug.Log($"[CheckpointManager] Reset simple trigger: {trigger.gameObject.name}");
+            }
+        }
+        
+        // Reset zone triggers
+        foreach (var trigger in zoneTriggers)
+        {
+            if (trigger != null && trigger.gameObject.scene.isLoaded)
+            {
+                trigger.gameObject.SetActive(true);
+                trigger.ResetTrigger();
+                resetCount++;
+                Debug.Log($"[CheckpointManager] Reset zone trigger: {trigger.gameObject.name}");
+            }
+        }
+        
         if (resetCount > 0)
         {
-            Debug.Log($"[CheckpointManager] Reset {resetCount} boss(es) in scene: {currentScene}");
+            Debug.Log($"[CheckpointManager] Reset {resetCount} trigger(s) in scene");
+        }
+        else
+        {
+            Debug.LogWarning("[CheckpointManager] No triggers found to reset!");
         }
     }
 
@@ -122,6 +214,14 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         {
             controller.RestoreFullLife();
         }
+        
+        // Reset Combat Zones first (this will deactivate all bosses)
+        ResetAllCombatZones();
+        
+        // Reset triggers (but DON'T trigger warning automatically)
+        ResetTriggersInCurrentScene();
+        
+        // NOTE: Không gọi warning ở đây nữa, để Combat Zone tự quản lý
 
         // 👉 Reset hệ thống tường và minigame nếu có
         BombDefuseMiniGame[] allMiniGames = Object.FindObjectsByType<BombDefuseMiniGame>(FindObjectsSortMode.None);
@@ -147,7 +247,70 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         {
             activator.ResetTrigger();
         }
-
+    }
+    
+    // Method để reset tất cả Combat Zones
+    private void ResetAllCombatZones()
+    {
+        BossCombatZone[] combatZones = FindObjectsByType<BossCombatZone>(FindObjectsSortMode.None);
+        
+        int resetCount = 0;
+        foreach (var zone in combatZones)
+        {
+            if (zone != null)
+            {
+                zone.ResetZone();
+                resetCount++;
+            }
+        }
+        
+        if (resetCount > 0)
+        {
+            Debug.Log($"[CheckpointManager] Reset {resetCount} Combat Zone(s)");
+        }
+    }
+    
+    // Method để đảm bảo tất cả boss scripts bị tắt sau respawn
+    private void DisableAllBossScripts()
+    {
+        // Tắt tất cả MiniBoss
+        MiniBoss[] miniBosses = FindObjectsByType<MiniBoss>(FindObjectsSortMode.None);
+        foreach (var miniBoss in miniBosses)
+        {
+            if (miniBoss != null)
+            {
+                miniBoss.enabled = false;
+                
+                // Tắt damage receiver
+                MiniBossDamageReceiver damageReceiver = miniBoss.GetComponent<MiniBossDamageReceiver>();
+                if (damageReceiver != null)
+                {
+                    damageReceiver.enabled = false;
+                }
+                
+                // Set Rigidbody về Static
+                Rigidbody2D rb = miniBoss.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.bodyType = RigidbodyType2D.Static;
+                    rb.linearVelocity = Vector2.zero;
+                }
+            }
+        }
+        
+        // Tắt tất cả boss controller khác (nếu có)
+        MonoBehaviour[] allBossControllers = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+        foreach (var controller in allBossControllers)
+        {
+            if (controller.GetType().Name.Contains("Boss") && 
+                !controller.GetType().Name.Contains("Manager") &&
+                !(controller is MiniBoss))
+            {
+                controller.enabled = false;
+            }
+        }
+        
+        Debug.Log("[CheckpointManager] All boss scripts disabled after respawn");
     }
 
     private void LoadSceneWithCleanup(string sceneName, GameObject player)
