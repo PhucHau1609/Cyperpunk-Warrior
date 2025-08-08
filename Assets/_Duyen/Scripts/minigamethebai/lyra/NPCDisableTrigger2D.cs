@@ -9,7 +9,6 @@ public class NPCDisableTrigger2D : MonoBehaviour
     //
     [SerializeField] private string targetName = "FlyTarget"; // Tên GameObject trong scene hiện tại
     [SerializeField] private float flySpeed = 2f;
-    [SerializeField] private PlayableDirector playableDirector;
     [Header("Zoom Settings")]
     public float targetZoomSize = 10f;
     public float zoomDuration = 2f;
@@ -19,7 +18,7 @@ public class NPCDisableTrigger2D : MonoBehaviour
     private bool hasTriggered = false;
     [Header("Dialogue")]
     public GameObject dialogueHolder;
-    public GameObject miniGame;
+    public GameObject LyraCutscene;
     //
     void Start()
     {
@@ -39,8 +38,8 @@ public class NPCDisableTrigger2D : MonoBehaviour
         if (other.CompareTag("NPC"))
         {
             other.gameObject.SetActive(false);
-            playableDirector.Play();
-            playableDirector.stopped += OnTimelineStop;
+            LyraCutscene.SetActive(true);
+            StartCoroutine(ActiveDialogue());
         }
         // Kiểm tra xem có FloatingFollower không
         FloatingFollower follower = other.GetComponent<FloatingFollower>();
@@ -90,17 +89,11 @@ public class NPCDisableTrigger2D : MonoBehaviour
         }
     }
 
-    private void OnTimelineStop(PlayableDirector director)
-    {
-        playableDirector.stopped -= OnTimelineStop;
-        StartCoroutine(ActiveDialogue());
-    }
-
     IEnumerator ActiveDialogue()
     {
         // Pause game
         Time.timeScale = 0f;
-        
+
         // Kích hoạt dialogue
         if (dialogueHolder != null)
         {
@@ -109,15 +102,6 @@ public class NPCDisableTrigger2D : MonoBehaviour
             // Đợi dialogue kết thúc
             yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
         }
-        
-        if (miniGame != null)
-        {
-            miniGame.SetActive(true);
-            
-            // Đợi dialogue kết thúc
-            yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
-        }
-
         // Resume game
         Time.timeScale = 1f;
         
@@ -168,14 +152,6 @@ public class NPCDisableTrigger2D : MonoBehaviour
         {
             dialogueHolder.SetActive(true);
 
-            // Đợi dialogue kết thúc
-            yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
-        }
-        
-        if (miniGame != null)
-        {
-            miniGame.SetActive(true);
-            
             // Đợi dialogue kết thúc
             yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
         }

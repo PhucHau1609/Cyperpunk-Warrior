@@ -8,6 +8,7 @@ namespace DialogueSystem
     {
         [Header("Timeline tiếp theo")]
         [SerializeField] private PlayableDirector nextTimeline;
+        [SerializeField] private GameObject miniGame;
 
         private Coroutine dialogueCoroutine;
         private bool isSkipped = false;
@@ -51,6 +52,10 @@ namespace DialogueSystem
             if (nextTimeline != null)
             {
                 nextTimeline.Play();
+            }
+            if (miniGame != null)
+            {
+                miniGame.SetActive(true);
             }
             GameStateManager.Instance.ResetToGameplay();
         }

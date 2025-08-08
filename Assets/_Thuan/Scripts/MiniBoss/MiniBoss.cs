@@ -160,7 +160,16 @@ public class MiniBoss : MonoBehaviour, IBossResettable
     {
         initialPosition = transform.position;
         initialScale = transform.localScale;
+        
+        // Lưu hướng facing ban đầu dựa trên scale
+        if (initialScale.x > 0)
+            facingRight = true;
+        else
+            facingRight = false;
+            
         initialDataSaved = true;
+        
+        Debug.Log($"[MiniBoss] Saved initial state: Position {initialPosition}, Scale {initialScale}, FacingRight {facingRight}");
     }
 
     void Update()
@@ -621,8 +630,7 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         canTeleport = true;
     }
 
-    // Method để reset MiniBoss về trạng thái ban đầu
-    public void ResetBoss()
+     public void ResetBoss()
     {
         // Dừng tất cả coroutines
         StopAllCoroutines();
@@ -641,12 +649,20 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         if (initialDataSaved)
         {
             transform.position = initialPosition;
+            // QUAN TRỌNG: Reset scale về giá trị ban đầu để sửa lỗi đi ngược
             transform.localScale = initialScale;
+            
+            // Reset hướng facing về đúng hướng ban đầu
+            if (initialScale.x > 0)
+                facingRight = true;
+            else
+                facingRight = false;
         }
 
         // Reset physics
         rb.linearVelocity = Vector2.zero;
         rb.gravityScale = 1f; // Reset gravity
+        rb.bodyType = RigidbodyType2D.Dynamic; // Đảm bảo Dynamic khi reset
 
         // Bật lại colliders và script
         SetCollidersEnabled(true);
@@ -660,12 +676,15 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         }
 
         // Reset animator
-        animator.ResetTrigger("Attack1");
-        animator.ResetTrigger("Attack2");
-        animator.ResetTrigger("Attack3");
-        animator.ResetTrigger("Hurt");
-        animator.ResetTrigger("Death");
-        animator.SetBool("IsRunning", false);
+        if (animator != null)
+        {
+            animator.ResetTrigger("Attack1");
+            animator.ResetTrigger("Attack2");
+            animator.ResetTrigger("Attack3");
+            animator.ResetTrigger("Hurt");
+            animator.ResetTrigger("Death");
+            animator.SetBool("IsRunning", false);
+        }
 
         // Reset máu
         if (damageReceiver != null)
@@ -691,6 +710,11 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         {
             player = playerObj.transform;
         }
+        
+        // Reset movement để tránh lỗi di chuyển
+        movement = Vector2.zero;
+
+        Debug.Log($"[MiniBoss] {gameObject.name} has been reset to initial state at position {transform.position} with scale {transform.localScale}");
     }
 
     public void OnHurt()
