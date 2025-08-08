@@ -10,17 +10,17 @@ public class InventoryTester : HauMonoBehaviour //E75 create
     protected override void Start()
     {
         base.Start();
-        this.AddTestItems(ItemCode.Clothes_1, 1);
-        this.AddTestItems(ItemCode.Clothes_2, 1);
-        this.AddTestItems(ItemCode.Clothes_3, 1);
-        this.AddTestItems(ItemCode.Clothes_4, 1);
+        //this.AddTestItems(ItemCode.Clothes_1, 1);
+        //this.AddTestItems(ItemCode.Clothes_2, 1);
+        //this.AddTestItems(ItemCode.Clothes_3, 1);
+        //this.AddTestItems(ItemCode.Clothes_4, 1);
 
-        this.AddTestItems(ItemCode.Artefacts_1, 1);
+        //this.AddTestItems(ItemCode.Artefacts_1, 1);
         //this.AddTestItems(ItemCode.CraftingRecipe, 1);
 
 
 
-        //this.AddTestItems(ItemCode.MachineGun_0, 1);
+        this.AddTestItems(ItemCode.MachineGun_0, 1);
         //this.AddTestItems(ItemCode.MachineGun_1, 1);
         //this.AddTestItems(ItemCode.MachineGun_3, 1);
 
