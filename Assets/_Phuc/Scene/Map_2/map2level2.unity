@@ -6277,9 +6277,9 @@ GameObject:
   - component: {fileID: 165047849}
   - component: {fileID: 165047853}
   - component: {fileID: 165047852}
-  - component: {fileID: 165047851}
   - component: {fileID: 165047850}
   - component: {fileID: 165047854}
+  - component: {fileID: 165047855}
   m_Layer: 0
   m_Name: laser
   m_TagString: Untagged
@@ -6327,19 +6327,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &165047851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165047848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!60 &165047852
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -6492,6 +6479,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.42, y: 0.033950374}
   m_EdgeRadius: 0
+--- !u!114 &165047855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165047848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 50
 --- !u!1 &169888661
 GameObject:
   m_ObjectHideFlags: 0
@@ -7271,7 +7271,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  enemyTransform: {fileID: 0}
+  enemyTransform: {fileID: 450990244}
 --- !u!224 &336601282
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12203,6 +12203,7 @@ GameObject:
   m_Component:
   - component: {fileID: 379004130}
   - component: {fileID: 379004131}
+  - component: {fileID: 379004132}
   m_Layer: 0
   m_Name: stungun
   m_TagString: Untagged
@@ -12282,6 +12283,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &379004132
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379004129}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.03997777}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.24, y: 0.36}
+    newSize: {x: 0.24, y: 0.36}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.24, y: 0.28004447}
+  m_EdgeRadius: 0
 --- !u!1 &398040129
 GameObject:
   m_ObjectHideFlags: 0
@@ -22192,8 +22239,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!50 &450990240
 Rigidbody2D:
   serializedVersion: 5
@@ -37967,9 +38014,9 @@ GameObject:
   - component: {fileID: 753236378}
   - component: {fileID: 753236382}
   - component: {fileID: 753236381}
-  - component: {fileID: 753236380}
   - component: {fileID: 753236379}
   - component: {fileID: 753236383}
+  - component: {fileID: 753236384}
   m_Layer: 0
   m_Name: laser
   m_TagString: Untagged
@@ -38017,19 +38064,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &753236380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 753236377}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70f91f007e447c64ca6d16314d340218, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 10
 --- !u!60 &753236381
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -38182,6 +38216,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.42, y: 0.034452647}
   m_EdgeRadius: 0
+--- !u!114 &753236384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753236377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0837029bcb7ea249b917aa40524513d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 50
 --- !u!1 &753290967
 GameObject:
   m_ObjectHideFlags: 0
@@ -115998,6 +116045,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1252989337}
   - component: {fileID: 1252989338}
+  - component: {fileID: 1252989339}
   m_Layer: 0
   m_Name: stungun
   m_TagString: Untagged
@@ -116077,6 +116125,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &1252989339
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252989336}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.043840814}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.24, y: 0.36}
+    newSize: {x: 0.24, y: 0.36}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.24, y: 0.2723184}
+  m_EdgeRadius: 0
 --- !u!1 &1270371651
 GameObject:
   m_ObjectHideFlags: 0
@@ -148635,8 +148729,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!1 &2310367575185266969
 GameObject:
   m_ObjectHideFlags: 0
@@ -148804,7 +148898,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  enemyTransform: {fileID: 0}
+  enemyTransform: {fileID: 5675160270073795022}
 --- !u!1 &3091245638965147559
 GameObject:
   m_ObjectHideFlags: 0

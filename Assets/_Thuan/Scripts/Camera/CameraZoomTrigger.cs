@@ -54,6 +54,10 @@ public class CameraZoomTrigger : MonoBehaviour
 
     public GameObject[] enemies;
     
+    [Header("First Time Trigger Settings")]
+    [Tooltip("Có phải lần đầu tiên trigger được kích hoạt không")]
+    public bool isFirstTimeTrigger = true;
+    
     void Start()
     {
         // Lấy camera size ban đầu
@@ -85,6 +89,13 @@ public class CameraZoomTrigger : MonoBehaviour
             warningText.text = "";
             warningText.gameObject.SetActive(false);
         }
+        
+        // Nếu không phải lần đầu (respawn), disable boss components ngay từ đầu
+        if (!isFirstTimeTrigger)
+        {
+            DisableBossComponents();
+            DisableColliders();
+        }
     }
     
     void OnTriggerEnter2D(Collider2D other)
@@ -93,19 +104,52 @@ public class CameraZoomTrigger : MonoBehaviour
         {
             hasTriggered = true;
 
-            // Disable boss controller và colliders trước khi zoom
-            if (disableBossOnTrigger)
+            if (isFirstTimeTrigger)
             {
-                DisableBossComponents();
-                DisableColliders();
+                // Lần đầu tiên: Disable boss -> Warning -> Dialogue -> Enable boss
+                if (disableBossOnTrigger)
+                {
+                    DisableBossComponents();
+                    DisableColliders();
+                }
+                StartCoroutine(FirstTimeSequence());
             }
-            
-            // Bắt đầu với hiệu ứng Warning
-            StartCoroutine(WarningSequence());
+            else
+            {
+                // Lần sau (respawn): Chỉ chạy Warning -> Enable boss (không có dialogue)
+                StartCoroutine(RespawnSequence());
+            }
         }
     }
 
-    IEnumerator WarningSequence()
+    // Sequence cho lần đầu tiên (có dialogue)
+    IEnumerator FirstTimeSequence()
+    {
+        // Bắt đầu với hiệu ứng Warning
+        yield return StartCoroutine(WarningAndZoomSequence());
+        
+        // Tiếp tục với dialogue
+        yield return StartCoroutine(DialogueSequence());
+        
+        // Đánh dấu không còn là lần đầu nữa
+        isFirstTimeTrigger = false;
+    }
+    
+    // Sequence cho lần respawn (không có dialogue)
+    IEnumerator RespawnSequence()
+    {
+        // Chỉ chạy Warning + Zoom
+        yield return StartCoroutine(WarningAndZoomSequence());
+        
+        // Kích hoạt boss ngay sau Warning
+        EnableBossComponents();
+        EnableColliders();
+        
+        // Tắt trigger này
+        gameObject.SetActive(false);
+    }
+
+    IEnumerator WarningAndZoomSequence()
     {
         // Bắt đầu zoom và warning đồng thời
         Coroutine zoomCoroutine = null;
@@ -136,9 +180,6 @@ public class CameraZoomTrigger : MonoBehaviour
         {
             yield return warningCoroutine;
         }
-        
-        // Tiếp tục với dialogue
-        yield return StartCoroutine(DialogueSequence());
     }
     
     IEnumerator WarningEffect()
@@ -254,8 +295,8 @@ public class CameraZoomTrigger : MonoBehaviour
         {
             miniGame.SetActive(true);
             
-            // Đợi dialogue kết thúc
-            yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
+            // Đợi minigame kết thúc
+            yield return new WaitUntil(() => !miniGame.activeInHierarchy);
         }
 
         if (enemies != null)
@@ -265,9 +306,6 @@ public class CameraZoomTrigger : MonoBehaviour
                 if (enemy != null)
                     enemy.SetActive(true);
             }
-            
-            // Đợi dialogue kết thúc
-            yield return new WaitUntil(() => !dialogueHolder.activeInHierarchy);
         }
 
         // Resume game
@@ -279,15 +317,6 @@ public class CameraZoomTrigger : MonoBehaviour
         
         // Tắt trigger này
         gameObject.SetActive(false);
-    }
-
-    IEnumerator ZoomThenDialogue()
-    {
-        // Zoom camera trước
-        yield return StartCoroutine(ZoomCamera(targetZoomSize));
-        
-        // Tiếp tục với dialogue
-        yield return StartCoroutine(DialogueSequence());
     }
     
     void OnTriggerExit2D(Collider2D other)
@@ -432,6 +461,18 @@ public class CameraZoomTrigger : MonoBehaviour
     public void ResetTrigger()
     {
         hasTriggered = false;
+        // Reset về trạng thái lần đầu sau khi respawn
+        isFirstTimeTrigger = false;
+        
+        // Khi reset trigger, disable boss components
+        if (disableBossOnTrigger)
+        {
+            DisableBossComponents();
+            DisableColliders();
+        }
+        
+        // KHÔNG tắt trigger ở đây nữa, để CheckpointManager quản lý
+        // gameObject.SetActive(true); // Đã được handle bởi CheckpointManager
     }
     
     public void ForceZoom(float size)
@@ -477,7 +518,7 @@ public class CameraZoomTrigger : MonoBehaviour
     {
         if (warningText != null)
         {
-            StartCoroutine(WarningSequence());
+            StartCoroutine(WarningAndZoomSequence());
         }
     }
     
@@ -492,5 +533,11 @@ public class CameraZoomTrigger : MonoBehaviour
         {
             warningAudioSource.Stop();
         }
+    }
+    
+    // Method để set trạng thái first time từ bên ngoài
+    public void SetFirstTimeTrigger(bool isFirstTime)
+    {
+        isFirstTimeTrigger = isFirstTime;
     }
 }

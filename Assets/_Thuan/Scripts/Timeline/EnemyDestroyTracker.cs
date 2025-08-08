@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 public class EnemyDestroyTracker : MonoBehaviour
 {
@@ -9,7 +11,16 @@ public class EnemyDestroyTracker : MonoBehaviour
     [SerializeField] private bool trackByTag = false;
     [SerializeField] private string enemyTag = "Enemy";
     
-    [Header("Completion Settings")]
+    [Header("Timeline Settings")]
+    [SerializeField] private PlayableDirector timelineDirector;
+    [SerializeField] private TimelineAsset timelineAsset;
+    [SerializeField] private bool playTimelineOnComplete = true;
+    
+    [Header("GameObject Control")]
+    [SerializeField] private List<GameObject> gameObjectsToDeactivate = new List<GameObject>();
+    [SerializeField] private List<GameObject> gameObjectsToActivate = new List<GameObject>();
+    
+    [Header("Legacy Script Support (Optional)")]
     [SerializeField] private MonoBehaviour scriptToActivate;
     [SerializeField] private string methodToCall = "";
     [SerializeField] private bool disableScriptAfterComplete = true;
@@ -25,6 +36,12 @@ public class EnemyDestroyTracker : MonoBehaviour
     void Start()
     {
         InitializeEnemyTracking();
+        
+        // Auto-find PlayableDirector if not assigned
+        if (timelineDirector == null)
+        {
+            timelineDirector = GetComponent<PlayableDirector>();
+        }
     }
     
     void InitializeEnemyTracking()
@@ -58,6 +75,7 @@ public class EnemyDestroyTracker : MonoBehaviour
         }
         
         totalEnemyCount = aliveEnemies.Count;
+        Debug.Log($"[EnemyDestroyTracker] Tracking {totalEnemyCount} enemies");
     }
     
     void RegisterEnemyForDestruction(GameObject enemy)
@@ -82,6 +100,8 @@ public class EnemyDestroyTracker : MonoBehaviour
             aliveEnemies.Remove(destroyedEnemy);
             int remainingCount = aliveEnemies.Count;
             
+            Debug.Log($"[EnemyDestroyTracker] Enemy destroyed! Remaining: {remainingCount}");
+            
             // Kích hoạt event khi có enemy bị destroy
             OnEnemyDestroyed?.Invoke(remainingCount);
             
@@ -98,17 +118,69 @@ public class EnemyDestroyTracker : MonoBehaviour
         if (isComplete) return;
         
         isComplete = true;
+        Debug.Log("[EnemyDestroyTracker] All enemies destroyed! Completing objective...");
         
         // Kích hoạt Events
         OnAllEnemiesDestroyed?.Invoke();
         
-        // Kích hoạt script được chỉ định
+        // Kích hoạt Timeline
+        PlayTimeline();
+        
+        // Quản lý GameObjects
+        ManageGameObjects();
+        
+        // Legacy: Kích hoạt script được chỉ định (nếu có)
         ActivateTargetScript();
         
         // Tắt script này nếu được cấu hình
         if (disableScriptAfterComplete)
         {
             enabled = false;
+        }
+    }
+    
+    void PlayTimeline()
+    {
+        if (!playTimelineOnComplete) return;
+        
+        if (timelineDirector != null)
+        {
+            // Set timeline asset nếu có
+            if (timelineAsset != null)
+            {
+                timelineDirector.playableAsset = timelineAsset;
+            }
+            
+            // Play timeline
+            timelineDirector.Play();
+            Debug.Log("[EnemyDestroyTracker] Timeline started playing");
+        }
+        else
+        {
+            Debug.LogWarning("[EnemyDestroyTracker] No PlayableDirector assigned, cannot play timeline!");
+        }
+    }
+    
+    void ManageGameObjects()
+    {
+        // Tắt các GameObjects được chỉ định
+        foreach (GameObject obj in gameObjectsToDeactivate)
+        {
+            if (obj != null && obj.activeInHierarchy)
+            {
+                obj.SetActive(false);
+                Debug.Log($"[EnemyDestroyTracker] Deactivated GameObject: {obj.name}");
+            }
+        }
+        
+        // Bật các GameObjects được chỉ định
+        foreach (GameObject obj in gameObjectsToActivate)
+        {
+            if (obj != null && !obj.activeInHierarchy)
+            {
+                obj.SetActive(true);
+                Debug.Log($"[EnemyDestroyTracker] Activated GameObject: {obj.name}");
+            }
         }
     }
     
@@ -120,7 +192,7 @@ public class EnemyDestroyTracker : MonoBehaviour
         if (!scriptToActivate.enabled)
         {
             scriptToActivate.enabled = true;
-            
+            Debug.Log($"[EnemyDestroyTracker] Enabled script: {scriptToActivate.GetType().Name}");
         }
         
         // Gọi method cụ thể nếu được chỉ định
@@ -129,9 +201,11 @@ public class EnemyDestroyTracker : MonoBehaviour
             try
             {
                 scriptToActivate.Invoke(methodToCall, 0f);
+                Debug.Log($"[EnemyDestroyTracker] Called method: {methodToCall}");
             }
             catch (System.Exception e)
             {
+                Debug.LogError($"[EnemyDestroyTracker] Failed to call method {methodToCall}: {e.Message}");
             }
         }
     }
@@ -144,6 +218,7 @@ public class EnemyDestroyTracker : MonoBehaviour
             aliveEnemies.Add(enemy);
             RegisterEnemyForDestruction(enemy);
             totalEnemyCount++;
+            Debug.Log($"[EnemyDestroyTracker] Added enemy: {enemy.name}. Total: {totalEnemyCount}");
         }
     }
     
@@ -153,6 +228,7 @@ public class EnemyDestroyTracker : MonoBehaviour
         {
             aliveEnemies.Remove(enemy);
             totalEnemyCount--;
+            Debug.Log($"[EnemyDestroyTracker] Removed enemy from tracking: {enemy.name}");
         }
     }
     
@@ -161,6 +237,13 @@ public class EnemyDestroyTracker : MonoBehaviour
         isComplete = false;
         enabled = true;
         InitializeEnemyTracking();
+        Debug.Log("[EnemyDestroyTracker] Tracker reset");
+    }
+    
+    public void ForceCompleteObjective()
+    {
+        Debug.Log("[EnemyDestroyTracker] Force completing objective...");
+        CompleteObjective();
     }
     
     public int GetRemainingEnemyCount()
@@ -182,6 +265,54 @@ public class EnemyDestroyTracker : MonoBehaviour
     public void NotifyEnemyWillBeDestroyed(GameObject enemy)
     {
         OnEnemyDestroyed_Internal(enemy);
+    }
+    
+    // Methods to control GameObjects from external scripts
+    public void AddGameObjectToDeactivate(GameObject obj)
+    {
+        if (obj != null && !gameObjectsToDeactivate.Contains(obj))
+        {
+            gameObjectsToDeactivate.Add(obj);
+        }
+    }
+    
+    public void AddGameObjectToActivate(GameObject obj)
+    {
+        if (obj != null && !gameObjectsToActivate.Contains(obj))
+        {
+            gameObjectsToActivate.Add(obj);
+        }
+    }
+    
+    public void RemoveGameObjectFromDeactivate(GameObject obj)
+    {
+        if (gameObjectsToDeactivate.Contains(obj))
+        {
+            gameObjectsToDeactivate.Remove(obj);
+        }
+    }
+    
+    public void RemoveGameObjectFromActivate(GameObject obj)
+    {
+        if (gameObjectsToActivate.Contains(obj))
+        {
+            gameObjectsToActivate.Remove(obj);
+        }
+    }
+    
+    // Method to set timeline at runtime
+    public void SetTimeline(TimelineAsset timeline)
+    {
+        timelineAsset = timeline;
+        if (timelineDirector != null)
+        {
+            timelineDirector.playableAsset = timeline;
+        }
+    }
+    
+    public void SetTimelineDirector(PlayableDirector director)
+    {
+        timelineDirector = director;
     }
 }
 

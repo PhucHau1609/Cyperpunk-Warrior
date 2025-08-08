@@ -39,6 +39,14 @@ public class BombDefuseMiniGame : MonoBehaviour
     private bool gameInProgress = false;
     private bool gameWon = false;
 
+    // ✅ THÊM: Lưu trạng thái ban đầu của objectToShowAfterWin
+    private bool originalObjectState;
+
+    // Animation mask
+    private bool isMaskAnimating = false;
+    private float maskAnimationDuration = 1f;
+    private float maskAnimationTimer = 0f;
+
     void Start()
     {
         btnOpenMiniGame.onClick.AddListener(OpenMiniGame);
@@ -53,6 +61,8 @@ public class BombDefuseMiniGame : MonoBehaviour
 
         if (objectToShowAfterWin != null)
         {
+            // ✅ THÊM: Lưu trạng thái ban đầu của object
+            originalObjectState = objectToShowAfterWin.activeSelf;
             objectToShowAfterWin.SetActive(false);
         }
 
@@ -68,15 +78,42 @@ public class BombDefuseMiniGame : MonoBehaviour
         {
             timer += Time.deltaTime;
 
+            // Sau 3s thì bắt đầu animation trượt mask từ trên xuống
             if (timer >= 3f && !imgMask.activeSelf)
             {
                 imgMask.SetActive(true);
+                isMaskAnimating = true;
+                maskAnimationTimer = 0f;
+
+                Image maskImage = imgMask.GetComponent<Image>();
+                if (maskImage != null)
+                {
+                    maskImage.fillAmount = 0f; // Bắt đầu trượt từ trên xuống
+                }
             }
 
             UpdateTimerDisplay(timer);
         }
 
-        // ✅ Tự động vô hiệu hóa nút nếu player ở xa
+        // Cập nhật hiệu ứng trượt mask
+        if (isMaskAnimating)
+        {
+            maskAnimationTimer += Time.deltaTime;
+            float progress = Mathf.Clamp01(maskAnimationTimer / maskAnimationDuration);
+
+            Image maskImage = imgMask.GetComponent<Image>();
+            if (maskImage != null)
+            {
+                maskImage.fillAmount = Mathf.Lerp(0f, 1f, progress);
+            }
+
+            if (progress >= 1f)
+            {
+                isMaskAnimating = false;
+            }
+        }
+
+        // Tự động vô hiệu hóa nút nếu player ở xa
         if (btnOpenMiniGame != null && interactionPoint != null && player != null)
         {
             float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
@@ -88,7 +125,7 @@ public class BombDefuseMiniGame : MonoBehaviour
     {
         if (gameWon) return;
 
-        // ✅ Chặn mở nếu ở xa
+        // Chặn mở nếu ở xa
         if (interactionPoint != null && player != null)
         {
             float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
@@ -137,7 +174,7 @@ public class BombDefuseMiniGame : MonoBehaviour
         ResetGame();
 
         targetTime = Random.Range(5, 11);
-        txtTargetTime.text = "Defuse Time: " + targetTime.ToString("00") + ":00";
+        txtTargetTime.text = "Thời Gian Vô Hiệu Hoá: " + targetTime.ToString("00") + ":00";
 
         timer = 0f;
         isRunning = true;
@@ -168,7 +205,7 @@ public class BombDefuseMiniGame : MonoBehaviour
 
         if (seconds == targetTime && centiseconds < 100)
         {
-            txtResult.text = "Task Complete!";
+            txtResult.text = "THÀNH CÔNG!";
             txtResult.color = Color.green;
 
             wallShrinker.StopShrinking();
@@ -177,7 +214,7 @@ public class BombDefuseMiniGame : MonoBehaviour
         }
         else
         {
-            txtResult.text = "Failed!";
+            txtResult.text = "THẤT BẠI!";
             txtResult.color = Color.red;
         }
 
@@ -201,6 +238,13 @@ public class BombDefuseMiniGame : MonoBehaviour
         txtResult.text = "";
         txtResult.color = Color.white;
         imgMask.SetActive(false);
+
+        isMaskAnimating = false;
+        maskAnimationTimer = 0f;
+
+        Image maskImage = imgMask.GetComponent<Image>();
+        if (maskImage != null)
+            maskImage.fillAmount = 0f; // đặt lại về 0 để sẵn sàng trượt lại
     }
 
     void ShowWinObject()
@@ -208,14 +252,22 @@ public class BombDefuseMiniGame : MonoBehaviour
         objectToShowAfterWin.SetActive(true);
     }
 
+    // ✅ CHỈNH SỬA: ResetState() để xử lý 2 trường hợp
     public void ResetState()
     {
         gameInProgress = false;
+
+        // ✅ LOGIC MỚI: Reset objectToShowAfterWin về trạng thái ban đầu
+        // Trường hợp 1: Chưa thắng game → object vẫn ẩn (originalObjectState = false)
+        // Trường hợp 2: Đã thắng game → object cũng bị reset về trạng thái ban đầu (ẩn)
+        if (objectToShowAfterWin != null)
+        {
+            objectToShowAfterWin.SetActive(originalObjectState);
+        }
+
+        // Reset game state
         gameWon = false;
         ResetGame();
-
-        if (objectToShowAfterWin != null)
-            objectToShowAfterWin.SetActive(false);
 
         miniGamePanel.SetActive(false);
 
@@ -223,4 +275,18 @@ public class BombDefuseMiniGame : MonoBehaviour
             wallShrinker.ResetState();
     }
 
+    // ✅ THÊM: Method để kiểm tra trạng thái game (optional - cho debugging)
+    public bool IsGameCompleted()
+    {
+        return gameWon;
+    }
+
+    // ✅ THÊM: Method để force reset object state (optional - cho trường hợp đặc biệt)
+    public void ForceResetObjectState()
+    {
+        if (objectToShowAfterWin != null)
+        {
+            objectToShowAfterWin.SetActive(originalObjectState);
+        }
+    }
 }
