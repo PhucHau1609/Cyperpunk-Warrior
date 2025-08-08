@@ -174,7 +174,7 @@ public class BombDefuseMiniGame : MonoBehaviour
         ResetGame();
 
         targetTime = Random.Range(5, 11);
-        txtTargetTime.text = "Defuse Time: " + targetTime.ToString("00") + ":00";
+        txtTargetTime.text = "Thời Gian Vô Hiệu Hoá: " + targetTime.ToString("00") + ":00";
 
         timer = 0f;
         isRunning = true;
