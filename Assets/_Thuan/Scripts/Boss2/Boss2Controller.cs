@@ -2,6 +2,7 @@ using UnityEngine;
 using BehaviorDesigner.Runtime;
 using System.Collections.Generic;
 using static EnemyMini;
+using UnityEngine.Playables;
 
 public class Boss2Controller : MonoBehaviour, IBossResettable
 {
@@ -62,6 +63,8 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
     public AudioClip deathSound;
     public AudioClip shieldActivateSound;
     public AudioClip phase2TransitionSound;
+
+    public GameObject dialogueHolder;
     
     // Lưu trạng thái ban đầu để reset
     private Vector3 initialPosition;
@@ -654,9 +657,9 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
 
     public void OnDead()
     {
-        PlaySound(deathSound, 1f);
+        //PlaySound(deathSound, 1f);
 
-        animator.SetTrigger("Death");
+        //animator.SetTrigger("Death");
         currentState = State.Dead;
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
@@ -675,7 +678,8 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
             }
         }
         KillAllEnemies();
-        Destroy(gameObject, 2f);
+        dialogueHolder.SetActive(true);
+        //Destroy(gameObject, 2f);
     }
 
     private void KillAllEnemies()
