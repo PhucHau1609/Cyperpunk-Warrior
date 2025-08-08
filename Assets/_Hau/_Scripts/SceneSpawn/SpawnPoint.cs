@@ -21,4 +21,5 @@ public enum SpawnSceneName
     MapBoss_01Test,
     Map_Boss02,
     MapBoss_01Test__,
+    MapBoss_01Test_01,
 }
