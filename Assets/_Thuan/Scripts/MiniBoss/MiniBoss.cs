@@ -660,9 +660,9 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         }
 
         // Reset physics
-        rb.linearVelocity = Vector2.zero;
-        rb.gravityScale = 1f; // Reset gravity
-        rb.bodyType = RigidbodyType2D.Dynamic; // Đảm bảo Dynamic khi reset
+        // rb.linearVelocity = Vector2.zero;
+        // rb.gravityScale = 1f; // Reset gravity
+        // rb.bodyType = RigidbodyType2D.Dynamic; // Đảm bảo Dynamic khi reset
 
         // Bật lại colliders và script
         SetCollidersEnabled(true);

@@ -372,10 +372,10 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
         }
         
         // Reset physics
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.linearVelocity = Vector2.zero;
-        rb.angularVelocity = 0f;
-        rb.freezeRotation = true;
+        // rb.bodyType = RigidbodyType2D.Dynamic;
+        // rb.linearVelocity = Vector2.zero;
+        // rb.angularVelocity = 0f;
+        // rb.freezeRotation = true;
         
         // Bật lại collider và script
         GetComponent<Collider2D>().enabled = true;
