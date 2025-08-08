@@ -99,5 +99,15 @@ public class Attack : MonoBehaviour
             }
         }
     }
+
+    public void BanAttackWhenWallSliding()
+    {
+        canAttack = false;
+    }
+
+    public void CanAttackAfterWallSliding()
+    {
+        canAttack = true;
+    }
 }
 

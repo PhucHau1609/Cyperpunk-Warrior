@@ -44,6 +44,9 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
         if (GameStateManager.Instance.CurrentState == GameState.Inventory) 
             return;
 
+        if (characterController != null && characterController.isWallSliding)
+            return;
+
 
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -73,24 +76,6 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
             }
         }
     }
-
-
-    /*  void RefreshOwnedWeapons()
-      {
-          ownedWeapons.Clear();
-          var inventory = InventoryManager.Instance.ItemInventory().ItemInventories;
-
-          for (int i = 0; i < inventory.Count; i++)
-          {
-              var item = inventory[i];
-              if (item.ItemProfileSO == null) continue;
-
-              if (item.ItemProfileSO.weaponType == WeaponType.Gun)
-              {
-                  ownedWeapons.Add(item);
-              }
-          }
-      }*/
 
     void ToggleWeapon()
     {
@@ -176,6 +161,7 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
     // Phương thức ẩn súng khi wall sliding
     public void HideWeaponDuringWallSlide()
     {
+        isWeaponActive = false;
         if (currentWeapon != null && currentWeapon.activeSelf)
         {
             wasWeaponActiveBeforeWallSlide = true;
@@ -190,6 +176,8 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
     // Phương thức hiện súng sau khi kết thúc wall sliding
     public void ShowWeaponAfterWallSlide()
     {
+        //Debug.Log("Show ne");
+        isWeaponActive = false;
         if (currentWeapon != null && wasWeaponActiveBeforeWallSlide)
         {
             currentWeapon.SetActive(true);
@@ -246,72 +234,4 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
             }
         }
     }
-
-
-    private bool IsSameItem(ItemInventory item, GameObject weaponGO)
-    {
-        if (item == null || item.ItemProfileSO == null || weaponGO == null) return false;
-
-        var weaponShooter = weaponGO.GetComponent<WeaponShooter>();
-        if (weaponShooter == null) return false;
-
-        return weaponShooter.name.Contains(item.ItemProfileSO.prefabItem.name);
-    }
-
-
-
 }
-
-
-/*   void EquipWeapon(int index)
-   {
-       if (index < 0 || index >= ownedWeapons.Count) return;
-
-       var item = ownedWeapons[index];
-       var weaponPrefab = item.ItemProfileSO.prefabItem;
-
-       if (weaponPrefab == null)
-       {
-           Debug.LogWarning("Vũ khí không có prefab.");
-           return;
-       }
-
-       GameObject weaponInstance;
-
-       if (instantiatedWeapons.ContainsKey(index) && instantiatedWeapons[index] != null)
-       {
-           weaponInstance = instantiatedWeapons[index];
-       }
-       else
-       {
-           weaponInstance = Instantiate(weaponPrefab, weaponHolder);
-           weaponInstance.transform.localPosition = new Vector3(0.806f, 0f, 0f);
-           weaponInstance.transform.localRotation = Quaternion.identity;
-           instantiatedWeapons[index] = weaponInstance;
-       }
-
-
-       */
-/*  // Nếu vũ khí đã từng instantiate rồi
-         if (instantiatedWeapons.ContainsKey(index))
-         {
-             weaponInstance = instantiatedWeapons[index];
-         }
-         else
-         {
-             weaponInstance = Instantiate(weaponPrefab, weaponHolder);
-             weaponInstance.transform.localPosition = new Vector3(0.806f, 0f, 0f);
-             weaponInstance.transform.localRotation = Quaternion.identity;
-             instantiatedWeapons.Add(index, weaponInstance);
-         }*/
-/*
-
-       currentWeapon = weaponInstance;
-       currentWeapon.SetActive(isWeaponActive);
-
-       // Gán cho WeaponAimer
-       if (weaponHolder.TryGetComponent<WeaponAimer>(out var aimer))
-       {
-           aimer.SetCurrentWeapon(currentWeapon.transform);
-       }
-   }*/
