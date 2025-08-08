@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
+public class InputHotKey : HauSingleton<InputHotKey> 
 {
     [SerializeField] protected bool isToogleInventoryUI = false;
     public bool IsToogleInventoryUI => isToogleInventoryUI;
@@ -14,6 +14,8 @@ public class InputHotKey : HauSingleton<InputHotKey> //E76 Create
     [SerializeField] protected KeyCode keyCode;
     public KeyCode KeyCode => keyCode;
 
+   
+    
     private void Update()
     {
         this.OpenInventory();
