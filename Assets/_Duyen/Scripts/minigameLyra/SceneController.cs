@@ -185,6 +185,13 @@ public class SceneController : MonoBehaviour
                     anim.enabled = false;
             }
         }
+        // Tắt GameOverManager
+        GameOverManager gom = FindAnyObjectByType<GameOverManager>();
+        if (gom != null)
+        {
+            gom.enabled = false;
+            //Debug.Log("GameOverManager has been disabled!");
+        }
 
     }
 
