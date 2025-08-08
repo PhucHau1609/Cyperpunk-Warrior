@@ -39,6 +39,9 @@ public class BombDefuseMiniGame : MonoBehaviour
     private bool gameInProgress = false;
     private bool gameWon = false;
 
+    // ✅ THÊM: Lưu trạng thái ban đầu của objectToShowAfterWin
+    private bool originalObjectState;
+
     // Animation mask
     private bool isMaskAnimating = false;
     private float maskAnimationDuration = 1f;
@@ -58,6 +61,8 @@ public class BombDefuseMiniGame : MonoBehaviour
 
         if (objectToShowAfterWin != null)
         {
+            // ✅ THÊM: Lưu trạng thái ban đầu của object
+            originalObjectState = objectToShowAfterWin.activeSelf;
             objectToShowAfterWin.SetActive(false);
         }
 
@@ -169,7 +174,7 @@ public class BombDefuseMiniGame : MonoBehaviour
         ResetGame();
 
         targetTime = Random.Range(5, 11);
-        txtTargetTime.text = "Defuse Time: " + targetTime.ToString("00") + ":00";
+        txtTargetTime.text = "Thời Gian Vô Hiệu Hoá: " + targetTime.ToString("00") + ":00";
 
         timer = 0f;
         isRunning = true;
@@ -247,18 +252,41 @@ public class BombDefuseMiniGame : MonoBehaviour
         objectToShowAfterWin.SetActive(true);
     }
 
+    // ✅ CHỈNH SỬA: ResetState() để xử lý 2 trường hợp
     public void ResetState()
     {
         gameInProgress = false;
+
+        // ✅ LOGIC MỚI: Reset objectToShowAfterWin về trạng thái ban đầu
+        // Trường hợp 1: Chưa thắng game → object vẫn ẩn (originalObjectState = false)
+        // Trường hợp 2: Đã thắng game → object cũng bị reset về trạng thái ban đầu (ẩn)
+        if (objectToShowAfterWin != null)
+        {
+            objectToShowAfterWin.SetActive(originalObjectState);
+        }
+
+        // Reset game state
         gameWon = false;
         ResetGame();
-
-        if (objectToShowAfterWin != null)
-            objectToShowAfterWin.SetActive(false);
 
         miniGamePanel.SetActive(false);
 
         if (wallShrinker != null)
             wallShrinker.ResetState();
+    }
+
+    // ✅ THÊM: Method để kiểm tra trạng thái game (optional - cho debugging)
+    public bool IsGameCompleted()
+    {
+        return gameWon;
+    }
+
+    // ✅ THÊM: Method để force reset object state (optional - cho trường hợp đặc biệt)
+    public void ForceResetObjectState()
+    {
+        if (objectToShowAfterWin != null)
+        {
+            objectToShowAfterWin.SetActive(originalObjectState);
+        }
     }
 }
