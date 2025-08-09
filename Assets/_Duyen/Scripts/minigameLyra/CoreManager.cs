@@ -20,7 +20,7 @@ public class CoreManager : MonoBehaviour
 
     public void MarkCoreAsComplete(CoreZone completedCore)
     {
-        completedCore.SetAsCompletedVisual();
+        //completedCore.SetAsCompletedVisual();
 
         currentCoreIndex++;
 
