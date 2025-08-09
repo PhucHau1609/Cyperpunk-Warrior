@@ -18748,7 +18748,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 766149125}
+      - m_Target: {fileID: 1664549012}
         m_TargetAssemblyTypeName: GameOverManager, Assembly-CSharp
         m_MethodName: Retry
         m_Mode: 1
@@ -59333,7 +59333,6 @@ GameObject:
   m_Component:
   - component: {fileID: 766149123}
   - component: {fileID: 766149124}
-  - component: {fileID: 766149125}
   m_Layer: 0
   m_Name: CodeLock
   m_TagString: Untagged
@@ -59403,20 +59402,6 @@ MonoBehaviour:
   - {fileID: 1998737811}
   - {fileID: 967145671}
   - {fileID: 1880054168}
---- !u!114 &766149125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 766149122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c37e493ebdd15f478566901e5300d9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameOverPanel: {fileID: 1596021702}
-  lyra: {fileID: 1664549010}
 --- !u!1 &767254092
 GameObject:
   m_ObjectHideFlags: 0
@@ -122666,6 +122651,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8076589499098797892, guid: 9e54e0d864dae3640bc1e9b2b0618815, type: 3}
       insertIndex: 9
       addedObject: {fileID: 1664549011}
+    - targetCorrespondingSourceObject: {fileID: 8076589499098797892, guid: 9e54e0d864dae3640bc1e9b2b0618815, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1664549012}
   m_SourcePrefab: {fileID: 100100000, guid: 9e54e0d864dae3640bc1e9b2b0618815, type: 3}
 --- !u!1 &1664549009 stripped
 GameObject:
@@ -122699,6 +122687,20 @@ MonoBehaviour:
   speed: 50
   active: 0
   triggerZoneName: Trigger_OpenDoor
+--- !u!114 &1664549012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664549009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c37e493ebdd15f478566901e5300d9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameOverPanel: {fileID: 1596021702}
+  lyra: {fileID: 1664549010}
 --- !u!1 &1669223811
 GameObject:
   m_ObjectHideFlags: 0
