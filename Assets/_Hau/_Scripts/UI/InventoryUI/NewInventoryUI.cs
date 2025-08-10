@@ -84,7 +84,7 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
     {
         this.showHide.gameObject.SetActive(false);
         this.isShowUI = false;
-
+        PlayerMovement.Instance.canMove = true;
         GameStateManager.Instance.ResetToGameplay(); // 👈 quay về trạng thái gameplay
 
         // 👉 Nếu crafting đang mở, thì tắt luôn
@@ -114,6 +114,7 @@ public class NewInventoryUI : HauSingleton<NewInventoryUI>
         if (GameStateManager.Instance.CurrentState == GameState.Paused)
             return;
 
+        PlayerMovement.Instance.canMove = false;
         WeaponSystemManager.Instance.TurnOffAllWeapon();
         GameStateManager.Instance.SetState(GameState.Inventory);
         this.isShowUI = true;
