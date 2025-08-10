@@ -66,14 +66,11 @@ public class DialogueEventTrigger : MonoBehaviour
 
     private void OnPlayerDied(object param)
     {
-        string currentScene = SceneManager.GetActiveScene().name;
+       /* string currentScene = SceneManager.GetActiveScene().name;
 
         if (currentScene == SpawnSceneName.map2level4.ToString())
         {
             deathCountAtMap2++;
-            //Thiếu logic tìm checkPointPosition
-            //var checkPoint = FindFirstObjectByType<Checkpoint>();
-
 
             if (deathCountAtMap2 == 2 && diedTwiceInMap2Dialogue != null)
             {
@@ -83,11 +80,6 @@ public class DialogueEventTrigger : MonoBehaviour
                 Debug.Log("Hien thi dialogue xong");
 
             }
-        }
+        }*/
     }
-
-    // Mở rộng thêm sự kiện khác tại đây
-    // Ví dụ:
-    // private void OnUnlockSkillDash(object param) { ... }
-    // ObserverManager.Instance.AddListener(EventID.UnlockSkill_Dash, OnUnlockSkillDash);
 }
