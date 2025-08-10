@@ -15,7 +15,7 @@ public class CraftRecipeClaimUI : MonoBehaviour
         // Nếu đã nhận rồi thì chỉ tắt panel
         if (hasClaimedReward)
         {
-            Debug.Log("Only Close Panel Craft");
+            //Debug.Log("Only Close Panel Craft");
             PanelCraft.Instance.TogglePanel();
             return;
         }

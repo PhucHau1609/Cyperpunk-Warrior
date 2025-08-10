@@ -20,7 +20,7 @@ public class InventoryTester : HauMonoBehaviour //E75 create
 
 
 
-        this.AddTestItems(ItemCode.MachineGun_0, 1);
+        //this.AddTestItems(ItemCode.MachineGun_0, 1);
         //this.AddTestItems(ItemCode.MachineGun_1, 1);
         //this.AddTestItems(ItemCode.MachineGun_3, 1);
 

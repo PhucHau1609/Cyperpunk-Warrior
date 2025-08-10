@@ -37,6 +37,13 @@ public class InventoryUIHandler : HauSingleton<InventoryUIHandler>
     public void ToggleIconWhenPlayMiniGame()
     {
         inventoryIconUI.SetActive(!gameObject.activeSelf);
+        //Debug.Log("clicked");
+    }
+
+    public void ShowIconInventory()
+    {
+        inventoryIconUI.SetActive(true);
+
     }
 }
 

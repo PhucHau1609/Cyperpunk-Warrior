@@ -2,7 +2,7 @@
 using UnityEngine.Rendering.Universal; // THÊM NÀY nếu bạn dùng Light 2D URP
 using System;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : HauSingleton<PlayerMovement>
 {
     public CharacterController2D controller;
     public Animator animator;
@@ -23,12 +23,12 @@ public class PlayerMovement : MonoBehaviour
     public bool canMove = true; // ⚠️ MỚI: Cho phép di chuyển
 
 
-    void Awake()
+    protected override void Awake()
     {
         DontDestroyOnLoad(this.gameObject); 
     }
 
-    void Start()
+    protected override void Start()
     {
         GetComponentInChildren<Animator>().SetTrigger("PlayAppear");
     }
