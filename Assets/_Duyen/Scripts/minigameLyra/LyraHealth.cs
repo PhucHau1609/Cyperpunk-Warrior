@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,9 @@ public class LyraHealth : MonoBehaviour
 
     public GameObject gameOverPanel;
     public Image healthBarUI;
+    public int CurrentHealth => currentHealth;
+
+    public event Action OnDeath;
 
     private Transform respawnPoint;
     private float displayedHealth = 1f;
@@ -61,6 +65,8 @@ public class LyraHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            OnDeath?.Invoke();
+
             deathCount++;
 
             if (deathCount >= 3)
