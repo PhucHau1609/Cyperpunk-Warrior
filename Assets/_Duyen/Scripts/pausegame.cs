@@ -61,6 +61,9 @@ public class pausegame : MonoBehaviour
             return;
         }
 
+        InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
+
+
         GameStateManager.Instance.SetState(GameState.Paused);
         AudioManager.Instance.PlayClickSFX();
         if (playerMovement != null)
@@ -96,6 +99,8 @@ public class pausegame : MonoBehaviour
     {
         GameStateManager.Instance.ResetToGameplay();
         AudioManager.Instance.PlayClickSFX();
+        InventoryUIHandler.Instance.ShowIconInventory();
+
 
         var pauseCanvasGroup = pannelpause.GetComponent<CanvasGroup>();
         if (pauseCanvasGroup == null) pauseCanvasGroup = pannelpause.AddComponent<CanvasGroup>();

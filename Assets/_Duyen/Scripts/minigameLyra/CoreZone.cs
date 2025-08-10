@@ -20,7 +20,7 @@ public class CoreZone : MonoBehaviour
     private GameObject spawnedMinigame;
 
     private bool minigameRunning = false;
-    private Image npcHealthFill;
+    private LyraHealth lyraHealth;
 
     void Start()
     {
@@ -42,9 +42,12 @@ public class CoreZone : MonoBehaviour
                 GameObject lyraObj = GameObject.FindGameObjectWithTag("NPC");
                 if (lyraObj != null)
                 {
-                    var lyraHealth = lyraObj.GetComponent<LyraHealth>();
-                    if (lyraHealth != null && lyraHealth.healthBarUI != null)
-                        npcHealthFill = lyraHealth.healthBarUI;
+                    lyraHealth = lyraObj.GetComponent<LyraHealth>();
+                    if (lyraHealth != null)
+                    {
+                        // Đăng ký sự kiện chết
+                        lyraHealth.OnDeath += HandleNpcDeath;
+                    }
                 }
 
                 // Tạo panel minigame
@@ -63,16 +66,37 @@ public class CoreZone : MonoBehaviour
                     coreManager.MarkCoreAsComplete(this);
                     ItemsDropManager.Instance.DropItem(rewardCore, 1, this.transform.position + spawnCore);
                     Destroy(spawnedMinigame);
+                    spawnedMinigame = null;
                     StartCoroutine(OpenDoorSequence());
                 };
 
                 // Bắt đầu minigame
                 minigameRunning = true;
                 minigame.StartMinigame();
-
-                // Chạy kiểm tra máu NPC
-                StartCoroutine(CheckNpcHealthWhileMinigame());
             }
+        }
+    }
+
+    private void HandleNpcDeath()
+    {
+        if (minigameRunning)
+        {
+            Debug.Log("NPC chết → thua game!");
+            minigameRunning = false;
+            Destroy(spawnedMinigame);
+            if (spawnedMinigame != null)
+            {
+                var minigame = spawnedMinigame.GetComponent<CoreMinigameController>();
+                if (minigame != null)
+                {
+                    minigame.StopMinigame();
+                }
+            }
+            spawnedMinigame = null;
+            //canBeInteracted = false;
+
+            if (lyraHealth != null)
+                lyraHealth.OnDeath -= HandleNpcDeath; // Hủy đăng ký event
         }
     }
 
@@ -114,30 +138,5 @@ public class CoreZone : MonoBehaviour
             }
         }
         
-    }
-
-    private IEnumerator CheckNpcHealthWhileMinigame()
-    {
-        while (minigameRunning)
-        {
-            if (npcHealthFill != null && npcHealthFill.fillAmount <= 0f)
-            {
-                // NPC chết → thua game
-                minigameRunning = false;
-                Debug.Log("NPC chết → thua game!");
-
-                //minigameRunning = false;
-                //canBeInteracted = false;
-                //coreManager.MarkCoreAsComplete(this);
-                Destroy(spawnedMinigame);
-                //StartCoroutine(OpenDoorSequence());
-                // Báo SceneController xử lý thua
-                //SceneController sceneController = FindAnyObjectByType<SceneController>();
-                //sceneController?.HandleGameOver();
-                //canBeInteracted = true;
-                yield break;
-            }
-            yield return null;
-        }
     }
 }

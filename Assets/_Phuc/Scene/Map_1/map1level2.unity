@@ -25411,6 +25411,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8366065140208086735, guid: 7797d851e12fd2f43bca75d315b7acbb, type: 3}
+      propertyPath: itemDropRate
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27263,6 +27267,7 @@ GameObject:
   - component: {fileID: 675961218}
   - component: {fileID: 675961217}
   - component: {fileID: 675961216}
+  - component: {fileID: 675961221}
   m_Layer: 0
   m_Name: Split Door
   m_TagString: Untagged
@@ -27421,6 +27426,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &675961221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675961215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe76d93c3ec8d9548afb8638f6155a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 50
+  maxHP: 50
+  IsImmotal: 1
 --- !u!1 &709937695
 GameObject:
   m_ObjectHideFlags: 0
@@ -53196,8 +53216,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!114 &1529081660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56632,8 +56652,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!4 &214240909017195760
 Transform:
   m_ObjectHideFlags: 0
@@ -57398,8 +57418,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!1 &3015109455835653687
 GameObject:
   m_ObjectHideFlags: 0
@@ -57819,8 +57839,8 @@ MonoBehaviour:
         byteData: 
         byteDataArray: 
       Version: 
-  gizmoViewMode: 0
-  showBehaviorDesignerGizmo: 0
+  gizmoViewMode: 2
+  showBehaviorDesignerGizmo: 1
 --- !u!61 &4799078588205881897
 BoxCollider2D:
   m_ObjectHideFlags: 0
