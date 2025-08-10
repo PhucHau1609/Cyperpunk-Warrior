@@ -7,6 +7,11 @@ public class Treasure : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject bombPrefab;
 
+    // --- Thêm biến tỉ lệ vào đây ---
+    [Header("Item Drop Rate")]
+    [Range(0, 1)] // Giúp bạn dễ dàng kéo thanh trượt trong Inspector từ 0 đến 1
+    [SerializeField] private float itemDropRate = 0.5f;
+
     [Header("Spawn Positions")]
     [SerializeField] private Transform spawnLeft;
     [SerializeField] private Transform spawnRight;
@@ -40,9 +45,9 @@ public class Treasure : MonoBehaviour
     // Gọi từ cuối animation Chest_Open
     public void OnChestOpened()
     {
-        bool isBombReward = Random.value > 0.5f;
+        bool isItemReward = Random.value >= itemDropRate;
 
-        if (isBombReward)
+        if (isItemReward)
         {
             SpawnBombs();
         }
@@ -51,25 +56,6 @@ public class Treasure : MonoBehaviour
             SpawnEnergyCore();
         }
     }
-
-    /* private void SpawnBombs()
-     {
-         // Spawn bomb 1 bên trái
-         ItemsDropCtrl bomb1 = ItemsDropManager.Instance.DropItemObject(ItemCode.Bomb_0, 1, spawnLeft.position);
-         if (bomb1 != null && bomb1.Rigidbody != null)
-         {
-             bomb1.Rigidbody.AddForce(leftForce, ForceMode2D.Impulse);
-         }
-
-         // Spawn bomb 2 bên phải
-         ItemsDropCtrl bomb2 = ItemsDropManager.Instance.DropItemObject(ItemCode.Bomb_0, 1, spawnRight.position);
-         if (bomb2 != null && bomb2.Rigidbody != null)
-         {
-             bomb2.Rigidbody.AddForce(rightForce, ForceMode2D.Impulse);
-         }
-     }*/
-
-
     private void SpawnBombs()
     {
         GameObject bomb1 = Instantiate(bombPrefab, spawnLeft.position, Quaternion.identity);
