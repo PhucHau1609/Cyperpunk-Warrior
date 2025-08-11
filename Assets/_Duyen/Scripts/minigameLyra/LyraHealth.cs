@@ -99,7 +99,7 @@ public class LyraHealth : MonoBehaviour
             gameOverPanel.SetActive(false);
         }
         
-        // Gọi CheckpointManager để restart mini game
+        // QUAN TRỌNG: Chỉ gọi RestartMiniGame, không gọi RespawnPlayer
         if (CheckpointManager.Instance != null)
         {
             CheckpointManager.Instance.RestartMiniGame();
