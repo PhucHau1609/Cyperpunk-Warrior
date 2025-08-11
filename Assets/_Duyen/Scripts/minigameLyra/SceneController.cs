@@ -17,14 +17,13 @@ public class SceneController : MonoBehaviour
     private Animator playerAnimator;
     private NavMeshAgent petAgent;
 
-
     public List<GameObject> objectsToDisableOnReturn;
     public List<GameObject> animatorObjectsToDisable;
 
-    //private bool hasStarted = false;
-
     public UnityEvent onReturnToPlayer;
 
+    // Lưu trữ trạng thái ban đầu cho restart mini game
+    private bool wasInMiniGame = false;
 
     void Start()
     {
@@ -72,6 +71,8 @@ public class SceneController : MonoBehaviour
     // Gọi hàm này từ TriggerZone
     public void SwitchToPetControl()
     {
+        wasInMiniGame = true;
+        
         GameStateManager.Instance.SetState(GameState.MiniGame);
         InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
 
@@ -106,6 +107,70 @@ public class SceneController : MonoBehaviour
             col.isTrigger = false; 
     }
 
+    // Method mới để restart mini game
+    public void RestartMiniGame()
+    {
+        Debug.Log("[SceneController] Restarting mini game...");
+        
+        // QUAN TRỌNG: Đảm bảo tắt Game Over Panel trước
+        LyraHealth lyraHealth = pet.GetComponent<LyraHealth>();
+        if (lyraHealth != null && lyraHealth.gameOverPanel != null)
+        {
+            lyraHealth.gameOverPanel.SetActive(false);
+        }
+        
+        // QUAN TRỌNG: Reset về player control trước, sau đó mới switch sang pet control
+        if (wasInMiniGame)
+        {
+            // Force return to player first to reset state
+            ReturnControlToPlayer();
+            wasInMiniGame = false;
+        }
+        
+        // Đợi 1 frame để đảm bảo state được reset
+        StartCoroutine(DelayedSwitchToPetControl());
+    }
+    
+    // Coroutine để delay việc switch sang pet control
+    private System.Collections.IEnumerator DelayedSwitchToPetControl()
+    {
+        yield return null; // Đợi 1 frame
+        
+        Debug.Log("[SceneController] Switching to pet control after reset...");
+        SwitchToPetControl();
+        
+        Debug.Log("[SceneController] Mini game restart completed");
+    }
+
+    // Method để reset các objects trong mini game về trạng thái ban đầu
+    private void ResetMiniGameObjects()
+    {
+        // Bật lại các objects đã bị tắt
+        foreach (GameObject obj in objectsToDisableOnReturn)
+        {
+            if (obj != null)
+                obj.SetActive(true);
+        }
+        
+        // Bật lại các animators đã bị tắt
+        foreach (GameObject obj in animatorObjectsToDisable)
+        {
+            if (obj != null)
+            {
+                Animator anim = obj.GetComponent<Animator>();
+                if (anim != null)
+                    anim.enabled = true;
+            }
+        }
+        
+        // Bật lại GameOverManager nếu có
+        GameOverManager gom = FindAnyObjectByType<GameOverManager>();
+        if (gom != null)
+        {
+            gom.enabled = true;
+        }
+    }
+
     public void OnPetTouchedSwitch()
     {
         petControl.enabled = false;
@@ -129,6 +194,8 @@ public class SceneController : MonoBehaviour
 
     public void ReturnControlToPlayer()
     {
+        wasInMiniGame = false;
+        
         GameStateManager.Instance.ResetToGameplay();
         InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
         player.SetCanMove(true);
@@ -192,7 +259,11 @@ public class SceneController : MonoBehaviour
             gom.enabled = false;
             //Debug.Log("GameOverManager has been disabled!");
         }
-
     }
 
+    // Method để check xem có đang trong mini game không
+    public bool IsInMiniGame()
+    {
+        return wasInMiniGame && petControl != null && petControl.enabled;
+    }
 }

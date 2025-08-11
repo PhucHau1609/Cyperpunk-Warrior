@@ -12,6 +12,9 @@ namespace DialogueSystem
 
         private Coroutine dialogueCoroutine;
         private bool isSkipped = false;
+        private bool wasPlayerAbleToMove = true;
+        [SerializeField] private PlayerMovement playerMovement;
+        [SerializeField] private PlayerMovement2 playerMovement2;
 
         private void OnEnable()
         {
@@ -24,6 +27,21 @@ namespace DialogueSystem
         private void Awake()
         {
             dialogueCoroutine = StartCoroutine(dialogueSequence());
+            if (playerMovement == null)
+            playerMovement = FindFirstObjectByType<PlayerMovement>();
+            if (playerMovement != null)
+            {
+                wasPlayerAbleToMove = playerMovement.canMove;
+                playerMovement.SetCanMove(false);
+            }
+
+            if (playerMovement2 == null)
+                playerMovement2 = FindFirstObjectByType<PlayerMovement2>();
+            if (playerMovement2 != null)
+            {
+                wasPlayerAbleToMove = playerMovement2.canMove;
+                playerMovement2.SetCanMove(false);
+            }
         }
 
         private void Update()
@@ -57,6 +75,16 @@ namespace DialogueSystem
             {
                 miniGame.SetActive(true);
             }
+
+            if (playerMovement != null)
+            {
+                playerMovement.SetCanMove(wasPlayerAbleToMove);
+            }
+
+            if (playerMovement2 != null)
+            {
+                playerMovement2.SetCanMove(wasPlayerAbleToMove);
+            }
             GameStateManager.Instance.ResetToGameplay();
         }
 
@@ -74,6 +102,16 @@ namespace DialogueSystem
             if (nextTimeline != null)
             {
                 nextTimeline.Play();
+            }
+
+            if (playerMovement != null)
+            {
+                playerMovement.SetCanMove(wasPlayerAbleToMove);
+            }
+
+            if (playerMovement2 != null)
+            {
+                playerMovement2.SetCanMove(wasPlayerAbleToMove);
             }
             GameStateManager.Instance.ResetToGameplay();
         }
