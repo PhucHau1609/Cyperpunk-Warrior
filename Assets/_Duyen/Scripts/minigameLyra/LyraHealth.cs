@@ -24,6 +24,10 @@ public class LyraHealth : MonoBehaviour
     private static readonly int HitBlendID = Shader.PropertyToID("_HitEffectBlend");
     private static readonly int HitColorID = Shader.PropertyToID("_HitColor");
 
+    // Thêm reference đến CheckpointManager để restart mini game
+    [Header("Mini Game Restart")]
+    public Button restartButton; // Gán button "Chơi lại" từ Game Over Panel
+
     void Start()
     {
         // Tắt nếu không phải map điều khiển NPC
@@ -49,9 +53,61 @@ public class LyraHealth : MonoBehaviour
 
         TryFindRespawnPoint();
 
+        // Setup restart button
+        SetupRestartButton();
+
         // Chớp trắng lúc khởi tạo
         if (mat != null)
             StartCoroutine(FlashTwice(Color.white));
+    }
+
+    // Method để setup restart button
+    private void SetupRestartButton()
+    {
+        if (restartButton != null)
+        {
+            restartButton.onClick.RemoveAllListeners(); // Clear existing listeners
+            restartButton.onClick.AddListener(RestartMiniGame);
+        }
+        else if (gameOverPanel != null)
+        {
+            // Tự động tìm button "Restart" trong Game Over Panel
+            Button[] buttons = gameOverPanel.GetComponentsInChildren<Button>();
+            foreach (var button in buttons)
+            {
+                if (button.name.ToLower().Contains("restart") || 
+                    button.name.ToLower().Contains("retry") ||
+                    button.name.ToLower().Contains("playagain"))
+                {
+                    restartButton = button;
+                    restartButton.onClick.RemoveAllListeners();
+                    restartButton.onClick.AddListener(RestartMiniGame);
+                    break;
+                }
+            }
+        }
+    }
+
+    // Method để restart mini game
+    private void RestartMiniGame()
+    {
+        Debug.Log("[LyraHealth] Restart button clicked - calling CheckpointManager.RestartMiniGame()");
+        
+        // Tắt Game Over Panel
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
+        
+        // Gọi CheckpointManager để restart mini game
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.RestartMiniGame();
+        }
+        else
+        {
+            Debug.LogError("[LyraHealth] CheckpointManager.Instance is null!");
+        }
     }
 
     public void TakeDamage(int amount)
@@ -72,7 +128,10 @@ public class LyraHealth : MonoBehaviour
             if (deathCount >= 3)
             {
                 if (gameOverPanel != null)
+                {
                     gameOverPanel.SetActive(true);
+                    Debug.Log("[LyraHealth] Game Over Panel activated - 3 deaths reached");
+                }
                 return;
             }
 
@@ -145,19 +204,33 @@ public class LyraHealth : MonoBehaviour
         }
     }
 
+    // Method được cải tiến để reset cho mini game
     public void ResetLyra()
     {
+        Debug.Log("[LyraHealth] Resetting Lyra for mini game restart");
+        
         deathCount = 0;
         currentHealth = maxHealth;
+        displayedHealth = 1f;
 
         if (respawnPoint != null)
             transform.position = respawnPoint.position;
 
         if (healthBarUI != null)
+        {
             healthBarUI.fillAmount = 1f;
+            healthBarUI.gameObject.SetActive(true); // Đảm bảo health bar được hiển thị
+        }
+
+        // Tắt Game Over Panel nếu đang hiển thị
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
 
         if (mat != null)
             StartCoroutine(FlashTwice(Color.white));
+            
+        Debug.Log("[LyraHealth] Lyra reset completed - Health: " + currentHealth + "/" + maxHealth + ", Deaths: " + deathCount);
     }
-
 }

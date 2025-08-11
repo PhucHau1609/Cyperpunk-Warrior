@@ -55,6 +55,9 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
 
     void Awake()
     {
+        // Khởi tạo components ngay trong Awake để đảm bảo luôn có sẵn
+        InitializeComponents();
+        
         damageReceiver = GetComponent<BossPhuDamageReceiver>();
 
         if (audioSource == null)
@@ -67,6 +70,17 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
         }
 
         SetupAudioSource();
+    }
+    
+    // Method để khởi tạo components
+    private void InitializeComponents()
+    {
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+        if (animator == null)
+            animator = GetComponent<Animator>();
+        if (behaviorTree == null)
+            behaviorTree = GetComponent<BehaviorTree>();
     }
 
     void SetupAudioSource()
@@ -107,10 +121,8 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
 
     void InitializeBoss()
     {
-        // Get components
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        behaviorTree = GetComponent<BehaviorTree>();
+        // Đảm bảo components được khởi tạo
+        InitializeComponents();
 
         damageReceiver = GetComponent<BossPhuDamageReceiver>();
 
@@ -118,7 +130,8 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
         FindPlayer();
 
         // Freeze rotation
-        rb.freezeRotation = true;
+        if (rb != null)
+            rb.freezeRotation = true;
     }
 
     void FindPlayer()
@@ -167,23 +180,26 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
     void CheckRunningState()
     {
         // Kiểm tra nếu Boss đang chạy dựa trên velocity
-        bool wasRunning = isRunning;
-        isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && !isAttacking && !isDead;
+        if (rb != null)
+        {
+            bool wasRunning = isRunning;
+            isRunning = Mathf.Abs(rb.linearVelocity.x) > 0.1f && !isAttacking && !isDead;
 
-        // Xử lý âm thanh chạy
-        if (isRunning && !runningAudioPlaying)
-        {
-            PlayRunningSound();
-        }
-        else if (!isRunning && runningAudioPlaying)
-        {
-            StopRunningSound();
+            // Xử lý âm thanh chạy
+            if (isRunning && !runningAudioPlaying)
+            {
+                PlayRunningSound();
+            }
+            else if (!isRunning && runningAudioPlaying)
+            {
+                StopRunningSound();
+            }
         }
     }
 
     void CheckPhaseChange()
     {
-        if (damageReceiver.CurrentHP <= damageReceiver.MaxHP * 0.5f && !hasChangedPhase)
+        if (damageReceiver != null && damageReceiver.CurrentHP <= damageReceiver.MaxHP * 0.5f && !hasChangedPhase)
         {
             hasChangedPhase = true;
             StartPhaseChange();
@@ -202,9 +218,13 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
     public void StartPhaseChange()
     {
         isAttacking = true;
-        rb.linearVelocity = Vector2.zero;
-        animator.SetBool("IsRunning", false);
-        animator.SetTrigger("PhaseChange");
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+        if (animator != null)
+        {
+            animator.SetBool("IsRunning", false);
+            animator.SetTrigger("PhaseChange");
+        }
 
         PlaySound(phaseChangeSound);
 
@@ -289,13 +309,13 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
     public void OnDamageReceived()
     {
         // Cập nhật thanh máu
-        if (healthBar != null)
+        if (healthBar != null && damageReceiver != null)
         {
             healthBar.ShowHealthBar(damageReceiver.CurrentHP);
         }
 
         // Xử lý khi bị thương (nếu chưa chết)
-        if (!damageReceiver.IsDead())
+        if (damageReceiver != null && !damageReceiver.IsDead())
         {
             OnHurt();
         }
@@ -305,7 +325,8 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
     {
         if (currentState == State.Dead) return;
 
-        animator.SetTrigger("Hurt");
+        if (animator != null)
+            animator.SetTrigger("Hurt");
         CameraFollow.Instance?.ShakeCamera();
 
         PlaySound(hurtSound);
@@ -323,12 +344,19 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
         // Phát âm thanh chết
         PlaySound(deathSound);
 
-        animator.SetTrigger("Death");
+        if (animator != null)
+            animator.SetTrigger("Death");
         currentState = State.Dead;
-        rb.linearVelocity = Vector2.zero;
-        rb.bodyType = RigidbodyType2D.Static;
-        rb.angularVelocity = 0f;
-        GetComponent<Collider2D>().enabled = false;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.bodyType = RigidbodyType2D.Static;
+            rb.angularVelocity = 0f;
+        }
+        
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
         this.enabled = false;
 
         if (bossManager != null)
@@ -355,64 +383,102 @@ public class BossPhuController : MonoBehaviour, IDamageResponder, IBossResettabl
 
     public void ResetBoss()
     {
-        // Reset trạng thái
-        isDead = false;
-        isPhase2 = false;
-        hasChangedPhase = false;
-        isAttacking = false;
-        playerDetected = false;
-        currentState = State.Idle;
-        lastAttackTime = 0f;
+        Debug.Log($"[BossPhuController] Starting reset for {gameObject.name}");
         
-        // Reset vị trí và scale
-        if (initialDataSaved)
+        try
         {
-            transform.position = initialPosition;
-            transform.localScale = initialScale;
+            // Đảm bảo components được khởi tạo trước khi sử dụng
+            InitializeComponents();
+            
+            // Reset trạng thái
+            isDead = false;
+            isPhase2 = false;
+            hasChangedPhase = false;
+            isAttacking = false;
+            playerDetected = false;
+            currentState = State.Idle;
+            lastAttackTime = 0f;
+            
+            // Reset vị trí và scale
+            if (initialDataSaved)
+            {
+                transform.position = initialPosition;
+                transform.localScale = initialScale;
+            }
+            
+            // Reset physics với null checks
+            if (rb != null)
+            {
+                rb.bodyType = RigidbodyType2D.Dynamic;
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+                rb.freezeRotation = true;
+            }
+            else
+            {
+                Debug.LogWarning($"[BossPhuController] Rigidbody2D is null for {gameObject.name}");
+            }
+            
+            // Bật lại collider và script
+            Collider2D col = GetComponent<Collider2D>();
+            if (col != null)
+                col.enabled = true;
+            this.enabled = true;
+            
+            // Reset animator với null checks
+            if (animator != null)
+            {
+                animator.ResetTrigger("Death");
+                animator.ResetTrigger("Hurt");
+                animator.ResetTrigger("PhaseChange");
+                animator.SetBool("IsRunning", false);
+            }
+            else
+            {
+                Debug.LogWarning($"[BossPhuController] Animator is null for {gameObject.name}");
+            }
+            
+            // Reset máu
+            if (damageReceiver != null)
+            {
+                damageReceiver.ResetBossHealth();
+            }
+            
+            // Reset health bar
+            if (healthBar != null)
+            {
+                healthBar.ShowHealthBar(1f);
+            }
+            
+            // Reset behavior tree với null checks
+            if (behaviorTree != null)
+            {
+                behaviorTree.EnableBehavior();
+                behaviorTree.RestartWhenComplete = true;
+            }
+            else
+            {
+                // Thử tìm lại nếu null
+                behaviorTree = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+                if (behaviorTree != null)
+                {
+                    behaviorTree.EnableBehavior();
+                    behaviorTree.RestartWhenComplete = true;
+                }
+            }
+            
+            // Reset audio
+            StopAllSounds();
+            
+            // Tìm lại player
+            FindPlayer();
+            
+            Debug.Log($"[BossPhuController] Reset completed for {gameObject.name}");
         }
-        
-        // Reset physics
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.linearVelocity = Vector2.zero;
-        rb.angularVelocity = 0f;
-        rb.freezeRotation = true;
-        
-        // Bật lại collider và script
-        GetComponent<Collider2D>().enabled = true;
-        this.enabled = true;
-        
-        // Reset animator
-        animator.ResetTrigger("Death");
-        animator.ResetTrigger("Hurt");
-        animator.ResetTrigger("PhaseChange");
-        animator.SetBool("IsRunning", false);
-        
-        // Reset máu
-        if (damageReceiver != null)
+        catch (System.Exception e)
         {
-            damageReceiver.ResetBossHealth();
+            Debug.LogError($"[BossPhuController] Error during reset for {gameObject.name}: {e.Message}");
         }
-        
-        // Reset health bar
-        if (healthBar != null)
-        {
-            healthBar.ShowHealthBar(1f);
-        }
-        
-        // Reset behavior tree
-        var behavior = GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
-        if (behavior != null) 
-        {
-            behavior.EnableBehavior();
-            behavior.RestartWhenComplete = true;
-        }
-        
-        // Reset audio
-        StopAllSounds();
-        
-        // Tìm lại player
-        FindPlayer();
-
     }
 
     private void PlaySound(AudioClip clip)

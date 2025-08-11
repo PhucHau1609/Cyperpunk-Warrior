@@ -24,6 +24,127 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         lastCheckpointScene = sceneName;
     }
 
+    // Method mới để restart mini game
+    public void RestartMiniGame()
+    {
+        Debug.Log("[CheckpointManager] ========== STARTING MINI GAME RESTART ==========");
+        
+        // QUAN TRỌNG: Reset theo thứ tự để tránh trigger hoàn thành
+        
+        // 1. Tìm và force stop bất kỳ mini game nào đang chạy
+        SceneController sceneController = FindFirstObjectByType<SceneController>();
+        if (sceneController != null && sceneController.IsInMiniGame())
+        {
+            Debug.Log("[CheckpointManager] Force stopping current mini game...");
+            sceneController.ReturnControlToPlayer();
+        }
+        
+        // 2. Reset Lyra health và position trước
+        ResetLyraForMiniGame();
+        
+        // 3. Reset các obstacles và traps trước
+        ResetMiniGameObstacles();
+        
+        // 4. Reset CoreManager sau cùng
+        CoreManager coreManager = FindFirstObjectByType<CoreManager>();
+        if (coreManager != null)
+        {
+            Debug.Log("[CheckpointManager] Resetting CoreManager...");
+            coreManager.ResetCoreManager();
+        }
+        
+        // 5. Reset các triggers và combat zones
+        ResetTriggersInCurrentScene();
+        ResetAllCombatZones();
+        
+        // 6. Đợi 1 frame rồi mới restart mini game
+        StartCoroutine(DelayedRestartMiniGame(sceneController));
+    }
+    
+    // Coroutine để delay restart mini game
+    private System.Collections.IEnumerator DelayedRestartMiniGame(SceneController sceneController)
+    {
+        yield return null; // Đợi 1 frame để đảm bảo tất cả reset xong
+        
+        Debug.Log("[CheckpointManager] Starting delayed mini game restart...");
+        
+        if (sceneController != null)
+        {
+            sceneController.RestartMiniGame();
+            Debug.Log("[CheckpointManager] Mini game restarted via SceneController");
+        }
+        else
+        {
+            Debug.LogWarning("[CheckpointManager] No SceneController found for mini game restart!");
+        }
+        
+        Debug.Log("[CheckpointManager] ========== MINI GAME RESTART COMPLETED ==========");
+    }
+
+    // Method để reset Lyra về trạng thái ban đầu cho mini game
+    private void ResetLyraForMiniGame()
+    {
+        LyraHealth lyraHealth = FindFirstObjectByType<LyraHealth>();
+        if (lyraHealth != null)
+        {
+            lyraHealth.ResetLyra();
+            Debug.Log("[CheckpointManager] Lyra health reset for mini game");
+        }
+        
+        // Reset position của pet về vị trí spawn point
+        FloatingFollower pet = FindFirstObjectByType<FloatingFollower>();
+        if (pet != null)
+        {
+            GameObject spawnPoint = GameObject.FindGameObjectWithTag("spw");
+            if (spawnPoint != null)
+            {
+                pet.transform.position = spawnPoint.transform.position;
+            }
+        }
+    }
+
+    // Method để reset các obstacles trong mini game
+    private void ResetMiniGameObstacles()
+    {
+        Debug.Log("[CheckpointManager] Resetting mini game obstacles...");
+        
+        // QUAN TRỌNG: Reset Core Zones trước để đảm bảo chúng về trạng thái ban đầu
+        CoreZone[] coreZones = FindObjectsByType<CoreZone>(FindObjectsSortMode.None);
+        foreach (var core in coreZones)
+        {
+            if (core != null)
+            {
+                core.ResetCoreForMiniGame();
+            }
+        }
+        
+        // Reset Laser Traps
+        LaserManagerTrap[] laserTraps = Object.FindObjectsByType<LaserManagerTrap>(FindObjectsSortMode.None);
+        foreach (var trap in laserTraps)
+        {
+            trap.ResetTrap();
+        }
+
+        // Reset Falling Blocks
+        FallingBlockManager.ResetAllBlocks();
+
+        // Reset Laser Activators
+        LaserActivator[] activators = Object.FindObjectsByType<LaserActivator>(FindObjectsSortMode.None);
+        foreach (var activator in activators)
+        {
+            activator.ResetTrigger();
+        }
+        
+        // Reset Bomb Defuse Mini Games
+        BombDefuseMiniGame[] allMiniGames = Object.FindObjectsByType<BombDefuseMiniGame>(FindObjectsSortMode.None);
+        foreach (var miniGame in allMiniGames)
+        {
+            miniGame.ResetState();
+        }
+        
+        Debug.Log("[CheckpointManager] Mini game obstacles reset completed");
+    }
+
     public void RespawnPlayer(GameObject player)
     {
         string currentScene = SceneManager.GetActiveScene().name;
@@ -36,6 +157,9 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         }
         else
         {
+            // QUAN TRỌNG: Reset Combat Zones TRƯỚC để đảm bảo boss có thể được kích hoạt lại
+            ResetAllCombatZones();
+            
             // Reset bosses trong scene hiện tại (nếu có)
             if (enableBossReset)
             {
@@ -215,11 +339,10 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             controller.RestoreFullLife();
         }
         
-        // Reset Combat Zones first (this will deactivate all bosses)
-        ResetAllCombatZones();
+        // QUAN TRỌNG: Không gọi ResetAllCombatZones ở đây nữa vì đã gọi trong RespawnPlayer
         
         // Reset triggers (but DON'T trigger warning automatically)
-        ResetTriggersInCurrentScene();
+        // ResetTriggersInCurrentScene(); // Đã gọi trong RespawnPlayer
         
         // NOTE: Không gọi warning ở đây nữa, để Combat Zone tự quản lý
 
@@ -247,6 +370,9 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         {
             activator.ResetTrigger();
         }
+        
+        // THÊM: Kiểm tra và reset SceneController nếu có mini game đang chạy
+        ResetMiniGameIfActive();
     }
     
     // Method để reset tất cả Combat Zones
@@ -264,53 +390,18 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             }
         }
         
+        // QUAN TRỌNG: Reset cả BossWarningManager để đảm bảo warning có thể trigger lại
+        BossWarningManager warningManager = FindFirstObjectByType<BossWarningManager>();
+        if (warningManager != null)
+        {
+            // Reset warning manager để có thể trigger lại warning khi vào combat zone
+            Debug.Log("[CheckpointManager] Reset BossWarningManager for respawn");
+        }
+        
         if (resetCount > 0)
         {
             Debug.Log($"[CheckpointManager] Reset {resetCount} Combat Zone(s)");
         }
-    }
-    
-    // Method để đảm bảo tất cả boss scripts bị tắt sau respawn
-    private void DisableAllBossScripts()
-    {
-        // Tắt tất cả MiniBoss
-        MiniBoss[] miniBosses = FindObjectsByType<MiniBoss>(FindObjectsSortMode.None);
-        foreach (var miniBoss in miniBosses)
-        {
-            if (miniBoss != null)
-            {
-                miniBoss.enabled = false;
-                
-                // Tắt damage receiver
-                MiniBossDamageReceiver damageReceiver = miniBoss.GetComponent<MiniBossDamageReceiver>();
-                if (damageReceiver != null)
-                {
-                    damageReceiver.enabled = false;
-                }
-                
-                // Set Rigidbody về Static
-                Rigidbody2D rb = miniBoss.GetComponent<Rigidbody2D>();
-                if (rb != null)
-                {
-                    rb.bodyType = RigidbodyType2D.Static;
-                    rb.linearVelocity = Vector2.zero;
-                }
-            }
-        }
-        
-        // Tắt tất cả boss controller khác (nếu có)
-        MonoBehaviour[] allBossControllers = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
-        foreach (var controller in allBossControllers)
-        {
-            if (controller.GetType().Name.Contains("Boss") && 
-                !controller.GetType().Name.Contains("Manager") &&
-                !(controller is MiniBoss))
-            {
-                controller.enabled = false;
-            }
-        }
-        
-        Debug.Log("[CheckpointManager] All boss scripts disabled after respawn");
     }
 
     private void LoadSceneWithCleanup(string sceneName, GameObject player)
@@ -395,6 +486,26 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
                 {
                     Debug.LogWarning($"[CheckpointManager] Failed to reset spawner {spawner.name}: {e.Message}");
                 }
+            }
+        }
+    }
+    
+    // Method mới để reset mini game nếu đang active
+    private void ResetMiniGameIfActive()
+    {
+        SceneController sceneController = FindFirstObjectByType<SceneController>();
+        if (sceneController != null && sceneController.IsInMiniGame())
+        {
+            Debug.Log("[CheckpointManager] Mini game was active during respawn - resetting to normal gameplay");
+            
+            // Force return to normal gameplay
+            sceneController.ReturnControlToPlayer();
+            
+            // Reset Lyra health để đảm bảo không còn game over panel
+            LyraHealth lyraHealth = FindFirstObjectByType<LyraHealth>();
+            if (lyraHealth != null)
+            {
+                lyraHealth.ResetLyra();
             }
         }
     }

@@ -170,10 +170,18 @@ public class BossWarningManager : MonoBehaviour
         // Run warning + zoom (no dialogue)
         yield return StartCoroutine(WarningAndZoomSequence());
         
-        // Activate bosses in the current zone
+        // Activate bosses or mini game in the current zone
         if (currentCombatZone != null)
         {
-            currentCombatZone.ActivateBosses();
+            // QUAN TRỌNG: Kiểm tra nếu là mini game zone
+            if (currentCombatZone.isMiniGameZone)
+            {
+                TriggerMiniGameInZone();
+            }
+            else
+            {
+                currentCombatZone.ActivateBosses();
+            }
         }
         
         Debug.Log("[BossWarningManager] Respawn zone warning sequence completed");
@@ -189,15 +197,40 @@ public class BossWarningManager : MonoBehaviour
         // Show dialogue
         yield return StartCoroutine(DialogueSequence());
         
-        // Activate bosses in the current zone
+        // Activate bosses or mini game in the current zone
         if (currentCombatZone != null)
         {
-            currentCombatZone.ActivateBosses();
+            // QUAN TRỌNG: Kiểm tra nếu là mini game zone
+            if (currentCombatZone.isMiniGameZone)
+            {
+                TriggerMiniGameInZone();
+            }
+            else
+            {
+                currentCombatZone.ActivateBosses();
+            }
         }
         else
         {
             // Fallback: Enable all bosses in list
             EnableAllBosses();
+        }
+    }
+    
+    // Method mới để trigger mini game trong zone
+    private void TriggerMiniGameInZone()
+    {
+        Debug.Log("[BossWarningManager] Triggering mini game in zone");
+        
+        SceneController sceneController = FindFirstObjectByType<SceneController>();
+        if (sceneController != null)
+        {
+            sceneController.SwitchToPetControl();
+            Debug.Log("[BossWarningManager] Mini game activated via SceneController");
+        }
+        else
+        {
+            Debug.LogWarning("[BossWarningManager] SceneController not found for mini game activation");
         }
     }
     

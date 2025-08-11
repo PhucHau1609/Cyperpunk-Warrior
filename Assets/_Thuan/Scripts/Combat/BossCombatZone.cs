@@ -38,6 +38,9 @@ public class BossCombatZone : MonoBehaviour
     public bool enableWarningOnFirstEntry = true;
     public BossWarningManager warningManager;
     
+    [Header("Mini Game Integration")]
+    public bool isMiniGameZone = false; // Đánh dấu zone này có mini game
+    
     private bool playerInZone = false;
     private bool hasTriggeredWarningBefore = false;
     private Transform playerTransform;
@@ -152,6 +155,15 @@ public class BossCombatZone : MonoBehaviour
     {
         Debug.Log($"[BossCombatZone] Player entered {zoneName}");
         
+        // QUAN TRỌNG: Nếu là mini game zone và đang ở respawn state, kích hoạt mini game
+        if (isMiniGameZone && hasBeenEnteredAfterRespawn)
+        {
+            Debug.Log("[BossCombatZone] Mini game zone entered after respawn - activating mini game");
+            TriggerMiniGameAfterRespawn();
+            hasBeenEnteredAfterRespawn = false;
+            return;
+        }
+        
         // Check if this is first time entry or entry after respawn
         if (enableWarningOnFirstEntry && !hasTriggeredWarningBefore)
         {
@@ -165,14 +177,48 @@ public class BossCombatZone : MonoBehaviour
         }
         else
         {
-            // Already triggered before - immediately activate bosses
-            ActivateBosses();
+            // Already triggered before - immediately activate bosses or mini game
+            if (isMiniGameZone)
+            {
+                TriggerMiniGame();
+            }
+            else
+            {
+                ActivateBosses();
+            }
         }
         
         hasBeenEnteredAfterRespawn = false; // Reset flag
         
         OnPlayerEnterZone?.Invoke();
         OnZoneActivated?.Invoke(this);
+    }
+    
+    // Method mới để trigger mini game sau respawn
+    private void TriggerMiniGameAfterRespawn()
+    {
+        SceneController sceneController = FindFirstObjectByType<SceneController>();
+        if (sceneController != null)
+        {
+            // Trigger mini game ngay lập tức không cần warning
+            sceneController.SwitchToPetControl();
+            Debug.Log("[BossCombatZone] Mini game activated after respawn");
+        }
+        else
+        {
+            Debug.LogWarning("[BossCombatZone] SceneController not found for mini game activation");
+        }
+    }
+    
+    // Method mới để trigger mini game bình thường
+    private void TriggerMiniGame()
+    {
+        SceneController sceneController = FindFirstObjectByType<SceneController>();
+        if (sceneController != null)
+        {
+            sceneController.SwitchToPetControl();
+            Debug.Log("[BossCombatZone] Mini game activated");
+        }
     }
     
     private void TriggerWarningSequence()
@@ -186,8 +232,15 @@ public class BossCombatZone : MonoBehaviour
         }
         else
         {
-            // Fallback: directly activate bosses after delay
-            Invoke(nameof(ActivateBosses), 3f);
+            // Fallback: directly activate bosses or mini game after delay
+            if (isMiniGameZone)
+            {
+                Invoke(nameof(TriggerMiniGame), 3f);
+            }
+            else
+            {
+                Invoke(nameof(ActivateBosses), 3f);
+            }
         }
     }
     
@@ -202,8 +255,15 @@ public class BossCombatZone : MonoBehaviour
         }
         else
         {
-            // Fallback: directly activate bosses after shorter delay  
-            Invoke(nameof(ActivateBosses), 2f);
+            // Fallback: directly activate bosses or mini game after shorter delay  
+            if (isMiniGameZone)
+            {
+                Invoke(nameof(TriggerMiniGame), 2f);
+            }
+            else
+            {
+                Invoke(nameof(ActivateBosses), 2f);
+            }
         }
     }
     
@@ -211,7 +271,20 @@ public class BossCombatZone : MonoBehaviour
     {
         Debug.Log($"[BossCombatZone] Player exited {zoneName}");
         
-        DeactivateBosses();
+        // Nếu là mini game zone, return control về player
+        if (isMiniGameZone)
+        {
+            SceneController sceneController = FindFirstObjectByType<SceneController>();
+            if (sceneController != null && sceneController.IsInMiniGame())
+            {
+                sceneController.ReturnControlToPlayer();
+                Debug.Log("[BossCombatZone] Player exited mini game zone - returning control");
+            }
+        }
+        else
+        {
+            DeactivateBosses();
+        }
         
         OnPlayerExitZone?.Invoke();
         OnZoneDeactivated?.Invoke(this);
@@ -219,6 +292,13 @@ public class BossCombatZone : MonoBehaviour
     
     public void ActivateBosses()
     {
+        // Nếu là mini game zone, trigger mini game thay vì activate bosses
+        if (isMiniGameZone)
+        {
+            TriggerMiniGame();
+            return;
+        }
+        
         foreach (var boss in bossControllers)
         {
             if (boss != null)
@@ -442,19 +522,39 @@ public class BossCombatZone : MonoBehaviour
         playerInZone = false;
         hasBeenEnteredAfterRespawn = true; // Mark that this zone will be entered after respawn
         
-        // Reset all bosses in zone
+        Debug.Log($"[BossCombatZone] Resetting zone: {zoneName}, isMiniGameZone: {isMiniGameZone}");
+        
+        // QUAN TRỌNG: Nếu là mini game zone, đảm bảo player control được return
+        if (isMiniGameZone)
+        {
+            SceneController sceneController = FindFirstObjectByType<SceneController>();
+            if (sceneController != null && sceneController.IsInMiniGame())
+            {
+                sceneController.ReturnControlToPlayer();
+                Debug.Log("[BossCombatZone] Returned control to player during zone reset");
+            }
+        }
+        
+        // Reset all bosses in zone with null checks
         foreach (var boss in bossControllers)
         {
             if (boss != null)
             {
-                // Reset boss state if implements IBossResettable
-                if (boss is IBossResettable resettable)
+                try
                 {
-                    resettable.ResetBoss();
+                    // Reset boss state if implements IBossResettable
+                    if (boss is IBossResettable resettable)
+                    {
+                        resettable.ResetBoss();
+                    }
+                    
+                    // Force stop animations and movement
+                    ForceStopBossAnimationsAndMovement(boss);
                 }
-                
-                // Force stop animations and movement
-                ForceStopBossAnimationsAndMovement(boss);
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning($"[BossCombatZone] Error resetting boss {boss.name}: {e.Message}");
+                }
             }
         }
         
@@ -606,7 +706,7 @@ public class BossCombatZone : MonoBehaviour
         // Draw zone label
         Gizmos.color = Color.white;
         #if UNITY_EDITOR
-        UnityEditor.Handles.Label(center + Vector3.up * (size.y / 2f + 1f), zoneName);
+        UnityEditor.Handles.Label(center + Vector3.up * (size.y / 2f + 1f), zoneName + (isMiniGameZone ? " (MiniGame)" : ""));
         #endif
     }
     
@@ -618,7 +718,7 @@ public class BossCombatZone : MonoBehaviour
         GetZoneBoundaries(out left, out right, out top, out bottom);
         
         // Draw filled zone when selected
-        Gizmos.color = new Color(0f, 1f, 0f, 0.2f);
+        Gizmos.color = isMiniGameZone ? new Color(0f, 0f, 1f, 0.2f) : new Color(0f, 1f, 0f, 0.2f);
         
         Vector3 center = new Vector3((left + right) / 2f, (top + bottom) / 2f, 0f);
         Vector3 size = new Vector3(right - left, top - bottom, 1f);

@@ -89,15 +89,30 @@ public class MiniBoss : MonoBehaviour, IBossResettable
 
     void Awake()
     {
+        // Khởi tạo components ngay trong Awake
+        InitializeComponents();
         damageReceiver = GetComponent<MiniBossDamageReceiver>();
+    }
+    
+    // Method để khởi tạo components
+    private void InitializeComponents()
+    {
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+        if (animator == null)
+            animator = GetComponent<Animator>();
+        if (col == null)
+            col = GetComponent<Collider2D>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        if (allColliders == null)
+            allColliders = GetComponents<Collider2D>();
     }
 
     void Start()
     {
-        // Tự động tham chiếu các component
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        col = GetComponent<Collider2D>();
+        // Đảm bảo components được khởi tạo
+        InitializeComponents();
 
         // Tìm Player trong scene
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -129,9 +144,6 @@ public class MiniBoss : MonoBehaviour, IBossResettable
 
         // Validate tỷ lệ attack
         ValidateAttackChances();
-
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        allColliders = GetComponents<Collider2D>();
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -200,7 +212,10 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         if (isDead || isAttacking || isHurt) return;
 
         // Di chuyển
-        rb.linearVelocity = new Vector2(movement.x * moveSpeed, rb.linearVelocity.y);
+        if (rb != null)
+        {
+            rb.linearVelocity = new Vector2(movement.x * moveSpeed, rb.linearVelocity.y);
+        }
     }
 
     void MoveTowardsPlayer()
@@ -300,7 +315,8 @@ public class MiniBoss : MonoBehaviour, IBossResettable
     {
         isAttacking = true;
         movement = Vector2.zero;
-        animator.SetTrigger("Attack1");
+        if (animator != null)
+            animator.SetTrigger("Attack1");
 
         if (attackSound != null && audioSource != null)
         {
@@ -312,7 +328,8 @@ public class MiniBoss : MonoBehaviour, IBossResettable
     {
         isAttacking = true;
         movement = Vector2.zero;
-        animator.SetTrigger("Attack2");
+        if (animator != null)
+            animator.SetTrigger("Attack2");
 
         if (attackSound != null && audioSource != null)
         {
@@ -324,7 +341,8 @@ public class MiniBoss : MonoBehaviour, IBossResettable
     {
         isAttacking = true;
         movement = Vector2.zero;
-        animator.SetTrigger("Attack3");
+        if (animator != null)
+            animator.SetTrigger("Attack3");
 
         if (attackSound != null && audioSource != null)
         {
@@ -418,9 +436,12 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         Vector3 originalPosition = transform.position;
 
         // Dừng mọi chuyển động
-        rb.linearVelocity = Vector2.zero;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.gravityScale = 0;
+        }
         movement = Vector2.zero;
-        rb.gravityScale = 0;
 
         // Tắt colliders khi invisible
         SetCollidersEnabled(false);
@@ -463,6 +484,8 @@ public class MiniBoss : MonoBehaviour, IBossResettable
 
     private System.Collections.IEnumerator FadeOut()
     {
+        if (spriteRenderer == null) yield break;
+        
         float elapsedTime = 0f;
         Color originalColor = spriteRenderer.color;
 
@@ -480,6 +503,8 @@ public class MiniBoss : MonoBehaviour, IBossResettable
 
     private System.Collections.IEnumerator FadeIn()
     {
+        if (spriteRenderer == null) yield break;
+        
         float elapsedTime = 0f;
         Color originalColor = spriteRenderer.color;
 
@@ -584,11 +609,14 @@ public class MiniBoss : MonoBehaviour, IBossResettable
 
     private void SetCollidersEnabled(bool enabled)
     {
-        foreach (Collider2D col in allColliders)
+        if (allColliders != null)
         {
-            if (col != null)
+            foreach (Collider2D col in allColliders)
             {
-                col.enabled = enabled;
+                if (col != null)
+                {
+                    col.enabled = enabled;
+                }
             }
         }
     }
@@ -615,7 +643,7 @@ public class MiniBoss : MonoBehaviour, IBossResettable
                 CharacterController2D playerController = playerCollider.GetComponent<CharacterController2D>();
                 if (playerController != null)
                 {
-                    playerController.ApplyDamage(5f, bomb.transform.position); // 20 damage
+                    playerController.ApplyDamage(5f, bomb.transform.position); // 5 damage
                 }
             }
 
@@ -630,91 +658,106 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         canTeleport = true;
     }
 
-     public void ResetBoss()
+    public void ResetBoss()
     {
-        // Dừng tất cả coroutines
-        StopAllCoroutines();
-
-        // Reset trạng thái
-        isDead = false;
-        isAttacking = false;
-        isHurt = false;
-        isTeleporting = false;
-        canTeleport = true;
-        currentState = State.Patrolling;
-        lastAttackTime = 0f;
-        lastTeleportTime = 0f;
-
-        // Reset vị trí và scale
-        if (initialDataSaved)
-        {
-            transform.position = initialPosition;
-            // QUAN TRỌNG: Reset scale về giá trị ban đầu để sửa lỗi đi ngược
-            transform.localScale = initialScale;
-            
-            // Reset hướng facing về đúng hướng ban đầu
-            if (initialScale.x > 0)
-                facingRight = true;
-            else
-                facingRight = false;
-        }
-
-        // Reset physics
-        rb.linearVelocity = Vector2.zero;
-        rb.gravityScale = 1f; // Reset gravity
-        rb.bodyType = RigidbodyType2D.Dynamic; // Đảm bảo Dynamic khi reset
-
-        // Bật lại colliders và script
-        SetCollidersEnabled(true);
-        this.enabled = true;
-
-        // Reset sprite renderer (trong trường hợp đang teleport)
-        if (spriteRenderer != null)
-        {
-            Color originalColor = spriteRenderer.color;
-            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
-        }
-
-        // Reset animator
-        if (animator != null)
-        {
-            animator.ResetTrigger("Attack1");
-            animator.ResetTrigger("Attack2");
-            animator.ResetTrigger("Attack3");
-            animator.ResetTrigger("Hurt");
-            animator.ResetTrigger("Death");
-            animator.SetBool("IsRunning", false);
-        }
-
-        // Reset máu
-        if (damageReceiver != null)
-        {
-            damageReceiver.ResetBossHealth();
-        }
-
-        // Reset health bar
-        if (healthBarEnemy != null)
-        {
-            healthBarEnemy.ShowHealthBar(1f);
-        }
-
-        // Reset audio
-        if (audioSource != null && audioSource.isPlaying)
-        {
-            audioSource.Stop();
-        }
-
-        // Tìm lại player
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-        {
-            player = playerObj.transform;
-        }
+        Debug.Log($"[MiniBoss] Starting reset for {gameObject.name}");
         
-        // Reset movement để tránh lỗi di chuyển
-        movement = Vector2.zero;
+        try
+        {
+            // Đảm bảo components được khởi tạo trước khi sử dụng
+            InitializeComponents();
+            
+            // Dừng tất cả coroutines
+            StopAllCoroutines();
 
-        Debug.Log($"[MiniBoss] {gameObject.name} has been reset to initial state at position {transform.position} with scale {transform.localScale}");
+            // Reset trạng thái
+            isDead = false;
+            isAttacking = false;
+            isHurt = false;
+            isTeleporting = false;
+            canTeleport = true;
+            currentState = State.Patrolling;
+            lastAttackTime = 0f;
+            lastTeleportTime = 0f;
+
+            // Reset vị trí và scale
+            if (initialDataSaved)
+            {
+                transform.position = initialPosition;
+                // QUAN TRỌNG: Reset scale về giá trị ban đầu để sửa lỗi đi ngược
+                transform.localScale = initialScale;
+                
+                // Reset hướng facing về đúng hướng ban đầu
+                if (initialScale.x > 0)
+                    facingRight = true;
+                else
+                    facingRight = false;
+            }
+
+            // Reset physics với null checks
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                rb.gravityScale = 1f; // Reset gravity
+                rb.bodyType = RigidbodyType2D.Dynamic; // Đảm bảo Dynamic khi reset
+            }
+
+            // Bật lại colliders và script
+            SetCollidersEnabled(true);
+            this.enabled = true;
+
+            // Reset sprite renderer (trong trường hợp đang teleport)
+            if (spriteRenderer != null)
+            {
+                Color originalColor = spriteRenderer.color;
+                spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
+            }
+
+            // Reset animator với null checks
+            if (animator != null)
+            {
+                animator.ResetTrigger("Attack1");
+                animator.ResetTrigger("Attack2");
+                animator.ResetTrigger("Attack3");
+                animator.ResetTrigger("Hurt");
+                animator.ResetTrigger("Death");
+                animator.SetBool("IsRunning", false);
+            }
+
+            // Reset máu
+            if (damageReceiver != null)
+            {
+                damageReceiver.ResetBossHealth();
+            }
+
+            // Reset health bar
+            if (healthBarEnemy != null)
+            {
+                healthBarEnemy.ShowHealthBar(1f);
+            }
+
+            // Reset audio
+            if (audioSource != null && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
+            // Tìm lại player
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                player = playerObj.transform;
+            }
+            
+            // Reset movement để tránh lỗi di chuyển
+            movement = Vector2.zero;
+
+            Debug.Log($"[MiniBoss] Reset completed for {gameObject.name} at position {transform.position} with scale {transform.localScale}");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[MiniBoss] Error during reset for {gameObject.name}: {e.Message}");
+        }
     }
 
     public void OnHurt()
@@ -726,7 +769,8 @@ public class MiniBoss : MonoBehaviour, IBossResettable
             audioSource.PlayOneShot(hurtSound);
         }
 
-        animator.SetTrigger("Hurt");
+        if (animator != null)
+            animator.SetTrigger("Hurt");
         CameraFollow.Instance?.ShakeCamera();
 
         if (healthBarEnemy != null)
@@ -747,11 +791,15 @@ public class MiniBoss : MonoBehaviour, IBossResettable
             audioSource.PlayOneShot(deathSound);
         }
 
-        animator.SetTrigger("Death");
+        if (animator != null)
+            animator.SetTrigger("Death");
         currentState = State.Dead;
         isDead = true;
-        rb.linearVelocity = Vector2.zero;
-        GetComponent<Collider2D>().enabled = false;
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+        
+        if (col != null)
+            col.enabled = false;
         this.enabled = false;
 
         if (bossManager != null)
@@ -783,7 +831,8 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         if (isDead || isAttacking || isHurt) return;
 
         // Set animation parameters
-        animator.SetBool("IsRunning", Mathf.Abs(movement.x) > 0.1f);
+        if (animator != null)
+            animator.SetBool("IsRunning", Mathf.Abs(movement.x) > 0.1f);
     }
 
     void ValidateAttackChances()
