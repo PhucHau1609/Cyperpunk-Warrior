@@ -15,8 +15,8 @@ public class DialogueEventTrigger : MonoBehaviour
 
     [Header("Dialogue khi chết 2 lần ở map 2")]
     public DialogueData diedTwiceInMap2Dialogue;
-    public CharacterController2D playerPos;
-    private Transform checkPointPosition;
+    //public CharacterController2D playerPos;
+    //private Transform checkPointPosition;
 
     [Header("Dialogue khi lần đầu nhặt được energy")]
     public DialogueData firstEnergyDialogue;
@@ -24,7 +24,7 @@ public class DialogueEventTrigger : MonoBehaviour
     [Header("Dialogue khi chưa nhặt được CraftingRecipe")]
     public DialogueData hasNotHaveCraftingRecipe;
 
-    private int deathCountAtMap2 = 0;
+    //private int deathCountAtMap2 = 0;
 
     private void OnEnable()
     {

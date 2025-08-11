@@ -42,6 +42,7 @@ public class InventoryUIHandler : HauSingleton<InventoryUIHandler>
 
     public void ShowIconInventory()
     {
+        if (!InventoryManager.Instance.HasItemInInventory(ItemCode.CraftingRecipe)) return;
         inventoryIconUI.SetActive(true);
 
     }
