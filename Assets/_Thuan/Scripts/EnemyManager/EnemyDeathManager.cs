@@ -1,18 +1,15 @@
+﻿using System;
 using UnityEngine;
 
 public class EnemyDeathManager : MonoBehaviour
 {
-    public Animator doorAnimator;
+    public static EnemyDeathManager Instance;
+    public static event Action AllEnemiesDead;   // 🔔 Sự kiện
 
     private int totalEnemies;
     private int deadEnemies = 0;
 
-    public static EnemyDeathManager Instance;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private void Awake() => Instance = this;
 
     void Start()
     {
@@ -22,10 +19,11 @@ public class EnemyDeathManager : MonoBehaviour
     public void OnEnemyDied()
     {
         deadEnemies++;
-
         if (deadEnemies >= totalEnemies)
         {
-            doorAnimator?.SetTrigger("Open");
+            AllEnemiesDead?.Invoke();            // 🔔 bắn sự kiện, KHÔNG mở cửa ở đây
         }
     }
+
+    public bool AreAllEnemiesDead => deadEnemies >= totalEnemies; // tiện cho nơi khác cần check
 }
