@@ -63,7 +63,7 @@ public class PortalReceiver : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         switch (itemCode)
         {
-            case ItemCode.UpgradeItem_6: SetEnergy(EnergyType.Orange); break;
+            case ItemCode.UpgradeItem_3: SetEnergy(EnergyType.Orange); break;
             case ItemCode.UpgradeItem_1: SetEnergy(EnergyType.Blue); break;
             case ItemCode.UpgradeItem_5: SetEnergy(EnergyType.Purple); break;
             default:
