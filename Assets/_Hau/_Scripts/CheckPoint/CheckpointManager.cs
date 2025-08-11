@@ -27,6 +27,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
     // Method mới để restart mini game
     public void RestartMiniGame()
     {
+        Debug.Log("[CheckpointManager] 🎮 RestartMiniGame called (MINI GAME RESTART)");
         Debug.Log("[CheckpointManager] ========== STARTING MINI GAME RESTART ==========");
         
         // QUAN TRỌNG: Reset theo thứ tự để tránh trigger hoàn thành
@@ -36,7 +37,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         if (sceneController != null && sceneController.IsInMiniGame())
         {
             Debug.Log("[CheckpointManager] Force stopping current mini game...");
-            sceneController.ReturnControlToPlayer();
+            sceneController.ReturnControlToPlayer(false); // false = không phải hoàn thành, chỉ restart
         }
         
         // 2. Reset Lyra health và position trước
@@ -91,7 +92,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             Debug.Log("[CheckpointManager] Lyra health reset for mini game");
         }
         
-        // Reset position của pet về vị trí spawn point
+        // QUAN TRỌNG: Reset position của pet về vị trí spawn point để thoát khỏi trigger zones
         FloatingFollower pet = FindFirstObjectByType<FloatingFollower>();
         if (pet != null)
         {
@@ -99,6 +100,14 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             if (spawnPoint != null)
             {
                 pet.transform.position = spawnPoint.transform.position;
+                Debug.Log($"[CheckpointManager] Pet moved to spawn point: {spawnPoint.transform.position}");
+                
+                // Đảm bảo pet không đang ở trong trigger nào
+                Rigidbody2D petRb = pet.GetComponent<Rigidbody2D>();
+                if (petRb != null)
+                {
+                    petRb.linearVelocity = Vector2.zero;
+                }
             }
         }
     }
@@ -149,7 +158,18 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
     {
         string currentScene = SceneManager.GetActiveScene().name;
         
-        Debug.Log($"[CheckpointManager] Starting respawn in scene: {currentScene}");
+        Debug.Log($"[CheckpointManager] ⚠️ RespawnPlayer called (NORMAL RESPAWN) in scene: {currentScene}");
+
+        // Kiểm tra nếu đang trong mini game và có CoreManager thì redirect sang RestartMiniGame
+        SceneController sceneController = FindFirstObjectByType<SceneController>();
+        CoreManager coreManager = FindFirstObjectByType<CoreManager>();
+        
+        if (sceneController != null && coreManager != null && sceneController.IsInMiniGame())
+        {
+            Debug.Log("[CheckpointManager] Detected mini game during respawn - redirecting to RestartMiniGame()");
+            RestartMiniGame();
+            return;
+        }
 
         if (lastCheckpointScene != currentScene)
         {
@@ -371,8 +391,8 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             activator.ResetTrigger();
         }
         
-        // THÊM: Kiểm tra và reset SceneController nếu có mini game đang chạy
-        ResetMiniGameIfActive();
+        // REMOVED: Không gọi ResetMiniGameIfActive() nữa vì đã handle trong RespawnPlayer()
+        Debug.Log("[CheckpointManager] FinishRespawn completed - mini game logic handled separately");
     }
     
     // Method để reset tất cả Combat Zones
@@ -486,26 +506,6 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
                 {
                     Debug.LogWarning($"[CheckpointManager] Failed to reset spawner {spawner.name}: {e.Message}");
                 }
-            }
-        }
-    }
-    
-    // Method mới để reset mini game nếu đang active
-    private void ResetMiniGameIfActive()
-    {
-        SceneController sceneController = FindFirstObjectByType<SceneController>();
-        if (sceneController != null && sceneController.IsInMiniGame())
-        {
-            Debug.Log("[CheckpointManager] Mini game was active during respawn - resetting to normal gameplay");
-            
-            // Force return to normal gameplay
-            sceneController.ReturnControlToPlayer();
-            
-            // Reset Lyra health để đảm bảo không còn game over panel
-            LyraHealth lyraHealth = FindFirstObjectByType<LyraHealth>();
-            if (lyraHealth != null)
-            {
-                lyraHealth.ResetLyra();
             }
         }
     }

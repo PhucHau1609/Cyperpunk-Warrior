@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class CoreManager : MonoBehaviour
@@ -37,7 +37,7 @@ public class CoreManager : MonoBehaviour
         {
             // Gỡ xong tất cả
             Debug.Log("[CoreManager] All cores completed! Returning control to player");
-            sceneController?.ReturnControlToPlayer();
+            sceneController?.ReturnControlToPlayer(true); // true = hoàn thành mini game
         }
     }
     
@@ -59,6 +59,15 @@ public class CoreManager : MonoBehaviour
             }
         }
         
+        // Delay việc set active logic để đảm bảo cores đã reset xong
+        StartCoroutine(DelayedSetActiveLogic());
+    }
+    
+    // Coroutine để delay việc set active logic
+    private System.Collections.IEnumerator DelayedSetActiveLogic()
+    {
+        yield return new WaitForSeconds(1.5f); // Đợi cores reset xong
+        
         // Sau đó mới set active logic
         for (int i = 0; i < cores.Count; i++)
         {
@@ -69,5 +78,11 @@ public class CoreManager : MonoBehaviour
         }
         
         Debug.Log($"[CoreManager] Reset completed. Current active core index: {currentCoreIndex}");
+    }
+    
+    // Method để get current core index
+    public int GetCurrentCoreIndex()
+    {
+        return currentCoreIndex;
     }
 }

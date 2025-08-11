@@ -119,12 +119,12 @@ public class SceneController : MonoBehaviour
             lyraHealth.gameOverPanel.SetActive(false);
         }
         
-        // QUAN TRỌNG: Reset về player control trước, sau đó mới switch sang pet control
+        // QUAN TRỌNG: Nếu đang trong mini game, chỉ reset state không return control
         if (wasInMiniGame)
         {
-            // Force return to player first to reset state
-            ReturnControlToPlayer();
+            // Chỉ reset các state cần thiết, KHÔNG gọi ReturnControlToPlayer
             wasInMiniGame = false;
+            Debug.Log("[SceneController] Reset mini game state without returning control");
         }
         
         // Đợi 1 frame để đảm bảo state được reset
@@ -192,8 +192,22 @@ public class SceneController : MonoBehaviour
         Invoke(nameof(ReturnControlToPlayer), 2f);
     }
 
+    // Method để check xem có đang trong mini game không
+    public bool IsInMiniGame()
+    {
+        return wasInMiniGame && petControl != null && petControl.enabled;
+    }
+
+    // Overload method để backwards compatibility
     public void ReturnControlToPlayer()
     {
+        ReturnControlToPlayer(true); // Default: mini game completed
+    }
+
+    public void ReturnControlToPlayer(bool miniGameCompleted)
+    {
+        Debug.Log($"[SceneController] ReturnControlToPlayer called - miniGameCompleted: {miniGameCompleted}");
+        
         wasInMiniGame = false;
         
         GameStateManager.Instance.ResetToGameplay();
@@ -230,11 +244,38 @@ public class SceneController : MonoBehaviour
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.Target = player.transform;
 
-        //Tắt các object bẩy
-        foreach (GameObject obj in objectsToDisableOnReturn)
+        // QUAN TRỌNG: Chỉ tắt các object khi THỰC SỰ hoàn thành mini game
+        if (miniGameCompleted)
         {
-            if (obj != null)
-                obj.SetActive(false);
+            Debug.Log("[SceneController] Mini game completed - disabling obstacles");
+            
+            //Tắt các object bẩy
+            foreach (GameObject obj in objectsToDisableOnReturn)
+            {
+                if (obj != null)
+                    obj.SetActive(false);
+            }
+
+            foreach (GameObject obj in animatorObjectsToDisable)
+            {
+                if (obj != null)
+                {
+                    Animator anim = obj.GetComponent<Animator>();
+                    if (anim != null)
+                        anim.enabled = false;
+                }
+            }
+            
+            // Tắt GameOverManager khi hoàn thành
+            GameOverManager gom = FindAnyObjectByType<GameOverManager>();
+            if (gom != null)
+            {
+                gom.enabled = false;
+            }
+        }
+        else
+        {
+            Debug.Log("[SceneController] Mini game restarted - keeping obstacles active");
         }
 
         onReturnToPlayer?.Invoke();
@@ -242,28 +283,5 @@ public class SceneController : MonoBehaviour
         // Bật lại trigger để Pet có thể xuyên vật thể khi bay theo Player
         foreach (var col in pet.GetComponents<Collider2D>())
             col.isTrigger = true;
-
-        foreach (GameObject obj in animatorObjectsToDisable)
-        {
-            if (obj != null)
-            {
-                Animator anim = obj.GetComponent<Animator>();
-                if (anim != null)
-                    anim.enabled = false;
-            }
-        }
-        // Tắt GameOverManager
-        GameOverManager gom = FindAnyObjectByType<GameOverManager>();
-        if (gom != null)
-        {
-            gom.enabled = false;
-            //Debug.Log("GameOverManager has been disabled!");
-        }
-    }
-
-    // Method để check xem có đang trong mini game không
-    public bool IsInMiniGame()
-    {
-        return wasInMiniGame && petControl != null && petControl.enabled;
     }
 }

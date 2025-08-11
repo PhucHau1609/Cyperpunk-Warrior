@@ -25,6 +25,10 @@ public class CoreZone : MonoBehaviour
     // Lưu trữ trạng thái ban đầu
     private bool initialCanBeInteracted = false;
     private bool initialColliderState = true;
+    
+    // QUAN TRỌNG: Thêm flag để prevent auto-trigger sau restart
+    private bool isResetting = false;
+    private bool hasNpcInside = false;
 
     void Start()
     {
@@ -54,21 +58,31 @@ public class CoreZone : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"[CoreZone] {gameObject.name} - OnTriggerEnter2D: canBeInteracted={canBeInteracted}, other={other.name}");
-
-        if (!canBeInteracted)
+        if (other.CompareTag("NPC"))
         {
-            Debug.Log($"[CoreZone] {gameObject.name} - Cannot be interacted, returning");
+            hasNpcInside = true;
+            Debug.Log($"[CoreZone] 🚀 {gameObject.name} - NPC entered zone. canBeInteracted={canBeInteracted}, isResetting={isResetting}, minigameRunning={minigameRunning}");
+        }
+        
+        // QUAN TRỌNG: Chỉ trigger khi không đang reset và có thể interact
+        if (!canBeInteracted || isResetting || minigameRunning)
+        {
+            Debug.Log($"[CoreZone] ❌ {gameObject.name} - BLOCKED: canBeInteracted={canBeInteracted}, isResetting={isResetting}, minigameRunning={minigameRunning}");
             return;
         }
 
         if (other.CompareTag("NPC"))
         {
-            Debug.Log($"[CoreZone] {gameObject.name} - NPC entered, starting minigame");
-            //lyraInside = true;
+            Debug.Log($"[CoreZone] ✅ {gameObject.name} - NPC entered, starting minigame");
 
             if (minigamePrefab != null && spawnedMinigame == null)
             {
+                // Đánh dấu đang chạy minigame để tránh double trigger
+                minigameRunning = true;
+                canBeInteracted = false; // Tắt ngay để tránh trigger lại
+                
+                Debug.Log($"[CoreZone] 🎯 {gameObject.name} - Minigame started! minigameRunning=true, canBeInteracted=false");
+                
                 // Lấy health fill từ LyraHealth
                 GameObject lyraObj = GameObject.FindGameObjectWithTag("NPC");
                 if (lyraObj != null)
@@ -92,9 +106,9 @@ public class CoreZone : MonoBehaviour
                 // Khi hoàn thành minigame
                 minigame.onComplete = () =>
                 {
-                    Debug.Log($"[CoreZone] {gameObject.name} - Minigame completed!");
+                    Debug.Log($"[CoreZone] 🏆 {gameObject.name} - Minigame completed!");
                     minigameRunning = false;
-                    canBeInteracted = false;
+                    // canBeInteracted = false; // Đã set ở trên
                     coreManager.MarkCoreAsComplete(this);
                     ItemsDropManager.Instance.DropItem(rewardCore, 1, this.transform.position + spawnCore);
                     Destroy(spawnedMinigame);
@@ -103,9 +117,17 @@ public class CoreZone : MonoBehaviour
                 };
 
                 // Bắt đầu minigame
-                minigameRunning = true;
                 minigame.StartMinigame();
             }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("NPC"))
+        {
+            hasNpcInside = false;
+            Debug.Log($"[CoreZone] {gameObject.name} - NPC exited zone");
         }
     }
 
@@ -125,27 +147,54 @@ public class CoreZone : MonoBehaviour
                 }
             }
             spawnedMinigame = null;
-            //canBeInteracted = false;
+            
+            // Reset lại khả năng interact nếu NPC chết
+            if (hasNpcInside && coreManager != null)
+            {
+                // Kiểm tra xem core này có phải đang active không
+                int coreIndex = coreManager.cores.IndexOf(this);
+                if (coreIndex >= 0 && coreIndex == coreManager.GetCurrentCoreIndex())
+                {
+                    canBeInteracted = true;
+                }
+            }
 
             if (lyraHealth != null)
                 lyraHealth.OnDeath -= HandleNpcDeath; // Hủy đăng ký event
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (!canBeInteracted) return;
-
-        if (other.CompareTag("NPC"))
-        {
-            //lyraInside = false;
-        }
-    }
-
     public void SetActiveLogic(bool active)
     {
-        Debug.Log($"[CoreZone] {gameObject.name} - SetActiveLogic: {active}");
+        Debug.Log($"[CoreZone] {gameObject.name} - SetActiveLogic: {active}, isResetting: {isResetting}");
+        
+        if (isResetting)
+        {
+            Debug.Log($"[CoreZone] {gameObject.name} - Skipping SetActiveLogic because is resetting");
+            return;
+        }
+        
         canBeInteracted = active;
+        
+        // QUAN TRỌNG: Nếu NPC đang trong zone và được set active, delay một chút
+        if (active && hasNpcInside)
+        {
+            Debug.Log($"[CoreZone] {gameObject.name} - NPC is inside, delaying activation");
+            StartCoroutine(DelayedActivation());
+        }
+    }
+    
+    // Coroutine để delay activation khi NPC đang trong zone
+    private IEnumerator DelayedActivation()
+    {
+        canBeInteracted = false; // Tắt tạm thời
+        yield return new WaitForSeconds(0.5f); // Đợi 0.5 giây
+        
+        if (!isResetting && !minigameRunning)
+        {
+            canBeInteracted = true;
+            Debug.Log($"[CoreZone] {gameObject.name} - Delayed activation completed");
+        }
     }
 
     // Method mới để reset CoreZone về trạng thái ban đầu cho mini game
@@ -153,7 +202,8 @@ public class CoreZone : MonoBehaviour
     {
         Debug.Log($"[CoreZone] Resetting core: {gameObject.name} - Current canBeInteracted: {canBeInteracted}");
 
-        // QUAN TRỌNG: Tắt interaction trước để tránh trigger trong lúc reset
+        // QUAN TRỌNG: Đánh dấu đang reset để block mọi trigger
+        isResetting = true;
         canBeInteracted = false;
 
         // Hủy minigame đang chạy nếu có
@@ -197,7 +247,17 @@ public class CoreZone : MonoBehaviour
             Debug.Log($"[CoreZone] Reset animator for {gameObject.name}");
         }
 
-        Debug.Log($"[CoreZone] Core {gameObject.name} reset completed - canBeInteracted will be set by CoreManager");
+        // Delay việc kết thúc reset để đảm bảo NPC được move về vị trí mới
+        StartCoroutine(FinishReset());
+    }
+    
+    // Coroutine để kết thúc quá trình reset
+    private IEnumerator FinishReset()
+    {
+        yield return new WaitForSeconds(1f); // Đợi 1 giây để NPC được reset vị trí
+        
+        isResetting = false;
+        Debug.Log($"[CoreZone] Core {gameObject.name} reset completed - ready for CoreManager to set active");
     }
 
     private IEnumerator OpenDoorSequence()
@@ -222,6 +282,5 @@ public class CoreZone : MonoBehaviour
                 Debug.Log("Door collision disabled — NPC can pass now!");
             }
         }
-
     }
 }
