@@ -13,6 +13,7 @@ public class ItemProfileSO : ScriptableObject
     public string itemName;
     public Sprite itemSprite;
     public bool isStackable = false;
+    public bool canNotDelete = true;
     public GameObject prefabItem;
 
     [TextArea(2, 5)] public string itemDescription; // <-- THÊM DÒNG NÀY

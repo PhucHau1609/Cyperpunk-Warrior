@@ -76,7 +76,8 @@ public class BtnItemInventory : ButtonAbstract, IBeginDragHandler, IDragHandler,
         // Kiểm tra nếu thả vào Delete Zone
         if (DeleteItemZone.IsPointerOverDeleteZone(eventData))
         {
-            Debug.Log("Delete item: " + itemInventory.ItemProfileSO.itemCode);
+            //Debug.Log("Delete item: " + itemInventory.ItemProfileSO.itemCode);
+            if (!ItemInventory.ItemProfileSO.canNotDelete) return;
             InventoryManager.Instance.RemoveItem(itemInventory);
             return;
         }
