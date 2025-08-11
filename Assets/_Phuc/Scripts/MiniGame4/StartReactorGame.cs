@@ -71,9 +71,8 @@ public class StartReactorGame : MonoBehaviour
 
     public void OpenMiniGame()
     {
-
         GameStateManager.Instance.SetState(GameState.MiniGame);
-        if (hasCompletedGame) return; // 🚫 Đã thắng thì không cho mở lại
+        if (hasCompletedGame) return;
 
         if (interactionPoint != null && player != null)
         {
@@ -91,8 +90,10 @@ public class StartReactorGame : MonoBehaviour
             player.SetCanMove(false);
 
         canStartGame = true;
-    }
 
+        // 🔒 Khóa input ngay khi mở game
+        EnableInput(false);
+    }
     public void CloseMiniGame()
     {
         if (!panel.activeSelf) return;
@@ -149,6 +150,10 @@ public class StartReactorGame : MonoBehaviour
 
     public void OnButtonPressed(int index)
     {
+        // ✅ Chặn khi chưa có pattern hoặc chưa tới lượt
+        if (pattern.Count == 0 || inputIndex >= pattern.Count)
+            return;
+
         SoundMiniGame4.Instance?.PlayButtonPressSound();
 
         if (index == pattern[inputIndex])
