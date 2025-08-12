@@ -576,6 +576,7 @@ public class CardsController : MonoBehaviour
     void EndGame(bool playerWin)
     {
         GameStateManager.Instance.ResetToGameplay();
+        Debug.Log("Da end game bai");
         isTimerRunning = false;
         gamePanel.SetActive(false);
         finishPanel.SetActive(false);
