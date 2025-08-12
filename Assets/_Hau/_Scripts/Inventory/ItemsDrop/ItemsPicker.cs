@@ -16,6 +16,7 @@ public class ItemsPicker : HauMonoBehaviour
     private bool hasPickedFirstGun = false;
     private bool hasPickedFirstEnergy = false;
 
+    public void PickupFromMagnet(ItemsDropCtrl item) => this.PickupItem(item);
 
 
     protected override void LoadComponents()
