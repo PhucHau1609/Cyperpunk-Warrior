@@ -79,6 +79,7 @@ public class TimelinePlayerController : MonoBehaviour
         {
             wasPlayerAbleToMove = playerMovement.canMove;
             playerMovement.SetCanMove(false);
+            Debug.Log("Da Khoa 2");
         }
         if (playerMovement2 != null)
         {
@@ -94,11 +95,12 @@ public class TimelinePlayerController : MonoBehaviour
     {
         if (playerMovement != null)
         {
-            playerMovement.SetCanMove(wasPlayerAbleToMove);
+            playerMovement.SetCanMove(true);
+            Debug.Log("Da Mo 3");
         }
         if (playerMovement2 != null)
         {
-            playerMovement2.SetCanMove(wasPlayerAbleToMove);
+            playerMovement2.SetCanMove(true);
         }
         GameStateManager.Instance.ResetToGameplay();
     }
@@ -111,6 +113,7 @@ public class TimelinePlayerController : MonoBehaviour
         if (playerMovement != null)
         {
             playerMovement.SetCanMove(true);
+            Debug.Log("Da Mo 4");
         }
         if (playerMovement2 != null)
         {
