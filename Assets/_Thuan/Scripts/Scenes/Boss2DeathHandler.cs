@@ -117,7 +117,7 @@ public class Boss2DeathHandler : MonoBehaviour
             // Nếu vẫn không tìm thấy, tìm theo type
             if (boss2Controller == null)
             {
-                boss2Controller = FindObjectOfType<Boss2Controller>();
+                boss2Controller = FindFirstObjectByType<Boss2Controller>();
             }
         }
     }
