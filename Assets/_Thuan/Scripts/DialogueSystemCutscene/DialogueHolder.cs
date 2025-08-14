@@ -26,13 +26,13 @@ namespace DialogueSystem
 
         private void Awake()
         {
-            dialogueCoroutine = StartCoroutine(dialogueSequence());
-            if (playerMovement == null)
+             if (playerMovement == null)
             playerMovement = FindFirstObjectByType<PlayerMovement>();
             if (playerMovement != null)
             {
                 wasPlayerAbleToMove = playerMovement.canMove;
                 playerMovement.SetCanMove(false);
+                Debug.Log("Da Khoa 1");
             }
 
             if (playerMovement2 == null)
@@ -42,6 +42,8 @@ namespace DialogueSystem
                 wasPlayerAbleToMove = playerMovement2.canMove;
                 playerMovement2.SetCanMove(false);
             }
+
+            dialogueCoroutine = StartCoroutine(dialogueSequence());
         }
 
         private void Update()
@@ -55,6 +57,8 @@ namespace DialogueSystem
 
         private IEnumerator dialogueSequence()
         {
+
+
             for (int i = 0; i < transform.childCount; i++)
             {
                 if (isSkipped) yield break;
@@ -63,9 +67,21 @@ namespace DialogueSystem
                 transform.GetChild(i).gameObject.SetActive(true);
                 yield return new WaitUntil(() => transform.GetChild(i).GetComponent<DialogueLine>().finished);
             }
-
             gameObject.SetActive(false);
+
             Time.timeScale = 1f;
+
+            if (playerMovement != null)
+            {
+                playerMovement.SetCanMove(true);
+                Debug.Log("Da Mo 1");
+            }
+
+            if (playerMovement2 != null)
+            {
+                playerMovement2.SetCanMove(true);
+            }
+            GameStateManager.Instance.ResetToGameplay();
 
             if (nextTimeline != null)
             {
@@ -75,17 +91,6 @@ namespace DialogueSystem
             {
                 miniGame.SetActive(true);
             }
-
-            if (playerMovement != null)
-            {
-                playerMovement.SetCanMove(wasPlayerAbleToMove);
-            }
-
-            if (playerMovement2 != null)
-            {
-                playerMovement2.SetCanMove(wasPlayerAbleToMove);
-            }
-            GameStateManager.Instance.ResetToGameplay();
         }
 
         private void SkipDialogue()
@@ -93,27 +98,29 @@ namespace DialogueSystem
             if (dialogueCoroutine != null)
             {
                 StopCoroutine(dialogueCoroutine);
+
+                if (playerMovement != null)
+                {
+                    playerMovement.SetCanMove(true);
+                    Debug.Log("Da Mo 2");
+                }
+
+                if (playerMovement2 != null)
+                {
+                    playerMovement2.SetCanMove(true);
+                }
+                GameStateManager.Instance.ResetToGameplay();
             }
 
             Deactivate(); // Tắt hết hội thoại đang hiện
             gameObject.SetActive(false);
+
             Time.timeScale = 1f;
 
             if (nextTimeline != null)
             {
                 nextTimeline.Play();
             }
-
-            if (playerMovement != null)
-            {
-                playerMovement.SetCanMove(wasPlayerAbleToMove);
-            }
-
-            if (playerMovement2 != null)
-            {
-                playerMovement2.SetCanMove(wasPlayerAbleToMove);
-            }
-            GameStateManager.Instance.ResetToGameplay();
         }
 
         private void Deactivate()

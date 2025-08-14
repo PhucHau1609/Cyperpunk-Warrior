@@ -137,11 +137,22 @@ public class pausegame : MonoBehaviour
         }, ignoreTimeScale: true);
     }
 
+    //public void OnQuitClicked()
+    //{
+    //    AudioManager.Instance.PlayClickSFX();
+    //    Time.timeScale = 1f;
+    //    SceneManager.LoadScene(0); // Trở về menu chính
+    //}
     public void OnQuitClicked()
     {
         AudioManager.Instance.PlayClickSFX();
         Time.timeScale = 1f;
-        SceneManager.LoadScene(0); // Trở về menu chính
+
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; // Thoát play mode trong Editor
+    #else
+        Application.Quit(); // Thoát game khi build
+    #endif
     }
 
     public void OnOpenOptionsClicked()
