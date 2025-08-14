@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
-using Newtonsoft;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

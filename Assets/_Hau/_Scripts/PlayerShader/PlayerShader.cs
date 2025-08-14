@@ -172,32 +172,58 @@ public class PlayerShader : MonoBehaviour
         isOnCooldown = false;
     }
 
+    // PlayerShader.cs
     IEnumerator ActivateColorRampEffect()
     {
         isEffectActive = true;
         isOnCooldown = true;
-        //float originHp = characterController.life;
-
 
         string keyword = ShaderEffectKeywords[ShaderEffect.ColorRamp];
         SetKeywordOnSelf(keyword, true);
 
         characterController.invincible = true;
-        //Debug.Log("🌈 Biến hình ColorRamp kích hoạt!");
 
+        // chạy effect
         yield return new WaitForSeconds(effectDuration);
 
         SetKeywordOnSelf(keyword, false);
-        //Debug.Log("🕒 Biến hình kết thúc. Bắt đầu hồi chiêu.");
         characterController.invincible = false;
-
         isEffectActive = false;
 
-        yield return new WaitForSeconds(cooldownTime);
-        isOnCooldown = false;
+        // cooldown phần còn lại để tổng = cooldownTime
+        float remainingCooldown = Mathf.Max(0f, cooldownTime - effectDuration); // << NEW
+        yield return new WaitForSeconds(remainingCooldown);
 
-        //Debug.Log("✅ Hồi chiêu xong. Có thể biến hình lại.");
+        isOnCooldown = false;
     }
+
+
+    /* IEnumerator ActivateColorRampEffect()
+     {
+         isEffectActive = true;
+         isOnCooldown = true;
+         //float originHp = characterController.life;
+
+
+         string keyword = ShaderEffectKeywords[ShaderEffect.ColorRamp];
+         SetKeywordOnSelf(keyword, true);
+
+         characterController.invincible = true;
+         //Debug.Log("🌈 Biến hình ColorRamp kích hoạt!");
+
+         yield return new WaitForSeconds(effectDuration);
+
+         SetKeywordOnSelf(keyword, false);
+         //Debug.Log("🕒 Biến hình kết thúc. Bắt đầu hồi chiêu.");
+         characterController.invincible = false;
+
+         isEffectActive = false;
+
+         yield return new WaitForSeconds(cooldownTime);
+         isOnCooldown = false;
+
+         //Debug.Log("✅ Hồi chiêu xong. Có thể biến hình lại.");
+     }*/
 
     private void SetKeywordOnSelf(string keyword, bool state)
     {

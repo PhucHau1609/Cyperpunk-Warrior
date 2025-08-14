@@ -5,19 +5,6 @@ public class InventoryUIHandler : HauSingleton<InventoryUIHandler>
 {
     [SerializeField] private GameObject inventoryIconUI;
 
-   /* private void Update()
-    {
-        if(GameStateManager.Instance.CurrentState == GameState.MiniGame)
-        {
-            inventoryIconUI.SetActive(false);
-        }
-        else if(GameStateManager.Instance.CurrentState == GameState.Gameplay)
-        {
-            inventoryIconUI.SetActive(true);
-
-        }
-    }*/
-
     protected override void OnEnable()
     {
         ObserverManager.Instance?.AddListener(EventID.FirstItemPickedUp, OnFirstItemPickedUp);
@@ -47,4 +34,17 @@ public class InventoryUIHandler : HauSingleton<InventoryUIHandler>
 
     }
 }
+
+/* private void Update()
+   {
+       if(GameStateManager.Instance.CurrentState == GameState.MiniGame)
+       {
+           inventoryIconUI.SetActive(false);
+       }
+       else if(GameStateManager.Instance.CurrentState == GameState.Gameplay)
+       {
+           inventoryIconUI.SetActive(true);
+
+       }
+   }*/
 

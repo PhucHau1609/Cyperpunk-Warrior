@@ -16,6 +16,7 @@ public class ItemsPicker : HauMonoBehaviour
     private bool hasPickedFirstGun = false;
     private bool hasPickedFirstEnergy = false;
 
+    public void PickupFromMagnet(ItemsDropCtrl item) => this.PickupItem(item);
 
 
     protected override void LoadComponents()
@@ -125,10 +126,33 @@ public class ItemsPicker : HauMonoBehaviour
         CheckIsPickFirstEnergy(itemsDropCtrl);
 
 
-        if (itemsDropCtrl.ItemCode == ItemCode.HP && controller != null && controller.life < controller.maxLife)
+        // --- Xử lý riêng với HP ---
+        if (itemsDropCtrl.ItemCode == ItemCode.HP && controller != null)
         {
-            //Debug.Log("HP chưa đầy, không thêm vào inventory, hãy tự động nhặt bằng va chạm.");
-            return;
+            var player = controller.GetComponent<playerHealth>();
+            if (player == null)
+            {
+                Debug.LogWarning("[PickupItem] playerHealth not found on controller");
+            }
+
+            if (controller.life < controller.maxLife)
+            {
+                // HEAL trực tiếp, KHÔNG vào inventory
+                float healAmount = 10f; // hoặc lấy từ ItemProfileSO
+                if (player != null) player.Heal(healAmount);
+
+                HauSoundManager.Instance?.SpawnSound(Vector3.zero, SoundName.PickUpItem);
+
+                // Despawn KHÔNG cộng vào inventory
+                if (itemsDropCtrl.Despawn is ItemsDropDespawn hpDespawner)
+                    hpDespawner.DoDespawn(false);
+                else
+                    itemsDropCtrl.Despawn.DoDespawn(); // fallback (sẽ cộng inv)
+
+                return;
+            }
+
+            // Nếu máu đầy -> rơi xuống luồng thường (vào inventory + icon bay)
         }
 
         ItemPickupFlyUI.Instance.PlayFromTransform(itemsDropCtrl.ItemCode, itemsDropCtrl.transform);
