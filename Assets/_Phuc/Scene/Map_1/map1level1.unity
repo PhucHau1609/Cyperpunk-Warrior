@@ -27050,6 +27050,48 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 3ae715e6bc3fc8946b1bb18bbaf24a8f, type: 2}
+--- !u!1 &400044821 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 46699784515532924, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+  m_PrefabInstance: {fileID: 634544007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &400044822 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3689736127516894536, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+  m_PrefabInstance: {fileID: 634544007}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400044821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f337ec4d8747884392dddd5f2179bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &400044823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400044821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f65430ba00fe36340a4846cb83fd2437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemsPicker: {fileID: 400044822}
+  controller: {fileID: 1971196970}
+  itemLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  radius: 3
+  maxStartsPerFrame: 8
+  drawGizmo: 1
+  useUnscaledTime: 1
+  minDuration: 0.15
+  maxDuration: 0.35
+  ease: 6
+  catchOffset: {x: 0, y: 0.6, z: 0}
+  skipHPPickWhenFull: 1
 --- !u!1 &402185979
 GameObject:
   m_ObjectHideFlags: 0
@@ -33101,13 +33143,13 @@ MonoBehaviour:
     skillName: ColorRamp
     icon: {fileID: -5813120681818029273, guid: d44799a987436a642a3e5d57ab7354b8, type: 3}
     triggerKey: 49
-    effectDuration: 10
+    effectDuration: 7
     cooldownTime: 10
   - skillID: 4
     skillName: Swap
     icon: {fileID: 74671254771631460, guid: f169b847e4936ec4cae4780231f4bea2, type: 3}
     triggerKey: 9
-    effectDuration: 5
+    effectDuration: 0
     cooldownTime: 5
   - skillID: 3
     skillName: Dash
@@ -46731,7 +46773,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8858529088767369571, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1457919135}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 46699784515532924, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 400044823}
   m_SourcePrefab: {fileID: 100100000, guid: de55ae57966a85943b16d27319e3a8a6, type: 3}
 --- !u!114 &634544008 stripped
 MonoBehaviour:
@@ -119450,6 +119495,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconImage: {fileID: 949123172}
   cooldownOverlay: {fileID: 278449136}
+  durationOverlay: {fileID: 0}
+  durationText: {fileID: 0}
   keyText: {fileID: 571602117}
   clickableButton: {fileID: 0}
 --- !u!114 &1565620705
@@ -157472,6 +157519,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconImage: {fileID: 8159001769817100530}
   cooldownOverlay: {fileID: 6472847296277987197}
+  durationOverlay: {fileID: 0}
+  durationText: {fileID: 0}
   keyText: {fileID: 1291751481117408825}
   clickableButton: {fileID: 0}
 --- !u!1 &4725726232636986818
