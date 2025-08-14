@@ -6,6 +6,8 @@ public class AutoChangeScene : MonoBehaviour
 {
     [Header("Scene Transition Settings")]
     [SerializeField] private float delayTime = 5f; // Thời gian chờ (giây)
+    [SerializeField] private string sceneToLoad = "Credit"; // Tên scene tiếp theo
+
     
     void Start()
     {
@@ -28,7 +30,7 @@ public class AutoChangeScene : MonoBehaviour
     
     void ChangeScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(sceneToLoad);
     }
     
     // Method public để có thể gọi từ ngoài
