@@ -1,25 +1,27 @@
 using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using static LoginManager;
+using UnityEngine.UI;
+using UnityEngine.EventSystems; // <- để dùng EventTrigger
 
 public class LoginManager : MonoBehaviour
 {
-    private Dictionary<TMP_InputField, string> inputHistory = new Dictionary<TMP_InputField, string>();
-    private TMP_InputField currentInputField;
+    // Đổi sang InputField (UI thường)
+    private Dictionary<InputField, string> inputHistory = new Dictionary<InputField, string>();
+    private InputField currentInputField;
+
     public GameObject loadingSpinner;
+
     [Header("InputField")]
-    public TMP_InputField emailInput;
-    public TMP_InputField passwordInput;
+    public InputField emailInput;
+    public InputField passwordInput;
 
     [Header("Message")]
     public UIMessageManager messageManager;
-
 
     [Serializable]
     public class LoginRequest
@@ -48,13 +50,35 @@ public class LoginManager : MonoBehaviour
 
     void Start()
     {
-        TMP_InputField[] inputs = { emailInput, passwordInput };
+        // Đăng ký lắng nghe cho InputField thường
+        InputField[] inputs = { emailInput, passwordInput };
+
         foreach (var input in inputs)
         {
-            input.onSelect.AddListener(delegate { OnInputSelected(input); });
-            input.onValueChanged.AddListener(delegate { OnInputTyping(); });
+            if (input == null) continue;
+
+            // 1) Gắn listener khi đang gõ
+            input.onValueChanged.AddListener(_ => OnInputTyping());
+
+            // 2) Gắn listener khi được chọn (InputField thường không có onSelect => dùng EventTrigger)
+            AddSelectListener(input, () => OnInputSelected(input));
+
+            // Lưu text ban đầu
             inputHistory[input] = input.text;
         }
+    }
+
+    // Gắn EventTrigger Entry Select để gọi callback khi input được chọn (focus)
+    private void AddSelectListener(InputField input, Action onSelected)
+    {
+        var go = input.gameObject;
+        var trigger = go.GetComponent<EventTrigger>();
+        if (trigger == null) trigger = go.AddComponent<EventTrigger>();
+
+        // Entry cho sự kiện Select
+        var entry = new EventTrigger.Entry { eventID = EventTriggerType.Select };
+        entry.callback.AddListener(_ => onSelected?.Invoke());
+        trigger.triggers.Add(entry);
     }
 
     void OnInputTyping()
@@ -62,7 +86,7 @@ public class LoginManager : MonoBehaviour
         if (currentInputField == null) return;
 
         string currentText = currentInputField.text;
-        string previousText = inputHistory[currentInputField];
+        string previousText = inputHistory.TryGetValue(currentInputField, out var prev) ? prev : string.Empty;
 
         if (currentText != previousText)
         {
@@ -72,10 +96,14 @@ public class LoginManager : MonoBehaviour
         inputHistory[currentInputField] = currentText;
     }
 
-    void OnInputSelected(TMP_InputField input)
+    void OnInputSelected(InputField input)
     {
         currentInputField = input;
         AudioManager.Instance?.PlayClickSFX();
+
+        // Đảm bảo có entry trong từ điển
+        if (!inputHistory.ContainsKey(input))
+            inputHistory[input] = input.text;
     }
 
     void OnDisable()
@@ -87,8 +115,8 @@ public class LoginManager : MonoBehaviour
     {
         AudioManager.Instance?.PlayClickSFX();
 
-        var email = emailInput.text;
-        var password = passwordInput.text;
+        var email = emailInput != null ? emailInput.text : string.Empty;
+        var password = passwordInput != null ? passwordInput.text : string.Empty;
 
         var loginRequest = new LoginRequest
         {
@@ -97,14 +125,15 @@ public class LoginManager : MonoBehaviour
         };
 
         var json = JsonConvert.SerializeObject(loginRequest);
-        loadingSpinner.SetActive(true);
+
+        if (loadingSpinner != null) loadingSpinner.SetActive(true);
         StartCoroutine(PostLogin(json));
     }
 
     IEnumerator PostLogin(string json)
     {
-        //string url = "https://apiv3-sunny.up.railway.app/api/Login/login";
-        string url = "http://localhost:5235/api/Login/login";
+        string url = "https://apiv3-sunny.up.railway.app/api/Login/login";
+        //string url = "http://localhost:5235/api/Login/login";
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
 
@@ -114,18 +143,19 @@ public class LoginManager : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        loadingSpinner.SetActive(false);
+        if (loadingSpinner != null) loadingSpinner.SetActive(false);
 
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        if (request.result == UnityWebRequest.Result.ConnectionError ||
+            request.result == UnityWebRequest.Result.ProtocolError)
         {
             try
             {
                 var errorResponse = JsonConvert.DeserializeObject<LoginResponse>(request.downloadHandler.text);
-                messageManager.ShowError(errorResponse.notification);
+                messageManager?.ShowError(errorResponse?.notification ?? "Đã xảy ra lỗi kết nối đến máy chủ!");
             }
             catch
             {
-                messageManager.ShowError("Đã xảy ra lỗi kết nối đến máy chủ!");
+                messageManager?.ShowError("Đã xảy ra lỗi kết nối đến máy chủ!");
             }
         }
         else
@@ -133,13 +163,13 @@ public class LoginManager : MonoBehaviour
             var responseText = request.downloadHandler.text;
             var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(responseText);
 
-            if (loginResponse.isSuccess)
+            if (loginResponse != null && loginResponse.isSuccess)
             {
-                messageManager.ShowSuccess("Đăng nhập thành công!");
+                messageManager?.ShowSuccess("Đăng nhập thành công!");
 
                 AudioManager.Instance?.StopBGM();
 
-                if (UserSession.Instance != null)
+                if (UserSession.Instance != null && loginResponse.data != null)
                 {
                     UserSession.Instance.UserId = loginResponse.data.regionID;
                 }
@@ -148,74 +178,14 @@ public class LoginManager : MonoBehaviour
             }
             else
             {
-                messageManager.ShowError(loginResponse.notification);
+                messageManager?.ShowError(loginResponse?.notification ?? "Đăng nhập thất bại!");
             }
         }
     }
 
     IEnumerator LoadSceneAfterDelay(float delaySeconds)
     {
-        //loadingSpinner.SetActive(true); // Bật spinner nếu đã tắt
         yield return new WaitForSeconds(delaySeconds);
         SceneManager.LoadScene(1);
     }
-
 }
-
-/*
-  IEnumerator PostLogin(string json)
-    {
-        string url = "https://apiv3-sunny.up.railway.app/api/Login/login";
-
-        var request = new UnityWebRequest(url, "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        yield return request.SendWebRequest();
-
-        loadingSpinner.SetActive(false);
-
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-        {
-            Debug.LogError($"Login failed: {request.error}");
-            Debug.LogError($"Response: {request.downloadHandler.text}");
-            try
-            {
-                var errorResponse = JsonConvert.DeserializeObject<LoginResponse>(request.downloadHandler.text);
-                messageManager.ShowError(errorResponse.notification);
-            }
-            catch
-            {
-                messageManager.ShowError("Đã xảy ra lỗi kết nối!");
-            }
-        }
-        else
-        {
-            var responseText = request.downloadHandler.text;
-            var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(responseText);
-
-            if (loginResponse.isSuccess)
-            {
-                Debug.Log("Đăng nhập thành công!");
-                messageManager.ShowSuccess("Đăng nhập thành công");
-                AudioManager.Instance?.StopBGM();
-                Debug.Log($"Tên người dùng: {loginResponse.data.name}");
-
-                if (UserSession.Instance != null)
-                {
-                    UserSession.Instance.UserId = loginResponse.data.regionID;
-                }
-                StartCoroutine(LoadSceneAfterDelay(3f));
-                //SceneManager.LoadScene(1); // đổi scene
-            }
-            else
-            {
-                messageManager.ShowError(loginResponse.notification);
-                Debug.LogWarning("Đăng nhập thất bại: " + loginResponse.notification);
-            }
-        }
-    }
- */
