@@ -3,7 +3,7 @@
 public class CanvasTrigger2D : MonoBehaviour
 {
     public CanvasGroup targetCanvasGroup; // Kéo CanvasGroup của canvas vào
-    private bool playerInside = false;
+    //private bool playerInside = false;
 
     void Start()
     {
@@ -15,7 +15,7 @@ public class CanvasTrigger2D : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            playerInside = true;
+            //playerInside = true;
             if (targetCanvasGroup != null)
                 targetCanvasGroup.interactable = true; // Cho phép bấm
         }
@@ -25,7 +25,7 @@ public class CanvasTrigger2D : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            playerInside = false;
+            //playerInside = false;
             if (targetCanvasGroup != null)
                 targetCanvasGroup.interactable = false; // Khoá bấm
         }
