@@ -22,6 +22,41 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         lastCheckpointID = id;
         lastCheckpointPosition = position;
         lastCheckpointScene = sceneName;
+
+        // >>> GỬI SAVE LÊN SERVER
+        TrySaveToServer();
+    }
+
+    private async void TrySaveToServer()
+    {
+        try
+        {
+            var player = FindFirstObjectByType<CharacterController2D>();
+            if (player == null)
+            {
+                Debug.LogWarning("[Save] No CharacterController2D found.");
+                return;
+            }
+
+            var dto = new PlayerSaveService.SaveGameDTO
+            {
+                userId = UserSession.Instance.UserId,
+                health = player.life,
+                maxHealth = player.maxLife,
+                posX = player.transform.position.x,
+                posY = player.transform.position.y,
+                posZ = player.transform.position.z,
+                lastCheckpointID = (int)CheckpointManager.Instance.lastCheckpointID,
+                lastCheckpointScene = CheckpointManager.Instance.lastCheckpointScene,
+            };
+
+            var ok = await PlayerSaveService.SaveGameAsync(dto); // fire & forget 
+            Debug.Log(ok ? "[Save] Save uploaded." : "[Save] Save failed.");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("[Save] Exception: " + e);
+        }
     }
 
     // Method mới để restart mini game
