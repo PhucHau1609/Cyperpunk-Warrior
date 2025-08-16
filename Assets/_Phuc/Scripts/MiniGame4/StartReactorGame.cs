@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Generic; // ✅ để dùng List<>
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -8,7 +8,6 @@ public class StartReactorGame : MonoBehaviour
 {
     [Header("UI & Game Elements")]
     public GameObject panel;
-    public GameObject laserBlock;
     public Button openMiniGameButton;
 
     public Button[] inputButtons;
@@ -32,12 +31,22 @@ public class StartReactorGame : MonoBehaviour
     public Transform interactionPoint;
     public float interactionDistance = 3f;
 
+    [Header("Cửa sắt")]
+    public Transform leftDoor;
+    public Transform rightDoor;
+    public float doorOpenDistance = 2f;
+    public float doorOpenSpeed = 2f;
+    public AudioClip doorOpenSound;
+
+    private AudioSource audioSource;
+
     private List<int> pattern = new List<int>();
     private int inputIndex = 0;
     private int currentLevel = 1;
 
     private bool canStartGame = true;
     private bool hasCompletedGame = false;
+    private bool pendingDoorOpen = false;
 
     void Start()
     {
@@ -46,13 +55,14 @@ public class StartReactorGame : MonoBehaviour
         if (player == null)
             player = Object.FindFirstObjectByType<PlayerMovement>();
 
+        audioSource = GetComponent<AudioSource>();
+
         for (int i = 0; i < inputButtons.Length; i++)
         {
             int idx = i;
             inputButtons[i].onClick.AddListener(() => OnButtonPressed(idx));
         }
 
-        // Kiểm tra khoảng cách ban đầu
         if (openMiniGameButton != null && interactionPoint != null)
         {
             float dist = Vector3.Distance(player.transform.position, interactionPoint.position);
@@ -90,10 +100,9 @@ public class StartReactorGame : MonoBehaviour
             player.SetCanMove(false);
 
         canStartGame = true;
-
-        // 🔒 Khóa input ngay khi mở game
         EnableInput(false);
     }
+
     public void CloseMiniGame()
     {
         if (!panel.activeSelf) return;
@@ -103,6 +112,13 @@ public class StartReactorGame : MonoBehaviour
 
         if (player != null)
             player.SetCanMove(true);
+
+        // 🚪 Nếu đã thắng thì mở cửa ngay khi đóng minigame
+        if (pendingDoorOpen)
+        {
+            pendingDoorOpen = false;
+            StartCoroutine(OpenDoorCoroutine());
+        }
     }
 
     public void StartGame()
@@ -150,7 +166,6 @@ public class StartReactorGame : MonoBehaviour
 
     public void OnButtonPressed(int index)
     {
-        // ✅ Chặn khi chưa có pattern hoặc chưa tới lượt
         if (pattern.Count == 0 || inputIndex >= pattern.Count)
             return;
 
@@ -187,18 +202,17 @@ public class StartReactorGame : MonoBehaviour
             SoundMiniGame4.Instance?.PlayWinSound();
             yield return new WaitForSeconds(1.5f);
 
-            CloseMiniGame();
-
-            if (laserBlock != null)
-                laserBlock.SetActive(false);
+            pendingDoorOpen = true;   // ✅ bật cờ trước
+            CloseMiniGame();          // ✅ rồi mới đóng minigame
 
             if (openMiniGameButton != null)
                 openMiniGameButton.interactable = false;
 
             canStartGame = false;
-            hasCompletedGame = true; // ✅ Đánh dấu game đã thắng
+            hasCompletedGame = true;
             yield break;
         }
+
 
         StartCoroutine(ShowPattern());
     }
@@ -222,6 +236,32 @@ public class StartReactorGame : MonoBehaviour
         ResetAll();
         StartCoroutine(ShowPattern());
     }
+
+    IEnumerator OpenDoorCoroutine()
+    {
+       
+        yield return new WaitForSeconds(0.7f);
+
+       
+        if (doorOpenSound != null && audioSource != null)
+            audioSource.PlayOneShot(doorOpenSound);
+
+        Vector3 leftTarget = leftDoor.position + Vector3.left * doorOpenDistance;
+        Vector3 rightTarget = rightDoor.position + Vector3.right * doorOpenDistance;
+
+        float t = 0f;
+        Vector3 leftStart = leftDoor.position;
+        Vector3 rightStart = rightDoor.position;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime * doorOpenSpeed;
+            leftDoor.position = Vector3.Lerp(leftStart, leftTarget, t);
+            rightDoor.position = Vector3.Lerp(rightStart, rightTarget, t);
+            yield return null;
+        }
+    }
+
 
     void EnableInput(bool enable)
     {
