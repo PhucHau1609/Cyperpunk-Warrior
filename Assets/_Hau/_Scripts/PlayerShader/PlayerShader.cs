@@ -48,6 +48,10 @@ public class PlayerShader : MonoBehaviour
         { ShaderEffect.Glitch, "GLITCH_ON" }
     };
 
+    public static event System.Action<SkillID, float> OnEffectStarted;
+    public static event System.Action<SkillID> OnEffectEnded;
+
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -74,6 +78,7 @@ public class PlayerShader : MonoBehaviour
             Debug.Log("✅ Kích hoạt Invisibility Skill");
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.qImage);
             StartCoroutine(ActivateEffectWithInvisibility());
+            OnEffectStarted?.Invoke(SkillID.Invisibility, effectDuration);
             return true;
         }
 
@@ -89,6 +94,7 @@ public class PlayerShader : MonoBehaviour
             !isEffectActive && !isOnCooldown)
         {
             StartCoroutine(ActivateColorRampEffect());
+            OnEffectStarted?.Invoke(SkillID.ColorRamp, effectDuration);
             return true;
         }
         return false;
@@ -163,6 +169,8 @@ public class PlayerShader : MonoBehaviour
         }
 
         isEffectActive = false;
+        OnEffectEnded?.Invoke(SkillID.Invisibility); // thông báo kết thúc
+
 
         // Đợi phần còn lại của cooldown (nếu cooldown dài hơn effect)
         float remainingCooldown = Mathf.Max(0, cooldownTime - effectDuration);
@@ -191,6 +199,8 @@ public class PlayerShader : MonoBehaviour
         isEffectActive = false;
 
         // cooldown phần còn lại để tổng = cooldownTime
+        OnEffectEnded?.Invoke(SkillID.ColorRamp);
+
         float remainingCooldown = Mathf.Max(0f, cooldownTime - effectDuration); // << NEW
         yield return new WaitForSeconds(remainingCooldown);
 
