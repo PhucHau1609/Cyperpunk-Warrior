@@ -91,52 +91,6 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
         if (skill.triggerKey != KeyCode.None)
             keyToSlot[skill.triggerKey] = slotUI;
     }
-
-
-    /*   private void OnUnlockSkill(object param)
-       {
-           if (param is not SkillID skillID || skillID == SkillID.None) return;
-           if (unlockedSkills.Contains(skillID)) return;
-
-           SkillData skill = skills.Find(s => s.skillID == skillID);
-           if (skill == null)
-           {
-               Debug.LogWarning($"Skill {skillID} không tồn tại trong danh sách!");
-               return;
-           }
-
-           unlockedSkills.Add(skillID);
-
-           GameObject slot = Instantiate(skillSlotPrefab, skillContainer);
-           SkillSlotUI slotUI = slot.GetComponent<SkillSlotUI>();
-           slotUI.Setup(skill);
-
-           // Thêm vào danh sách và đặt vị trí
-           skillSlots.Add(slot);
-           SetSkillPosition(slot);
-
-           // Gán logic dựa trên skillID
-           switch (skill.skillID)
-           {
-               case SkillID.Invisibility:
-                   skill.onActivateCallback = playerShader.ActivateInvisibility;
-                   break;
-               case SkillID.ColorRamp:
-                   skill.onActivateCallback = playerShader.ActivateColorRampEffectSkill;
-                   break;
-               case SkillID.Swap:
-                   skill.onActivateCallback = swapTargetManager.ActiveSwapSkill;
-                   swapTargetManager.swapCooldown = skill.cooldownTime;
-                   break;
-               case SkillID.Dash:
-                   skill.onActivateCallback = playerMovement.TriggerDashX;
-                   break;
-           }
-
-           if (skill.triggerKey != KeyCode.None)
-               keyToSlot[skill.triggerKey] = slotUI;
-       }*/
-
     private void SetSkillPosition(GameObject newSkill)
     {
         RectTransform rectTransform = newSkill.GetComponent<RectTransform>();
@@ -169,3 +123,47 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
         }
     }
 }
+
+/*   private void OnUnlockSkill(object param)
+    {
+        if (param is not SkillID skillID || skillID == SkillID.None) return;
+        if (unlockedSkills.Contains(skillID)) return;
+
+        SkillData skill = skills.Find(s => s.skillID == skillID);
+        if (skill == null)
+        {
+            Debug.LogWarning($"Skill {skillID} không tồn tại trong danh sách!");
+            return;
+        }
+
+        unlockedSkills.Add(skillID);
+
+        GameObject slot = Instantiate(skillSlotPrefab, skillContainer);
+        SkillSlotUI slotUI = slot.GetComponent<SkillSlotUI>();
+        slotUI.Setup(skill);
+
+        // Thêm vào danh sách và đặt vị trí
+        skillSlots.Add(slot);
+        SetSkillPosition(slot);
+
+        // Gán logic dựa trên skillID
+        switch (skill.skillID)
+        {
+            case SkillID.Invisibility:
+                skill.onActivateCallback = playerShader.ActivateInvisibility;
+                break;
+            case SkillID.ColorRamp:
+                skill.onActivateCallback = playerShader.ActivateColorRampEffectSkill;
+                break;
+            case SkillID.Swap:
+                skill.onActivateCallback = swapTargetManager.ActiveSwapSkill;
+                swapTargetManager.swapCooldown = skill.cooldownTime;
+                break;
+            case SkillID.Dash:
+                skill.onActivateCallback = playerMovement.TriggerDashX;
+                break;
+        }
+
+        if (skill.triggerKey != KeyCode.None)
+            keyToSlot[skill.triggerKey] = slotUI;
+    }*/

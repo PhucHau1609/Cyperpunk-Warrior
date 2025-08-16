@@ -33,6 +33,7 @@ public class LoginManager : MonoBehaviour
     [Serializable]
     public class UserData
     {
+        public int userId;         // NEW: nhận từ API
         public string email;
         public string userName;
         public string name;
@@ -47,6 +48,20 @@ public class LoginManager : MonoBehaviour
         public string notification;
         public UserData data;
     }
+
+    [Serializable]
+    public class LoadGameResponse
+    {
+        public bool isSuccess;
+        public string message;          // nếu có
+        public float health;
+        public float maxHealth;
+        public float posX, posY, posZ;
+        public int? lastCheckpointID;
+        public string lastCheckpointScene;
+        public string updatedAt;
+    }
+
 
     void Start()
     {
@@ -172,8 +187,11 @@ public class LoginManager : MonoBehaviour
                 if (UserSession.Instance != null && loginResponse.data != null)
                 {
                     UserSession.Instance.UserId = loginResponse.data.regionID;
-                }
+                    UserSession.Instance.UserId = loginResponse.data.userId;
 
+                }
+                // NEW: load save rồi mới vào game
+                StartCoroutine(LoadSaveAndEnterGame());
                 StartCoroutine(LoadSceneAfterDelay(.5f));
             }
             else
@@ -183,9 +201,112 @@ public class LoginManager : MonoBehaviour
         }
     }
 
+    // NEW: tải save, quyết định scene, rồi apply sau khi load scene
+    IEnumerator LoadSaveAndEnterGame()
+    {
+        // gọi API load save
+        bool done = false;
+        LoadGameResponse cache = null;
+
+        yield return SaveApi.LoadGame(UserSession.Instance.UserId, (resp) =>
+        {
+            cache = resp;
+            done = true;
+        });
+        if (!done) yield break;
+
+        // nếu có save → cache vào UserSession để apply sau khi vào scene
+        string sceneToLoad = null; // null => dùng scene mặc định (build index 1)
+
+        if (cache != null && cache.isSuccess)
+        {
+            UserSession.Instance.HasLoadedSave = true;
+            UserSession.Instance.SavedPosition = new Vector3(cache.posX, cache.posY, cache.posZ);
+            UserSession.Instance.SavedMaxHealth = cache.maxHealth;
+            UserSession.Instance.SavedHealth = cache.health;
+            UserSession.Instance.SavedSceneName = string.IsNullOrWhiteSpace(cache.lastCheckpointScene)
+                ? null
+                : cache.lastCheckpointScene;
+
+            sceneToLoad = UserSession.Instance.SavedSceneName;
+        }
+        else
+        {
+            UserSession.Instance.HasLoadedSave = false; // lần đầu chơi
+        }
+
+        // chuyển scene: ưu tiên scene đã lưu; nếu không có → dùng scene mặc định index 1
+        AsyncOperation op = null;
+        if (!string.IsNullOrEmpty(sceneToLoad))
+            op = SceneManager.LoadSceneAsync(sceneToLoad);
+        else
+            op = SceneManager.LoadSceneAsync(1);
+
+        while (!op.isDone) yield return null;
+
+        // Sau khi scene load xong, apply state nếu có
+        ApplySavedStateIfAny();
+    }
+
+    // NEW: áp vị trí & máu vào Player sau khi scene đã load
+    private void ApplySavedStateIfAny()
+    {
+        if (UserSession.Instance == null || !UserSession.Instance.HasLoadedSave) return;
+
+        var player = FindFirstObjectByType<CharacterController2D>();
+        if (player != null)
+        {
+            // đặt vị trí
+            player.transform.position = UserSession.Instance.SavedPosition;
+
+            // đặt máu
+            player.maxLife = UserSession.Instance.SavedMaxHealth;
+            player.life = Mathf.Clamp(UserSession.Instance.SavedHealth, 0, player.maxLife);
+
+            // đồng bộ vài thứ UI/Camera nếu cần
+            player.SyncFacingDirection();
+            CameraFollow.Instance?.TryFindPlayer();
+        }
+    }
+
     IEnumerator LoadSceneAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);
         SceneManager.LoadScene(1);
     }
+
+    public static class SaveApi
+    {
+        public static string BaseUrl = "https://apiv3-sunny.up.railway.app"; // đổi nếu khác
+
+        public static IEnumerator LoadGame(int userId, Action<LoadGameResponse> onDone)
+        {
+            var url = $"{BaseUrl}/api/Save/LoadGame/{userId}";
+            using var req = UnityWebRequest.Get(url);
+            yield return req.SendWebRequest();
+
+            if (req.result == UnityWebRequest.Result.ConnectionError ||
+                req.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogWarning("[LoadGame] HTTP Error: " + req.error);
+                onDone?.Invoke(null);
+                yield break;
+            }
+
+            try
+            {
+                var resp = JsonConvert.DeserializeObject<LoadGameResponse>(req.downloadHandler.text);
+                onDone?.Invoke(resp);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[LoadGame] Parse error: " + e);
+                onDone?.Invoke(null);
+            }
+        }
+    }
+
 }
+
+
+
