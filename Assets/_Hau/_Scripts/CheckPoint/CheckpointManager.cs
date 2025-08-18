@@ -24,7 +24,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         lastCheckpointScene = sceneName;
 
         // >>> GỬI SAVE LÊN SERVER
-        TrySaveToServer();
+        //TrySaveToServer();
     }
 
     private async void TrySaveToServer()
