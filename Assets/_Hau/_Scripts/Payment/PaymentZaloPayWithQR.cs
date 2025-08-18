@@ -143,7 +143,7 @@ public class PaymentZaloPayWithQR : MonoBehaviour
             if (json.return_code == 1)
             {
                 lastQueryStatus = QueryStatus.Success;
-                InventoryManager.Instance.AddItem(ItemCode.MachineGun_2, 1);
+                //InventoryManager.Instance.AddItem(ItemCode.MachineGun_2, 1);
                 FindFirstObjectByType<PaymentCoordinator>()?.NotifyZaloPaymentSuccess();
                 Debug.Log("Thanh toán thành công");
             }

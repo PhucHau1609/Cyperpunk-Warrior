@@ -58,6 +58,7 @@ public class Payment : MonoBehaviour
         public long orderCode;
         public string provider;
         public string errorMessage;
+        public int amount;
     }
     public event Action<PaymentResult> OnPaymentCompleted;
 
@@ -163,7 +164,7 @@ public class Payment : MonoBehaviour
         if (currentUrl.Contains("return"))
         {
             Debug.Log("✅ [PayOS] Thanh toán thành công");
-            InventoryManager.Instance.AddItem(ItemCode.MachineGun_3, 1);
+            //InventoryManager.Instance.AddItem(ItemCode.MachineGun_3, 1);
             HideBrowserUI();
             OnPaymentCompleted?.Invoke(new PaymentResult
             {

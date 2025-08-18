@@ -81,7 +81,42 @@ public class ShopManager : MonoBehaviour
             paymentCoordinator.OnPaymentFinished -= OnPaymentFinished;
     }
 
+    // ShopManager.cs (đoạn quan trọng)
     private void OnItemBuyClicked(ShopItemView item)
+    {
+        _currentSelected = item;
+
+        methodPanel.Show(
+            onPayOS: () =>
+            {
+                if (_currentSelected == null) return;
+                paymentCoordinator.PayWithPayOS(
+                    _currentSelected.priceVnd,
+                    _currentSelected.displayName,
+                    _currentSelected   // <= chuyền item để biết reward
+                );
+            },
+            onZalo: () =>
+            {
+                if (_currentSelected == null) return;
+                paymentCoordinator.PayWithZaloQR(
+                    _currentSelected.priceVnd,
+                    _currentSelected.displayName,
+                    _currentSelected
+                );
+            }
+        );
+    }
+
+    private void OnPaymentFinished(bool success, ShopItemView item)
+    {
+        if (!success || item == null) return;
+        item.ApplyPurchasedUI();
+        // (Optional) PlayerPrefs.SetInt($"purchased_{item.itemId}", 1);
+    }
+
+
+    /*private void OnItemBuyClicked(ShopItemView item)
     {
         _currentSelected = item;
 
@@ -108,7 +143,7 @@ public class ShopManager : MonoBehaviour
 
         // (Tùy chọn) Lưu trạng thái đã mua (PlayerPrefs, save file…)
         // PlayerPrefs.SetInt($"purchased_{item.itemId}", 1);
-    }
+    }*/
 
     public void ToggleShopItem()
     {
