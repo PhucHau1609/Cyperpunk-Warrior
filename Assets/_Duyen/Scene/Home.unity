@@ -2722,6 +2722,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 671568966}
+        m_TargetAssemblyTypeName: UIMessageManager, Assembly-CSharp
+        m_MethodName: Clear
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &364078180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3568,6 +3580,7 @@ GameObject:
   m_Component:
   - component: {fileID: 522950393}
   - component: {fileID: 522950392}
+  - component: {fileID: 522950394}
   m_Layer: 0
   m_Name: ====ObserverManager====
   m_TagString: Untagged
@@ -3602,6 +3615,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &522950394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522950391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94044e6c8c8b5194b844fbea1dcb4e8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UserId: 0
+  HasLoadedSave: 0
+  SavedPosition: {x: 0, y: 0, z: 0}
+  SavedHealth: 0
+  SavedMaxHealth: 0
+  SavedSceneName: 
 --- !u!1 &526600611
 GameObject:
   m_ObjectHideFlags: 0
@@ -5929,7 +5960,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1090684447
 Transform:
   m_ObjectHideFlags: 0
@@ -5957,9 +5988,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aed292c9e6accf64f92c5faa0f2e7fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emailInput: {fileID: 0}
-  passwordInput: {fileID: 0}
-  nameInput: {fileID: 0}
+  emailInput: {fileID: 227160438}
+  passwordInput: {fileID: 627261360}
+  nameInput: {fileID: 1610378302}
   messageManager: {fileID: 671568966}
 --- !u!114 &1106128928 stripped
 MonoBehaviour:

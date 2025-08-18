@@ -72,7 +72,7 @@ public class SceneController : MonoBehaviour
     public void SwitchToPetControl()
     {
         wasInMiniGame = true;
-        
+
         GameStateManager.Instance.SetState(GameState.MiniGame);
         InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
 
@@ -104,21 +104,21 @@ public class SceneController : MonoBehaviour
 
         // Tắt trigger để Pet không đi xuyên tường khi được điều khiển
         foreach (var col in pet.GetComponents<Collider2D>())
-            col.isTrigger = false; 
+            col.isTrigger = false;
     }
 
     // Method mới để restart mini game
     public void RestartMiniGame()
     {
         Debug.Log("[SceneController] Restarting mini game...");
-        
+
         // QUAN TRỌNG: Đảm bảo tắt Game Over Panel trước
         LyraHealth lyraHealth = pet.GetComponent<LyraHealth>();
         if (lyraHealth != null && lyraHealth.gameOverPanel != null)
         {
             lyraHealth.gameOverPanel.SetActive(false);
         }
-        
+
         // QUAN TRỌNG: Nếu đang trong mini game, chỉ reset state không return control
         if (wasInMiniGame)
         {
@@ -126,19 +126,19 @@ public class SceneController : MonoBehaviour
             wasInMiniGame = false;
             Debug.Log("[SceneController] Reset mini game state without returning control");
         }
-        
+
         // Đợi 1 frame để đảm bảo state được reset
         StartCoroutine(DelayedSwitchToPetControl());
     }
-    
+
     // Coroutine để delay việc switch sang pet control
     private System.Collections.IEnumerator DelayedSwitchToPetControl()
     {
         yield return null; // Đợi 1 frame
-        
+
         Debug.Log("[SceneController] Switching to pet control after reset...");
         SwitchToPetControl();
-        
+
         Debug.Log("[SceneController] Mini game restart completed");
     }
 
@@ -151,7 +151,7 @@ public class SceneController : MonoBehaviour
             if (obj != null)
                 obj.SetActive(true);
         }
-        
+
         // Bật lại các animators đã bị tắt
         foreach (GameObject obj in animatorObjectsToDisable)
         {
@@ -162,7 +162,7 @@ public class SceneController : MonoBehaviour
                     anim.enabled = true;
             }
         }
-        
+
         // Bật lại GameOverManager nếu có
         GameOverManager gom = FindAnyObjectByType<GameOverManager>();
         if (gom != null)
@@ -207,12 +207,11 @@ public class SceneController : MonoBehaviour
     public void ReturnControlToPlayer(bool miniGameCompleted)
     {
         Debug.Log($"[SceneController] ReturnControlToPlayer called - miniGameCompleted: {miniGameCompleted}");
-        
+
         wasInMiniGame = false;
-        
+
         GameStateManager.Instance.ResetToGameplay();
         InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
-        player.SetCanMove(true);
 
         if (petAgent != null)
             petAgent.enabled = true;
@@ -235,11 +234,24 @@ public class SceneController : MonoBehaviour
                 lyraHealth.healthBarUI.gameObject.SetActive(false);
         }
 
+        StartCoroutine(delay());
+
         // Bật lại chế độ follow Player
         FloatingFollower follow = pet.GetComponent<FloatingFollower>();
         if (follow != null)
             follow.enabled = true;
 
+        if (miniGameCompleted)
+            StartCoroutine(CameraTransitionAndDisableObjects());
+        //else
+        //StartCoroutine(CameraTransitionOnly());
+
+        //onReturnToPlayer?.Invoke();
+
+        //foreach (var col in pet.GetComponents<Collider2D>())
+        //    col.isTrigger = true;
+
+        /*
         // Camera quay lại Player
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.Target = player.transform;
@@ -283,5 +295,129 @@ public class SceneController : MonoBehaviour
         // Bật lại trigger để Pet có thể xuyên vật thể khi bay theo Player
         foreach (var col in pet.GetComponents<Collider2D>())
             col.isTrigger = true;
+        */
     }
+
+    private IEnumerator delay()
+    {
+        // 1. Delay 0.5s (tùy chỉnh)
+        yield return new WaitForSeconds(1f);
+    }
+    private IEnumerator CameraTransitionAndDisableObjects()
+    {
+        // 1. Delay trước khi trả cam
+        yield return new WaitForSeconds(1f);
+
+        Transform cam = Camera.main.transform;
+        Vector3 startPos = cam.position;
+        Vector3 targetPos = new Vector3(
+            player.transform.position.x,
+            player.transform.position.y,
+            startPos.z
+        );
+
+        float duration = 3f;
+        float elapsed = 0f;
+
+        int objIndex = 0; // index object trong list
+
+        // 2. Di chuyển camera từ từ
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            cam.position = Vector3.Lerp(startPos, targetPos, t);
+
+            // 3. Tắt bẫy theo thứ tự dựa trên tiến trình di chuyển camera
+            float progressPerObj = 1f / objectsToDisableOnReturn.Count;
+
+            while (objIndex < objectsToDisableOnReturn.Count && t >= (objIndex + 1) * progressPerObj)
+            {
+                if (objectsToDisableOnReturn[objIndex] != null)
+                {
+                    objectsToDisableOnReturn[objIndex].SetActive(false);
+                }
+                objIndex++;
+            }
+
+            yield return null;
+        }
+
+        // 4. Đảm bảo tất cả obj đã tắt
+        for (int i = objIndex; i < objectsToDisableOnReturn.Count; i++)
+        {
+            if (objectsToDisableOnReturn[i] != null)
+                objectsToDisableOnReturn[i].SetActive(false);
+        }
+
+        // 5. Camera follow lại Player
+        if (CameraFollow.Instance != null)
+            CameraFollow.Instance.Target = player.transform;
+
+        // Trả điều khiển cho player
+        player.SetCanMove(true);
+
+        onReturnToPlayer?.Invoke();
+
+        foreach (var col in pet.GetComponents<Collider2D>())
+            col.isTrigger = true;
+    }
+
+    //private IEnumerator CameraTransitionAndDisableObjects()
+    //{
+    //    // 1. Delay 0.5s (tùy chỉnh)
+    //    yield return new WaitForSeconds(1f);
+
+    //    // 2. Camera hiện tại
+    //    Transform cam = Camera.main.transform;
+    //    Vector3 startPos = cam.position;
+    //    Vector3 targetPos = new Vector3(
+    //        player.transform.position.x,
+    //        player.transform.position.y,
+    //        startPos.z
+    //    );
+
+    //    float duration = 3f; // thời gian di chuyển camera
+    //    float elapsed = 0f;
+
+    //    int objIndex = 0;
+
+    //    // 3. Di chuyển camera từ từ
+    //    while (elapsed < duration)
+    //    {
+    //        elapsed += Time.deltaTime;
+    //        float t = elapsed / duration;
+    //        cam.position = Vector3.Lerp(startPos, targetPos, t);
+
+    //        // 4. Check các bẫy để tắt dần
+    //        foreach (GameObject obj in objectsToDisableOnReturn)
+    //        {
+    //            if (obj != null && obj.activeSelf)
+    //            {
+    //                // Nếu bẫy nằm trong vùng camera đã quét tới → tắt
+    //                if (obj.transform.position.x <= cam.position.x + 0.5f &&
+    //                    obj.transform.position.y <= cam.position.y + 0.5f)
+    //                {
+    //                    obj.SetActive(false);
+    //                }
+    //            }
+    //        }
+
+    //        yield return null;
+    //    }
+
+    //    // 5. Set camera follow lại Player
+    //    if (CameraFollow.Instance != null)
+    //        CameraFollow.Instance.Target = player.transform;
+
+    //    player.SetCanMove(true);
+
+    //    // Invoke event
+    //    onReturnToPlayer?.Invoke();
+
+    //    // Bật lại trigger cho Pet bay xuyên tường
+    //    foreach (var col in pet.GetComponents<Collider2D>())
+    //        col.isTrigger = true;
+    //}
+
 }

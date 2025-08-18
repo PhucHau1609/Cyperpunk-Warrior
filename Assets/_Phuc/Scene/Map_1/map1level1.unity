@@ -84990,6 +84990,9 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3944393627676328734, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
       insertIndex: 0
+      addedObject: {fileID: 1960039590}
+    - targetCorrespondingSourceObject: {fileID: 3944393627676328734, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
+      insertIndex: 1
       addedObject: {fileID: 880906311}
     - targetCorrespondingSourceObject: {fileID: 3944393627676328734, guid: fb1b7719507c9ec44bf983ff03cc7ff7, type: 3}
       insertIndex: -1
@@ -90605,7 +90608,7 @@ MonoBehaviour:
   txtName2: {fileID: 593026339}
   txtDescription2: {fileID: 956028696}
   posTooltip1: {x: 670, y: 200, z: 0}
-  posTooltip2: {x: 500, y: 230, z: 0}
+  posTooltip2: {x: 410, y: 230, z: 0}
 --- !u!1 &1112080919
 GameObject:
   m_ObjectHideFlags: 0
@@ -101890,7 +101893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showHide: {fileID: 616196817}
-  appearPosition: {x: 500, y: 0, z: 0}
+  appearPosition: {x: 410, y: 0, z: 0}
   hiddenPosition: {x: 1000, y: 0, z: 0}
   craftingSlots:
   - {fileID: 1939472305}
@@ -117972,6 +117975,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1532301596}
   m_CullTransparentMesh: 1
+--- !u!1 &1532419868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1532419869}
+  - component: {fileID: 1532419870}
+  m_Layer: 5
+  m_Name: DurationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1532419869
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532419868}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1960039590}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1532419870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532419868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58acb7ad82c64f8499c3620af9e7d680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  container: {fileID: 1532419869}
+  badgePrefab: {fileID: 6506062218355963614, guid: 75c7a4e0df7c82d45aa0a4063994d9e1, type: 3}
+  firstPosition: {x: 620, y: -30}
+  spacingX: 90
+  skillManagerUI: {fileID: 439471329}
 --- !u!1 &1532711686
 GameObject:
   m_ObjectHideFlags: 0
@@ -152093,6 +152149,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 244482818}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1960039589
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1960039590}
+  m_Layer: 5
+  m_Name: TopLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1960039590
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960039589}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1532419869}
+  m_Father: {fileID: 1434224832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1961056417
 GameObject:
   m_ObjectHideFlags: 0
