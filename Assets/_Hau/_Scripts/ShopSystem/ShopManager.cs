@@ -51,6 +51,7 @@ public class ShopManager : MonoBehaviour
 }
 */
 
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShopManager : MonoBehaviour
@@ -148,5 +149,19 @@ public class ShopManager : MonoBehaviour
     public void ToggleShopItem()
     {
         this.gameObject.SetActive(!gameObject.activeSelf);
+        //CheckStatsShop();
+    }
+
+    public void CheckStatsShop()
+    {
+        if (this.gameObject.activeSelf == true)
+        {
+            GameStateManager.Instance.SetState(GameState.MiniGame);
+            //Debug.Log("Shop Stats MiniGame");
+        }
+        else
+        {
+            GameStateManager.Instance.ResetToGameplay();
+        }
     }
 }
