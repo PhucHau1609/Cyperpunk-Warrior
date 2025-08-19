@@ -125,24 +125,40 @@ public class LoginManager : MonoBehaviour
         currentInputField = null;
     }
 
+    private static bool IsValidGmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return false;
+        email = email.Trim().ToLowerInvariant();
+        // kiểm tra đúng @gmail.com
+        return System.Text.RegularExpressions.Regex.IsMatch(
+            email, @"^[A-Za-z0-9._%+\-]+@gmail\.com$");
+    }
+
     public void OnLoginClick()
     {
         AudioManager.Instance?.PlayClickSFX();
 
-        var email = emailInput != null ? emailInput.text : string.Empty;
-        var password = passwordInput != null ? passwordInput.text : string.Empty;
+        var email = emailInput ? emailInput.text.Trim() : string.Empty;
+        var password = passwordInput ? passwordInput.text : string.Empty;
 
-        var loginRequest = new LoginRequest
+        if (!IsValidGmail(email))
         {
-            email = email,
-            password = password
-        };
+            messageManager?.ShowError("Chỉ chấp nhận email đuôi @gmail.com");
+            return;
+        }
+        if (string.IsNullOrEmpty(password))
+        {
+            messageManager?.ShowError("Mật khẩu không được để trống");
+            return;
+        }
 
+        var loginRequest = new LoginRequest { email = email, password = password };
         var json = JsonConvert.SerializeObject(loginRequest);
 
-        if (loadingSpinner != null) loadingSpinner.SetActive(true);
+        if (loadingSpinner) loadingSpinner.SetActive(true);
         StartCoroutine(PostLogin(json));
     }
+
 
     IEnumerator PostLogin(string json)
     {
@@ -175,28 +191,30 @@ public class LoginManager : MonoBehaviour
         else
         {
             var responseText = request.downloadHandler.text;
-            var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(responseText);
+            //var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(responseText);
+            var loginResponse = JsonConvert.DeserializeObject<ApiResponse<UserData>>(responseText);
 
-            if (loginResponse != null && loginResponse.isSuccess)
+            if (loginResponse != null && loginResponse.Success)
             {
                 messageManager?.ShowSuccess("Đăng nhập thành công!");
-
                 AudioManager.Instance?.StopBGM();
 
                 if (UserSession.Instance != null && loginResponse.data != null)
                 {
-                    UserSession.Instance.UserId = loginResponse.data.regionID;
-                    UserSession.Instance.UserId = loginResponse.data.userId;
+                    // BỎ dòng gán nhầm regionID ↓↓↓
+                    // UserSession.Instance.UserId = loginResponse.data.regionID;
 
+                    UserSession.Instance.UserId = loginResponse.data.userId;
                 }
-                // NEW: load save rồi mới vào game
-                StartCoroutine(LoadSaveAndEnterGame());
+
+                //StartCoroutine(LoadSaveAndEnterGame());
                 StartCoroutine(LoadSceneAfterDelay(.5f));
             }
             else
             {
-                messageManager?.ShowError(loginResponse?.notification ?? "Đăng nhập thất bại!");
+                messageManager?.ShowError(loginResponse?.Message ?? "Đăng nhập thất bại!");
             }
+
         }
     }
 

@@ -83,24 +83,45 @@ public class Register : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("Login");
     }
 
+    private static bool IsValidGmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return false;
+        email = email.Trim().ToLowerInvariant();
+        // kiểm tra đúng @gmail.com
+        return System.Text.RegularExpressions.Regex.IsMatch(
+            email, @"^[A-Za-z0-9._%+\-]+@gmail\.com$");
+    }
+
     public void OnRegisterClick()
     {
         AudioManager.Instance?.PlayClickSFX();
 
-        var email = emailInput != null ? emailInput.text : string.Empty;
-        var password = passwordInput != null ? passwordInput.text : string.Empty;
-        var name = nameInput != null ? nameInput.text : string.Empty;
+        var email = emailInput ? emailInput.text.Trim() : string.Empty;
+        var password = passwordInput ? passwordInput.text : string.Empty;
+        var name = nameInput ? nameInput.text.Trim() : string.Empty;
 
-        var dto = new RegisterDTO
+        // Pre-validate rõ ràng
+        if (string.IsNullOrEmpty(name))
         {
-            username = name,
-            email = email,
-            password = password
-        };
-        var json = JsonUtility.ToJson(dto);
+            messageManager?.ShowError("Tên không được để trống");
+            return;
+        }
+        if (!IsValidGmail(email))
+        {
+            messageManager?.ShowError("Chỉ chấp nhận email đuôi @gmail.com");
+            return;
+        }
+        if (password == null || password.Length < 6 || password.Length > 15)
+        {
+            messageManager?.ShowError("Mật khẩu phải từ 6 đến 15 ký tự");
+            return;
+        }
 
+        var dto = new RegisterDTO { username = name, email = email, password = password };
+        var json = JsonUtility.ToJson(dto);
         StartCoroutine(Post(json));
     }
+
 
     IEnumerator Post(string json)
     {
@@ -134,13 +155,13 @@ public class Register : MonoBehaviour
         {
             try
             {
-                var response = JsonConvert.DeserializeObject<RegisterModelResponse>(responseText);
+                var response = JsonConvert.DeserializeObject<ApiResponse<object>>(responseText);
                 if (response != null)
                 {
-                    if (response.isSuccess)
-                        messageManager?.ShowSuccess("Đăng ký thành công!");
+                    if (response.Success)
+                        messageManager?.ShowSuccess(response.Message ?? "Đăng ký thành công!");
                     else
-                        messageManager?.ShowError(response.notification ?? "Đăng ký thất bại, vui lòng thử lại!");
+                        messageManager?.ShowError(response.Message ?? "Đăng ký thất bại, vui lòng thử lại!");
                 }
                 else
                 {
@@ -151,6 +172,7 @@ public class Register : MonoBehaviour
             {
                 messageManager?.ShowError("Lỗi khi phân tích phản hồi từ server.");
             }
+
         }
     }
 }
