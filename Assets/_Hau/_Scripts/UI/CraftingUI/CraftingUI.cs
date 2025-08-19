@@ -19,7 +19,7 @@ public class CraftingUI : HauSingleton<CraftingUI>
 
 
     [Header("Button Color Settings")]
-    [SerializeField] private TextMeshProUGUI craftButtonText;
+    [SerializeField] private Text craftButtonText;
     [SerializeField] private Color normalTextColor = Color.white;
     [SerializeField] private Color validRecipeColor = Color.green;
 
@@ -37,7 +37,7 @@ public class CraftingUI : HauSingleton<CraftingUI>
             btnCraft.onClick.AddListener(OnClickCraft);
 
         if (craftButtonText == null && btnCraft != null)
-            craftButtonText = btnCraft.GetComponentInChildren<TextMeshProUGUI>();
+            craftButtonText = btnCraft.GetComponentInChildren<Text>();
 
         CraftingSlot.OnSlotChanged += OnCraftingSlotsChanged;
         CheckRecipeValidity();
