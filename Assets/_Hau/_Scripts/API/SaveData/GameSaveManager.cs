@@ -15,7 +15,7 @@ public class GameSaveManager : MonoBehaviour
         if (UserSession.Instance != null)
         {
             userId = UserSession.Instance.UserId;
-            LoadGameData();
+            //LoadGameData();
         }
     }
 
