@@ -104,8 +104,8 @@ public class Register : MonoBehaviour
 
     IEnumerator Post(string json)
     {
-        var url = "https://apiv3-sunny.up.railway.app/api/Register/register";
-        //var url = "http://localhost:5235/api/Register/register";
+        //var url = "https://apiv3-sunny.up.railway.app/api/Register/register";
+        var url = "http://localhost:5235/api/Register/register";
 
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);

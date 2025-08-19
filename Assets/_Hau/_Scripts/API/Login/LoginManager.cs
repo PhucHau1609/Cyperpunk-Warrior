@@ -10,7 +10,6 @@ using UnityEngine.EventSystems; // <- để dùng EventTrigger
 
 public class LoginManager : MonoBehaviour
 {
-    // Đổi sang InputField (UI thường)
     private Dictionary<InputField, string> inputHistory = new Dictionary<InputField, string>();
     private InputField currentInputField;
 
@@ -147,8 +146,8 @@ public class LoginManager : MonoBehaviour
 
     IEnumerator PostLogin(string json)
     {
-        string url = "https://apiv3-sunny.up.railway.app/api/Login/login";
-        //string url = "http://localhost:5235/api/Login/login";
+        //string url = "https://apiv3-sunny.up.railway.app/api/Login/login";
+        string url = "http://localhost:5235/api/Login/login";
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
 
