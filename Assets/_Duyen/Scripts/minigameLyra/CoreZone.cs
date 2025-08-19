@@ -12,11 +12,8 @@ public class CoreZone : MonoBehaviour
     public GameObject minigamePrefab; // Kéo prefab MinigameCoreUI vào đây trong Inspector
     public float targetSpeed = 100f;  // Tốc độ riêng cho mỗi lõi
 
-    //private bool lyraInside = false;
     private bool canBeInteracted = false;
-    //private SpriteRenderer spriteRenderer;
     private CoreManager coreManager;
-    //private int currentStage = 0;
     private GameObject spawnedMinigame;
 
     private bool minigameRunning = false;
@@ -29,10 +26,12 @@ public class CoreZone : MonoBehaviour
     // QUAN TRỌNG: Thêm flag để prevent auto-trigger sau restart
     private bool isResetting = false;
     private bool hasNpcInside = false;
+    
+    // QUAN TRỌNG: Thêm trạng thái completion
+    private bool isCompleted = false;
 
     void Start()
     {
-        //spriteRenderer = GetComponent<SpriteRenderer>();
         coreManager = FindAnyObjectByType<CoreManager>();
 
         // Lưu trạng thái ban đầu
@@ -61,13 +60,13 @@ public class CoreZone : MonoBehaviour
         if (other.CompareTag("NPC"))
         {
             hasNpcInside = true;
-            Debug.Log($"[CoreZone] 🚀 {gameObject.name} - NPC entered zone. canBeInteracted={canBeInteracted}, isResetting={isResetting}, minigameRunning={minigameRunning}");
+            Debug.Log($"[CoreZone] 🚀 {gameObject.name} - NPC entered zone. canBeInteracted={canBeInteracted}, isResetting={isResetting}, minigameRunning={minigameRunning}, isCompleted={isCompleted}");
         }
         
-        // QUAN TRỌNG: Chỉ trigger khi không đang reset và có thể interact
-        if (!canBeInteracted || isResetting || minigameRunning)
+        // QUAN TRỌNG: Chặn trigger nếu đã hoàn thành, đang reset, hoặc không thể interact
+        if (!canBeInteracted || isResetting || minigameRunning || isCompleted)
         {
-            Debug.Log($"[CoreZone] ❌ {gameObject.name} - BLOCKED: canBeInteracted={canBeInteracted}, isResetting={isResetting}, minigameRunning={minigameRunning}");
+            Debug.Log($"[CoreZone] ❌ {gameObject.name} - BLOCKED: canBeInteracted={canBeInteracted}, isResetting={isResetting}, minigameRunning={minigameRunning}, isCompleted={isCompleted}");
             return;
         }
 
@@ -108,7 +107,8 @@ public class CoreZone : MonoBehaviour
                 {
                     Debug.Log($"[CoreZone] 🏆 {gameObject.name} - Minigame completed!");
                     minigameRunning = false;
-                    // canBeInteracted = false; // Đã set ở trên
+                    isCompleted = true; // QUAN TRỌNG: Đánh dấu đã hoàn thành
+                    
                     coreManager.MarkCoreAsComplete(this);
                     ItemsDropManager.Instance.DropItem(rewardCore, 1, this.transform.position + spawnCore);
                     Destroy(spawnedMinigame);
@@ -148,8 +148,8 @@ public class CoreZone : MonoBehaviour
             }
             spawnedMinigame = null;
             
-            // Reset lại khả năng interact nếu NPC chết
-            if (hasNpcInside && coreManager != null)
+            // Reset lại khả năng interact nếu NPC chết (nhưng chỉ khi chưa hoàn thành)
+            if (hasNpcInside && coreManager != null && !isCompleted)
             {
                 // Kiểm tra xem core này có phải đang active không
                 int coreIndex = coreManager.cores.IndexOf(this);
@@ -166,7 +166,7 @@ public class CoreZone : MonoBehaviour
 
     public void SetActiveLogic(bool active)
     {
-        Debug.Log($"[CoreZone] {gameObject.name} - SetActiveLogic: {active}, isResetting: {isResetting}");
+        Debug.Log($"[CoreZone] {gameObject.name} - SetActiveLogic: {active}, isResetting: {isResetting}, isCompleted: {isCompleted}");
         
         if (isResetting)
         {
@@ -174,9 +174,17 @@ public class CoreZone : MonoBehaviour
             return;
         }
         
+        // QUAN TRỌNG: Không cho phép set active nếu đã hoàn thành
+        if (isCompleted)
+        {
+            Debug.Log($"[CoreZone] {gameObject.name} - Skipping SetActiveLogic because already completed");
+            canBeInteracted = false;
+            return;
+        }
+        
         canBeInteracted = active;
         
-        // QUAN TRỌNG: Nếu NPC đang trong zone và được set active, delay một chút
+        // Nếu NPC đang trong zone và được set active, delay một chút
         if (active && hasNpcInside)
         {
             Debug.Log($"[CoreZone] {gameObject.name} - NPC is inside, delaying activation");
@@ -190,21 +198,37 @@ public class CoreZone : MonoBehaviour
         canBeInteracted = false; // Tắt tạm thời
         yield return new WaitForSeconds(0.5f); // Đợi 0.5 giây
         
-        if (!isResetting && !minigameRunning)
+        if (!isResetting && !minigameRunning && !isCompleted)
         {
             canBeInteracted = true;
             Debug.Log($"[CoreZone] {gameObject.name} - Delayed activation completed");
         }
     }
 
-    // Method mới để reset CoreZone về trạng thái ban đầu cho mini game
+    // Method để set core as completed (gọi từ CoreManager khi restore progress)
+    public void SetAsCompleted()
+    {
+        Debug.Log($"[CoreZone] {gameObject.name} - Setting as completed");
+        
+        isCompleted = true;
+        canBeInteracted = false;
+        minigameRunning = false;
+        
+        // Mở cửa ngay lập tức
+        StartCoroutine(OpenDoorSequence());
+    }
+
+    // Method để reset CoreZone về trạng thái ban đầu cho mini game
     public void ResetCoreForMiniGame()
     {
-        Debug.Log($"[CoreZone] Resetting core: {gameObject.name} - Current canBeInteracted: {canBeInteracted}");
+        Debug.Log($"[CoreZone] Resetting core: {gameObject.name} - Current canBeInteracted: {canBeInteracted}, isCompleted: {isCompleted}");
 
         // QUAN TRỌNG: Đánh dấu đang reset để block mọi trigger
         isResetting = true;
         canBeInteracted = false;
+
+        // QUAN TRỌNG: Chỉ reset completion nếu đây là full reset, không phải preserve progress
+        // (completion sẽ được restore lại trong CoreManager nếu cần)
 
         // Hủy minigame đang chạy nếu có
         if (spawnedMinigame != null)
@@ -217,7 +241,7 @@ public class CoreZone : MonoBehaviour
         // Reset trạng thái
         minigameRunning = false;
 
-        // QUAN TRỌNG: Hủy đăng ký event trước khi reset
+        // Hủy đăng ký event trước khi reset
         if (lyraHealth != null)
         {
             lyraHealth.OnDeath -= HandleNpcDeath;
@@ -225,30 +249,42 @@ public class CoreZone : MonoBehaviour
             Debug.Log($"[CoreZone] Unregistered health event for {gameObject.name}");
         }
 
-        // Reset collider về trạng thái ban đầu (đóng cửa)
-        Collider2D[] colliders = GetComponents<Collider2D>();
-        foreach (var col in colliders)
+        // QUAN TRỌNG: Chỉ reset physical state nếu chưa hoàn thành
+        if (!isCompleted)
         {
-            if (!col.isTrigger) // collider chặn đường
+            // Reset collider về trạng thái ban đầu (đóng cửa)
+            Collider2D[] colliders = GetComponents<Collider2D>();
+            foreach (var col in colliders)
             {
-                col.enabled = initialColliderState; // Trở về trạng thái ban đầu (thường là true - cửa đóng)
-                Debug.Log($"[CoreZone] Reset collider for {gameObject.name} to {initialColliderState}");
+                if (!col.isTrigger) // collider chặn đường
+                {
+                    col.enabled = initialColliderState; // Trở về trạng thái ban đầu (thường là true - cửa đóng)
+                    Debug.Log($"[CoreZone] Reset collider for {gameObject.name} to {initialColliderState}");
+                }
+            }
+
+            // Reset animation về trạng thái ban đầu (đóng cửa)
+            Animator doorAnimator = GetComponent<Animator>();
+            if (doorAnimator != null)
+            {
+                doorAnimator.Play("ClosedState", 0, 0f);
+                Debug.Log($"[CoreZone] Reset animator for {gameObject.name}");
             }
         }
-
-        // QUAN TRỌNG: Reset animation về trạng thái ban đầu (đóng cửa)
-        Animator doorAnimator = GetComponent<Animator>();
-        if (doorAnimator != null)
+        else
         {
-            // Reset về trạng thái ban đầu
-            doorAnimator.Play("ClosedState", 0, 0f); // Giả sử có animation state "ClosedState"
-            // Hoặc nếu có trigger để đóng cửa:
-            // doorAnimator.SetTrigger("Close");
-            Debug.Log($"[CoreZone] Reset animator for {gameObject.name}");
+            Debug.Log($"[CoreZone] {gameObject.name} is completed - keeping door open");
         }
 
-        // Delay việc kết thúc reset để đảm bảo NPC được move về vị trí mới
+        // Delay việc kết thúc reset
         StartCoroutine(FinishReset());
+    }
+    
+    // Method để reset completion status (chỉ gọi khi full reset)
+    public void ResetCompletion()
+    {
+        Debug.Log($"[CoreZone] {gameObject.name} - Resetting completion status");
+        isCompleted = false;
     }
     
     // Coroutine để kết thúc quá trình reset
@@ -265,7 +301,7 @@ public class CoreZone : MonoBehaviour
         // Delay 0.2 giây
         yield return new WaitForSeconds(0.2f);
 
-        // Chạy animation mở cửa (ví dụ dùng Animator)
+        // Chạy animation mở cửa
         Animator doorAnimator = GetComponent<Animator>();
         if (doorAnimator != null)
         {
@@ -282,5 +318,11 @@ public class CoreZone : MonoBehaviour
                 Debug.Log("Door collision disabled — NPC can pass now!");
             }
         }
+    }
+    
+    // Method để check trạng thái completion
+    public bool IsCompleted()
+    {
+        return isCompleted;
     }
 }

@@ -52,13 +52,87 @@ public class BossCombatZone : MonoBehaviour
     public System.Action<BossCombatZone> OnZoneActivated;
     public System.Action<BossCombatZone> OnZoneDeactivated;
     
+    [Header("Auto Setup")]
+    [SerializeField] private bool autoFindBossColliders = true;
+
+    [ContextMenu("Auto Setup Boss Colliders")]
+    public void AutoSetupBossColliders()
+    {
+        if (!autoFindBossColliders) return;
+        
+        Debug.Log("[BossCombatZone] Auto-setting up boss colliders...");
+        
+        bossColliders.Clear();
+        
+        // Tìm colliders từ boss controllers
+        foreach (var boss in bossControllers)
+        {
+            if (boss != null)
+            {
+                var colliders = boss.GetComponents<Collider2D>();
+                foreach (var col in colliders)
+                {
+                    if (!bossColliders.Contains(col))
+                    {
+                        bossColliders.Add(col);
+                        Debug.Log($"[BossCombatZone] Added boss collider: {boss.name} - {col.GetType().Name}");
+                    }
+                }
+            }
+        }
+        
+        // Tìm colliders từ boss rigidbodies
+        foreach (var rb in bossRigidbodies)
+        {
+            if (rb != null)
+            {
+                var colliders = rb.GetComponents<Collider2D>();
+                foreach (var col in colliders)
+                {
+                    if (!bossColliders.Contains(col))
+                    {
+                        bossColliders.Add(col);
+                        Debug.Log($"[BossCombatZone] Added rigidbody collider: {rb.name} - {col.GetType().Name}");
+                    }
+                }
+            }
+        }
+        
+        Debug.Log($"[BossCombatZone] Auto-setup completed: Found {bossColliders.Count} boss collider(s)");
+        
+        // QUAN TRỌNG: Set tất cả colliders về trạng thái mặc định (disabled)
+        SetAllBossCollidersToDefaultState();
+    }
+
+    public void SetAllBossCollidersToDefaultState()
+    {
+        Debug.Log("[BossCombatZone] Setting all boss colliders to default state (disabled)...");
+        
+        foreach (var col in bossColliders)
+        {
+            if (col != null)
+            {
+                col.enabled = false;
+                Debug.Log($"[BossCombatZone] Set to default state (disabled): {col.gameObject.name}");
+            }
+        }
+        
+        Debug.Log($"[BossCombatZone] Set {bossColliders.Count} boss collider(s) to default disabled state");
+    }
+    
     private void Start()
     {
         // Find player
         FindPlayer();
-        
+    
         // Store original boss states
         StoreOriginalBossStates();
+        
+        // Auto-setup boss colliders nếu được enable
+        if (autoFindBossColliders)
+        {
+            AutoSetupBossColliders();
+        }
         
         // Initially deactivate bosses if player not in zone
         if (!IsPlayerInZone())
@@ -81,6 +155,57 @@ public class BossCombatZone : MonoBehaviour
         {
             playerTransform = playerObj.transform;
         }
+    }
+
+    public void EnableBossColliders()
+    {
+        Debug.Log("[BossCombatZone] Manually enabling boss colliders...");
+        
+        foreach (var col in bossColliders)
+        {
+            if (col != null)
+            {
+                col.enabled = true;
+                Debug.Log($"[BossCombatZone] Manually enabled collider: {col.gameObject.name}");
+            }
+        }
+    }
+
+    // Method để manual disable boss colliders 
+    public void DisableBossColliders()
+    {
+        Debug.Log("[BossCombatZone] Manually disabling boss colliders...");
+        
+        foreach (var col in bossColliders)
+        {
+            if (col != null)
+            {
+                col.enabled = false;
+                Debug.Log($"[BossCombatZone] Manually disabled collider: {col.gameObject.name}");
+            }
+        }
+    }
+
+    // Method để debug collider states
+    [ContextMenu("Debug Boss Collider States")]
+    public void DebugBossColliderStates()
+    {
+        Debug.Log($"[BossCombatZone] === BOSS COLLIDER STATES in {zoneName} ===");
+        
+        for (int i = 0; i < bossColliders.Count; i++)
+        {
+            var col = bossColliders[i];
+            if (col != null)
+            {
+                Debug.Log($"  [{i}] {col.gameObject.name} - {col.GetType().Name}: {(col.enabled ? "ENABLED" : "DISABLED")}");
+            }
+            else
+            {
+                Debug.Log($"  [{i}] NULL COLLIDER");
+            }
+        }
+        
+        Debug.Log($"[BossCombatZone] === END COLLIDER STATES ===");
     }
     
     private void StoreOriginalBossStates()
@@ -292,7 +417,6 @@ public class BossCombatZone : MonoBehaviour
     
     public void ActivateBosses()
     {
-        // Nếu là mini game zone, trigger mini game thay vì activate bosses
         if (isMiniGameZone)
         {
             TriggerMiniGame();
@@ -319,16 +443,18 @@ public class BossCombatZone : MonoBehaviour
             }
         }
         
-        // Activate colliders
+        // QUAN TRỌNG: ACTIVATE COLLIDERS CHỈ KHI THỰC SỰ ACTIVATE BOSSES
+        // (sau khi warning sequence hoàn thành)
         foreach (var col in bossColliders)
         {
             if (col != null)
             {
                 col.enabled = true;
+                Debug.Log($"[BossCombatZone] Enabled boss collider: {col.gameObject.name}");
             }
         }
         
-        Debug.Log($"[BossCombatZone] Activated {bossControllers.Count} boss(es) in {zoneName}");
+        Debug.Log($"[BossCombatZone] Activated {bossControllers.Count} boss(es) with enabled colliders in {zoneName}");
     }
     
     public void DeactivateBosses()
@@ -360,7 +486,17 @@ public class BossCombatZone : MonoBehaviour
             }
         }
         
-        Debug.Log($"[BossCombatZone] Deactivated {bossControllers.Count} boss(es) in {zoneName}");
+        // QUAN TRỌNG: DISABLE COLLIDERS khi deactivate
+        foreach (var col in bossColliders)
+        {
+            if (col != null)
+            {
+                col.enabled = false;
+                Debug.Log($"[BossCombatZone] Disabled boss collider: {col.gameObject.name}");
+            }
+        }
+        
+        Debug.Log($"[BossCombatZone] Deactivated {bossControllers.Count} boss(es) with disabled colliders in {zoneName}");
     }
     
     private void HandleBossActivation(MonoBehaviour boss)
@@ -687,27 +823,129 @@ public class BossCombatZone : MonoBehaviour
         }
     }
     
+    public void ResetZoneOnly()
+    {
+        hasTriggeredWarningBefore = false;
+        playerInZone = false;
+        hasBeenEnteredAfterRespawn = true; // Mark that this zone will be entered after respawn
+        
+        Debug.Log($"[BossCombatZone] Resetting zone only: {zoneName}, isMiniGameZone: {isMiniGameZone}");
+        
+        // QUAN TRỌNG: Nếu là mini game zone, đảm bảo player control được return
+        if (isMiniGameZone)
+        {
+            SceneController sceneController = FindFirstObjectByType<SceneController>();
+            if (sceneController != null && sceneController.IsInMiniGame())
+            {
+                sceneController.ReturnControlToPlayer();
+                Debug.Log("[BossCombatZone] Returned control to player during zone-only reset");
+            }
+        }
+        
+        // QUAN TRỌNG: KHÔNG gọi ForceStopBossAnimationsAndMovement ở đây
+        // KHÔNG reset boss physical state, chỉ reset zone logic
+        
+        // Deactivate bosses initially (chỉ disable scripts, không touch colliders)
+        DeactivateBossesLogicOnly();
+        
+        Debug.Log($"[BossCombatZone] Zone-only reset completed: {zoneName}");
+    }
+
+    private void DeactivateBossesLogicOnly()
+    {
+        foreach (var boss in bossControllers)
+        {
+            if (boss != null)
+            {
+                if (disableBossAIOutsideZone)
+                {
+                    boss.enabled = false;
+                }
+                
+                // Handle specific boss types - chỉ logic, không touch physical
+                HandleBossLogicDeactivation(boss);
+            }
+        }
+        
+        // QUAN TRỌNG: FORCE DISABLE COLLIDERS về trạng thái mặc định
+        foreach (var col in bossColliders)
+        {
+            if (col != null)
+            {
+                col.enabled = false;
+                Debug.Log($"[BossCombatZone] Force disabled boss collider to default state: {col.gameObject.name}");
+            }
+        }
+        
+        Debug.Log($"[BossCombatZone] Deactivated boss logic only with disabled colliders in {zoneName}");
+    }
+
+    // Method mới để handle boss logic deactivation (không touch colliders/rigidbody)
+    private void HandleBossLogicDeactivation(MonoBehaviour boss)
+    {
+        if (boss is MiniBoss miniBoss)
+        {
+            // KHÔNG touch colliders hoặc rigidbody
+            // Chỉ disable script
+            // Script đã được disable ở trên
+        }
+        
+        // Handle BossPhuController  
+        else if (boss is BossPhuController bossPhu)
+        {
+            var behaviorTree = bossPhu.GetComponent<BehaviorDesigner.Runtime.BehaviorTree>();
+            
+            // CRITICAL: Disable Behavior Tree FIRST
+            if (behaviorTree != null)
+            {
+                behaviorTree.DisableBehavior();
+                behaviorTree.enabled = false;
+            }
+            
+            // Reset internal boss states
+            bossPhu.isAttacking = false;
+            
+            // Stop audio
+            var audioSource = bossPhu.GetComponent<AudioSource>();
+            if (audioSource != null && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+            
+            // QUAN TRỌNG: KHÔNG touch Rigidbody2D ở đây
+            // Nhưng FORCE DISABLE Collider2D để về trạng thái mặc định
+            var colliders = bossPhu.GetComponents<Collider2D>();
+            foreach (var col in colliders)
+            {
+                col.enabled = false;
+                Debug.Log($"[BossCombatZone] Force disabled {bossPhu.name} collider to default state");
+            }
+        }
+        
+        Debug.Log($"[BossCombatZone] Deactivated logic for boss: {boss.name}");
+    }
+    
     // Gizmos for visualization
     private void OnDrawGizmos()
     {
         if (!showGizmos) return;
-        
+
         float left, right, top, bottom;
         GetZoneBoundaries(out left, out right, out top, out bottom);
-        
+
         // Draw zone boundaries
         Gizmos.color = playerInZone ? Color.green : Color.red;
-        
+
         Vector3 center = new Vector3((left + right) / 2f, (top + bottom) / 2f, 0f);
         Vector3 size = new Vector3(right - left, top - bottom, 1f);
-        
+
         Gizmos.DrawWireCube(center, size);
-        
+
         // Draw zone label
         Gizmos.color = Color.white;
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.Handles.Label(center + Vector3.up * (size.y / 2f + 1f), zoneName + (isMiniGameZone ? " (MiniGame)" : ""));
-        #endif
+#endif
     }
     
     private void OnDrawGizmosSelected()
