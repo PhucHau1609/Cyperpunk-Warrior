@@ -51,7 +51,6 @@ public class SceneController : MonoBehaviour
         }
         if (player != null)
             playerAnimator = player.GetComponentInChildren<Animator>();
-
     }
 
     void StartInitialDialogue()
@@ -71,6 +70,22 @@ public class SceneController : MonoBehaviour
     // Gọi hàm này từ TriggerZone
     public void SwitchToPetControl()
     {
+        // QUAN TRỌNG: Check protection flag trước khi switch
+        if (CheckpointManager.Instance != null && CheckpointManager.Instance.IsMiniGameProtected())
+        {
+            Debug.LogWarning("[SceneController] Mini game is protected - preventing auto-start");
+            return;
+        }
+        
+        // QUAN TRỌNG: Check nếu mini game đã hoàn thành
+        if (CheckpointManager.Instance != null && CheckpointManager.Instance.miniGameCompleted)
+        {
+            Debug.LogWarning("[SceneController] Mini game already completed - preventing restart");
+            return;
+        }
+        
+        Debug.Log("[SceneController] Starting mini game - switching to pet control");
+        
         wasInMiniGame = true;
 
         GameStateManager.Instance.SetState(GameState.MiniGame);
@@ -192,13 +207,24 @@ public class SceneController : MonoBehaviour
         Invoke(nameof(ReturnControlToPlayer), 2f);
     }
 
-    // Method để check xem có đang trong mini game không
+    // Method để check xem có đang trong mini game không - IMPROVED
     public bool IsInMiniGame()
     {
-        return wasInMiniGame && petControl != null && petControl.enabled;
+        // QUAN TRỌNG: Kiểm tra chính xác state
+        bool petControlActive = (petControl != null && petControl.enabled);
+        bool gameStateIsMiniGame = (GameStateManager.Instance != null && 
+                                   GameStateManager.Instance.CurrentState == GameState.MiniGame);
+        bool miniGameNotCompleted = (CheckpointManager.Instance == null || 
+                                    !CheckpointManager.Instance.miniGameCompleted);
+        
+        bool isInMiniGame = wasInMiniGame && petControlActive && gameStateIsMiniGame && miniGameNotCompleted;
+        
+        Debug.Log($"[SceneController] IsInMiniGame check: wasInMiniGame={wasInMiniGame}, petControlActive={petControlActive}, gameStateIsMiniGame={gameStateIsMiniGame}, miniGameNotCompleted={miniGameNotCompleted}, result={isInMiniGame}");
+        
+        return isInMiniGame;
     }
 
-    // Overload method để backwards compatibility
+    // Overload method để backwards compatibility - IMPROVED
     public void ReturnControlToPlayer()
     {
         ReturnControlToPlayer(true); // Default: mini game completed
@@ -208,7 +234,15 @@ public class SceneController : MonoBehaviour
     {
         Debug.Log($"[SceneController] ReturnControlToPlayer called - miniGameCompleted: {miniGameCompleted}");
 
+        // QUAN TRỌNG: Reset state ngay lập tức
         wasInMiniGame = false;
+
+        // QUAN TRỌNG: Update CheckpointManager mini game completion status
+        if (miniGameCompleted && CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.miniGameCompleted = true;
+            Debug.Log("[SceneController] Set CheckpointManager.miniGameCompleted = true");
+        }
 
         GameStateManager.Instance.ResetToGameplay();
         InventoryUIHandler.Instance.ToggleIconWhenPlayMiniGame();
@@ -243,66 +277,118 @@ public class SceneController : MonoBehaviour
 
         if (miniGameCompleted)
             StartCoroutine(CameraTransitionAndDisableObjects());
-        //else
-        //StartCoroutine(CameraTransitionOnly());
+    }
 
-        //onReturnToPlayer?.Invoke();
-
-        //foreach (var col in pet.GetComponents<Collider2D>())
-        //    col.isTrigger = true;
-
-        /*
-        // Camera quay lại Player
-        if (CameraFollow.Instance != null)
+    // Method mới để force reset mini game state - ENHANCED
+    public void ForceResetMiniGameState()
+    {
+        Debug.Log("[SceneController] === FORCE RESETTING MINI GAME STATE ===");
+        
+        // 1. Reset internal state
+        wasInMiniGame = false;
+        
+        // 2. Disable pet control
+        if (petControl != null)
+        {
+            petControl.enabled = false;
+            Debug.Log("[SceneController] Disabled petControl");
+        }
+        
+        // 3. Force reset GameStateManager
+        if (GameStateManager.Instance != null)
+        {
+            Debug.Log($"[SceneController] GameStateManager before reset: {GameStateManager.Instance.CurrentState}");
+            GameStateManager.Instance.ForceResetToGameplay();
+            Debug.Log($"[SceneController] GameStateManager after reset: {GameStateManager.Instance.CurrentState}");
+        }
+        
+        // 4. Disable all pet mini game components
+        if (pet != null)
+        {
+            PetShooting petShooting = pet.GetComponent<PetShooting>();
+            if (petShooting != null)
+            {
+                petShooting.enabled = false;
+                Debug.Log("[SceneController] Disabled pet shooting");
+            }
+            
+            LyraHealth lyraHealth = pet.GetComponent<LyraHealth>();
+            if (lyraHealth != null)
+            {
+                lyraHealth.enabled = false;
+                if (lyraHealth.healthBarUI != null)
+                    lyraHealth.healthBarUI.gameObject.SetActive(false);
+                Debug.Log("[SceneController] Disabled lyra health and UI");
+            }
+            
+            // Reset pet colliders to trigger mode
+            foreach (var col in pet.GetComponents<Collider2D>())
+                col.isTrigger = true;
+            
+            // Enable pet agent
+            if (petAgent != null)
+            {
+                petAgent.enabled = true;
+                Debug.Log("[SceneController] Enabled pet NavMeshAgent");
+            }
+            
+            // Enable pet following
+            FloatingFollower follow = pet.GetComponent<FloatingFollower>();
+            if (follow != null)
+            {
+                follow.enabled = true;
+                Debug.Log("[SceneController] Enabled pet following");
+            }
+        }
+        
+        // 5. Restore player control
+        if (player != null)
+        {
+            player.SetCanMove(true);
+            Debug.Log("[SceneController] Enabled player movement");
+            
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetFloat("Speed", 0f);
+                Debug.Log("[SceneController] Reset player animator");
+            }
+        }
+        
+        // 6. Reset camera target to player
+        if (CameraFollow.Instance != null && player != null)
+        {
             CameraFollow.Instance.Target = player.transform;
-
-        // QUAN TRỌNG: Chỉ tắt các object khi THỰC SỰ hoàn thành mini game
-        if (miniGameCompleted)
-        {
-            Debug.Log("[SceneController] Mini game completed - disabling obstacles");
-            
-            //Tắt các object bẩy
-            foreach (GameObject obj in objectsToDisableOnReturn)
-            {
-                if (obj != null)
-                    obj.SetActive(false);
-            }
-
-            foreach (GameObject obj in animatorObjectsToDisable)
-            {
-                if (obj != null)
-                {
-                    Animator anim = obj.GetComponent<Animator>();
-                    if (anim != null)
-                        anim.enabled = false;
-                }
-            }
-            
-            // Tắt GameOverManager khi hoàn thành
-            GameOverManager gom = FindAnyObjectByType<GameOverManager>();
-            if (gom != null)
-            {
-                gom.enabled = false;
-            }
+            Debug.Log("[SceneController] Reset camera target to player");
         }
-        else
+        
+        // 7. Reset UI
+        if (InventoryUIHandler.Instance != null)
         {
-            Debug.Log("[SceneController] Mini game restarted - keeping obstacles active");
+            // This should reset UI to normal state
+            Debug.Log("[SceneController] Reset inventory UI handler");
         }
+        
+        Debug.Log("[SceneController] === MINI GAME STATE FORCE RESET COMPLETED ===");
+    }
 
-        onReturnToPlayer?.Invoke();
-
-        // Bật lại trigger để Pet có thể xuyên vật thể khi bay theo Player
-        foreach (var col in pet.GetComponents<Collider2D>())
-            col.isTrigger = true;
-        */
+    // Method để debug current state
+    public void DebugCurrentState()
+    {
+        Debug.Log($"[SceneController] === CURRENT STATE DEBUG ===");
+        Debug.Log($"wasInMiniGame: {wasInMiniGame}");
+        Debug.Log($"petControl.enabled: {(petControl != null ? petControl.enabled.ToString() : "NULL")}");
+        Debug.Log($"GameState: {(GameStateManager.Instance != null ? GameStateManager.Instance.CurrentState.ToString() : "NULL")}");
+        Debug.Log($"CheckpointManager.miniGameCompleted: {(CheckpointManager.Instance != null ? CheckpointManager.Instance.miniGameCompleted.ToString() : "NULL")}");
+        Debug.Log($"IsInMiniGame(): {IsInMiniGame()}");
+        Debug.Log($"[SceneController] === END DEBUG ===");
     }
 
     private IEnumerator delay()
     {
-        // 1. Delay 0.5s (tùy chỉnh)
+        // 1. Delay 1s
         yield return new WaitForSeconds(1f);
     }
+
     private IEnumerator CameraTransitionAndDisableObjects()
     {
         // 1. Delay trước khi trả cam
@@ -362,62 +448,4 @@ public class SceneController : MonoBehaviour
         foreach (var col in pet.GetComponents<Collider2D>())
             col.isTrigger = true;
     }
-
-    //private IEnumerator CameraTransitionAndDisableObjects()
-    //{
-    //    // 1. Delay 0.5s (tùy chỉnh)
-    //    yield return new WaitForSeconds(1f);
-
-    //    // 2. Camera hiện tại
-    //    Transform cam = Camera.main.transform;
-    //    Vector3 startPos = cam.position;
-    //    Vector3 targetPos = new Vector3(
-    //        player.transform.position.x,
-    //        player.transform.position.y,
-    //        startPos.z
-    //    );
-
-    //    float duration = 3f; // thời gian di chuyển camera
-    //    float elapsed = 0f;
-
-    //    int objIndex = 0;
-
-    //    // 3. Di chuyển camera từ từ
-    //    while (elapsed < duration)
-    //    {
-    //        elapsed += Time.deltaTime;
-    //        float t = elapsed / duration;
-    //        cam.position = Vector3.Lerp(startPos, targetPos, t);
-
-    //        // 4. Check các bẫy để tắt dần
-    //        foreach (GameObject obj in objectsToDisableOnReturn)
-    //        {
-    //            if (obj != null && obj.activeSelf)
-    //            {
-    //                // Nếu bẫy nằm trong vùng camera đã quét tới → tắt
-    //                if (obj.transform.position.x <= cam.position.x + 0.5f &&
-    //                    obj.transform.position.y <= cam.position.y + 0.5f)
-    //                {
-    //                    obj.SetActive(false);
-    //                }
-    //            }
-    //        }
-
-    //        yield return null;
-    //    }
-
-    //    // 5. Set camera follow lại Player
-    //    if (CameraFollow.Instance != null)
-    //        CameraFollow.Instance.Target = player.transform;
-
-    //    player.SetCanMove(true);
-
-    //    // Invoke event
-    //    onReturnToPlayer?.Invoke();
-
-    //    // Bật lại trigger cho Pet bay xuyên tường
-    //    foreach (var col in pet.GetComponents<Collider2D>())
-    //        col.isTrigger = true;
-    //}
-
 }
