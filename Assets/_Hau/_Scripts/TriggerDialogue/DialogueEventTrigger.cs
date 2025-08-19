@@ -24,12 +24,17 @@ public class DialogueEventTrigger : MonoBehaviour
     [Header("Dialogue khi chưa nhặt được CraftingRecipe")]
     public DialogueData hasNotHaveCraftingRecipe;
 
+    [Header("Dialogue khi lần 2 nhặt được energy")]
+    public DialogueData secondEnergyDialogue;
+
     //private int deathCountAtMap2 = 0;
 
     private void OnEnable()
     {
         ObserverManager.Instance.AddListener(EventID.FirstGunPickedUp, OnFirstGunPickedUp);
         ObserverManager.Instance.AddListener(EventID.FirstEnergyPickedUp, OnFirstEnergyPickedUp);
+        ObserverManager.Instance.AddListener(EventID.SecondEnergyPickedUp, OnSecondEnergyPickedUp);
+
         ObserverManager.Instance.AddListener(EventID.PlayerDied, OnPlayerDied);
         ObserverManager.Instance.AddListener(EventID.NotHasCraftingRecipeInInventory, NotHasCraftingRecipeInInventory);
 
@@ -39,6 +44,8 @@ public class DialogueEventTrigger : MonoBehaviour
     {
         ObserverManager.Instance.RemoveListener(EventID.FirstGunPickedUp, OnFirstGunPickedUp);
         ObserverManager.Instance.RemoveListener(EventID.FirstEnergyPickedUp, OnFirstEnergyPickedUp);
+        ObserverManager.Instance.RemoveListener(EventID.SecondEnergyPickedUp, OnSecondEnergyPickedUp);
+
         ObserverManager.Instance.RemoveListener(EventID.PlayerDied, OnPlayerDied);
         ObserverManager.Instance.RemoveListener(EventID.NotHasCraftingRecipeInInventory, NotHasCraftingRecipeInInventory);
     }
@@ -55,6 +62,13 @@ public class DialogueEventTrigger : MonoBehaviour
         if (firstEnergyDialogue == null) return;
 
         DialogueManager.Instance.StartDialogue(firstEnergyDialogue, lyraTransform.NPCTransform);
+    }
+
+    private void OnSecondEnergyPickedUp(object param)
+    {
+        if (secondEnergyDialogue == null) return;
+
+        DialogueManager.Instance.StartDialogue(secondEnergyDialogue, lyraTransform.NPCTransform);
     }
 
     private void NotHasCraftingRecipeInInventory(object param)

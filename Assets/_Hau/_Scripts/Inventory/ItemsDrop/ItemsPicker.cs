@@ -15,6 +15,8 @@ public class ItemsPicker : HauMonoBehaviour
     public Camera mainCamera;
     private bool hasPickedFirstGun = false;
     private bool hasPickedFirstEnergy = false;
+    private bool hasPickedSecondEnergy = false;
+
 
     public void PickupFromMagnet(ItemsDropCtrl item) => this.PickupItem(item);
 
@@ -124,6 +126,7 @@ public class ItemsPicker : HauMonoBehaviour
         if (itemsDropCtrl == null) return;
         CheckIsPickFirstGun(itemsDropCtrl);
         CheckIsPickFirstEnergy(itemsDropCtrl);
+        CheckIsPickSecondEnergy(itemsDropCtrl);
 
 
         // --- Xử lý riêng với HP ---
@@ -205,6 +208,15 @@ public class ItemsPicker : HauMonoBehaviour
         }
     }
 
+    public void CheckIsPickSecondEnergy(ItemsDropCtrl itemsDropCtrl)
+    {
+        if (hasPickedSecondEnergy) return; // ✅ Đã nhặt rồi thì bỏ qua
 
-
+        ItemProfileSO itemProfile = InventoryManager.Instance.GetProfileByCode(itemsDropCtrl.ItemCode);
+        if (itemProfile != null && itemProfile.itemCode == ItemCode.UpgradeItem_1)
+        {
+            hasPickedSecondEnergy = true; // ✅ Đánh dấu đã nhặt
+            ObserverManager.Instance.PostEvent(EventID.SecondEnergyPickedUp);
+        }
+    }
 }
