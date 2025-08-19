@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ public static class InventoryApiClient
     {
         var req = new PickItemRequest { userId = userId, itemCode = itemCode, delta = delta, reason = reason };
         var json = JsonUtility.ToJson(req);
-        Debug.Log($"[PickItemAsync] JSON => {json}");
+        //Debug.Log($"[PickItemAsync] JSON => {json}");
 
         using var www = new UnityWebRequest($"{BaseUrl}/api/Inventory/pick", "POST"); // giữ đúng /Inventory
         www.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
@@ -68,7 +69,7 @@ public static class InventoryApiClient
             return false;
         }
 
-        Debug.Log($"PickItemAsync ok: {www.downloadHandler.text}");
+        //Debug.Log($"PickItemAsync ok: {www.downloadHandler.text}");
         return true;
     }
 
@@ -76,7 +77,7 @@ public static class InventoryApiClient
     {
         var req = new SyncInventoryRequest { userId = userId, items = items };
         var json = JsonUtility.ToJson(req);
-        Debug.Log($"[SyncInventoryAsync] JSON => {json}");
+        //Debug.Log($"[SyncInventoryAsync] JSON => {json}");
 
         using var www = new UnityWebRequest($"{BaseUrl}/api/Inventory/sync", "POST"); // giữ đúng /Inventory
         www.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
@@ -93,7 +94,33 @@ public static class InventoryApiClient
             return false;
         }
 
-        Debug.Log($"SyncInventoryAsync ok: {www.downloadHandler.text}");
+        //Debug.Log($"SyncInventoryAsync ok: {www.downloadHandler.text}");
         return true;
+    }
+
+    public static async Task<List<InventoryItemDto>> GetInventoryAsync(int userId)
+    {
+        using var www = UnityWebRequest.Get($"{BaseUrl}/api/Inventory/{userId}");
+        www.downloadHandler = new DownloadHandlerBuffer();
+
+        var op = www.SendWebRequest();
+        while (!op.isDone) await Task.Yield();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"GetInventoryAsync error: {www.responseCode} | {www.error} | {www.downloadHandler.text}");
+            return null;
+        }
+
+        try
+        {
+            var list = JsonConvert.DeserializeObject<List<InventoryItemDto>>(www.downloadHandler.text);
+            return list ?? new List<InventoryItemDto>();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"GetInventoryAsync parse error: {e}");
+            return null;
+        }
     }
 }
