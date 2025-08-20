@@ -1,57 +1,4 @@
-﻿/*using UnityEngine;
-
-public class ShopManager : MonoBehaviour
-{
-    [Header("Items trong shop")]
-    public ShopItemView[] items;
-
-    [Header("UI chọn phương thức")]
-    public PaymentMethodPanel methodPanel;
-
-    [Header("Coordinator")]
-    public PaymentCoordinator paymentCoordinator;
-
-    // Cache item đang chọn
-    private ShopItemView _currentSelected;
-
-    void Start()
-    {
-        // Gắn hành vi Buy cho từng item
-        foreach (var item in items)
-        {
-            if (item != null)
-                item.BindBuy(OnItemBuyClicked);
-        }
-    }
-
-    private void OnItemBuyClicked(ShopItemView item)
-    {
-        _currentSelected = item;
-
-        // Mở panel chọn phương thức + truyền callback cho 2 nút
-        methodPanel.Show(
-            onPayOS: () =>
-            {
-                if (_currentSelected == null) return;
-                paymentCoordinator.PayWithPayOS(_currentSelected.priceVnd, _currentSelected.displayName);
-            },
-            onZalo: () =>
-            {
-                if (_currentSelected == null) return;
-
-                // Nếu thích QR tùy biến:
-                paymentCoordinator.PayWithZaloQR(_currentSelected.priceVnd, _currentSelected.displayName);
-
-                // Hoặc nếu dùng ZFBrowser của Payment.cs cho Zalo:
-                // paymentCoordinator.payOSProvider.SetPaymentContext(_currentSelected.priceVnd, _currentSelected.displayName);
-                // paymentCoordinator.payOSProvider.PayWithZalo();
-            }
-        );
-    }
-}
-*/
-
-using Unity.VisualScripting;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShopManager : MonoBehaviour
@@ -91,10 +38,10 @@ public class ShopManager : MonoBehaviour
             onPayOS: () =>
             {
                 if (_currentSelected == null) return;
-                paymentCoordinator.PayWithPayOS(
+                paymentCoordinator.PayWithPayOSQR( // đổi sang QR
                     _currentSelected.priceVnd,
                     _currentSelected.displayName,
-                    _currentSelected   // <= chuyền item để biết reward
+                    _currentSelected
                 );
             },
             onZalo: () =>
