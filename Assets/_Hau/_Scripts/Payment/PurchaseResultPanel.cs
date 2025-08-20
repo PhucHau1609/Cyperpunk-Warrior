@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿// PurchaseResultPanel.cs
+using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -6,8 +7,8 @@ using DG.Tweening;
 public class PurchaseResultPanel : MonoBehaviour
 {
     [Header("UI")]
-    public CanvasGroup rootCanvas;        // để fade toàn panel
-    public RectTransform content;         // panel chính
+    public CanvasGroup rootCanvas;
+    public RectTransform content;
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI amountText;
@@ -23,12 +24,12 @@ public class PurchaseResultPanel : MonoBehaviour
 
     void Awake()
     {
-        if (closeButton != null)
-            closeButton.onClick.AddListener(Hide);
+        if (closeButton != null) closeButton.onClick.AddListener(Hide);
         gameObject.SetActive(false);
     }
 
-    public void Show(string itemName, int amountVnd, bool success, string provider, long orderCode)
+    // ⬇⬇⬇ ĐỔI: orderCode từ long -> string và có giá trị mặc định = "" ⬇⬇⬇
+    public void Show(string itemName, int amountVnd, bool success, string provider, string orderCode = "")
     {
         gameObject.SetActive(true);
 
@@ -42,14 +43,15 @@ public class PurchaseResultPanel : MonoBehaviour
         }
         if (extraText)
         {
-            extraText.text = $"Cổng: {provider}\nMã đơn: {orderCode}";
+            // orderCode có thể rỗng nếu cổng không trả mã
+            extraText.text = string.IsNullOrEmpty(orderCode)
+                ? $"Cổng: {provider}"
+                : $"Cổng: {provider}\nMã đơn: {orderCode}";
         }
 
-        // reset trạng thái trước anim
         rootCanvas.alpha = 0;
         content.localScale = Vector3.zero;
 
-        // anim DOTween
         currentTween?.Kill();
         currentTween = DOTween.Sequence()
             .Append(rootCanvas.DOFade(1, 0.3f))
@@ -62,9 +64,6 @@ public class PurchaseResultPanel : MonoBehaviour
         currentTween = DOTween.Sequence()
             .Append(content.DOScale(0f, 0.25f).SetEase(Ease.InBack))
             .Join(rootCanvas.DOFade(0, 0.25f))
-            .OnComplete(() =>
-            {
-                gameObject.SetActive(false);
-            });
+            .OnComplete(() => gameObject.SetActive(false));
     }
 }
