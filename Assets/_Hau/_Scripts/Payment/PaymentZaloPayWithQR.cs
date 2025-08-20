@@ -24,7 +24,7 @@ public class PaymentZaloPayWithQR : MonoBehaviour
 
     public void Payment()
     {
-        txtResult.text = "Kết quả giao dịch";
+        txtResult.text = "Mã giao dịch";
         StartCoroutine(CreateOrder());
     }
 
