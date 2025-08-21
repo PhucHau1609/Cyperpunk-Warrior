@@ -48,16 +48,43 @@ public class LevelLabelUpdater : MonoBehaviour
 
     string ConvertSceneNameToLevel(string sceneName)
     {
-        // Regex bắt dạng "mapXlevelY" không phân biệt hoa thường
-        Match match = Regex.Match(sceneName, @"map(\d+)level(\d+)", RegexOptions.IgnoreCase);
-        if (match.Success)
+        switch (sceneName.ToLower()) // chuyển về thường để tránh phân biệt hoa/thường
         {
-            string world = match.Groups[1].Value;
-            string level = match.Groups[2].Value;
-            return $"{world}-{level}";
+            case "map1level1":
+                return "1";
+            case "map1level2":
+                return "2";
+            case "map1level3":
+                return "3";
+            case "map1level4":
+                return "4";
+            case "map2level1":
+                return "5";
+            case "map2level2":
+                return "6";
+            case "map2level3":
+                return "7";
+            case "map2level4":
+                return "8";
+            case "MapBoss_01Test":
+                return "Boss 1";
+            case "Map_Boss02":
+                return "Boss 2";
+            // thêm case tùy theo bạn có bao nhiêu scene
+            default:
+                return "UNKNOWN";
         }
 
-        return "UNKNOWN";
+        // Regex bắt dạng "mapXlevelY" không phân biệt hoa thường
+        //Match match = Regex.Match(sceneName, @"map(\d+)level(\d+)", RegexOptions.IgnoreCase);
+        //if (match.Success)
+        //{
+        //    string world = match.Groups[1].Value;
+        //    string level = match.Groups[2].Value;
+        //    return $"{world}-{level}";
+        //}
+
+        //return "UNKNOWN";
     }
 
     void DisableRaycastOnText()
