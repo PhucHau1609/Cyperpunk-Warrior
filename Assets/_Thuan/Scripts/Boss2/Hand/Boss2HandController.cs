@@ -116,9 +116,8 @@ public class Boss2HandController : MonoBehaviour
 
     public void ResetHand()
     {
-        // Dừng tất cả coroutines nếu có
         StopAllCoroutines();
-        
+    
         // Reset trạng thái
         isAttacking = false;
         currentState = HandState.Idle;
@@ -145,6 +144,9 @@ public class Boss2HandController : MonoBehaviour
         animator.ResetTrigger("Hurt");
         animator.ResetTrigger("Death");
         
+        // ✅ FIX: Đảm bảo GameObject được kích hoạt lại
+        gameObject.SetActive(true);
+        
         // Reset collider và enable script
         GetComponent<Collider2D>().enabled = true;
         this.enabled = true;
@@ -162,6 +164,12 @@ public class Boss2HandController : MonoBehaviour
         if (audioSource != null && audioSource.isPlaying)
         {
             audioSource.Stop();
+        }
+        
+        // ✅ FIX: Đăng ký lại với Boss2Controller nếu cần
+        if (boss2Controller != null)
+        {
+            boss2Controller.RegisterHand(this);
         }
     }
     

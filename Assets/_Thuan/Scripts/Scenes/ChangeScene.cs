@@ -14,7 +14,7 @@ public class ChangeScene : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
-    
+
     private void DestroySpecificDDOLObjects()
     {
         // Destroy 4 objects cụ thể
@@ -22,6 +22,7 @@ public class ChangeScene : MonoBehaviour
         DestroyIfExists("IU_GAME");
         DestroyIfExists("Eren");
         DestroyIfExists("Main Camera_1");
+        DestroyIfExists("audio");
     }
     
     private void DestroyIfExists(string objectName)

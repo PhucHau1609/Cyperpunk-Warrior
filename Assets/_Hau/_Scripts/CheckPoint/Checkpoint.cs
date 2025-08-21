@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class Checkpoint : MonoBehaviour
 {
-    public CheckPointEnum checkpointID; // Dễ mở rộng lưu dữ liệu nếu cần
+    public CheckPointEnum checkpointID; 
     public Transform spawnPoint;
 
     private void OnTriggerEnter2D(Collider2D collision)
