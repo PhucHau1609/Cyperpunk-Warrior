@@ -10,7 +10,9 @@ public class Checkpoint : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            CheckpointManager.Instance.SetCurrentCheckpoint(checkpointID, spawnPoint.position, SceneManager.GetActiveScene().name);
+            CheckpointManager.Instance.SetCurrentCheckpoint(checkpointID, 
+                spawnPoint.position, 
+                SceneManager.GetActiveScene().name);
         }
     }
 }
