@@ -879,7 +879,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
                 {
                     resetMethod.Invoke(spawner, null);
                 }
-                catch (System.Exception e)
+                catch 
                 {
                 }
             }
