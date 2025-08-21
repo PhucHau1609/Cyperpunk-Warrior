@@ -33,49 +33,92 @@ public class SpawnManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //LogToFile("🧭 Scene loaded: " + scene.name);
-        //LogToFile("nextSpawnPointID = " + nextSpawnPointID);
+        // ✅ Nếu có save scene trùng scene hiện tại → dịch chuyển tới SavedPosition
+        if (UserSession.Instance != null
+            && UserSession.Instance.HasLoadedSave
+            && !string.IsNullOrEmpty(UserSession.Instance.SavedSceneName)
+            && UserSession.Instance.SavedSceneName == scene.name)
+        {
+            StartCoroutine(MovePlayerToSavedPositionCo());
+            return; // đã xử lý spawn theo save
+        }
+
+        // ❇️ Luồng cũ theo spawnPoint ID
         if (SceneRequiresSpawn(scene))
         {
-            //LogToFile("⏳ Scene requires spawn, starting DelayedSpawn...");
             StartCoroutine(DelayedSpawn());
         }
-        else
-        {
-            //LogToFile("⛔ Scene doesn't require spawn: " + scene.name);
-        }
     }
+
+    private IEnumerator MovePlayerToSavedPositionCo()
+    {
+        GameObject player = PlayerSpawner.Instance != null ? PlayerSpawner.Instance.EnsurePlayer() : null;
+        while (player == null) { player = GameObject.FindGameObjectWithTag("Player"); yield return null; }
+
+        var rb = player.GetComponent<Rigidbody2D>();
+        if (rb) { rb.linearVelocity = Vector2.zero; rb.simulated = false; }
+
+        player.transform.position = UserSession.Instance.SavedPosition;
+
+        if (rb) { yield return null; rb.simulated = true; }
+
+        CameraFollow.Instance?.TryFindPlayer();
+        UserSession.Instance.HasLoadedSave = false;
+    }
+
+
+    /*    private IEnumerator DelayedSpawn()
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            yield return new WaitUntil(() => player != null);
+
+            Scene playerScene = player.scene;
+            //LogToFile("✅ Found player. Scene of player: " + playerScene.name);
+
+            if (playerScene.name != "DontDestroyOnLoad")
+            {
+                Debug.LogWarning("⚠ Có thể player hiện tại không phải từ DontDestroyOnLoad");
+                //LogToFile("⚠ Player không phải từ DontDestroyOnLoad, đang ở scene: " + playerScene.name);
+                yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+            //LogToFile("➡ Moving player to spawn point...");
+            MovePlayerToSpawnPoint();
+
+            yield return new WaitForSeconds(0.5f);
+            var itemPicker = player.GetComponentInChildren<ItemsPicker>();
+            if (itemPicker != null)
+            {
+                if (itemPicker.mainCamera == null)
+                {
+                    itemPicker.RefreshCamera();
+                    //LogToFile("📷 Refreshed camera for item picker");
+                }
+            }
+        }
+    */
+
 
     private IEnumerator DelayedSpawn()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        // ✅ luôn đảm bảo có player
+        GameObject player = PlayerSpawner.Instance != null ? PlayerSpawner.Instance.EnsurePlayer()
+                                                           : GameObject.FindGameObjectWithTag("Player");
+
         yield return new WaitUntil(() => player != null);
 
-        Scene playerScene = player.scene;
-        //LogToFile("✅ Found player. Scene of player: " + playerScene.name);
-
-        if (playerScene.name != "DontDestroyOnLoad")
-        {
-            Debug.LogWarning("⚠ Có thể player hiện tại không phải từ DontDestroyOnLoad");
-            //LogToFile("⚠ Player không phải từ DontDestroyOnLoad, đang ở scene: " + playerScene.name);
-            yield break;
-        }
+        // ❌ BỎ điều kiện bắt buộc DDOL
+        // if (player.scene.name != "DontDestroyOnLoad") { yield break; }
 
         yield return new WaitForEndOfFrame();
-        //LogToFile("➡ Moving player to spawn point...");
         MovePlayerToSpawnPoint();
 
-        yield return new WaitForSeconds(0.5f);
+        // Đồng bộ camera / item picker
         var itemPicker = player.GetComponentInChildren<ItemsPicker>();
-        if (itemPicker != null)
-        {
-            if (itemPicker.mainCamera == null)
-            {
-                itemPicker.RefreshCamera();
-                //LogToFile("📷 Refreshed camera for item picker");
-            }
-        }
+        if (itemPicker && itemPicker.mainCamera == null) itemPicker.RefreshCamera();
     }
+
 
     private void MovePlayerToSpawnPoint()
     {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 public class CheckpointManager : HauSingleton<CheckpointManager>
 {
@@ -20,6 +21,9 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
     private float lastCacheTime = 0f;
     private const float CACHE_DURATION = 2f;
 
+    private float _lastSaveTime;
+    [SerializeField] private float saveCooldown = 1.0f; // 1s tránh spam
+
     public void SetCurrentCheckpoint(CheckPointEnum id, Vector3 position, string sceneName)
     {
         lastCheckpointID = id;
@@ -33,7 +37,11 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         }
 
         // >>> GỬI SAVE LÊN SERVER
-        //TrySaveToServer();
+        if (Time.unscaledTime - _lastSaveTime > saveCooldown)
+        {
+            _lastSaveTime = Time.unscaledTime;
+            TrySaveToServer(); 
+        }
     }
 
     private void HandleMapBoss01TestCheckpoint(CheckPointEnum checkpointID)
@@ -745,37 +753,72 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
 
     // Copy all other existing methods from original CheckpointManager here...
     // (ResetLyraForMiniGame, ResetMiniGameObstacles, DelayedRestartMiniGame, etc.)
-    
-    private async void TrySaveToServer()
-    {
-        try
+
+    /*    private async void TrySaveToServer()
         {
-            var player = FindFirstObjectByType<CharacterController2D>();
-            if (player == null)
+            try
             {
-                Debug.LogWarning("[Save] No CharacterController2D found.");
-                return;
+                var player = FindFirstObjectByType<CharacterController2D>();
+                if (player == null)
+                {
+                    Debug.LogWarning("[Save] No CharacterController2D found.");
+                    return;
+                }
+
+                var dto = new PlayerSaveService.SaveGameDTO
+                {
+                    userId = UserSession.Instance.UserId,
+                    health = player.life,
+                    maxHealth = player.maxLife,
+                    posX = player.transform.position.x,
+                    posY = player.transform.position.y,
+                    posZ = player.transform.position.z,
+                    lastCheckpointID = (int)CheckpointManager.Instance.lastCheckpointID,
+                    lastCheckpointScene = CheckpointManager.Instance.lastCheckpointScene,
+                };
+
+                var ok = await PlayerSaveService.SaveGameAsync(dto);
+                Debug.Log(ok ? "[Save] Save uploaded." : "[Save] Save failed.");
             }
-
-            var dto = new PlayerSaveService.SaveGameDTO
+            catch (System.Exception e)
             {
-                userId = UserSession.Instance.UserId,
-                health = player.life,
-                maxHealth = player.maxLife,
-                posX = player.transform.position.x,
-                posY = player.transform.position.y,
-                posZ = player.transform.position.z,
-                lastCheckpointID = (int)CheckpointManager.Instance.lastCheckpointID,
-                lastCheckpointScene = CheckpointManager.Instance.lastCheckpointScene,
-            };
+                Debug.LogError("[Save] Exception: " + e);
+            }
+        }
+    */
 
-            var ok = await PlayerSaveService.SaveGameAsync(dto);
-            Debug.Log(ok ? "[Save] Save uploaded." : "[Save] Save failed.");
-        }
-        catch (System.Exception e)
+    // ví dụ triển khai nhanh TrySaveToServer:
+    private void TrySaveToServer()
+    {
+        if (UserSession.Instance == null) return;
+
+        var dto = new PlayerSaveService.SaveGameDTO
         {
-            Debug.LogError("[Save] Exception: " + e);
-        }
+            userId = UserSession.Instance.UserId,
+            posX = lastCheckpointPosition.x,
+            posY = lastCheckpointPosition.y,
+            posZ = lastCheckpointPosition.z,
+            lastCheckpointID = (int)lastCheckpointID,
+            lastCheckpointScene = lastCheckpointScene,
+            health = CurrentHealthProvider()?.life ?? 100f,
+            maxHealth = CurrentHealthProvider()?.maxLife ?? 100f
+        };
+
+        StartCoroutine(CoSave(dto));
+    }
+
+    private IEnumerator CoSave(PlayerSaveService.SaveGameDTO dto)
+    {
+        var task = PlayerSaveService.SaveGameAsync(dto);
+        while (!task.IsCompleted) yield return null;
+
+        if (!task.Result) Debug.LogWarning("[Checkpoint] Save failed");
+    }
+
+    private CharacterController2D CurrentHealthProvider()
+    {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        return player ? player.GetComponent<CharacterController2D>() : null;
     }
 
     // Coroutine để delay restart mini game
@@ -1208,6 +1251,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
         foreach (var obj in allObjects)
         {
             if (obj.CompareTag("PersistentObject")) continue;
+            if (obj.CompareTag("Player")) continue; // ✅ đừng destroy player
             if (obj == this.gameObject) continue;
 
             if (obj.name.Contains("UIRoot") || obj.name.Contains("AudioManager"))

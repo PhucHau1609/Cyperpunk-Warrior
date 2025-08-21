@@ -69,21 +69,32 @@ public class CameraFollow : HauSingleton<CameraFollow>
 		originalPos = camTransform.localPosition;
 	}
 
-	private void Update()
-	{
-        if (IsPreviewing) return; // Ngăn follow nếu đang preview trap
+    public void SetTarget(Transform t)
+    {
+        Target = t;
+    }
+
+    private void Update()
+    {
+        if (IsPreviewing) return;
+
+        if (Target == null)
+        {
+            // thử tìm lại nếu mất tham chiếu (ví dụ spawn động)
+            TryFindPlayer();
+            if (Target == null) return; // vẫn không có -> thoát
+        }
 
         Vector3 newPosition = Target.position;
-		newPosition.z = -10;
-		transform.position = Vector3.Slerp(transform.position, newPosition, FollowSpeed * Time.deltaTime);
+        newPosition.z = -10;
+        transform.position = Vector3.Slerp(transform.position, newPosition, FollowSpeed * Time.deltaTime);
 
-		if (shakeDuration > 0)
-		{
-			camTransform.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
-
-			shakeDuration -= Time.deltaTime * decreaseFactor;
-		}
-	}
+        if (shakeDuration > 0)
+        {
+            camTransform.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
+            shakeDuration -= Time.deltaTime * decreaseFactor;
+        }
+    }
 
 	public void ShakeCamera()
 	{
