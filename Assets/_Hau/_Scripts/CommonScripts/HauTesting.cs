@@ -33,7 +33,12 @@ public class HauTesting : MonoBehaviour
 
         //ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_0, 1, new Vector3(30, 5, 0));
         //ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_1, 1, new Vector3(30, 5, 0));
-        //ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_3, 1, new Vector3(30, 5, 0));
+        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_4, 1, new Vector3(30, 5, 0));
+        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_5, 1, new Vector3(31, 5, 0));
+
+        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_6, 1, new Vector3(32, 5, 0));
+        ItemsDropManager.Instance.DropManyItems(ItemCode.MachineGun_7, 1, new Vector3(33, 5, 0));
+
 
         //ItemsDropManager.Instance.DropManyItems(ItemCode.HP, 1, new Vector3(5, -1, 0));
 

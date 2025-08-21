@@ -26,6 +26,10 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
     protected override void Awake()
     {
         characterController = FindFirstObjectByType<CharacterController2D>();
+        if(playerShader == null) playerShader = characterController.GetComponentInChildren<PlayerShader>();
+        if(swapTargetManager == null) swapTargetManager = characterController.GetComponent<SwapTargetManager>();
+        if (playerMovement == null) playerMovement = characterController.GetComponent<PlayerMovement>();
+
     }
 
     protected override void Start()
