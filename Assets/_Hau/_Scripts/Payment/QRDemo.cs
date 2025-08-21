@@ -7,12 +7,16 @@ using ZXing.QrCode;
 public class QRDemo : MonoBehaviour
 {
     public RawImage qrImage;
+    public QRPerimeterRunner perimeterRunner;
+
 
     public void GenQR(string vietQRPayload)
     {
         if (qrImage != null)
         {
             qrImage.texture = GenerateQR(vietQRPayload, 256, 256);
+            perimeterRunner?.Refresh();   // chạy vòng quanh ngay khi đã có QR
+
         }
     }
 

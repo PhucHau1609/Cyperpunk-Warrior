@@ -6,6 +6,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class PaymentZaloPayWithQR : MonoBehaviour
 {
@@ -20,11 +21,14 @@ public class PaymentZaloPayWithQR : MonoBehaviour
 
     public QRDemo qRDemo;
 
-    public TMP_Text txtResult;
+    public Text txtResult;
+
+    public QRSuccessFX qrSuccessFX;  // kéo thả trong Inspector
+
 
     public void Payment()
     {
-        txtResult.text = "Mã giao dịch";
+        txtResult.text = "Đang thực hiện thanh toán bằng phương thức QR ZaloPay";
         StartCoroutine(CreateOrder());
     }
 
@@ -143,13 +147,15 @@ public class PaymentZaloPayWithQR : MonoBehaviour
             if (json.return_code == 1)
             {
                 lastQueryStatus = QueryStatus.Success;
-                //InventoryManager.Instance.AddItem(ItemCode.MachineGun_2, 1);
+                qrSuccessFX?.PlaySuccess();                // <— gọi hiệu ứng
+
                 FindFirstObjectByType<PaymentCoordinator>()?.NotifyZaloPaymentSuccess();
                 Debug.Log("Thanh toán thành công");
             }
             else if (json.return_code == 2)
             {
                 lastQueryStatus = QueryStatus.Failed;
+                qrSuccessFX?.PlayFailed();                 // <— nếu muốn
                 Debug.Log("Thanh toán thất bại");
             }
             else

@@ -21,6 +21,9 @@ public class InventoryManager : HauSingleton<InventoryManager>
         InventoryCodeName invCodeName = itemInventory.ItemProfileSO.invCodeName;
         InventoryCtrl inventoryCtrl = InventoryManager.Instance.GetInventoryByName(invCodeName);
         inventoryCtrl.AddItem(itemInventory);
+
+        AutosaveInventory.Instance?.EnqueueDelta(itemInventory.ItemProfileSO.itemCode, itemInventory.itemCount);
+
     }
 
     public virtual void AddItem(ItemCode itemCode, int itemCount)
@@ -59,6 +62,8 @@ public class InventoryManager : HauSingleton<InventoryManager>
         if (removed)
         {
             ObserverManager.Instance?.PostEvent(EventID.InventoryChanged, null);
+            AutosaveInventory.Instance?.EnqueueDelta(itemInventory.ItemProfileSO.itemCode, -itemInventory.itemCount);
+
         }
     }
 

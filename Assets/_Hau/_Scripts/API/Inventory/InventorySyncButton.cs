@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventorySyncButton : MonoBehaviour
+// InventorySyncButton.cs — sửa để dùng UserSession
+public class InventorySyncButton : HauSingleton<InventorySyncButton>
 {
-    // Test với user id trong DB (ví dụ 1 nếu bạn đã insert tay)
-    public int userId = 1;
+    private int CurrentUserId => (UserSession.Instance != null) ? UserSession.Instance.UserId : 0;
 
     public async void OnClickSyncSnapshot()
     {
         try
         {
+            if (CurrentUserId <= 0) { Debug.LogWarning("UserId invalid"); return; }
+
             var invCtrl = InventoryManager.Instance?.ItemInventory();
-            if (invCtrl == null)
-            {
-                Debug.LogWarning("InventoryCtrl null");
-                return;
-            }
+            if (invCtrl == null) { Debug.LogWarning("InventoryCtrl null"); return; }
 
             var items = new List<InventorySnapshotItem>();
             foreach (var it in invCtrl.ItemInventories)
@@ -28,7 +26,7 @@ public class InventorySyncButton : MonoBehaviour
                 });
             }
 
-            bool ok = await InventoryApiClient.SyncInventoryAsync(userId, items);
+            bool ok = await InventoryApiClient.SyncInventoryAsync(CurrentUserId, items);
             Debug.Log("Sync snapshot: " + ok);
         }
         catch (Exception ex)
@@ -41,10 +39,11 @@ public class InventorySyncButton : MonoBehaviour
     {
         try
         {
-            bool ok = await InventoryApiClient.PickItemAsync(userId, (int)ItemCode.Gold, 10, "pickup_button");
+            if (CurrentUserId <= 0) { Debug.LogWarning("UserId invalid"); return; }
+
+            bool ok = await InventoryApiClient.PickItemAsync(CurrentUserId, (int)ItemCode.Gold, 10, "pickup_button");
             if (ok)
             {
-                // Cập nhật local cho khớp
                 InventoryManager.Instance.AddItem(ItemCode.Gold, 10);
             }
         }
@@ -54,3 +53,4 @@ public class InventorySyncButton : MonoBehaviour
         }
     }
 }
+
