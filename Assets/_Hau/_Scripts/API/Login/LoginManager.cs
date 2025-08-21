@@ -207,8 +207,9 @@ public class LoginManager : MonoBehaviour
                     UserSession.Instance.UserId = loginResponse.data.userId;
                 }
 
-                //StartCoroutine(LoadSaveAndEnterGame());
-                StartCoroutine(LoadSceneAfterDelay(.5f));
+                // ✅ Dùng luồng có load save:
+                StartCoroutine(LoadSaveAndEnterGame());
+                //StartCoroutine(LoadSceneAfterDelay(.5f));
             }
             else
             {
@@ -221,7 +222,7 @@ public class LoginManager : MonoBehaviour
     // NEW: tải save, quyết định scene, rồi apply sau khi load scene
     IEnumerator LoadSaveAndEnterGame()
     {
-        // gọi API load save
+        // load save từ API
         bool done = false;
         LoadGameResponse cache = null;
 
@@ -232,38 +233,37 @@ public class LoginManager : MonoBehaviour
         });
         if (!done) yield break;
 
-        // nếu có save → cache vào UserSession để apply sau khi vào scene
-        string sceneToLoad = null; // null => dùng scene mặc định (build index 1)
-
         if (cache != null && cache.isSuccess)
         {
-            UserSession.Instance.HasLoadedSave = true;
-            UserSession.Instance.SavedPosition = new Vector3(cache.posX, cache.posY, cache.posZ);
-            UserSession.Instance.SavedMaxHealth = cache.maxHealth;
-            UserSession.Instance.SavedHealth = cache.health;
-            UserSession.Instance.SavedSceneName = string.IsNullOrWhiteSpace(cache.lastCheckpointScene)
-                ? null
-                : cache.lastCheckpointScene;
+            // Có save → Gọi ResumeBootstrap
+            var sceneToLoad = string.IsNullOrWhiteSpace(cache.lastCheckpointScene) ? null : cache.lastCheckpointScene;
 
-            sceneToLoad = UserSession.Instance.SavedSceneName;
+            if (!string.IsNullOrEmpty(sceneToLoad))
+            {
+                // Truyền data cho ResumeBootstrap, nó sẽ load scene + spawn/move player
+                if (ResumeBootstrap.Instance == null)
+                {
+                    Debug.LogError("ResumeBootstrap chưa có trong Login scene. Kéo thả prefab vào!");
+                    // fallback: load scene bình thường (nhưng sẽ thiếu spawn)
+                    SceneManager.LoadScene(sceneToLoad);
+                }
+                else
+                {
+                    ResumeBootstrap.Instance.StartResume(
+                        sceneToLoad,
+                        new Vector3(cache.posX, cache.posY, cache.posZ),
+                        cache.health,
+                        cache.maxHealth
+                    );
+                }
+                yield break; // dừng ở đây (ResumeBootstrap sẽ lo phần còn lại)
+            }
         }
-        else
-        {
-            UserSession.Instance.HasLoadedSave = false; // lần đầu chơi
-        }
 
-        // chuyển scene: ưu tiên scene đã lưu; nếu không có → dùng scene mặc định index 1
-        AsyncOperation op = null;
-        if (!string.IsNullOrEmpty(sceneToLoad))
-            op = SceneManager.LoadSceneAsync(sceneToLoad);
-        else
-            op = SceneManager.LoadSceneAsync(1);
-
-        while (!op.isDone) yield return null;
-
-        // Sau khi scene load xong, apply state nếu có
-        ApplySavedStateIfAny();
+        // Không có save → đi theo flow cũ (cutscene → map1), ví dụ load build index 1
+        SceneManager.LoadSceneAsync(1);
     }
+
 
     // NEW: áp vị trí & máu vào Player sau khi scene đã load
     private void ApplySavedStateIfAny()
@@ -273,18 +273,18 @@ public class LoginManager : MonoBehaviour
         var player = FindFirstObjectByType<CharacterController2D>();
         if (player != null)
         {
-            // đặt vị trí
             player.transform.position = UserSession.Instance.SavedPosition;
-
-            // đặt máu
             player.maxLife = UserSession.Instance.SavedMaxHealth;
             player.life = Mathf.Clamp(UserSession.Instance.SavedHealth, 0, player.maxLife);
 
-            // đồng bộ vài thứ UI/Camera nếu cần
             player.SyncFacingDirection();
             CameraFollow.Instance?.TryFindPlayer();
         }
+
+        // ✅ Dùng xong thì clear để không lặp ở các scene sau
+        UserSession.Instance.HasLoadedSave = false;
     }
+
 
     IEnumerator LoadSceneAfterDelay(float delaySeconds)
     {
@@ -294,7 +294,9 @@ public class LoginManager : MonoBehaviour
 
     public static class SaveApi
     {
-        public static string BaseUrl = "https://apiv3-sunny.up.railway.app"; // đổi nếu khác
+        //public static string BaseUrl = "https://apiv3-sunny.up.railway.app"; // đổi nếu khác
+        public static string BaseUrl = "http://localhost:5235"; // đổi nếu khác
+
 
         public static IEnumerator LoadGame(int userId, Action<LoadGameResponse> onDone)
         {
