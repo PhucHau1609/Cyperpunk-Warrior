@@ -157,6 +157,11 @@ public class CodeLock : MonoBehaviour
 
             PetUnlocked = true;
             StartCoroutine(CloseCanvasAfterDelay(0.5f));
+            QuestEventBus.Raise("lyra_puzzle_solved");
+            var qm = QuestManager_01.Instance ?? FindObjectOfType<QuestManager_01>();
+            if (qm != null) qm.FastForwardToEvent("lyra_puzzle_solved");
+
+
         }
     }
 
