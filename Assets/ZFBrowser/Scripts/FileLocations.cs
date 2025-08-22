@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine; // ← THÊM DÒNG NÀY
+using System;
 using System.IO;
 using System.Linq;
 #if UNITY_EDITOR
