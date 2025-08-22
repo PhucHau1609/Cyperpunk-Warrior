@@ -1,4 +1,4 @@
-//Set up some defines for what we are running on or compiled for right
+﻿//Set up some defines for what we are running on or compiled for right
 //now - not what Editor will compile for later!
 #if UNITY_EDITOR_WIN || (UNITY_STANDALONE_WIN && !UNITY_EDITOR)
 #define ON_WINDOWS
@@ -18,9 +18,9 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using AOT;
 using UnityEngine.Profiling;
-#if UNITY_EDITOR
-using Debug = UnityEngine.Debug;
-#endif
+using UnityEngine;                 // ← THÊM DÒNG NÀY
+using Debug = UnityEngine.Debug;   // ← THÊM (và xóa khối #if UNITY_EDITOR ... #endif)
+
 
 
 
