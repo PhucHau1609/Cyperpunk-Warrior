@@ -60,13 +60,7 @@ public class PlayerShader : MonoBehaviour
 
         if (spriteRenderer != null)
         {
-            // Nhân bản material để không dùng chung
             spriteRenderer.material = new Material(spriteRenderer.material);
-        }
-
-        if (playerShaderComponent == null)
-        {
-            Debug.LogWarning("Player chưa có component AllIn1Shader!");
         }
     }
 
@@ -75,16 +69,11 @@ public class PlayerShader : MonoBehaviour
         if (!isEffectActive && !isOnCooldown &&
             PlayerStatus.Instance != null && PlayerStatus.Instance.UseEnergy(10f))
         {
-            Debug.Log("✅ Kích hoạt Invisibility Skill");
             PlayerStatus.Instance.TriggerBlink(PlayerStatus.Instance.qImage);
             StartCoroutine(ActivateEffectWithInvisibility());
             OnEffectStarted?.Invoke(SkillID.Invisibility, effectDuration);
             return true;
         }
-
-        Debug.Log("❌ Không kích hoạt được: isEffectActive=" + isEffectActive +
-                  ", isOnCooldown=" + isOnCooldown +
-                  ", PlayerStatus.Instance=" + (PlayerStatus.Instance != null));
         return false;
     }
 
@@ -105,22 +94,11 @@ public class PlayerShader : MonoBehaviour
         bool condition = EquipmentConditionChecker.Instance != null &&
                          EquipmentConditionChecker.Instance.IsConditionMet();
 
-
-        //Debug.Log($"🧪 Kiểm tra điều kiện: {condition}");
-
         if (condition && !isEffectActive && !isOnCooldown)
         {
-            //StartCoroutine(ActivateColorRampEffect());
             ObserverManager.Instance.PostEvent(EventID.UnlockSkill_ColorRamp, SkillID.ColorRamp);
-            //Debug.Log("Da Post Event");
-
-        }
-        else
-        {
-            Debug.Log("❌ Không đủ điều kiện trang bị để biến hình");
         }
     }
-
 
     IEnumerator ActivateEffectWithInvisibility()
     {
@@ -130,12 +108,6 @@ public class PlayerShader : MonoBehaviour
 
         string keyword = ShaderEffectKeywords[effectToEnable];
         SetKeywordOnSelf(keyword, true);
-
-      /*  // Bắt đầu cooldown UI ngay từ đầu (không chờ effectDuration)
-        if (cooldownUI != null)
-        {
-            cooldownUI.StartCooldown(cooldownTime);
-        }*/
 
         if (spriteRenderer != null)
         {
@@ -149,10 +121,8 @@ public class PlayerShader : MonoBehaviour
             invisibilityLight.enabled = false;
         }
 
-        // Chờ thời gian hiệu ứng (tàng hình)
         yield return new WaitForSeconds(effectDuration);
 
-        // Kết thúc hiệu ứng
         SetKeywordOnSelf(keyword, false);
         isInvisible = false;
 
@@ -169,14 +139,11 @@ public class PlayerShader : MonoBehaviour
         }
 
         isEffectActive = false;
-        OnEffectEnded?.Invoke(SkillID.Invisibility); // thông báo kết thúc
+        OnEffectEnded?.Invoke(SkillID.Invisibility);
 
-
-        // Đợi phần còn lại của cooldown (nếu cooldown dài hơn effect)
         float remainingCooldown = Mathf.Max(0, cooldownTime - effectDuration);
         yield return new WaitForSeconds(remainingCooldown);
 
-        Debug.Log("🟢 Đã hoàn thành cooldown invisibility");
         isOnCooldown = false;
     }
 

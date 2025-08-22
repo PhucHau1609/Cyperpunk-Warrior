@@ -87,7 +87,7 @@ public class CardsController : MonoBehaviour
         {
             var move = player.GetComponent<PlayerMovement>();
             if (move != null)
-                move.SetCanMove(false); // ← KHÓA DI CHUYỂN
+                move.SetCanMove(false);
         }
     }
 
@@ -132,7 +132,7 @@ public class CardsController : MonoBehaviour
             {
                 playerTimeRemaining = 0;
                 isTimerRunning = false;
-                GameOverPanel.Instance.ShowGameOver();  // Player thua
+                GameOverPanel.Instance.ShowGameOver();
             }
         }
         else if (currentTurn == Turn.NPC)
@@ -141,7 +141,7 @@ public class CardsController : MonoBehaviour
             if (npcTimeRemaining <= 0)
             {
                 isTimerRunning = false;
-                EndGame(true); // player thang
+                EndGame(true); 
             }
         }
 
@@ -197,7 +197,6 @@ public class CardsController : MonoBehaviour
         npcCard.iconImage.sprite = npcCard.iconSprite;
 
         AudioManager.Instance?.PlayPlayCard();
-        //Debug.Log($"NPC đánh lá: {npcCard.iconSprite.name}, còn {npcHand.Count} lá");
 
         playedCard = npcCard;
         return npcCard;
@@ -243,19 +242,16 @@ public class CardsController : MonoBehaviour
             Sprite sp = deckSprites[Random.Range(0, deckSprites.Count)];
 
             Card c = Instantiate(cardPrefab, deckPileTransform);
-            c.SetIconSprite(sp, false); // cho dễ debug
+            c.SetIconSprite(sp, false);
             c.hiddenIconSprite = hiddenCardSprite;
             c.controller = this;
 
-            // Không set parent => không hiển thị
             c.transform.SetParent(npcHandTransform, false);
             c.iconImage.sprite = hiddenCardSprite;
-            //c.gameObject.SetActive(false); // Ẩn hẳn đi nếu muốn
 
             npcHand.Add(c);
         }
 
-        //Debug.Log($"NPC có {npcHand.Count} lá bài.");
         yield return null;
     }
 
@@ -288,8 +284,6 @@ public class CardsController : MonoBehaviour
         }
 
         ArrangeHand();
-        //StartCoroutine(FillNPCHand(deckSprites));
-
     }
 
     IEnumerator HandleMatched(Card matchCard, bool isPlayer)
@@ -324,19 +318,19 @@ public class CardsController : MonoBehaviour
         if (isPlayer)
         {
             playerFlipAttempts = 0;
-            AddCardToOpponent(); // Player thắng thì NPC bị cộng thêm
+            AddCardToOpponent();
         }
         else
         {
             npcFlipAttempts = 0;
-            AddRandomCardToHand(); // NPC thắng thì Player bị cộng thêm
+            AddRandomCardToHand(); 
         }
 
         CheckWinLose();
 
         if (!isPlayer)
         {
-            StartCoroutine(NPCTurn()); // NPC tiếp tục lật
+            StartCoroutine(NPCTurn());
         }
     }
 
@@ -373,16 +367,14 @@ public class CardsController : MonoBehaviour
             {
                 playedCard.transform.SetParent(npcHandTransform);
                 Canvas.ForceUpdateCanvases();
-                ArrangeHand(); // Để lấy vị trí đúng của lá bài trong tay NPC (nếu có)
+                ArrangeHand(); 
                 Vector3 toPos = playedCard.transform.position;
 
-                // Di chuyển từ chỗ đánh về vị trí mới
                 playedCard.transform.localScale = Vector3.one * 1.2f;
                 playedCard.transform.DOScale(1f, 0.3f).SetEase(Ease.OutQuad);
                 playedCard.transform.DOMove(toPos, 0.3f).SetEase(Ease.OutQuad);
                 playedCard.transform.DOLocalRotate(Vector3.zero, 0.3f).SetEase(Ease.OutQuad);
 
-                // Ẩn icon lại nếu cần
                 playedCard.iconImage.sprite = hiddenCardSprite;
 
                 npcHand.Add(playedCard);
@@ -397,23 +389,6 @@ public class CardsController : MonoBehaviour
 
         playedCard = null;
         flippedCards.Clear();
-
-        //if (isPlayer)
-        //{
-        //    playerFlipAttempts = 0;
-        //    //AddRandomCardToHand();
-        //    currentTurn = Turn.NPC;
-        //    isPlayerInputEnabled = false;
-        //    StartCoroutine(NPCTurn());
-        //}
-        //else
-        //{
-        //    npcFlipAttempts = 0;
-        //    currentTurn = Turn.Player;
-        //    isPlayerInputEnabled = true;
-
-        //}
-
 
         ArrangeHand();
         CheckWinLose();
@@ -481,10 +456,9 @@ public class CardsController : MonoBehaviour
         c.SetIconSprite(sp, false);
         c.hiddenIconSprite = hiddenCardSprite;
         c.controller = this;
-        c.gameObject.SetActive(true); // ẩn
+        c.gameObject.SetActive(true);
 
         npcHand.Add(c);
-        //Debug.Log($"NPC bị cộng thêm 1 lá. Hiện có {npcHand.Count} lá.");
     }
 
     Card GetRandomUnflippedCard()
@@ -525,14 +499,13 @@ public class CardsController : MonoBehaviour
 
     void CheckWinLose()
     {
-        if (playerHand.Count == 0 && npcHand.Count > 0) //player thang
+        if (playerHand.Count == 0 && npcHand.Count > 0)
         {
             EndGame(true);
-            //GameOverPanel.Instance.ShowGameOver();
         }
-        else if (npcHand.Count == 0 && playerHand.Count > 0) // player thua
+        else if (npcHand.Count == 0 && playerHand.Count > 0)
         {
-            GameOverPanel.Instance.ShowGameOver(); //EndGame(true); 
+            GameOverPanel.Instance.ShowGameOver();
             EndGame(false);
         }
     }
@@ -547,10 +520,9 @@ public class CardsController : MonoBehaviour
     {
         if (turnPanel == null || turnText == null) return;
 
-        string message = currentTurn == Turn.Player ? "EREN" : "JACK";
+        string message = currentTurn == Turn.Player ? "EREN" : "FALCON";
         turnText.text = message;
 
-        // Hiện panel trong 1–2 giây (tuỳ thích)
         turnPanel.SetActive(true);
         CanvasGroup cg = turnPanel.GetComponent<CanvasGroup>();
         if (cg != null)
@@ -563,7 +535,6 @@ public class CardsController : MonoBehaviour
         }
         else
         {
-            // Không có CanvasGroup thì tắt thủ công
             Invoke(nameof(HideTurnPanel), 2f);
         }
     }
@@ -576,7 +547,6 @@ public class CardsController : MonoBehaviour
     void EndGame(bool playerWin)
     {
         GameStateManager.Instance.ResetToGameplay();
-        Debug.Log("Da end game bai");
         isTimerRunning = false;
         gamePanel.SetActive(false);
         finishPanel.SetActive(false);
@@ -587,19 +557,6 @@ public class CardsController : MonoBehaviour
         if (playerWin)
         {
             AudioManager.Instance?.PlayWinGame();
-            //if (barrierObject != null) barrierObject.SetActive(false);
-            // if (barrierObject != null)
-            // {
-            //     // Bật trigger nếu có Collider
-            //     var collider = barrierObject.GetComponent<Collider2D>();
-            //     if (collider != null) collider.isTrigger = true;
-
-            //     // Gọi animation mở cửa nếu có Animator
-            //     var animator = barrierObject.GetComponent<Animator>();
-            //     if (animator != null) animator.SetTrigger("open");
-
-            //     dialogue.SetActive(true);
-            // }
             dialogue.SetActive(true);
         }
         else
@@ -612,7 +569,7 @@ public class CardsController : MonoBehaviour
         {
             var move = player.GetComponent<PlayerMovement>();
             if (move != null)
-                move.SetCanMove(true); // ← MỞ LẠI DI CHUYỂN
+                move.SetCanMove(true);
         }
 
     }
