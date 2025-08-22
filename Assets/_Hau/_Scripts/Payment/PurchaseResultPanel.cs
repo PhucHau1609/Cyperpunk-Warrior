@@ -9,11 +9,11 @@ public class PurchaseResultPanel : MonoBehaviour
     [Header("UI")]
     public CanvasGroup rootCanvas;
     public RectTransform content;
-    public TextMeshProUGUI titleText;
-    public TextMeshProUGUI itemNameText;
-    public TextMeshProUGUI amountText;
-    public TextMeshProUGUI statusText;
-    public TextMeshProUGUI extraText;
+    public Text titleText;
+    public Text itemNameText;
+    public Text amountText;
+    public Text statusText;
+    public Text extraText;
     public Button closeButton;
 
     [Header("Colors")]
