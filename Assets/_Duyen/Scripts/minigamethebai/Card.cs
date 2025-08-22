@@ -11,7 +11,9 @@ public class Card : MonoBehaviour
 
     public bool isSelected;
     public bool isMatched;
-    public bool isFaceUp => iconImage.sprite == iconSprite;
+    public bool IsFlipped => iconImage != null && iconImage.sprite == iconSprite;
+
+    public Sprite IconSprite => iconSprite; // thêm property an toàn
 
     public CardsController controller;
 
@@ -83,4 +85,21 @@ public class Card : MonoBehaviour
     {
         DOTween.Kill(this); // hoặc DOTween.Kill(gameObject);
     }
+    public void Initialize(Sprite sp, Sprite hidden = null)
+    {
+        iconSprite = sp;
+        isSelected = false;
+        isMatched = false;
+
+        if (hidden != null)
+            hiddenIconSprite = hidden;
+
+        // Nếu prefab chưa có Image thì thêm vào
+        if (iconImage == null)
+            iconImage = gameObject.AddComponent<Image>();
+
+        // mặc định úp xuống
+        iconImage.sprite = hiddenIconSprite != null ? hiddenIconSprite : sp;
+    }
+
 }
