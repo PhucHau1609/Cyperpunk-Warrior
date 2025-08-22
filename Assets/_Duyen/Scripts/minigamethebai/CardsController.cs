@@ -1209,7 +1209,7 @@ public class CardsController : MonoBehaviour
 
     IEnumerator NPCTurn()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         Card npcPlayedCard = GetNPCPlayedCard();
         if (npcPlayedCard == null)
