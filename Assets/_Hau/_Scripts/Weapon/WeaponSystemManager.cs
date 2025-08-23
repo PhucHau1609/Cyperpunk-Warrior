@@ -12,8 +12,8 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
 
 
     private List<ItemInventory> ownedWeapons = new();
-    private Dictionary<ItemCode, GameObject> instantiatedWeapons = new(); // dùng ItemCode làm key
-    private bool wasWeaponActiveBeforeWallSlide = false; // Lưu trạng thái súng trước khi wall slide
+    private Dictionary<ItemCode, GameObject> instantiatedWeapons = new();
+    private bool wasWeaponActiveBeforeWallSlide = false;
     private CharacterController2D characterController;
 
 
@@ -23,8 +23,6 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
         RefreshOwnedWeapons();
         ObserverManager.Instance.AddListener(EventID.EquipmentChanged, OnEquipmentChanged);
 
-
-        // Tìm CharacterController2D và đăng ký events
         characterController = FindFirstObjectByType<CharacterController2D>();
         if (characterController != null)
         {
@@ -99,7 +97,6 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
 
         if (ownedWeapons.Count == 0)
         {
-            Debug.Log("Không có vũ khí nào trong inventory.");
             return;
         }
 
@@ -111,13 +108,12 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
             currentWeaponIndex = 0;
         }
 
-        // Tắt vũ khí cũ nếu đang bật
         if (currentWeapon != null)
         {
             currentWeapon.SetActive(false);
         }
 
-        EquipWeapon(currentWeaponIndex); // Giữ trạng thái isWeaponActive
+        EquipWeapon(currentWeaponIndex);
     }
 
     void EquipWeapon(int index)
@@ -130,7 +126,6 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
 
         if (weaponPrefab == null)
         {
-            Debug.LogWarning("Vũ khí không có prefab.");
             return;
         }
 
@@ -173,10 +168,8 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
         }
     }
 
-    // Phương thức hiện súng sau khi kết thúc wall sliding
     public void ShowWeaponAfterWallSlide()
     {
-        //Debug.Log("Show ne");
         isWeaponActive = false;
         if (currentWeapon != null && wasWeaponActiveBeforeWallSlide)
         {
@@ -202,7 +195,6 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
     {
         RefreshOwnedWeapons();
 
-        // Lấy danh sách vũ khí hiện tại còn giữ lại
         HashSet<ItemCode> stillEquipped = new();
         foreach (var item in ownedWeapons)
         {
@@ -210,7 +202,6 @@ public class WeaponSystemManager : HauSingleton<WeaponSystemManager>
                 stillEquipped.Add(item.ItemProfileSO.itemCode);
         }
 
-        // So sánh từng vũ khí đang được clone
         var keys = new List<ItemCode>(instantiatedWeapons.Keys);
         foreach (var key in keys)
         {

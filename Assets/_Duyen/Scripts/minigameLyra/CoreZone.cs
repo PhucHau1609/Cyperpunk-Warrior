@@ -308,7 +308,7 @@ public class CoreZone : MonoBehaviour
             doorAnimator.SetTrigger("Open");
         }
 
-        yield return new WaitForSeconds(0.5f); // chỉnh theo thời gian animation
+        yield return new WaitForSeconds(1.5f); // chỉnh theo thời gian animation
         Collider2D[] colliders = GetComponents<Collider2D>();
         foreach (var col in colliders)
         {

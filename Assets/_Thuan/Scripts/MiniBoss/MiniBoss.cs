@@ -46,7 +46,7 @@ public class MiniBoss : MonoBehaviour, IBossResettable
 
     private enum State { Patrolling, Chasing, Returning, Dead }
     private State currentState = State.Patrolling;
-    public HealthBarEnemy healthBarEnemy;
+    public BossPhuHealthBar healthBar;
     private MiniBossDamageReceiver damageReceiver;
 
     [Header("Teleport Skill Settings")]
@@ -122,12 +122,9 @@ public class MiniBoss : MonoBehaviour, IBossResettable
         }
 
         float normalizedHealth = GetNormalizedHealth();
-        if (healthBarEnemy != null)
+        if (healthBar != null)
         {
-            if (normalizedHealth < 1f)
-                healthBarEnemy.ShowHealthBar(normalizedHealth);
-            else
-                healthBarEnemy.HideHealthBar();
+            healthBar.ShowHealthBar(normalizedHealth);
         }
 
         // Kiểm tra firePoint, nếu không có thì tạo một cái mới
@@ -731,9 +728,9 @@ public class MiniBoss : MonoBehaviour, IBossResettable
             }
 
             // Reset health bar
-            if (healthBarEnemy != null)
+            if (healthBar != null)
             {
-                healthBarEnemy.ShowHealthBar(1f);
+                healthBar.ShowHealthBar(1f);
             }
 
             // Reset audio
@@ -773,9 +770,9 @@ public class MiniBoss : MonoBehaviour, IBossResettable
             animator.SetTrigger("Hurt");
         CameraFollow.Instance?.ShakeCamera();
 
-        if (healthBarEnemy != null)
+        if (healthBar != null)
         {
-            healthBarEnemy.ShowHealthBar(GetNormalizedHealth());
+            healthBar.ShowHealthBar(GetNormalizedHealth());
         }
 
         if (canTeleport && !isTeleporting && GetNormalizedHealth() > 0.05f)
@@ -807,7 +804,7 @@ public class MiniBoss : MonoBehaviour, IBossResettable
             bossManager.ReportBossDeath(this.gameObject);
         }
 
-        healthBarEnemy?.HideHealthBar();
+        healthBar?.HideHealthBar();
 
         Destroy(gameObject, 2f);
     }
