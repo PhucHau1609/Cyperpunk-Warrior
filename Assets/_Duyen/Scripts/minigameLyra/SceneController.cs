@@ -439,6 +439,7 @@ public class SceneController : MonoBehaviour
         // 5. Camera follow lại Player
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.Target = player.transform;
+            QuestEventBus.Raise("Clear_Step1");
 
         // Trả điều khiển cho player
         player.SetCanMove(true);
