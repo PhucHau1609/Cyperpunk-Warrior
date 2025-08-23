@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03c74247895fa334ea00e6dbfd3bcb37, type: 3}
+  m_Name: Quest_MapBoss1
+  m_EditorClassIdentifier: 
+  mapId: Map-boss1
+  steps:
+  - text: "\u0110i\u1EC1u khi\u1EC3n Lyra \u0111\u1EC3 v\xF4 hi\u1EC7u h\xF3a to\xE0n
+      b\u1ED9 b\u1EABy."
+    showOnStart: 1
+    eventName: 
+    requiredCount: 0
+  - text: "T\xECm \u0111\u01B0\u1EDDng v\xE0o khu v\u1EF1c Boss 01."
+    showOnStart: 0
+    eventName: Clear_Step1
+    requiredCount: 0
+  - text: "Ti\xEAu di\u1EC7t Boss 01."
+    showOnStart: 0
+    eventName: neer_Boss01
+    requiredCount: 0
+  - text: "T\xECm c\xE1ch di chuy\u1EC3n \u0111\u1EBFn khu v\u1EF1c Boss 02."
+    showOnStart: 0
+    eventName: Destroy_03
+    requiredCount: 0

@@ -128,6 +128,8 @@ public class SwitchController : MonoBehaviour
         {
             CameraFollow.Instance.IsPreviewing = false;
             CameraFollow.Instance.TryFindPlayer();
+             QuestEventBus.Raise("Destroy_all");
+
         }
     }
 

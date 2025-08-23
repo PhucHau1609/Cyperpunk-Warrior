@@ -27,5 +27,6 @@ public class BossManager : MonoBehaviour
 
         var animator = barrierObject.GetComponent<Animator>();
         if (animator != null) animator.SetTrigger("open");
+        QuestEventBus.Raise("Destroy_03");
     }
 }

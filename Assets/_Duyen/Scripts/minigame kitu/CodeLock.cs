@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -157,9 +157,14 @@ public class CodeLock : MonoBehaviour
 
             PetUnlocked = true;
             StartCoroutine(CloseCanvasAfterDelay(0.5f));
-            QuestEventBus.Raise("lyra_puzzle_solved");
-            var qm = QuestManager_01.Instance ?? FindFirstObjectByType<QuestManager_01>();
-            if (qm != null) qm.FastForwardToEvent("lyra_puzzle_solved");
+             QuestEventBus.Raise("lyra_puzzle_solved");
+
+// 2) Đồng thời cho phép "đi tắt": ép UI nhảy tới step có event này (case người chơi giải sớm)
+var qm = QuestManager_01.Instance ?? FindObjectOfType<QuestManager_01>();
+if (qm != null)
+{
+    qm.FastForwardToEvent("lyra_puzzle_solved");
+}
 
 
         }
@@ -174,14 +179,7 @@ public class CodeLock : MonoBehaviour
             if (playerMovement != null)
                 playerMovement.SetCanMove(true); // ⚠️ Mở lại di chuyển sau khi tắt minigame
             GameStateManager.Instance.ResetToGameplay();
-            QuestEventBus.Raise("lyra_puzzle_solved");
-
-// 2) Đồng thời cho phép "đi tắt": ép UI nhảy tới step có event này (case người chơi giải sớm)
-var qm = QuestManager_01.Instance ?? FindObjectOfType<QuestManager_01>();
-if (qm != null)
-{
-    qm.FastForwardToEvent("lyra_puzzle_solved");
-}
+           
         });
     }
 
