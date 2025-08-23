@@ -17,6 +17,10 @@ public class MiniGameOpener : MonoBehaviour
     [SerializeField] private Transform interactionPoint;
     [SerializeField] private float interactionDistance = 3f;
 
+    // >>> Thêm panel hướng dẫn <<<
+    [Header("Guide Panel (thêm mới)")]
+    [SerializeField] private GameObject guidePanel;
+
     private PlayerMovement movementScript;
 
     private void Start()
@@ -24,6 +28,9 @@ public class MiniGameOpener : MonoBehaviour
         if (miniGameUI != null) miniGameUI.SetActive(false);
         if (closeButtonUI != null) closeButtonUI.SetActive(false);
         if (highlightImage != null) highlightImage.SetActive(false);
+
+        // >>> Thêm: đảm bảo panel hướng dẫn tắt lúc đầu
+        if (guidePanel != null) guidePanel.SetActive(false);
 
         if (player != null)
         {
@@ -71,9 +78,12 @@ public class MiniGameOpener : MonoBehaviour
         // Chuyển state vào MiniGame
         GameStateManager.Instance.SetState(GameState.MiniGame);
 
-        // Bật UI
+        // Bật UI mini game
         if (miniGameUI != null) miniGameUI.SetActive(true);
         if (closeButtonUI != null) closeButtonUI.SetActive(true);
+
+        // >>> Thêm: bật panel hướng dẫn cùng lúc mở mini game
+        if (guidePanel != null) guidePanel.SetActive(true);
 
         // Khóa di chuyển
         if (movementScript != null)
@@ -82,9 +92,12 @@ public class MiniGameOpener : MonoBehaviour
 
     public void CloseMiniGame()
     {
-        // Tắt UI
+        // Tắt UI mini game
         if (miniGameUI != null) miniGameUI.SetActive(false);
         if (closeButtonUI != null) closeButtonUI.SetActive(false);
+
+        // >>> Thêm: tắt panel hướng dẫn khi đóng mini game
+        if (guidePanel != null) guidePanel.SetActive(false);
 
         // Mở lại di chuyển
         if (movementScript != null)

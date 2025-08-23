@@ -21,7 +21,9 @@ public class QuestTrigger2D : MonoBehaviour
 
     private void Awake()
     {
-        if (manager == null) manager = QuestManager_01.Instance ?? FindObjectOfType<QuestManager_01>();
+        if (manager == null)
+            manager = QuestManager_01.Instance ?? Object.FindFirstObjectByType<QuestManager_01>();
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)

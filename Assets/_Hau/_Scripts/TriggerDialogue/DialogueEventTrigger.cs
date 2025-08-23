@@ -55,6 +55,7 @@ public class DialogueEventTrigger : MonoBehaviour
         if (firstGunDialogue == null) return;
 
         DialogueManager.Instance.StartDialogue(firstGunDialogue, lyraTransform.NPCTransform);
+        QuestEventBus.Raise("near_door");
     }
 
     private void OnFirstEnergyPickedUp(object param)
