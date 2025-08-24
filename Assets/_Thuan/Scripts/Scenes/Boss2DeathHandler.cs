@@ -173,6 +173,8 @@ public class Boss2DeathHandler : MonoBehaviour
         
         // 1. Camera Shake ngay lập tức
         StartCameraShake();
+
+        QuestEventBus.Raise("Destroy_Eclipse");
         
         // 2. Phát âm thanh victory (nếu có)
         if (victorySound != null)
