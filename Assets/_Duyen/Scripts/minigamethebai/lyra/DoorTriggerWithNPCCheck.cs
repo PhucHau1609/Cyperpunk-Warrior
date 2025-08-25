@@ -14,6 +14,7 @@ public class DoorTriggerWithNPCCheck : MonoBehaviour
 
         if (gameObject.CompareTag("mocua"))
         {
+            AudioManager.Instance.PlayDoor();
             if (doorAnimator != null)
             {
                 doorAnimator.ResetTrigger(closeTrigger); // reset nếu cần
@@ -25,6 +26,8 @@ public class DoorTriggerWithNPCCheck : MonoBehaviour
         }
         else if (gameObject.CompareTag("dongcua"))
         {
+            AudioManager.Instance.PlayDoor();
+
             if (doorAnimator != null)
             {
                 doorAnimator.ResetTrigger(openTrigger); // reset nếu cần
