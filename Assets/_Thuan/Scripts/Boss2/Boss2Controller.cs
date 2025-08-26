@@ -692,7 +692,7 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
 
             // Lấy animator
             Animator enemyAnimator = enemy.GetComponent<Animator>();
-            
+
             // Kiểm tra và disable các script enemy
             SlimeEnemy slime = enemy.GetComponent<SlimeEnemy>();
             if (slime != null)
@@ -716,6 +716,7 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
 
             // Destroy enemy sau 2 giây
             Destroy(enemy, 2f);
+             QuestEventBus.Raise("Destroy_Eclipse");
         }
     }
 
