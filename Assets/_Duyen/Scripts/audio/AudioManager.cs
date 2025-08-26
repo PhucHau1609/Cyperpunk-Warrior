@@ -21,6 +21,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip typingSFX;
     public AudioClip clickSFX;
 
+    [Header("Door SFX")]
+    public AudioClip doorSFX;
+
     [Header("Minigame")]
     public AudioClip minigameBGM;
     public AudioClip winSFX;
@@ -81,6 +84,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayDoor()
+    {
+        PlaySFX(doorSFX);
+    }
     public void PlayBGM(AudioClip clip)
     {
         if (bgmSource == null || clip == null) return;

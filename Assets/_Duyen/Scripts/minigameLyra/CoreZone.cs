@@ -305,6 +305,7 @@ public class CoreZone : MonoBehaviour
         Animator doorAnimator = GetComponent<Animator>();
         if (doorAnimator != null)
         {
+            AudioManager.Instance.PlayDoor();
             doorAnimator.SetTrigger("Open");
         }
 

@@ -15,6 +15,7 @@ public class EnableOnTrigger : MonoBehaviour
                 if (collider != null) collider.isTrigger = false;
 
                 // Gọi animation "close" nếu có Animator
+                AudioManager.Instance.PlayDoor();
                 var animator = targetToEnable.GetComponent<Animator>();
                 if (animator != null) animator.SetTrigger("close");
             }
