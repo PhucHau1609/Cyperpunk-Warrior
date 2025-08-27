@@ -24,6 +24,12 @@ public class BomberController : MonoBehaviour, IDamageResponder
     private enum State { Patrolling, Chasing, Returning, Dead }
     private State currentState = State.Patrolling;
 
+    void OnEnable() { PlayerLocator.OnChanged += HandlePlayerChanged; TryResolvePlayer(); }
+    void OnDisable() { PlayerLocator.OnChanged -= HandlePlayerChanged; }
+    void HandlePlayerChanged(Transform t) { player = t; }
+    void TryResolvePlayer() { if (PlayerLocator.Current) player = PlayerLocator.Current; else { var go = GameObject.FindWithTag("Player"); if (go) player = go.transform; } }
+
+
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;

@@ -59,6 +59,10 @@ public class LoginManager : MonoBehaviour
         public int? lastCheckpointID;
         public string lastCheckpointScene;
         public string updatedAt;
+
+
+        // NEW
+        public List<int> unlockedSkills;
     }
 
 
@@ -236,6 +240,10 @@ public class LoginManager : MonoBehaviour
         if (cache != null && cache.isSuccess)
         {
             // Có save → Gọi ResumeBootstrap
+            if (UserSession.Instance != null)
+                UserSession.Instance.UnlockedSkillsCache = cache.unlockedSkills ?? new List<int>();
+
+
             var sceneToLoad = string.IsNullOrWhiteSpace(cache.lastCheckpointScene) ? null : cache.lastCheckpointScene;
 
             if (!string.IsNullOrEmpty(sceneToLoad))
@@ -255,6 +263,8 @@ public class LoginManager : MonoBehaviour
                         cache.health,
                         cache.maxHealth
                     );
+                    //UserSession.Instance.UnlockedSkillsCache = cache.unlockedSkills ?? new List<int>();
+
                 }
                 yield break; // dừng ở đây (ResumeBootstrap sẽ lo phần còn lại)
             }

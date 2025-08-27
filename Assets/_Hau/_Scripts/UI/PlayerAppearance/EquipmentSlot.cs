@@ -17,7 +17,7 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IBeginDragHandler, IDr
     private GameObject draggingVisual;
     private RectTransform rectTransform;
 
-    [SerializeField] private EquipmentType slotType = EquipmentType.None;
+    public EquipmentType slotType = EquipmentType.None;
 
 
     private void Awake()

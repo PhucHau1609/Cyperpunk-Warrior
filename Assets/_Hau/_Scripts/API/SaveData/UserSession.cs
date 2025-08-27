@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class UserSession : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class UserSession : MonoBehaviour
     public Vector3 SavedPosition;
     public float SavedHealth, SavedMaxHealth;
     public string SavedSceneName;  // có thể null/empty nếu server chưa lưu scene
+    public List<int> UnlockedSkillsCache = new();
+
 
     void Awake()
     {

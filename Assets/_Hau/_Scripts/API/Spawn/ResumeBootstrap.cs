@@ -30,6 +30,21 @@ public class ResumeBootstrap : MonoBehaviour
             SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    private void RestoreUnlockedSkillsIfAny()
+    {
+        var list = UserSession.Instance?.UnlockedSkillsCache;
+        if (list == null || list.Count == 0) return;
+
+        foreach (var val in list.Distinct())
+        {
+            var sid = (SkillID)val;
+            var ev = EventIDHelper.GetEventForSkill(sid);
+            if (ev != EventID.None)
+                ObserverManager.Instance?.PostEvent(ev, sid);
+        }
+    }
+
+
     // gọi từ LoginManager khi có save
     public void StartResume(string sceneName, Vector3 pos, float health, float maxHealth)
     {
@@ -98,9 +113,14 @@ public class ResumeBootstrap : MonoBehaviour
 
         // Hoàn tất resume
         resumePending = false;
+        PlayerLocator.Set(player.transform);
+        RestoreUnlockedSkillsIfAny();
+
+
 
         // ❗ Đừng Destroy ngay để tránh hủy coroutine
         StartCoroutine(DestroyAfterFrames(2));
+
     }
 
     private void EnsureCameraAndFollow(Transform player)
@@ -170,3 +190,19 @@ public class ResumeBootstrap : MonoBehaviour
         Destroy(gameObject);
     }
 }
+
+public static class EventIDHelper
+{
+    public static EventID GetEventForSkill(SkillID skill)
+    {
+        return skill switch
+        {
+            SkillID.Invisibility => EventID.UnlockSkill_Invisibility,
+            SkillID.ColorRamp => EventID.UnlockSkill_ColorRamp,
+            SkillID.Swap => EventID.UnlockSkill_Swap,
+            SkillID.Dash => EventID.UnlockSkill_Dash,
+            _ => EventID.None,
+        };
+    }
+}
+

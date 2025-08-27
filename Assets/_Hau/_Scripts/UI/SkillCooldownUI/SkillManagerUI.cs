@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SkillManagerUI : HauSingleton<SkillManagerUI>
 {
@@ -24,6 +25,13 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
     private CharacterController2D characterController;
 
     private Dictionary<SkillID, SkillSlotUI> idToSlot = new(); // NEW
+
+    public List<SkillID> GetUnlockedSkills()
+    {
+        return unlockedSkills?.ToList() ?? new List<SkillID>();
+    }
+
+
 
 
     protected override void Awake()
