@@ -46,6 +46,59 @@ public class FloatingFollower : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    // Cho ResumeBootstrap gán lại Player sau khi Load
+    public void SetPlayer(Transform t)
+    {
+        // đảm bảo valid
+        if (t == null) return;
+        // gán lại player để follow người chơi vừa spawn
+        var f = this;
+        var field = typeof(FloatingFollower).GetField("player", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (field != null) field.SetValue(f, t);
+    }
+
+    // Bật theo dõi ngay, đặt robot cạnh player (không cần chờ trigger “Awaken” nữa)
+    public void ForceAwakenAndFollow(Vector3 spawnPos)
+    {
+        // đặt vị trí
+        transform.position = spawnPos;
+
+        // ép state = Following + Idle anim
+        var stateField = typeof(FloatingFollower).GetField("state", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (stateField != null)
+        {
+            // enum PetState { Sleepwell, Awaken, Following, Disappear } -> 2 = Following
+            stateField.SetValue(this, System.Enum.Parse(stateField.FieldType, "Following"));
+        }
+
+        if (anim != null)
+        {
+            Debug.Log("1");
+            anim.SetTrigger("Disappear");
+            Debug.Log("2");
+        }
+
+
+
+        // bật NavMesh khi có
+        if (agent != null)
+        {
+            // dùng helper đã có trong script
+            var isOnValid = (bool)this.GetType()
+                .GetMethod("IsOnValidNavMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .Invoke(this, new object[] { transform.position });
+
+            if (isOnValid)
+            {
+                agent.enabled = true;
+                agent.Warp(transform.position);
+                var usePathField = typeof(FloatingFollower).GetField("isUsingPathfinding", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (usePathField != null) usePathField.SetValue(this, true);
+            }
+        }
+    }
+
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();

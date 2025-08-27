@@ -26,6 +26,9 @@ public static class PlayerSaveService
         // ĐỔI: dùng int thay vì SkillID cho chắc chắn
         public List<int> unlockedSkills;
 
+        public bool petUnlocked;  // NEW: robot đồng hành đã mở
+
+
 
     }
 
@@ -49,6 +52,9 @@ public static class PlayerSaveService
 
         // NEW
         public List<int> unlockedSkills;
+
+        public bool petUnlocked;   // NEW: tiện kiểm tra ngay sau save
+
     }
 
     public static async Task<bool> SaveGameAsync(SaveGameDTO dto)

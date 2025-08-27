@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using Newtonsoft.Json;
 
 public class CheckpointManager : HauSingleton<CheckpointManager>
 {
@@ -56,18 +57,23 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             lastCheckpointScene = lastCheckpointScene,
             health = CurrentHealthProvider()?.life ?? 100f,
             maxHealth = CurrentHealthProvider()?.maxLife ?? 100f,
-            unlockedSkills = SkillManagerUI.Instance
-                .GetUnlockedSkills()
-                .Distinct()
-                .Select(s => (int)s)
-                .ToList()
+
+            // DÙNG CACHE TOÀN CỤC – KHÔNG phụ thuộc SkillManagerUI có mặt ở scene hiện tại
+            unlockedSkills = new List<int>(UserSession.Instance.UnlockedSkillsCache),
+            petUnlocked = UserSession.Instance.PetUnlockedCache
+            
         };
 
         StartCoroutine(CoSave(dto));
     }
 
+
     private IEnumerator CoSave(PlayerSaveService.SaveGameDTO dto)
     {
+        var json = JsonConvert.SerializeObject(dto);
+        Debug.Log("[Checkpoint] Save payload: " + json);   // xem có unlockedSkills không
+
+
         var task = PlayerSaveService.SaveGameAsync(dto);
         while (!task.IsCompleted) yield return null;
 

@@ -12,11 +12,18 @@ public class UserSession : MonoBehaviour
     public float SavedHealth, SavedMaxHealth;
     public string SavedSceneName;  // có thể null/empty nếu server chưa lưu scene
     public List<int> UnlockedSkillsCache = new();
-
+    public bool PetUnlockedCache;
 
     void Awake()
     {
         if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         else Destroy(gameObject);
+    }
+
+    public void AddUnlockedSkill(SkillID id)
+    {
+        int v = (int)id;
+        if (!UnlockedSkillsCache.Contains(v))
+            UnlockedSkillsCache.Add(v);
     }
 }

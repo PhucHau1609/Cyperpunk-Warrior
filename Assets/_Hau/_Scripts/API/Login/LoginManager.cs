@@ -63,6 +63,7 @@ public class LoginManager : MonoBehaviour
 
         // NEW
         public List<int> unlockedSkills;
+        public bool petUnlocked;   // ĐỔI TÊN cho đồng nhất
     }
 
 
@@ -242,7 +243,7 @@ public class LoginManager : MonoBehaviour
             // Có save → Gọi ResumeBootstrap
             if (UserSession.Instance != null)
                 UserSession.Instance.UnlockedSkillsCache = cache.unlockedSkills ?? new List<int>();
-
+            UserSession.Instance.PetUnlockedCache = cache.petUnlocked;
 
             var sceneToLoad = string.IsNullOrWhiteSpace(cache.lastCheckpointScene) ? null : cache.lastCheckpointScene;
 

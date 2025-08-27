@@ -11,6 +11,9 @@ public class ResumeBootstrap : MonoBehaviour
     public GameObject playerPrefab;   // Prefab Player (tag "Player")
     public GameObject cameraPrefab;   // (Optional) Prefab Camera có sẵn CameraFollow; nếu null sẽ tự tạo Runtime
 
+    [Header("Pet (Follower)")]
+    public GameObject petPrefab; // NEW: prefab con robot đồng hành
+
     private bool resumePending;
     private string resumeScene;
     private Vector3 resumePos;
@@ -24,6 +27,35 @@ public class ResumeBootstrap : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    private void EnsurePetFollower(Transform playerT)
+    {
+        // đọc từ cache session (đã gán khi mở robot ở map1 hoặc khi load SaveData)
+        bool petUnlocked = UserSession.Instance?.PetUnlockedCache ?? false;
+        if (!petUnlocked) return;
+
+        // tìm xem scene/đời trước đã có con robot nào tồn tại (script đã DDOL)
+        var pet = FindAnyObjectByType<FloatingFollower>();
+        if (pet == null)
+        {
+            if (petPrefab == null)
+            {
+                Debug.LogWarning("[ResumeBootstrap] Pet is unlocked but petPrefab is null.");
+                return;
+            }
+            pet = Instantiate(petPrefab).GetComponent<FloatingFollower>();
+        }
+
+        // Gắn lại target & cho follow ngay cạnh player
+        Vector3 spawnNearPlayer = playerT.position + new Vector3(-1.5f, 3f, 0f);
+
+        // Yêu cầu các API public ngắn trong FloatingFollower ở mục (3)
+        pet.SetPlayer(playerT);
+        pet.ForceAwakenAndFollow(spawnNearPlayer);
+
+        // Đồng bộ trạng thái mở khóa (để script robot không ở trạng thái “ngủ”)
+        CodeLock.PetUnlocked = true;
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -32,17 +64,28 @@ public class ResumeBootstrap : MonoBehaviour
 
     private void RestoreUnlockedSkillsIfAny()
     {
-        var list = UserSession.Instance?.UnlockedSkillsCache;
-        if (list == null || list.Count == 0) return;
-
-        foreach (var val in list.Distinct())
-        {
-            var sid = (SkillID)val;
-            var ev = EventIDHelper.GetEventForSkill(sid);
-            if (ev != EventID.None)
-                ObserverManager.Instance?.PostEvent(ev, sid);
-        }
+        StartCoroutine(CoRestoreSkills());
     }
+
+    private IEnumerator CoRestoreSkills()
+    {
+        // đợi 1–2 frame cho các Singleton/Start chạy xong
+        yield return null; yield return null;
+
+        while (SkillManagerUI.Instance == null || !SkillManagerUI.Instance.IsReady)
+            yield return null;
+
+        var cache = UserSession.Instance?.UnlockedSkillsCache;
+        if (cache == null || cache.Count == 0) yield break;
+
+        // Khử trùng lặp & gọi trực tiếp
+        var distinct = cache.Distinct().Select(v => (SkillID)v);
+        SkillManagerUI.Instance.RestoreFromList(distinct);
+
+        // nếu thích, có thể nhường frame giữa mỗi skill:
+        // foreach (var sid in distinct) { SkillManagerUI.Instance.ForceUnlockAndBuildUI(sid); yield return null; }
+    }
+
 
 
     // gọi từ LoginManager khi có save
@@ -105,6 +148,9 @@ public class ResumeBootstrap : MonoBehaviour
 
             // 2.5) Đảm bảo có Camera và follow Player
             EnsureCameraAndFollow(player.transform);
+
+            EnsurePetFollower(player.transform);
+
         }
         else
         {
