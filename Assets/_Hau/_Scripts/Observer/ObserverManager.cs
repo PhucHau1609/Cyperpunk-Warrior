@@ -127,6 +127,7 @@ public enum EventID
     FirstEnergyPickedUp,
     NotHasCraftingRecipeInInventory,
     SecondEnergyPickedUp,
+    SkillPrereqChanged
 
 }
 

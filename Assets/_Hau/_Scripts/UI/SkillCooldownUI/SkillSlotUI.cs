@@ -151,6 +151,27 @@ public class SkillSlotUI : MonoBehaviour
     }
 
     // ... (FormatKeyCode giữ nguyên)
+
+    public void ForceHideAndReset()
+    {
+        // Dừng tween/coroutine
+        if (durationTween != null && durationTween.IsActive()) durationTween.Kill();
+        if (durationCo != null) { StopCoroutine(durationCo); durationCo = null; }
+
+        // Ẩn các overlay/text
+        if (durationOverlay) durationOverlay.gameObject.SetActive(false);
+        if (durationText) durationText.gameObject.SetActive(false);
+
+        // Reset cooldown overlay để khi hiện lại không bị nửa vời
+        if (cooldownOverlay)
+        {
+            cooldownOverlay.DOKill();
+            cooldownOverlay.fillAmount = 0f;
+        }
+
+        // Optional: khóa nút nếu muốn
+        if (clickableButton) clickableButton.interactable = true; // hoặc false nếu bạn muốn
+    }
 }
 
 
