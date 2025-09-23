@@ -156,6 +156,8 @@ public class CodeLock : MonoBehaviour
             imageToChange.sprite = image2;
 
             PetUnlocked = true;
+            UserSession.Instance.PetUnlockedCache = true;   // cache ở client
+
             StartCoroutine(CloseCanvasAfterDelay(0.5f));
              QuestEventBus.Raise("lyra_puzzle_solved");
 

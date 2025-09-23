@@ -22,6 +22,12 @@ public class SpiderEnemyController : MonoBehaviour, IDamageResponder
     private EnemyDamageReceiver damageReceiver;
     private ItemDropTable itemDropTable;
 
+    void OnEnable() { PlayerLocator.OnChanged += HandlePlayerChanged; TryResolvePlayer(); }
+    void OnDisable() { PlayerLocator.OnChanged -= HandlePlayerChanged; }
+    void HandlePlayerChanged(Transform t) { player = t; }
+    void TryResolvePlayer() { if (PlayerLocator.Current) player = PlayerLocator.Current; else { var go = GameObject.FindWithTag("Player"); if (go) player = go.transform; } }
+
+
 
     void Awake()
     {

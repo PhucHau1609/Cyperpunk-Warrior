@@ -29,10 +29,44 @@ public class FlyingDroidController : MonoBehaviour, IDamageResponder
     private EnemyDamageReceiver damageReceiver;
     private ItemDropTable itemDropTable;
 
+    // === NEW: theo dõi thay đổi player ===
+    private void OnEnable()
+    {
+        PlayerLocator.OnChanged += HandlePlayerChanged;
+        // thử gán ngay khi enable
+        TryResolvePlayer();
+    }
+
+    private void OnDisable()
+    {
+        PlayerLocator.OnChanged -= HandlePlayerChanged;
+    }
+
+    private void HandlePlayerChanged(Transform t)
+    {
+        player = t;
+        // có thể xoay mặt ngay khi có player mới
+        FacePlayer();
+    }
+
+    private void TryResolvePlayer()
+    {
+        // Ưu tiên PlayerLocator
+        if (PlayerLocator.Current != null)
+        {
+            player = PlayerLocator.Current;
+            return;
+        }
+
+        // Fallback: tìm theo tag (trường hợp hiếm khi PlayerLocator chưa set kịp)
+        var go = GameObject.FindWithTag("Player");
+        if (go != null) player = go.transform;
+    }
+
     void Awake()
     {
-        if (player == null)
-            player = GameObject.FindWithTag("Player")?.transform;
+        if (player == null) TryResolvePlayer();
+
 
         rb = GetComponent<Rigidbody2D>();
         damageReceiver = GetComponent<EnemyDamageReceiver>();

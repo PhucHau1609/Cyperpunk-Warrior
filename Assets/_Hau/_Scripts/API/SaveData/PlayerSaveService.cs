@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using static PlayerSaveService;
 
 public static class PlayerSaveService
 {
@@ -18,6 +20,23 @@ public static class PlayerSaveService
         public string lastCheckpointScene;
         public float health;
         public float maxHealth;
+
+        public List<EquippedItemDTO> equippedItems;
+
+        // ĐỔI: dùng int thay vì SkillID cho chắc chắn
+        public List<int> unlockedSkills;
+
+        public bool petUnlocked;  // NEW: robot đồng hành đã mở
+
+
+
+    }
+
+    [System.Serializable]
+    public class EquippedItemDTO
+    {
+        public int slotType;   // Enum EquipmentType (Helmet, Armor, Weapon...)
+        public int itemCode;   // Enum ItemCode
     }
 
     [System.Serializable]
@@ -30,6 +49,12 @@ public static class PlayerSaveService
         public float health;
         public float maxHealth;
         public string updatedAt;
+
+        // NEW
+        public List<int> unlockedSkills;
+
+        public bool petUnlocked;   // NEW: tiện kiểm tra ngay sau save
+
     }
 
     public static async Task<bool> SaveGameAsync(SaveGameDTO dto)
@@ -77,4 +102,40 @@ public static class PlayerSaveService
             return res;
         }
     }
+
+    public static class EquipmentSaveService
+    {
+        public static async Task<bool> SaveEquipmentAsync(int userId)
+        {
+            var equipped = new List<EquippedItemDTO>();
+            foreach (var slot in Object.FindObjectsByType<EquipmentSlot>(FindObjectsSortMode.None))
+            {
+                if (slot.HasItem())
+                {
+                    equipped.Add(new EquippedItemDTO
+                    {
+                        slotType = (int)slot.slotType,
+                        itemCode = (int)slot.currentItem.ItemProfileSO.itemCode
+                    });
+                }
+            }
+
+
+
+            var dto = new { userId, equippedItems = equipped };
+            string url = $"{baseUrl}/api/savegame/equipment";
+            string json = JsonConvert.SerializeObject(dto);
+
+            using var req = new UnityWebRequest(url, "POST");
+            req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json");
+
+            var op = req.SendWebRequest();
+            while (!op.isDone) await Task.Yield();
+
+            return req.result == UnityWebRequest.Result.Success;
+        }
+    }
 }
+

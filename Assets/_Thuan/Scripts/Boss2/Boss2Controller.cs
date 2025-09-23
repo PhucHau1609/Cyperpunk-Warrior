@@ -71,6 +71,12 @@ public class Boss2Controller : MonoBehaviour, IBossResettable
     private Vector3 initialScale;
     private bool initialDataSaved = false;
 
+    void OnEnable() { PlayerLocator.OnChanged += HandlePlayerChanged; TryResolvePlayer(); }
+    void OnDisable() { PlayerLocator.OnChanged -= HandlePlayerChanged; }
+    void HandlePlayerChanged(Transform t) { player = t; }
+    void TryResolvePlayer() { if (PlayerLocator.Current) player = PlayerLocator.Current; else { var go = GameObject.FindWithTag("Player"); if (go) player = go.transform; } }
+
+
     private void Awake()
     {
         damageReceiver = GetComponent<Boss2DamageReceiver>();

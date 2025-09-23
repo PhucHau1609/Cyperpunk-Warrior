@@ -2,6 +2,8 @@
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
+using Newtonsoft.Json;
 
 public class CheckpointManager : HauSingleton<CheckpointManager>
 {
@@ -38,6 +40,44 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             _lastSaveTime = Time.unscaledTime;
             TrySaveToServer(); 
         }
+    }
+
+    // ví dụ triển khai nhanh TrySaveToServer:
+    private void TrySaveToServer()
+    {
+        if (UserSession.Instance == null) return;
+
+        var dto = new PlayerSaveService.SaveGameDTO
+        {
+            userId = UserSession.Instance.UserId,
+            posX = lastCheckpointPosition.x,
+            posY = lastCheckpointPosition.y,
+            posZ = lastCheckpointPosition.z,
+            lastCheckpointID = (int)lastCheckpointID,
+            lastCheckpointScene = lastCheckpointScene,
+            health = CurrentHealthProvider()?.life ?? 100f,
+            maxHealth = CurrentHealthProvider()?.maxLife ?? 100f,
+
+            // DÙNG CACHE TOÀN CỤC – KHÔNG phụ thuộc SkillManagerUI có mặt ở scene hiện tại
+            unlockedSkills = new List<int>(UserSession.Instance.UnlockedSkillsCache),
+            petUnlocked = UserSession.Instance.PetUnlockedCache
+            
+        };
+
+        StartCoroutine(CoSave(dto));
+    }
+
+
+    private IEnumerator CoSave(PlayerSaveService.SaveGameDTO dto)
+    {
+        var json = JsonConvert.SerializeObject(dto);
+        Debug.Log("[Checkpoint] Save payload: " + json);   // xem có unlockedSkills không
+
+
+        var task = PlayerSaveService.SaveGameAsync(dto);
+        while (!task.IsCompleted) yield return null;
+
+        if (!task.Result) Debug.LogWarning("[Checkpoint] Save failed");
     }
 
     private void HandleMapBoss01TestCheckpoint(CheckPointEnum checkpointID)
@@ -509,33 +549,7 @@ public class CheckpointManager : HauSingleton<CheckpointManager>
             }
         }
     }
-    // ví dụ triển khai nhanh TrySaveToServer:
-    private void TrySaveToServer()
-    {
-        if (UserSession.Instance == null) return;
-
-        var dto = new PlayerSaveService.SaveGameDTO
-        {
-            userId = UserSession.Instance.UserId,
-            posX = lastCheckpointPosition.x,
-            posY = lastCheckpointPosition.y,
-            posZ = lastCheckpointPosition.z,
-            lastCheckpointID = (int)lastCheckpointID,
-            lastCheckpointScene = lastCheckpointScene,
-            health = CurrentHealthProvider()?.life ?? 100f,
-            maxHealth = CurrentHealthProvider()?.maxLife ?? 100f
-        };
-
-        StartCoroutine(CoSave(dto));
-    }
-
-    private IEnumerator CoSave(PlayerSaveService.SaveGameDTO dto)
-    {
-        var task = PlayerSaveService.SaveGameAsync(dto);
-        while (!task.IsCompleted) yield return null;
-
-        if (!task.Result) Debug.LogWarning("[Checkpoint] Save failed");
-    }
+   
 
     private CharacterController2D CurrentHealthProvider()
     {
