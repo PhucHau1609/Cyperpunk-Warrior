@@ -23,6 +23,9 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
     private List<GameObject> skillSlots = new List<GameObject>(); // Danh sách các skill đã tạo
     private CharacterController2D characterController;
 
+    private Dictionary<SkillID, SkillSlotUI> idToSlot = new(); // NEW
+
+
     protected override void Awake()
     {
         characterController = FindFirstObjectByType<CharacterController2D>();
@@ -38,6 +41,73 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
         ObserverManager.Instance.AddListener(EventID.UnlockSkill_ColorRamp, OnUnlockSkill);
         ObserverManager.Instance.AddListener(EventID.UnlockSkill_Swap, OnUnlockSkill);
         ObserverManager.Instance.AddListener(EventID.UnlockSkill_Dash, OnUnlockSkill);
+
+        // Nghe thay đổi điều kiện đủ/thiếu
+        ObserverManager.Instance.AddListener(EventID.SkillPrereqChanged, OnSkillPrereqChanged);
+
+        // Nghe moment kích hoạt effect để hiện lại slot (chỉ khi thực sự kích hoạt)
+        PlayerShader.OnEffectStarted += OnEffectStarted;
+        PlayerShader.OnEffectEnded += OnEffectEnded; // nếu cần
+    }
+
+    private void OnDestroy()
+    {
+        if (ObserverManager.Instance != null)
+        {
+            ObserverManager.Instance.RemoveListener(EventID.UnlockSkill_Invisibility, OnUnlockSkill);
+            ObserverManager.Instance.RemoveListener(EventID.UnlockSkill_ColorRamp, OnUnlockSkill);
+            ObserverManager.Instance.RemoveListener(EventID.UnlockSkill_Swap, OnUnlockSkill);
+            ObserverManager.Instance.RemoveListener(EventID.UnlockSkill_Dash, OnUnlockSkill);
+            ObserverManager.Instance.RemoveListener(EventID.SkillPrereqChanged, OnSkillPrereqChanged);
+        }
+        PlayerShader.OnEffectStarted -= OnEffectStarted;
+        PlayerShader.OnEffectEnded -= OnEffectEnded;
+    }
+
+    private void OnSkillPrereqChanged(object state)
+    {
+        if (!idToSlot.TryGetValue(SkillID.ColorRamp, out var slotUI) || slotUI == null) return;
+
+        bool ok = (state is bool b) && b;
+
+        if (!ok)
+        {
+            // Thiếu điều kiện → ẩn ngay
+            slotUI.ForceHideAndReset();
+            slotUI.gameObject.SetActive(false);
+        }
+        else
+        {
+            // ĐỦ điều kiện → phải hiện lại để người chơi có thể ẤN kích hoạt
+            if (!slotUI.gameObject.activeSelf)
+                slotUI.gameObject.SetActive(true);
+
+            // (tuỳ chọn) có thể khoá nút tới khi user thật sự bấm:
+            // if (slotUI.clickableButton) slotUI.clickableButton.interactable = true;
+            // Không tự kích hoạt ở đây — user vẫn phải click/hotkey.
+        }
+    }
+
+
+    private void OnEffectStarted(SkillID id, float dur)
+    {
+        // Khi user kích hoạt skill (đủ điều kiện + bấm nút) → hiện lại slot ColorRamp nếu đang ẩn
+        if (id != SkillID.ColorRamp) return;
+
+        if (idToSlot.TryGetValue(SkillID.ColorRamp, out var slotUI) && slotUI != null)
+        {
+            if (!slotUI.gameObject.activeSelf)
+            {
+                slotUI.gameObject.SetActive(true);
+                // Nếu muốn, có thể gọi StartDurationUI(dur) ở đây,
+                // nhưng hiện tại SkillSlotUI đã tự StartDurationUI khi TryActivate() trả về true.
+            }
+        }
+    }
+
+    private void OnEffectEnded(SkillID id)
+    {
+        // Không cần xử lý ở đây cho yêu cầu hiện tại
     }
 
     // SkillManagerUI.cs
@@ -59,6 +129,9 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
         GameObject slot = Instantiate(skillSlotPrefab, skillContainer);
         SkillSlotUI slotUI = slot.GetComponent<SkillSlotUI>();
         slotUI.Setup(skill);
+
+        idToSlot[skillID] = slotUI;
+
 
         // Thêm vào danh sách và đặt vị trí
         skillSlots.Add(slot);
@@ -120,9 +193,12 @@ public class SkillManagerUI : HauSingleton<SkillManagerUI>
 
         foreach (var pair in keyToSlot)
         {
+            var slot = pair.Value;
+            if (slot == null || !slot.gameObject.activeInHierarchy) continue; // NEW: chỉ kích nếu đang hiện
+
             if (Input.GetKeyDown(pair.Key))
             {
-                pair.Value.TryActivate();
+                slot.TryActivate();
             }
         }
     }

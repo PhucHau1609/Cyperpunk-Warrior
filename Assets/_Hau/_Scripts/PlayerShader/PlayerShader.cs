@@ -51,6 +51,136 @@ public class PlayerShader : MonoBehaviour
     public static event System.Action<SkillID, float> OnEffectStarted;
     public static event System.Action<SkillID> OnEffectEnded;
 
+    private Coroutine colorRampRoutine;  // giữ handle để hủy giữa chừng
+
+    private void OnEnable()
+    {
+        // Lắng nghe thay đổi inventory/equipment
+        ObserverManager.Instance?.AddListener(EventID.InventoryChanged, OnPrereqPossiblyChanged);
+        ObserverManager.Instance?.AddListener(EventID.EquipmentChanged, OnPrereqPossiblyChanged);
+    }
+
+    private void OnDisable()
+    {
+        ObserverManager.Instance?.RemoveListener(EventID.InventoryChanged, OnPrereqPossiblyChanged);
+        ObserverManager.Instance?.RemoveListener(EventID.EquipmentChanged, OnPrereqPossiblyChanged);
+    }
+
+
+    private void OnPrereqPossiblyChanged(object _ = null)
+    {
+        // Chỉ quan tâm skill ColorRamp và khi hiệu ứng đang active
+        if (!isEffectActive) return;
+
+        // Nếu điều kiện KHÔNG còn đủ -> tắt ngay
+        bool stillMet = EquipmentConditionChecker.Instance != null &&
+                        EquipmentConditionChecker.Instance.IsConditionMet();
+
+        if (!stillMet)
+        {
+            // Hủy giữa chừng KHÔNG giữ cooldown (đúng yêu cầu: phải ấn lại nút sau khi đủ)
+            ForceStopColorRamp(startCooldown: false);
+            // Nếu bạn muốn vẫn tính cooldown khi bị hủy, đổi thành: ForceStopColorRamp(startCooldown: true);
+        }
+    }
+
+    private void ForceStopColorRamp(bool startCooldown)
+    {
+        // Ngừng coroutine nếu còn đang chạy
+        if (colorRampRoutine != null)
+        {
+            StopCoroutine(colorRampRoutine);
+            colorRampRoutine = null;
+        }
+
+        // Tắt keyword + invincible
+        string keyword = ShaderEffectKeywords[ShaderEffect.ColorRamp];
+        SetKeywordOnSelf(keyword, false);
+        if (characterController) characterController.invincible = false;
+
+        // Reset trạng thái
+        isEffectActive = false;
+
+        // Thông báo UI khác tắt thanh duration, vòng effect...
+        OnEffectEnded?.Invoke(SkillID.ColorRamp);
+
+        if (startCooldown)
+        {
+            // vẫn tính cooldown phần còn lại
+            StartCoroutine(CoCooldownOnly());
+        }
+        else
+        {
+            // không giữ cooldown -> có thể ấn lại nút nếu đủ điều kiện
+            isOnCooldown = false;
+        }
+    }
+
+    private IEnumerator CoCooldownOnly()
+    {
+        // nếu muốn tính phần còn lại, có thể tính theo thời gian đã trôi
+        // Ở đây đơn giản: cooldown full
+        yield return new WaitForSeconds(cooldownTime);
+        isOnCooldown = false;
+    }
+
+    public bool ActivateColorRampEffectSkill()
+    {
+        // CHỈ dùng trạng thái hiện tại của trang bị + artefact
+        bool prereq = EquipmentConditionChecker.Instance != null
+                      && EquipmentConditionChecker.Instance.IsConditionMet();
+
+        if (prereq && !isEffectActive && !isOnCooldown)
+        {
+            colorRampRoutine = StartCoroutine(ActivateColorRampEffect());
+            OnEffectStarted?.Invoke(SkillID.ColorRamp, effectDuration);
+            return true;
+        }
+        return false;
+    }
+
+
+    public void OnClickActivateColorRampIfReady()
+    {
+        bool condition = EquipmentConditionChecker.Instance != null &&
+                         EquipmentConditionChecker.Instance.IsConditionMet();
+
+        if (condition && !isEffectActive && !isOnCooldown)
+        {
+            ObserverManager.Instance.PostEvent(EventID.UnlockSkill_ColorRamp, SkillID.ColorRamp);
+        }
+    }
+
+    IEnumerator ActivateColorRampEffect()
+    {
+        isEffectActive = true;
+        isOnCooldown = true;
+
+        string keyword = ShaderEffectKeywords[ShaderEffect.ColorRamp];
+        SetKeywordOnSelf(keyword, true);
+
+        if (characterController) characterController.invincible = true;
+
+        // chạy effect
+        yield return new WaitForSeconds(effectDuration);
+
+        // Kết thúc effect bình thường
+        SetKeywordOnSelf(keyword, false);
+        if (characterController) characterController.invincible = false;
+
+        isEffectActive = false;
+        OnEffectEnded?.Invoke(SkillID.ColorRamp);
+
+        float remainingCooldown = Mathf.Max(0f, cooldownTime - effectDuration);
+        yield return new WaitForSeconds(remainingCooldown);
+
+        isOnCooldown = false;
+        colorRampRoutine = null;
+    }
+
+
+
+
 
     void Start()
     {
@@ -77,7 +207,7 @@ public class PlayerShader : MonoBehaviour
         return false;
     }
 
-    public bool ActivateColorRampEffectSkill()
+  /*  public bool ActivateColorRampEffectSkill()
     {
         if (ItemCollectionTracker.Instance.ConditionMet &&
             !isEffectActive && !isOnCooldown)
@@ -98,7 +228,7 @@ public class PlayerShader : MonoBehaviour
         {
             ObserverManager.Instance.PostEvent(EventID.UnlockSkill_ColorRamp, SkillID.ColorRamp);
         }
-    }
+    }*/
 
     IEnumerator ActivateEffectWithInvisibility()
     {
@@ -148,7 +278,7 @@ public class PlayerShader : MonoBehaviour
     }
 
     // PlayerShader.cs
-    IEnumerator ActivateColorRampEffect()
+   /* IEnumerator ActivateColorRampEffect()
     {
         isEffectActive = true;
         isOnCooldown = true;
@@ -172,7 +302,7 @@ public class PlayerShader : MonoBehaviour
         yield return new WaitForSeconds(remainingCooldown);
 
         isOnCooldown = false;
-    }
+    }*/
 
 
     /* IEnumerator ActivateColorRampEffect()
